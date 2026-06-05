@@ -1,6 +1,3 @@
-// Theme Emoji ${global.emoji}
-// Bot Name ${botname}
-
 require('./len')
 const { WA_DEFAULT_EPHEMERAL, getAggregateVotesInPollMessage, generateWAMessageFromContent, proto, generateWAMessageContent, InteractiveMessage, generateWAMessage, prepareWAMessageMedia, downloadContentFromMessage, areJidsSameUser, getContentType } = require("baileys");
 const fs = require('fs')
@@ -44,7 +41,6 @@ const { igdl } = require('btch-downloader')
 const { cekMl } = require('./library/mlRegi.js')
 const dns = require('dns').promises
 
-// read database
 global.db.data = JSON.parse(fs.readFileSync('./storage/database.json'))
 if (global.db.data) global.db.data = {
 users: {},
@@ -91,7 +87,6 @@ const premiumFilePath = path.join("./premium.json")
 const dbFilePath = path.join(__dirname, './storage/database.json')
 
 
-//---------------------------------------------------------- Prefix SETTINGS *Batas* --------------------------------------------------------------------------------
 const rawBody = body || "";
 
 const prefix = /^[°zZ#$@+,.?=''():√%!¢£¥€π¤ΠΦ&><™©®Δ^βα¦|/\\©^]/.test(rawBody)
@@ -110,7 +105,6 @@ const commandPrivate = commandRaw.toLowerCase();
 
 const isCmd = body?.startsWith(prefix)
 const cmd = prefix + command
-//---------------------------------------------------------- Prefix SETTINGS *Batas* --------------------------------------------------------------------------------
 
 
 
@@ -340,13 +334,11 @@ async function cekCasee(caseName) {
   }
 }
     
-// Daftar kata-kata toxic
 const toxicWords = /(ewe|bangsad|mmk|koncol|puki|kojtol|kintil|momok|nigga|ajg|ewean|yatim|anjing|kontol|memek|bangsat|babi|goblok|goblog|kntl|pepek|ppk|ngentod|ngentd|ngntd|kentod|kntd|bgst|anjg|anj|fuck|hitam|ireng|jawir|gay|asw|ktl|ngentot|ngewe|bokep|bkp)/i;
 
 try {
   if (m.isGroup) {    
     if (!global.datagc[m.chat]) {
-      // Jika grup belum ada, tambahkan ke dalam objek dengan format default
       global.datagc[m.chat] = {
         "text_welcome": "",
         "text_left": "",
@@ -366,7 +358,6 @@ try {
   console.error('Terjadi kesalahan saat membaca atau menulis file database:', error);
 }
 
-// Inisialisasi database jika belum ada
 try {
     let isNumber = x => typeof x === 'number' && !isNaN(x)
     let limitUser = global.limitawal.free;
@@ -572,7 +563,6 @@ async function LenwyLD() {
   await lenwy.sendMessage(from, { react: { text: '🕒', key: m.key } })
 }
 
-//----------------------------------------------------------- [ CONSOLE LOG ] ---------------------------------------------------------------------------
 if (isCmd) {
 const listcolor = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white']
 const randomcolor = listcolor[Math.floor(Math.random() * listcolor.length)]
@@ -585,7 +575,6 @@ const randomcolor = listcolor[Math.floor(Math.random() * listcolor.length)]
       color(`${body}`, `white`)
     )
 }
-//----------------------------------------------------------- [ CONSOLE LOG ] ---------------------------------------------------------------------------
 
 if (cmd) {
   if (isGcMuted && !isCreator && !isPrem && !isBot) return
@@ -654,7 +643,6 @@ if (db.data.chats[m.chat].antitoxic2) {
   }
 }
 
-// Anti Link
 if (db.data.chats[m.chat].antilinkgc) {
   let storedLink = db.data.chats[m.chat].linkgc;
   let isLinkThisGc = new RegExp(storedLink, 'i') 
@@ -776,7 +764,6 @@ END:VCARD`
 })
 }
 
-// Respon Cmd with media
 if (isMedia && m.msg.fileSha256 && (m.msg.fileSha256.toString('base64') in global.db.data.sticker)) {
 let hash = global.db.data.sticker[m.msg.fileSha256.toString('base64')]
 let { text, mentionedJid } = hash
@@ -1075,7 +1062,6 @@ async function isImageURL(url) {
 var createSerial = (size) => {
 return crypto.randomBytes(size).toString('hex').slice(0, size)
 }
-//-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 if (kuismath.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
 kuis = true;
 jawaban = kuismath[m.sender.split('@')[0]]
@@ -1153,7 +1139,6 @@ m.reply('❌ *Jawaban Salah!*')
 }
 }
 
-//TicTacToe
 this.game = this.game ? this.game : {}
 let room = Object.values(this.game).find(room => room.id && room.game && room.state && room.id.startsWith('tictactoe') && [room.game.playerX, room.game.playerO].includes(m.sender) && room.state == 'PLAYING')
 if (room) {
@@ -1161,7 +1146,6 @@ let ok
 let isWin = !1
 let isTie = !1
 let isSurrender = !1
-// m.reply(`[DEBUG]\n${parseInt(m.text)}`)
 if (!/^([1-9]|(me)?nyerah|surr?ender|off|skip)$/i.test(m.text)) return
 isSurrender = !/^[1-9]$/.test(m.text)
 if (m.sender !== room.game.currentTurn) { // nek wayahku
@@ -1218,7 +1202,6 @@ delete this.game[room.id]
 }
 }
 
-//Suit PvP
 this.suit = this.suit ? this.suit : {}
 let roof = Object.values(this.suit).find(roof => roof.id && roof.status && [roof.p, roof.p2].includes(m.sender))
 if (roof) {
@@ -1233,7 +1216,6 @@ return !0
 roof.status = 'play'
 roof.asal = from
 clearTimeout(roof.waktu)
-//delete roof[roof.id].waktu
 lenwy.sendText(from, `Suit telah dikirimkan ke chat
 
 @${roof.p.split`@`[0]} dan 
@@ -1318,12 +1300,10 @@ if (global.db.data.users[m.sender].afkTime > -1) {
 async function limit50(m) {
   const user = global.db.data.users[m.sender]
 
-  // Cek apakah pengguna adalah premium
   if (isPrem(m.sender)) {
     m.reply('🎉 *Akun Premium Kamu Aktif* Limit tidak berkurang.')
     return true; // Mengembalikan true untuk menunjukkan bahwa limit tidak perlu dikurangi
   } else {
-    // Jika pengguna bukan premium, periksa dan kurangi limit
     if (user.limit < 50) {
       m.reply('⚠️ *Limit Kamu Habis*')
       return false; // Mengembalikan false jika limit habis
@@ -1338,12 +1318,10 @@ async function limit50(m) {
 async function limit25(m) {
   const user = global.db.data.users[m.sender]
 
-  // Cek apakah pengguna adalah premium
   if (isPrem(m.sender)) {
     m.reply('🎉 *Akun Premium Kamu Aktif* Limit tidak berkurang.')
     return true; // Mengembalikan true untuk menunjukkan bahwa limit tidak perlu dikurangi
   } else {
-    // Jika pengguna bukan premium, periksa dan kurangi limit
     if (user.limit < 25) {
       m.reply('⚠️ *Limit Kamu Habis*')
       return false; // Mengembalikan false jika limit habis
@@ -1358,12 +1336,10 @@ function saveDatabase() {
   fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
 }
 
-// Function untuk memperbarui status welcome
 async function updateWelcomeStatus(m, status) {
   if (!m.isGroup) return m.reply(mess.group)
   if (!isAdmins) return m.reply(mess.admin)
 
-  // Pastikan data grup ada di global.db.data
   if (!global.db.data.chats[m.chat]) global.db.data.chats[m.chat] = {};
 
   const currentWelcmStatus = global.db.data.chats[m.chat].wlcm;
@@ -1371,7 +1347,6 @@ async function updateWelcomeStatus(m, status) {
   if (status === "on") {
       if (currentWelcmStatus) return m.reply('Fitur Welcome sudah aktif di grup ini.')
 
-      // Aktifkan fitur welcome untuk grup ini
       global.db.data.chats[m.chat].wlcm = true;
       saveDatabase() // Simpan perubahan ke file
 
@@ -1385,7 +1360,6 @@ async function updateWelcomeStatus(m, status) {
   } else if (status === "off") {
       if (!currentWelcmStatus) return m.reply('Fitur Welcome sudah nonaktif di grup ini.')
 
-      // Nonaktifkan fitur welcome untuk grup ini
       global.db.data.chats[m.chat].wlcm = false;
       saveDatabase() // Simpan perubahan ke file
       m.reply('Fitur Welcome berhasil dinonaktifkan.')
@@ -1399,7 +1373,6 @@ async function updateLeftStatus(m, status) {
   if (!m.isGroup) return m.reply(mess.group)
   if (!isAdmins) return m.reply(mess.admin)
 
-  // Pastikan data grup ada di global.db.data
   if (!global.db.data.chats[m.chat]) global.db.data.chats[m.chat] = {};
 
   const currentWelcmStatus = global.db.data.chats[m.chat].left;
@@ -1407,7 +1380,6 @@ async function updateLeftStatus(m, status) {
   if (status === "on") {
       if (currentWelcmStatus) return m.reply('Fitur Left sudah aktif di grup ini.')
 
-      // Aktifkan fitur left untuk grup ini
       global.db.data.chats[m.chat].left = true;
       saveDatabase() // Simpan perubahan ke file
 
@@ -1421,7 +1393,6 @@ async function updateLeftStatus(m, status) {
   } else if (status === "off") {
       if (!currentWelcmStatus) return m.reply('Fitur Left sudah nonaktif di grup ini.')
 
-      // Nonaktifkan fitur left untuk grup ini
       global.db.data.chats[m.chat].left = false;
       saveDatabase() // Simpan perubahan ke file
       m.reply('Fitur Left berhasil dinonaktifkan.')
@@ -1608,7 +1579,6 @@ async function updateSaldo(user, saldo) {
 function getUserRole(userId) {
   let buyers = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'));
 
-  // Cari user berdasarkan id
   let userData = buyers.find(u => {
     if (Array.isArray(u.id)) {
       if (
@@ -1622,7 +1592,6 @@ function getUserRole(userId) {
     return false;
   });
 
-  // Kalau user tidak ditemukan
   if (!userData) return null
 
   let rolenya = null;
@@ -1682,7 +1651,6 @@ if (m.msg?.contextInfo?.mentionedJid?.some(jid => global.owner.includes(jid.repl
 }
 
 
-//----------------------------------------------//Case ADDCASE DLL\\------------------------------------------------------------------------
 
 const totalfitur = () =>{
 var mytext = fs.readFileSync("./lenwy.js").toString()
@@ -1727,7 +1695,6 @@ async function dellCase(filePath, q) {
       return
     }
 
-    // Regex yang menangkap spasi di sekitar ':' dan pola case yang diinginkan
     const regex = new RegExp(`case\\s*['"]${q}['"]\\s*:.*?break?`, "gs")
     const modifiedData = data.replace(regex, "")
     if (modifiedData === data) {
@@ -1739,33 +1706,18 @@ async function dellCase(filePath, q) {
           console.error("Terjadi kesalahan saat menulis file:", err)
           return
         }
-		m.reply(`Mas, Done. Coba Cek`)
+    m.reply(`Mas, Done. Coba Cek`)
         console.log(`Teks dari case '${q}' telah dihapus dari file.`)
       })
     }
   })
 }
 
-
-
-
-
-
-
-//------------------------------------------------------//Case ADDCASE DLL\\------------------------------------------------------------------------
-
-
-//----------------------------------------------------------------------- [ GAME TEBAKANGKA ] ------------------------------------------------------------------------
-
-
-
 const gameState = {
   angkaAcak: null,
   jumlahTebakan: 0
 };
 
-
-//----------------------------------------------------------------------- [ GAME TEBAKANGKA ] ------------------------------------------------------------------------
 
 if (!lenwy.public) {
   let IS_BOT = [lenwy.user.id, lenwy.user.lid].includes(m.sender.replace(/[^0-9]/g, ''))
@@ -2235,7 +2187,6 @@ break
 
 
 
-//------------------------------------------------------------------[ MENU ]------------------------------------------------------------------------
 
 
 
@@ -2686,7 +2637,6 @@ break
 
 
 
-//------------------------------------------------------------------[ MENU ]------------------------------------------------------------------------
 
 
 
@@ -2902,7 +2852,6 @@ m.reply('*Hallo Juga*')
 }
 break
 
-//-------------------------------------------------------------------------------------------------------------------------------------------------//
 
 case 'setlist': {
   if (!m.isGroup) return m.reply(mess.group)
@@ -2985,11 +2934,11 @@ case 'listmenu': {
       id: i.key
     }));
 
-	let sections = [{
-  		title: "Daftar List",
-  		description: "", // opsional
-  		rows: buttons
-	}];
+  let sections = [{
+      title: "Daftar List",
+      description: "", // opsional
+      rows: buttons
+  }];
 
     let buttonParamsJson = {
       title: "[ LIST ]",
@@ -3194,21 +3143,15 @@ if (!isAdmins) return m.reply(mess.admin)
 let args = q.split("@")
 let args1 = args[0].toLowerCase()
 let args2 = args[1]
-// Check if the input contains the separator '|'
 if (!q.includes("@")) return m.reply(`*Cara Pengunaan : Updatelist Item@Respon*\n🎁 *Contoh : Updatelist wdp@harga wdp eaa apala*`)
-// Check if the list item exists in the group
 if (!isAlreadyResponList(m.chat, args1, db_respon_list)) return m.reply(`⚠️ *Nama Item ${args1} Belum Terdaftar Dalam Group Ini*`)
-// Check if the message contains an image
 if (/image/.test(mime)) {
 let media = await lenwy.downloadAndSaveMediaMessage(quoted)
 let mem = await uploaderLebih(media)
-// Update response list with the new image
 updateResponList(m.chat, args1, args2, true, `${mem}`, db_respon_list)
 m.reply(`📑 *Sukses Memperbarui Item Dengan Kode : ${args1}*`)
-// Clean up the media file
 if (fs.existsSync(media)) fs.unlinkSync(media)
 } else {
-// Update response list without an image
 updateResponList(m.chat, args1, args2, false, '-', db_respon_list)
 m.reply(`📑 *Sukses Memperbarui Item Dengan Kode : ${args1}*`)
 }
@@ -3511,13 +3454,11 @@ break
   }
   break
 
-//=============================================================================================================================================================//
 
 case 'addallprem': {
   if (!isCreator) return m.reply(mess.owner)
   if (!m.isGroup) return m.reply(`*Perintah Ini Hanya Dapat Digunakan Di Dalam Grup.*`)
 
-  // Mengambil metadata grup
   let groupMetadata;
   try {
       groupMetadata = await lenwy.groupMetadata(from)
@@ -3526,7 +3467,6 @@ case 'addallprem': {
       return m.reply('*Gagal Mengambil Metadata Grup.*')
   }
 
-  // Mendapatkan peserta grup
   let participants;
   try {
       participants = groupMetadata.participants;
@@ -3537,7 +3477,6 @@ case 'addallprem': {
 
   if (!participants || participants.length === 0) return m.reply('Tidak ada peserta dalam grup.')
 
-  // Membaca daftar premium dari file
   let owner;
   try {
       owner = JSON.parse(fs.readFileSync('./premium.json', 'utf8'))
@@ -3549,7 +3488,6 @@ case 'addallprem': {
   let addedNumbers = []
   let existingNumbers = []
 
-  // Proses setiap peserta
   for (let participant of participants) {
       let number = participant.id.replace('@s.whatsapp.net', '').replace(/[^0-9]/g, '')
       if (number.length > 0 && !owner.includes(number)) {
@@ -3560,7 +3498,6 @@ case 'addallprem': {
       }
   }
 
-  // Simpan daftar premium yang telah diperbarui
   try {
       fs.writeFileSync('./premium.json', JSON.stringify(owner, null, 2))
   } catch (err) {
@@ -3568,7 +3505,6 @@ case 'addallprem': {
       return m.reply('*Gagal Menyimpan Daftar Premium.*')
   }
 
-  // Kirimkan pesan balasan
   if (addedNumbers.length > 0) {
       m.reply(`*Nomor Berikut Telah Ditambahkan Ke Daftar Premium:*\n\n${addedNumbers.join('\n')}`)
   }
@@ -3583,7 +3519,6 @@ case 'delallprem': {
     if (!isCreator) return m.reply(mess.owner)
     if (!m.isGroup) return m.reply(`Perintah ini hanya dapat digunakan di dalam grup.`)
 
-    // Mengambil metadata grup
     let groupMetadata;
     try {
         groupMetadata = await lenwy.groupMetadata(from)
@@ -3592,7 +3527,6 @@ case 'delallprem': {
       return m.reply('*Gagal Mengambil Metadata Grup.*')
     }
 
-    // Mendapatkan peserta grup
     let participants;
     try {
         participants = groupMetadata.participants;
@@ -3603,7 +3537,6 @@ case 'delallprem': {
 
     if (!participants || participants.length === 0) return m.reply('Tidak ada peserta dalam grup.')
 
-    // Membaca daftar premium dari file
     let owner;
     try {
         owner = JSON.parse(fs.readFileSync('./premium.json', 'utf8'))
@@ -3615,7 +3548,6 @@ case 'delallprem': {
     let removedNumbers = []
     let notFoundNumbers = []
 
-    // Proses setiap peserta
     for (let participant of participants) {
         let number = participant.id.replace('@s.whatsapp.net', '').replace(/[^0-9]/g, '')
         if (number.length > 0) {
@@ -3629,7 +3561,6 @@ case 'delallprem': {
         }
     }
 
-    // Simpan daftar premium yang telah diperbarui
     try {
         fs.writeFileSync('./premium.json', JSON.stringify(owner, null, 2))
     } catch (err) {
@@ -3637,7 +3568,6 @@ case 'delallprem': {
       return m.reply('*Gagal Menyimpan Daftar Premium.*')
     }
 
-    // Kirimkan pesan balasan
     if (removedNumbers.length > 0) {
         m.reply(`*Nomor Berikut Telah Dihapus Dari Daftar Premium.*\n\n${removedNumbers.join('\n')}`)
     }
@@ -3652,7 +3582,6 @@ case 'addprem': {
   if (!isCreator) return m.reply(mess.owner)
   if (!args[0]) return m.reply('*Mana Nomornya?*')
 
-  // Ambil semua nomor dari args
   let numbers = text.split('|')[0].split(/\s+/).map(number => number.replace(/[^0-9]/g, ''))
 
   if (numbers.length === 0) return m.reply('*Tidak Ada Nomor Yang Diberikan.*')
@@ -3660,7 +3589,6 @@ case 'addprem': {
   let invalidNumbers = []
   let validNumbers = []
 
-  // Periksa setiap nomor
   for (let number of numbers) {
     if (number.length === 0) continue;
 
@@ -3672,13 +3600,11 @@ case 'addprem': {
     }
   }
 
-  // Tambahkan nomor valid ke daftar premium
   if (validNumbers.length > 0) {
     let owner = JSON.parse(fs.readFileSync('./premium.json', 'utf8'))
     owner = Array.from(new Set([...owner, ...validNumbers])) // Menghindari duplikasi
     fs.writeFileSync('./premium.json', JSON.stringify(owner, null, 2))
 
-    // Perbarui limit menjadi Infinity untuk nomor premium
     let user = global.db.data.users;
     validNumbers.forEach(number => {
       if (!user[number]) {
@@ -3690,7 +3616,6 @@ case 'addprem': {
     m.reply(`Nomor ${validNumbers.join(', ')} Ditambahkan Kedalam Daftar Premium dan Limitnya Diatur ke Infinity.`)
   }
 
-  // Kirimkan pesan jika ada nomor yang tidak valid
   if (invalidNumbers.length > 0) {
     m.reply(`Nomor berikut tidak valid: ${invalidNumbers.join(', ')}`)
   }
@@ -3703,7 +3628,6 @@ case 'delprem': {
     if (!isCreator) return m.reply(mess.owner)
     if (!args[0]) return m.reply(`*Mana Nomornya?*`)
 
-    // Ambil semua nomor dari args
     let numbers = text.split('|')[0].split(/\s+/).map(number => number.replace(/[^0-9]/g, ''))
 
     if (numbers.length === 0) return m.reply(`*Tidak Ada Nomor Yang Diberikan.*`)
@@ -3711,10 +3635,8 @@ case 'delprem': {
     let removedNumbers = []
     let notFoundNumbers = []
 
-    // Baca daftar premium dari file
     let owner = JSON.parse(fs.readFileSync('./premium.json', 'utf8'))
 
-    // Periksa setiap nomor
     for (let number of numbers) {
         if (number.length === 0) continue;
 
@@ -3727,10 +3649,8 @@ case 'delprem': {
         }
     }
 
-    // Simpan daftar premium yang telah diperbarui
     fs.writeFileSync('./premium.json', JSON.stringify(owner, null, 2))
 
-    // Kirimkan pesan balasan
     if (removedNumbers.length > 0) {
         m.reply(`Nomor ${removedNumbers.join(', ')} telah dihapus dari daftar premium.`)
     }
@@ -3744,7 +3664,6 @@ break
 case 'listprem': {
     if (!isCreator) return m.reply(mess.owner)
 
-    // Membaca data premium dari file
     let owner;
     try {
         owner = JSON.parse(fs.readFileSync('./premium.json', 'utf8'))
@@ -3761,18 +3680,15 @@ case 'listprem': {
     }
     teksooo += `\nTotal: ${owner.length}`;
 
-    // Kirimkan pesan daftar premium
     lenwy.sendMessage(from, { text: teksooo.trim() }, { quoted: m })
 }
 break
 
   
-//===============================================================================================================================================================//
 case 'banall': {
     if (!isCreator) return m.reply(mess.owner)
     if (!m.isGroup) return m.reply('*Perintah ini hanya bisa digunakan dalam grup.*')
 
-    // Ambil metadata grup
     let groupMetadata;
     try {
         groupMetadata = await lenwy.groupMetadata(m.chat)
@@ -3781,10 +3697,8 @@ case 'banall': {
         return m.reply('*Gagal mengambil metadata grup.*')
     }
 
-    // Ambil daftar peserta grup
     let participants = groupMetadata.participants || []
     
-    // Baca daftar banned dari file
     let banned;
     try {
         banned = JSON.parse(fs.readFileSync('./banned.json', 'utf8'))
@@ -3793,11 +3707,9 @@ case 'banall': {
         banned = []
     }
 
-    // Menyimpan nomor yang berhasil dibanned dan yang sudah ada di daftar banned
     let bannedNumbers = []
     let alreadyBannedNumbers = []
 
-    // Proses setiap peserta grup
     for (let participant of participants) {
         let orgnye = participant.id;
         if (banned.includes(orgnye)) {
@@ -3808,7 +3720,6 @@ case 'banall': {
         }
     }
 
-    // Simpan daftar banned yang telah diperbarui
     try {
         fs.writeFileSync('./banned.json', JSON.stringify(banned, null, 2))
     } catch (err) {
@@ -3816,7 +3727,6 @@ case 'banall': {
         return m.reply('*Gagal menyimpan daftar banned.*')
     }
 
-    // Kirimkan pesan balasan
     if (bannedNumbers.length > 0) {
         m.reply(`*Nomor Berikut Telah Dibanned:*\n\n${bannedNumbers.join('\n')}`)
     }
@@ -3831,7 +3741,6 @@ case 'delbanall': {
     if (!isCreator) return m.reply(mess.owner)
     if (!m.isGroup) return m.reply('*Perintah ini hanya bisa digunakan dalam grup.*')
 
-    // Ambil metadata grup
     let groupMetadata;
     try {
         groupMetadata = await lenwy.groupMetadata(m.chat)
@@ -3840,10 +3749,8 @@ case 'delbanall': {
         return m.reply('*Gagal mengambil metadata grup.*')
     }
 
-    // Ambil daftar peserta grup
     let participants = groupMetadata.participants || []
     
-    // Baca daftar banned dari file
     let banned;
     try {
         banned = JSON.parse(fs.readFileSync('./banned.json', 'utf8'))
@@ -3852,11 +3759,9 @@ case 'delbanall': {
         banned = []
     }
 
-    // Menyimpan nomor yang berhasil dihapus dan yang tidak ditemukan dalam daftar banned
     let removedNumbers = []
     let notFoundNumbers = []
 
-    // Proses setiap peserta grup
     for (let participant of participants) {
         let orgnye = participant.id;
         const index = banned.indexOf(orgnye)
@@ -3868,7 +3773,6 @@ case 'delbanall': {
         }
     }
 
-    // Simpan daftar banned yang telah diperbarui
     try {
         fs.writeFileSync('./banned.json', JSON.stringify(banned, null, 2))
     } catch (err) {
@@ -3876,7 +3780,6 @@ case 'delbanall': {
         return m.reply('*Gagal menyimpan daftar banned.*')
     }
 
-    // Kirimkan pesan balasan
     if (removedNumbers.length > 0) {
         m.reply(`*Nomor Berikut Telah Dihapus dari Daftar Banned:*\n\n${removedNumbers.join('\n')}`)
     }
@@ -3937,17 +3840,13 @@ break
 
 case 'ban': {
     if (!isCreator) return m.reply(mess.owner)
-    // Mendapatkan ID yang ditandai
     let mentionedJids = m.mentionedJidList || []
     
-    // Jika tidak ada yang ditandai, ambil nomor dari args
     if (mentionedJids.length === 0) {
         if (!args[0]) return m.reply(`*Bukan Gitu Loh*\n\n> *Contoh : ${command} @tag1 @tag2 @tag3*`)
-        // Proses args jika tidak ada yang ditandai
         mentionedJids = args.map(number => number.replace(/[^0-9]/g, '') + "@s.whatsapp.net")
     }
     
-    // Baca daftar banned dari file
     let banned;
     try {
         banned = JSON.parse(fs.readFileSync('./banned.json', 'utf8'))
@@ -3956,11 +3855,9 @@ case 'ban': {
         banned = []
     }
 
-    // Menyimpan nomor yang berhasil dibanned dan yang sudah ada di daftar banned
     let bannedNumbers = []
     let alreadyBannedNumbers = []
 
-    // Proses setiap ID
     for (let orgnye of mentionedJids) {
         if (banned.includes(orgnye)) {
             alreadyBannedNumbers.push(orgnye)
@@ -3970,7 +3867,6 @@ case 'ban': {
         }
     }
 
-    // Simpan daftar banned yang telah diperbarui
     try {
         fs.writeFileSync('./banned.json', JSON.stringify(banned, null, 2))
     } catch (err) {
@@ -3978,7 +3874,6 @@ case 'ban': {
         return m.reply('*Gagal Menyimpan Daftar Banned.*')
     }
 
-    // Kirimkan pesan balasan
     if (bannedNumbers.length > 0) {
         m.reply(`*Nomor Telah Dibanned:*\n\n${bannedNumbers.join('\n')}`)
     }
@@ -3992,17 +3887,13 @@ break
 case 'delban': {
     if (!isCreator) return m.reply(mess.owner)
 
-    // Mendapatkan ID yang ditandai
     let mentionedJids = m.mentionedJidList || []
     
-    // Jika tidak ada yang ditandai, ambil nomor dari args
     if (mentionedJids.length === 0) {
         if (!args[0]) return m.reply(`*Bukan Gitu Loh*\n\n> *Contoh : ${command} @tag1 @tag2 @tag3*`)
-        // Proses args jika tidak ada yang ditandai
         mentionedJids = args.map(number => number.replace(/[^0-9]/g, '') + "@s.whatsapp.net")
     }
     
-    // Baca daftar banned dari file
     let banned;
     try {
         banned = JSON.parse(fs.readFileSync('./banned.json', 'utf8'))
@@ -4011,11 +3902,9 @@ case 'delban': {
         banned = []
     }
 
-    // Menyimpan nomor yang berhasil dihapus dan yang tidak ditemukan
     let removedNumbers = []
     let notFoundNumbers = []
 
-    // Proses setiap ID
     for (let orgnye of mentionedJids) {
         const index = banned.indexOf(orgnye)
         if (index !== -1) {
@@ -4026,7 +3915,6 @@ case 'delban': {
         }
     }
 
-    // Simpan daftar banned yang telah diperbarui
     try {
         fs.writeFileSync('./banned.json', JSON.stringify(banned, null, 2))
     } catch (err) {
@@ -4034,7 +3922,6 @@ case 'delban': {
         return m.reply('*Gagal Menyimpan Daftar Banned.*')
     }
 
-    // Kirimkan pesan balasan
     if (removedNumbers.length > 0) {
         m.reply(`*Nomor Telah Dihapus dari Daftar Banned:*\n\n${removedNumbers.join('\n')}`)
     }
@@ -4048,7 +3935,6 @@ break
 case 'listban': {
     if (!isCreator) return m.reply(mess.owner)
 
-    // Baca daftar banned dari file
     let banned;
     try {
         banned = JSON.parse(fs.readFileSync('./banned.json', 'utf8'))
@@ -4057,7 +3943,6 @@ case 'listban': {
         return m.reply('*Gagal Membaca Daftar Banned.*')
     }
 
-    // Buat pesan daftar banned
     let response = '*Daftar Banned:*\n\n';
     if (banned.length === 0) {
         response += '*Daftar Banned Kosong.*';
@@ -4065,14 +3950,12 @@ case 'listban': {
         response += banned.map((number, index) => `${index + 1}. ${number}`).join('\n')
     }
 
-    // Kirimkan pesan daftar banned
     m.reply(response)
 }
 break
 
   
 
-//===============================================================================================================================================================//
 
 
   case 'owner':
@@ -4120,7 +4003,6 @@ break
       user[who] = {}; // Pastikan data pengguna ada
   }
   user[who].limit = limit; // Set limit ke Infinity atau jumlah yang ditentukan
-// Kirim pesan ke pengguna
 let limitText = limit === Infinity ? 'Infinity' : `+${limit}`;
 lenwy.sendMessage(m.chat, {
   text: `🎁 *Selamat @${who.split`@`[0]}. Kamu Mendapatkan ${limitText} Limit!*`
@@ -4493,24 +4375,19 @@ case 'teks2image':
 case 'txt2image': {
     if (!q) return m.reply(`*Mau Gambar Apa?*`)
 
-    // Kirim reaksi dan pesan tunggu
     LenwyLD
     await sleep(200)
 
 
     try {
-        // Buat URL request dengan prompt dari pengguna
         const apiUrl = `https://endpoint.web.id/ai/txt2img?key=315602&prompt=${encodeURIComponent(q)}`;
 
-        // Ambil hasil dari API
         let response = await fetch(apiUrl)
         let json = await response.json()
 
-        // Periksa status API
         if (json.status && json.code === 200) {
             let imageUrl = json.result.url;
 
-            // Kirim gambar hasil ke chat
             lenwy.sendMessage(m.chat, { image: { url: imageUrl }, caption: `Gambar untuk prompt: "${q}"` }, { quoted: m })
         } else {
             m.reply(`Gagal mendapatkan gambar. Silakan coba lagi.`)
@@ -4556,13 +4433,10 @@ case 'linkgc': {
     if (!isBotAdmins) return m.reply(mess.botAdmin)
     
     try {
-        // Ambil metadata grup
         const groupMetadata = await lenwy.groupMetadata(from)
 
-        // Ambil link undangan grup
         let response = await lenwy.groupInviteCode(from)
 
-        // Kirim pesan dengan link dan ID grup
         const message = `*Nama Group :* ${groupMetadata.subject}\n\n\n🎁 *Link Group :* https://chat.whatsapp.com/${response}\n\n🎁 *ID Group :* ${from}`;
         lenwy.sendText(from, message, m, { detectLink: true })
     } catch (error) {
@@ -5045,16 +4919,12 @@ case 'jeda': {
     if (!isAdmins) return m.reply(mess.admin)
     if (!isBotAdmins) return m.reply(mess.botAdmin)
     if (!args[0]) return m.reply(`*Pilih Waktu:*\n-s = Second\n-m = Minute\n-h = Hour\n-d = Day\n\n*Contoh:*\n${prefix+command} 10m`)
-    // Ekstrak nilai waktu dan unit
     let timeArg = args[0]
     let timer = toMs(timeArg)
-    // Menutup grup
     m.reply(`*Group akan ditutup selama ${timeArg}*`)
     lenwy.groupSettingUpdate(from, 'announcement')
         .then(() => {
-            // Mengirim pesan bahwa grup ditutup
             m.reply(`Group telah ditutup selama ${timeArg}. Grup akan dibuka kembali setelah waktu habis.`)
-            // Mengatur waktu untuk membuka grup kembali
             setTimeout(() => {
                 lenwy.groupSettingUpdate(from, 'not_announcement')
                     .then(() => {
@@ -5349,12 +5219,9 @@ break
 case 'bcgc':
 case 'bcgroup': {
     if (!isCreator) return m.reply(mess.OnlyOwner)
-    // Memastikan teks query tidak kosong
     if (!q) return m.reply(`*Bukan Gitu Loh*\n> *Contoh : ${prefix + command} OEE SEMUAANYAA*`)
-    // Pastikan ada teks untuk broadcast
     if (!text) return m.reply(`*Teks Broadcast Tidak Ditemukan*\n> *Contoh : ${prefix + command} OEEE*`)
 
-    // Mengambil semua grup yang Anda ikuti
     let getGroups;
     try {
         getGroups = await lenwy.groupFetchAllParticipating()
@@ -5364,9 +5231,7 @@ case 'bcgroup': {
     }
     let groups = Object.entries(getGroups).slice(0).map(entry => entry[1])
     let groupIds = groups.map(v => v.id)
-    // Menyampaikan informasi broadcast
     m.reply(`*Mengirim Broadcast Ke ${groupIds.length} Group Chat, Waktu Selesai ${groupIds.length * 1.5} detik*`)
-    // Mengirim pesan ke semua grup
     for (let groupId of groupIds) {
         await sleep(200)
         try {
@@ -5388,10 +5253,8 @@ case 'share': {
     if (m.isGroup) return m.reply(mess.private)
     if (!text) return m.reply(`*Penggunaan Salah Silahkan Gunakan Seperti Ini*\n${prefix + command} teks\n\nReply Gambar/Video Untuk Mengirim Gambar/Video Ke Semua Group`)
 
-    // Mengirim pesan tunggu
 
 
-    // Mengambil semua grup yang Anda ikuti
     let getGroups;
     try {
         getGroups = await lenwy.groupFetchAllParticipating()
@@ -5403,13 +5266,10 @@ case 'share': {
     let groups = Object.entries(getGroups).map(entry => entry[1])
     let groupIds = groups.map(v => v.id)
 
-    // Mengatur teks broadcast global
     global.teksjpm = text;
 
-    // Mengambil tipe MIME dari pesan yang di-reply
     let mime = m.quoted ? m.quoted.mimetype : '';
 
-    // Mengirim pesan ke semua grup
     for (let groupId of groupIds) {
         let metadata;
         try {
@@ -5423,19 +5283,16 @@ case 'share': {
 
         try {
             if (/image/.test(mime)) {
-                // Mengirim gambar
                 if (!m.quoted) return m.reply('Tidak ada gambar yang di-reply.')
                 let media = await lenwy.downloadAndSaveMediaMessage(m.quoted)
                 let mediaUrl = await uploader60Minute(media)
                 await lenwy.sendMessage(groupId, { image: { url: mediaUrl }, caption: global.teksjpm, contextInfo: { mentionedJid: participants.map(p => p.id) } }, { quoted: m })
             } else if (/video/.test(mime)) {
-                // Mengirim video
                 if (!m.quoted) return m.reply('Tidak ada video yang di-reply.')
                 let media = await lenwy.downloadAndSaveMediaMessage(m.quoted)
                 let mediaUrl = await uploader60Minute(media)
                 await lenwy.sendMessage(groupId, { video: { url: mediaUrl }, caption: global.teksjpm, contextInfo: { mentionedJid: participants.map(p => p.id) } }, { quoted: m })
             } else {
-                // Mengirim teks
                 await lenwy.sendMessage(groupId, { text: global.teksjpm, contextInfo: { mentionedJid: participants.map(p => p.id) } }, { quoted: m })
             }
             await sleep(200) // Tunggu 2 detik antara pengiriman pesan
@@ -5451,7 +5308,6 @@ break
 
 
 
-// ---------------------------------------------------------------[ ANTI MENU ]----------------------------------------------------------------
 
 
 
@@ -5706,7 +5562,6 @@ break
 
 
 
-// ---------------------------------------------------------------[ ANTI MENU ]----------------------------------------------------------------
 
 
 
@@ -5861,7 +5716,7 @@ case 'searchai':
      let result = you.result
      let sourcenya = `> *Source*\n`
      result.source.forEach((url, index) => {
-     	sourcenya += `(${index + 1}) ${url}\n`
+      sourcenya += `(${index + 1}) ${url}\n`
      });
      m.reply(`${result.answer}
 
@@ -6001,28 +5856,22 @@ break
 case 'tovid': {
   if (isBan) return m.reply(mess.ban);
   try {
-    // Pastikan ada quoted message yang dikirim
     if (!quoted) return m.reply(`Balas sticker dengan caption *${prefix + command}*`);
 
-    // Cek MIME type untuk memastikan formatnya adalah webp atau video
     if (!/webp/.test(mime)) return m.reply(`Balas sticker dengan caption *${prefix + command}*`);
 
-    // Jika yang dibalas adalah sticker (format .webp), konversi ke video
     if (/webp/.test(mime)) {
       let media = await lenwy.downloadAndSaveMediaMessage(quoted); // Download sticker
       let ran = await getRandom('.mp4'); // Generate nama file video
 
-      // Memeriksa apakah file webp adalah animasi
       const isAnimated = await isAnimatedWebp(media);
       if (!isAnimated) {
         return m.reply('Sticker yang kamu kirim bukan animasi webp. Harap kirim sticker animasi.');
       }
 
-      // Jika file adalah animasi, coba konversi menggunakan ffmpeg
       exec(`ffmpeg -v error -i ${media} -t 10 -c:v libx264 -pix_fmt yuv420p -f mp4 ${ran}`, (err) => {
         fs.unlinkSync(media); // Hapus file sticker
         if (err) {
-          // Jika ada error, balas pesan error
           return m.reply(`Terjadi kesalahan saat mengonversi sticker: ${err.message}`);
         }
 
@@ -6045,7 +5894,6 @@ case 'chord':
     await sleep(200)
     let result = chord.result;
     
-    // Menyusun pesan dengan semua informasi
     let message = `${result.title}\n\n`
     message += `Artis: ${result.artist}\n`
     message += `URL: ${result.url}\n`
@@ -6126,7 +5974,6 @@ case 'jodoh2': {
 
 
 
-//------------------------------------------------------------------- [ YT DOWNLOADER ] -----------------------------------------------------------------------------
 
 
 case 'play':
@@ -6156,7 +6003,6 @@ await sleep(200)
 m.reply('Process sending audio, mungkin ini membutuhkan 1-3 menit jika durasi audio terlalu panjang!')
 let procees = await (await fetch(`https://api.nexray.eu.cc/downloader/v1/ytmp3?url=${encodeURIComponent(text)}`)).json();
 console.log(procees)
-// Pilih audio dengan kualitas 128kbps
 let audioUrl = procees.result.url
 
 lenwy.sendMessage(m.chat, { audio: { url: audioUrl }, mimetype: 'audio/mp4' }, { quoted: m });
@@ -6179,12 +6025,6 @@ m.reply('terjadi error :' + e)
 }
 }
 break
-
-//------------------------------------------------------------------- [ YT DOWNLOADER ] -----------------------------------------------------------------------------
-
-
-
-//------------------------------------------------------------------- [ SPO DOWNLOADER ] ----------------------------------------------------------------------------
 
 
 case 'spotify': {
@@ -6215,10 +6055,8 @@ case 'spotify': {
 break
 
 
-//------------------------------------------------------------------- [ SPO DOWNLOADER ] ----------------------------------------------------------------------------
 
 
-//------------------------------------------------------------------- [ TT DOWNLOADER ] -----------------------------------------------------------------------------
 
 case 'ttdl':
 case 'tt': {
@@ -6277,10 +6115,8 @@ case 'tt': {
 break
 
 
-//------------------------------------------------------------------- [ TT DOWNLOADER ] -----------------------------------------------------------------------------
 
 
-//------------------------------------------------------------------- [ IG DOWNLOADER ] -----------------------------------------------------------------------------
 
 case 'ig':
 case 'igdl': {
@@ -6311,10 +6147,8 @@ case 'igdl': {
 }
 break
 
-//------------------------------------------------------------------- [ IG DOWNLOADER ] -----------------------------------------------------------------------------
 
 
-//------------------------------------------------------------------- [ FB DOWNLOADER ] -----------------------------------------------------------------------------
 
 
 
@@ -6345,9 +6179,7 @@ break
 
 
 
-//------------------------------------------------------------------- [ FB DOWNLOADER ] -----------------------------------------------------------------------------
 
-//------------------------------------------------------------------- [ X DOWNLOADER ] -----------------------------------------------------------------------------
 
 
 case 'twitter':
@@ -6373,7 +6205,6 @@ break
 
 
 
-//------------------------------------------------------------------- [ X DOWNLOADER ] -----------------------------------------------------------------------------
 
 
 
@@ -6397,7 +6228,6 @@ case 'mediafire': {
       'mp3': 'audio/mpeg',
       'zip': 'application/zip',
       'txt': 'text/plain',
-      //tambahin mimetype lagi kalo mau
   };
   const mimeType = mimeTypes[extension] || 'application/octet-stream';
 
@@ -6416,7 +6246,6 @@ case 'ssweb':
 case 'ssdesktop':
 case 'ssdesk': {
   if (!q) return m.reply(`*Contoh ${prefix + command} Link Kamu*`)
-  // URL API dengan parameter
   try {
       lenwy.sendMessage(from, { image: { url: `https://api.autoresbot.com/api/ssweb?url=${encodeURIComponent(q)}&apikey=4c04faf21fb8524bad4a9cb7` }, caption: mess.success }, { quoted: m })
   } catch (error) {
@@ -6430,16 +6259,11 @@ case 'sswebhp':
 case 'sshp':
 case 'sshandphone': {
   if (!q) return m.reply(`*Contoh ${prefix + command} Link Kamu*`)
-  // URL API dengan parameter
   const apiUrl = `https://endpoint.web.id/tools/sswebphone?key=315602&url=${encodeURIComponent(q)}`;
   try {
-    // Memanggil API
     const response = await axios.get(apiUrl)
-    // Mengecek status dan kode
     if (response.data.status && response.data.code === 200) {
-      // Mendapatkan URL gambar dari hasil API
       const imageUrl = response.data.result;
-      // Mengirim gambar dengan captio
       lenwy.sendMessage(from, { image: { url: imageUrl }, caption: mess.success }, { quoted: m })
     } else {
       m.reply('Gagal mendapatkan tangkapan layar dari API.')
@@ -6453,16 +6277,11 @@ break
        
 case 'sstab': {
   if (!q) return m.reply(`*Contoh ${prefix + command} Link Kamu*`)
-  // URL API dengan parameter
   const apiUrl = `https://endpoint.web.id/tools/sswebtab?key=315602&url=${encodeURIComponent(q)}`;
   try {
-    // Memanggil API
     const response = await axios.get(apiUrl)
-    // Mengecek status dan kode
     if (response.data.status && response.data.code === 200) {
-      // Mendapatkan URL gambar dari hasil API
       const imageUrl = response.data.result;
-      // Mengirim gambar dengan caption
       lenwy.sendMessage(from, { image: { url: imageUrl }, caption: mess.success }, { quoted: m })
     } else {
       m.reply('Gagal mendapatkan tangkapan layar dari API.')
@@ -6484,7 +6303,6 @@ case 'wm': {
   const { Sticker, StickerTypes } = require('wa-sticker-formatter')
 
   try {
-    // Cek apakah yang di-reply sticker
     if (quoted.mtype !== 'stickerMessage') {
       return m.reply(`⚠️ Fitur ini khusus untuk reply ke *sticker*, bukan gambar/video.`)
     }
@@ -6493,7 +6311,6 @@ case 'wm': {
     let stickerBuffer
 
     if (quoted.isAnimated) {
-      // Sticker Animated → convert ke MP4
       const mp4Buffer = await webpToMp4(webpBuffer)
       const sticker = new Sticker(mp4Buffer, {
         pack: teks_packname,
@@ -6503,7 +6320,6 @@ case 'wm': {
       })
       stickerBuffer = await sticker.toBuffer()
     } else {
-      // Sticker Biasa
       const sticker = new Sticker(webpBuffer, {
         pack: teks_packname,
         author: teks_author,
@@ -6546,7 +6362,6 @@ case 'pinterest': {
       }
     }
     
-    // Request ke API NexRay
     let { data } = await axios.get(`https://api.nexray.eu.cc/search/pinterest?q=${encodeURIComponent(text)}`)
     
     if (!data.status || !data.result || data.result.length === 0) {
@@ -6561,7 +6376,6 @@ case 'pinterest': {
     for (let pinData of res) {
       push.push({
         body: proto.Message.InteractiveMessage.Body.fromObject({
-          // Mengambil judul dari API, jika kosong pakai default text
           text: `*${pinData.grid_title || 'Pinterest'}*\n\nImage Ke ${i++}/${res.length}`
         }),
         footer: proto.Message.InteractiveMessage.Footer.fromObject({
@@ -6576,7 +6390,6 @@ case 'pinterest': {
           buttons: [
             {
               "name": "cta_url",
-              // Menggunakan link pin aslinya dari JSON
               "buttonParamsJson": `{"display_text":"Source Pin","url":"${pinData.pin}","merchant_url":"${pinData.pin}"}`
             }
           ]
@@ -6936,12 +6749,10 @@ break
 
 case 'tebakangka': {
     if (gameState.angkaAcak === null) {
-        // Jika angka belum ditentukan, inisialisasi angka acak
         gameState.angkaAcak = Math.floor(Math.random() * 20) + 1;
         gameState.jumlahTebakan = 0; // Reset jumlah tebakan
         m.reply('Aku sudah memikirkan sebuah angka antara 1-20. Coba tebak!')
     } else {
-        // Jika angka sudah ditentukan, periksa tebakan
         const tebakan = parseInt(text)
         if (isNaN(tebakan) || tebakan < 1 || tebakan > 20) {
             return m.reply('Tebakan harus berupa angka antara 1-20.')
@@ -6954,9 +6765,7 @@ case 'tebakangka': {
         } else if (tebakan > gameState.angkaAcak) {
             return m.reply("Tebakan Anda terlalu tinggi. Coba lagi!")
         } else {
-            // Jika tebakan benar
             m.reply(`Selamat! Anda telah menebak angka ${gameState.angkaAcak} dengan ${gameState.jumlahTebakan} tebakan.`)
-            // Reset permainan
             gameState.angkaAcak = null;
         }
     }
@@ -7244,7 +7053,6 @@ case 'mlstalk': {
 const matchFlag = checkerResult.country?.match(/(.*?)(🇦🇨|🇦🇩|🇦🇪|🇦🇫|🇦🇬|🇦🇮|🇦🇱|🇦🇲|🇦🇴|🇦🇶|🇦🇷|🇦🇸|🇦🇹|🇦🇺|🇦🇼|🇦🇽|🇦🇿|🇧🇦|🇧🇧|🇧🇩|🇧🇪|🇧🇫|🇧🇬|🇧🇭|🇧🇮|🇧🇯|🇧🇱|🇧🇲|🇧🇳|🇧🇴|🇧🇶|🇧🇷|🇧🇸|🇧🇹|🇧🇻|🇧🇼|🇧🇾|🇧🇿|🇨🇦|🇨🇨|🇨🇩|🇨🇫|🇨🇬|🇨🇭|🇨🇮|🇨🇰|🇨🇱|🇨🇲|🇨🇳|🇨🇴|🇨🇷|🇨🇺|🇨🇻|🇨🇼|🇨🇽|🇨🇾|🇨🇿|🇩🇪|🇩🇯|🇩🇰|🇩🇲|🇩🇴|🇩🇿|🇪🇨|🇪🇪|🇪🇬|🇪🇷|🇪🇸|🇪🇹|🇪🇺|🇫🇮|🇫🇯|🇫🇰|🇫🇲|🇫🇴|🇫🇷|🇬🇦|🇬🇧|🇬🇩|🇬🇪|🇬🇫|🇬🇬|🇬🇭|🇬🇮|🇬🇱|🇬🇲|🇬🇳|🇬🇵|🇬🇶|🇬🇷|🇬🇹|🇬🇺|🇬🇼|🇬🇾|🇭🇰|🇭🇲|🇭🇳|🇭🇷|🇭🇹|🇭🇺|🇮🇨|🇮🇩|🇮🇪|🇮🇱|🇮🇲|🇮🇳|🇮🇴|🇮🇶|🇮🇷|🇮🇸|🇮🇹|🇯🇪|🇯🇲|🇯🇴|🇯🇵|🇰🇪|🇰🇬|🇰🇭|🇰🇮|🇰🇲|🇰🇳|🇰🇵|🇰🇷|🇰🇼|🇰🇾|🇰🇿|🇱🇦|🇱🇧|🇱🇨|🇱🇮|🇱🇰|🇱🇷|🇱🇸|🇱🇹|🇱🇺|🇱🇻|🇱🇾|🇲🇦|🇲🇨|🇲🇩|🇲🇪|🇲🇫|🇲🇬|🇲🇭|🇲🇰|🇲🇱|🇲🇲|🇲🇳|🇲🇴|🇲🇵|🇲🇶|🇲🇷|🇲🇸|🇲🇹|🇲🇺|🇲🇻|🇲🇼|🇲🇽|🇲🇾|🇲🇿|🇳🇦|🇳🇨|🇳🇪|🇳🇫|🇳🇬|🇳🇮|🇳🇱|🇳🇴|🇳🇵|🇳🇷|🇳🇺|🇳🇿|🇴🇲|🇵🇦|🇵🇪|🇵🇫|🇵🇬|🇵🇭|🇵🇰|🇵🇱|🇵🇲|🇵🇳|🇵🇷|🇵🇸|🇵🇹|🇵🇼|🇵🇾|🇶🇦|🇷🇪|🇷🇴|🇷🇸|🇷🇺|🇷🇼|🇸🇦|🇸🇧|🇸🇨|🇸🇩|🇸🇪|🇸🇬|🇸🇭|🇸🇮|🇸🇯|🇸🇰|🇸🇱|🇸🇲|🇸🇳|🇸🇴|🇸🇷|🇸🇸|🇸🇹|🇸🇻|🇸🇾|🇸🇿|🇸🇽|🇸🇾|🇹🇦|🇹🇨|🇹🇩|🇹🇫|🇹🇬|🇹🇭|🇹🇯|🇹🇰|🇹🇱|🇹🇲|🇹🇳|🇹🇴|🇹🇷|🇹🇹|🇹🇻|🇹🇼|🇹🇿|🇺🇦|🇺🇬|🇺🇸|🇺🇾|🇺🇿|🇻🇦|🇻🇨|🇻🇪|🇻🇬|🇻🇮|🇻🇳|🇻🇺|🇼🇫|🇼🇸|🇽🇰|🇾🇪|🇾🇹|🇿🇦|🇿🇲|🇿🇼)$/);
 let regionFlag = matchFlag[2] || undefined
 
- // Ambil data first topup
  let topupText = "";
  try {
  let urlFirstTopup = await axios.get(`https://${global.api.ham.domain}/stalk/ml-first-topup?apikey=${global.api.ham.apikey}&id=${id}&zoneId=${serverId}`);
@@ -7455,7 +7263,6 @@ case 'txt2photoleap':
 case 'texttophotoleap': {
     if (isBan) return m.reply(mess.ban)
     if (!text) return m.reply(`*Mau Gambar Apa?*`)
-    // Kirim reaksi dan pesan tunggu
     LenwyLD()
     await sleep(200)
     try {
@@ -7475,7 +7282,6 @@ case 'txt2waifu':
 case 'texttowaifu': {
   if (isBan) return m.reply(mess.ban)
   if (!text) return m.reply(`*Mau Gambar Apa?*`)
-  // Kirim reaksi dan pesan tunggu
   LenwyLD()
   await sleep(200)
   try {
@@ -7504,7 +7310,6 @@ case 'tinyurl': {
   let urlToShorten = q; // Pastikan q berisi URL yang valid
   let response = await fetch(`https://api.ryzendesu.vip/api/tool/tinyurl?url=${urlToShorten}`)
   
-  // Periksa apakah respons sukses
   if (!response.ok) {
       return m.reply(`*Error: ${response.status} ${response.statusText}*`)
   }
@@ -7680,14 +7485,12 @@ case 'text2anime':
 case 'teks2anime':
 case 'txt2anime': {
 if (!text) return m.reply(`*Mau Gambar Apa?*`)
-// Kirim reaksi dan pesan tunggu
 LenwyLD
 await sleep(200)
 LenwyLD()
 await sleep(200)
 try{
 let mauGambar = text
-// Buat URL request dengan prompt dari pengguna
 let result = await (await fetch(`https://endpoint.web.id/ai/sdxl-anime?key=315602&prompt=${q}`)).json()
 lenwy.sendMessage(m.chat, { image: { url: result.result.image }, caption: `Gambar untuk prompt: "${mauGambar}"` }, { quoted: m })
 } catch (error) {
@@ -7886,7 +7689,6 @@ break
 case 'statusgc': {
   try {
       const databasegc = JSON.parse(fs.readFileSync('./storage/databaseGroup.json', 'utf8'))
-      // Cek apakah ID grup ada di dalam objek chats
       if (global.db.data.chats[from]) {
           const groupData = global.db.data.chats[from]
           const datasetgc = databasegc[from]
@@ -7945,7 +7747,6 @@ case 'addgctopup': {
   if (!isCreator) return
   const gcnya = m.chat; // Mendapatkan ID grup
 
-  // Membaca file JSON yang ada
   let gcList;
   try {
     const data = fs.readFileSync('./project/database/gcTopup.json', 'utf-8');
@@ -7955,15 +7756,12 @@ case 'addgctopup': {
     gcList = []; // Inisialisasi dengan array kosong jika terjadi kesalahan
   }
 
-  // Memeriksa apakah ID grup sudah ada
   if (gcList.includes(gcnya)) {
     return m.reply(`Grup dengan ID "${gcnya}" sudah ada dalam daftar.`);
   }
 
-  // Menambahkan ID grup ke daftar
   gcList.push(gcnya);
 
-  // Menyimpan kembali ke file JSON
   fs.writeFileSync('./project/database/gcTopup.json', JSON.stringify(gcList, null, 2));
   console.log(`ID grup "${gcnya}" berhasil ditambahkan ke gcTopup.json`);
   m.reply(`ID grup "${gcnya}" berhasil ditambahkan ke daftar gcTopup.`);
@@ -7974,7 +7772,6 @@ case 'delgctopup': {
   if (!isCreator) return
   const gcnya = m.chat; // Mendapatkan ID grup
 
-  // Membaca file JSON yang ada
   let gcList;
   try {
     const data = fs.readFileSync('./project/database/gcTopup.json', 'utf-8');
@@ -7984,16 +7781,13 @@ case 'delgctopup': {
     gcList = []; // Inisialisasi dengan array kosong jika terjadi kesalahan
   }
 
-  // Memeriksa apakah ID grup ada dalam daftar
   const index = gcList.indexOf(gcnya);
   if (index === -1) {
     return m.reply(`Grup dengan ID "${gcnya}" tidak ditemukan dalam daftar.`);
   }
 
-  // Menghapus ID grup dari daftar
   gcList.splice(index, 1);
 
-  // Menyimpan kembali ke file JSON
   fs.writeFileSync('./project/database/gcTopup.json', JSON.stringify(gcList, null, 2));
   console.log(`ID grup "${gcnya}" berhasil dihapus dari gcTopup.json`);
   m.reply(`ID grup "${gcnya}" berhasil dihapus dari daftar gcTopup.`);
@@ -8008,20 +7802,16 @@ case 'listlayanankebsos': {
   if (layananData.data) {
     let categories = []
     
-    // Mengambil kategori dari layanan
     layananData.data.forEach(service => {
       if (!categories.includes(service.category)) {
         categories.push(service.category)
       }
     })
 
-    // Mengurutkan kategori secara alfabetik
     categories.sort()
 
-    // Membuat tampilan dekorasi
     let replyMessage = `╭─ ─ ─ LIST KEBSOS OTOMATIS\n`
 
-    // Menambahkan kategori dengan dekorasi .✦
     categories.forEach((category) => {
       replyMessage += `│ ── .✦ ${category}\n`
     })
@@ -8038,7 +7828,6 @@ break
 case 'addkebsos': {
   if (!isCreator) return;
 
-  // Membaca file JSON yang ada
   let daftarProduk;
   try {
     const data = fs.readFileSync('./project/database/daftarCategoryLitensi.json');
@@ -8048,26 +7837,21 @@ case 'addkebsos': {
     return m.reply('Gagal membaca daftar produk.');
   }
 
-  // Mengambil data layanan
   const layananData = await cekLayanan();
 
-  // Pastikan layananData ada dan sukses
   if (!layananData || layananData.length === 0) {
     return m.reply('Gagal mendapatkan data layanan.');
   }
 
   let dataProdukLitensi = layananData.data; // Ambil data produk dari layanan
 
-  // Pastikan dataProdukLitensi terdefinisi dan valid
   if (!Array.isArray(dataProdukLitensi) || dataProdukLitensi.length === 0) {
     return m.reply('Data produk tidak ditemukan.');
   }
 
-  // Mendapatkan input kategori dari pengguna
   const inputKategori = text.trim().toLowerCase(); // Misalnya "Instagram Followers"
   console.log(`Input kategori: ${inputKategori}`); // Debug log
 
-  // Mencari semua produk berdasarkan kategori
   const produkDitemukan = dataProdukLitensi.filter(product => 
     product.category && product.category.toLowerCase() === inputKategori
   );
@@ -8079,23 +7863,19 @@ case 'addkebsos': {
   let produkBaruDitambahkan = [];
   let produkGagalDitambahkan = [];
 
-  // Memeriksa setiap produk dan menambahkannya ke daftar
   for (const produk of produkDitemukan) {
     if (!produk.name) {
       console.warn(`Produk tanpa nama ditemukan: ${JSON.stringify(produk)}`);
       continue; // Lewatkan produk yang tidak memiliki nama
     }
 
-    // Mengecek apakah kategori sudah ada dalam daftar
     const kategoriAda = daftarProduk.some(item => 
       item.category && item.category.toLowerCase() === produk.category.toLowerCase()
     );
 
     if (kategoriAda) {
-      // Jika kategori sudah ada, masukkan ke list gagal
       produkGagalDitambahkan.push(produk.category);
     } else {
-      // Menambahkan kategori baru ke daftarProduk
       const produkBaru = {
         category: produk.category
       };
@@ -8105,10 +7885,8 @@ case 'addkebsos': {
     }
   }
 
-  // Menyimpan kembali ke file JSON
   fs.writeFileSync('./project/database/daftarCategoryLitensi.json', JSON.stringify(daftarProduk, null, 2));
 
-  // Mengirimkan pesan hasil
   if (produkBaruDitambahkan.length > 0) {
     m.reply(`Kategori baru berhasil ditambahkan: ${text}.`);
   } else if (produkGagalDitambahkan.length > 0) {
@@ -8120,7 +7898,6 @@ break
 case 'delkebsos': {
   if (!isCreator) return;
 
-  // Membaca file JSON yang ada
   let daftarProduk;
   try {
     const data = fs.readFileSync('./project/database/daftarCategoryLitensi.json', 'utf-8');
@@ -8130,21 +7907,16 @@ case 'delkebsos': {
     return m.reply('Gagal membaca daftar produk.');
   }
 
-  // Mendapatkan input kategori dari pengguna
   const inputKategori = text.trim().toLowerCase(); // Misalnya "Instagram Followers"
 
-  // Mencari produk berdasarkan kategori
   const produkSebelum = daftarProduk.length; // Menghitung jumlah produk sebelum penghapusan
   daftarProduk = daftarProduk.filter(product => product.category.toLowerCase() !== inputKategori);
 
-  // Mengecek jika ada produk yang dihapus
   const produkSetelah = daftarProduk.length; // Menghitung jumlah produk setelah penghapusan
   const jumlahDihapus = produkSebelum - produkSetelah;
 
-  // Menyimpan kembali ke file JSON
   fs.writeFileSync('./project/database/daftarCategoryLitensi.json', JSON.stringify(daftarProduk, null, 2))
 
-  // Mengirimkan pesan hasil
   if (jumlahDihapus > 0) {
     m.reply(`Berhasil menghapus ${jumlahDihapus} produk dengan kategori "${inputKategori}".`);
   } else {
@@ -8202,7 +7974,6 @@ case 'daftarharga': {
   let input = text.toLowerCase().trim();
   input = aliasMap[input] || input || '-';
 
-  // --- Digi Produk Handler ---
   let uniqueBrands = [];
   if (dataProdukDigi.length > 0) {
     uniqueBrands = [...new Set(dataProdukDigi.map(product => {
@@ -8212,13 +7983,11 @@ case 'daftarharga': {
     }))];
   }
 
-  // --- Litensi Produk Handler ---
   let uniqueCategories = [];
   if (dataProdukLitensi.length > 0) {
     uniqueCategories = [...new Set(dataProdukLitensi.map(product => product.category.toLowerCase()))];
   }
 
-  // --- Handle pencarian berdasarkan brand Digi ---
 if (uniqueBrands.some(brand => input.includes(brand))) {
   let filteredProducts = dataProdukDigi.filter(product => {
     let brand = product.brand.toLowerCase();
@@ -8253,7 +8022,6 @@ if (uniqueBrands.some(brand => input.includes(brand))) {
     }
   }
 
-  // --- Handle pencarian berdasarkan kategori Kebsos ---
   if (uniqueCategories.includes(input)) {
     let filteredLitensi = dataLitensi.filter(product => product.category.toLowerCase() === input);
     if (filteredLitensi.length > 0) {
@@ -8284,7 +8052,6 @@ if (uniqueBrands.some(brand => input.includes(brand))) {
     }
   }
 
-  // --- Jika tidak ditemukan, tampilkan list kategori/brand ---
   let teksnyee = '';
 
   if (dataProdukDigi.length > 0 && uniqueBrands.length > 0) {
@@ -8363,7 +8130,6 @@ case 'get': {
   let input = text.toLowerCase().trim();
   input = aliasMap[input] || input || '-';
 
-  // --- Digi Produk Handler ---
   let uniqueBrands = [];
   if (dataProdukDigi.length > 0) {
     uniqueBrands = [...new Set(dataProdukDigi.map(product => {
@@ -8373,13 +8139,11 @@ case 'get': {
     }))];
   }
 
-  // --- Litensi Produk Handler ---
   let uniqueCategories = [];
   if (dataProdukLitensi.length > 0) {
     uniqueCategories = [...new Set(dataProdukLitensi.map(product => product.category.toLowerCase()))];
   }
 
-  // --- Handle pencarian berdasarkan brand Digi ---
 if (uniqueBrands.some(brand => input.includes(brand))) {
   let filteredProducts = dataProdukDigi.filter(product => {
     let brand = product.brand.toLowerCase();
@@ -8409,7 +8173,6 @@ if (uniqueBrands.some(brand => input.includes(brand))) {
     }
   }
 
-  // --- Handle pencarian berdasarkan kategori Kebsos ---
   if (uniqueCategories.includes(input)) {
     let filteredLitensi = dataLitensi.filter(product => product.category.toLowerCase() === input);
     if (filteredLitensi.length > 0) {
@@ -8436,7 +8199,6 @@ if (uniqueBrands.some(brand => input.includes(brand))) {
     }
   }
 
-  // --- Jika tidak ditemukan, tampilkan list kategori/brand ---
   let teksnyee = '';
 
   if (dataProdukDigi.length > 0 && uniqueBrands.length > 0) {
@@ -8533,7 +8295,6 @@ case 'deposit': {
   let user;
   let penambahansaldo;
 
-  // Memproses pengguna berdasarkan argumen atau pesan yang diterima
   if (!m.quoted) {
     user = args[1].replace(/[^0-9]/g, '') + '@s.whatsapp.net';
 
@@ -8547,7 +8308,6 @@ case 'deposit': {
   }
 
   if (!getUserTopup(user)) return m.reply(`User tersebut belum terdaftar, silahkan ketik ${prefix}daftar terlebih dahulu`)
-  // Mengambil dan memvalidasi jumlah saldo
   penambahansaldo = parseFloat(args[0])
   if (isNaN(penambahansaldo)) {
     return m.reply(`Jumlah harus berupa angka.`)
@@ -8600,18 +8360,14 @@ case 'orderkebsos': {
     return m.reply(`❌ Layanan dengan code ${code} tidak ditemukan.`)
   }
 
-  // Ambil rate dari layanan yang dipilih dan konversi menjadi harga per 1 unit
   let hargaPerK = parseFloat(selectedService.price) / 1000;  // Membagi rate dengan 1000 untuk harga per unit
   console.log(selectedService.price)
   console.log(hargaPerK)
-  // Hitung total price berdasarkan quantity
   let basePrice = Math.round(hargaPerK * quantity)  // Menghitung total harga
-  // Jika basePrice kurang dari 1, atur menjadi 1
   if (basePrice < 1) {
       basePrice = 1;
   }
 
-  // Hitung harga berdasarkan role user
   let adjustedPrice;
   if (userRole === global.settings.roles.role1) {
       adjustedPrice = Math.round(basePrice * (1 + profitData.profit1Kebsos / 100));
@@ -8628,14 +8384,12 @@ case 'orderkebsos': {
       return m.reply(`❌ Saldo tidak cukup.\n> Saldo Anda: ${formatSaldo(userSaldo)}\n> Harga Item: ${formatSaldo(adjustedPrice)}`)
   }
 
-  // Cek apakah sudah ada pemesanan pending
   let transactions = [];
   if (fs.existsSync('./project/database/processTopup.json')) {
       const data = fs.readFileSync('./project/database/processTopup.json')
       transactions = JSON.parse(data)
   }
 
-  // Cek untuk transaksi dengan status pending
   let pendingTransaction = transactions.find(tx => tx.id === m.sender && tx.status === "pending" && tx.dari === "medanpedia")
   if (pendingTransaction) {
       return m.reply(`❌ Anda sudah memiliki pemesanan pending.
@@ -8646,7 +8400,6 @@ case 'orderkebsos': {
 𝗬 Proses 𝗡 Batal`)
   }
 
-  // Buat transaksi dan simpan ke file
   let transaction = {
       id: m.sender,
       name: selectedService.name,
@@ -8685,14 +8438,12 @@ setTimeout(async () => {
     transactions.splice(index, 1)
     fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
 
-    // Hapus pesan konfirmasi
     try {
       await lenwy.sendMessage(m.chat, { delete: key })
     } catch (e) {
       console.error('Gagal menghapus pesan:', e)
     }
 
-    // Kirim notifikasi ke user
     lenwy.sendMessage(m.chat, { text: `❌ Pemesanan dibatalkan otomatis karena tidak ada konfirmasi dalam 1 menit.` }, { quoted: m })
   }
 }, 1 * 60 * 1000)
@@ -8736,7 +8487,6 @@ case 'order': {
   let basePrice = result.data[0].price;
 
 
-  // Hitung harga berdasarkan role user
   let adjustedPrice;
   
   if (userRole === global.settings.roles.role1) {
@@ -8754,14 +8504,12 @@ case 'order': {
       return m.reply(`❌ Saldo tidak cukup.\n> Saldo Anda: ${formatSaldo(userSaldo)}\n> Harga Item: ${formatSaldo(adjustedPrice)}`)
   }
 
-  // Cek apakah sudah ada pemesanan pending
   let transactions = []
   if (fs.existsSync('./project/database/processTopup.json')) {
       const data = fs.readFileSync('./project/database/processTopup.json')
       transactions = JSON.parse(data)
   }
 
-  // Cek untuk transaksi dengan status pending
   let pendingTransaction = transactions.find(tx => tx.id === m.sender && tx.status === "pending" && tx.dari === "digiflazz")
   if (pendingTransaction) {
       return m.reply(`❌ Anda sudah memiliki pemesanan pending.
@@ -8772,7 +8520,6 @@ case 'order': {
 𝗬 Proses 𝗡 Batal`)
   }
 
-  // Buat transaksi dan simpan ke file
   let transaction = {
       id: m.sender,
       ref_id: result.data.ref_id,
@@ -8811,14 +8558,12 @@ setTimeout(async () => {
     transactions.splice(index, 1)
     fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
 
-    // Hapus pesan konfirmasi
     try {
       await lenwy.sendMessage(m.chat, { delete: key })
     } catch (e) {
       console.error('Gagal menghapus pesan:', e)
     }
 
-    // Kirim notifikasi ke user
     lenwy.sendMessage(m.chat, { text: `❌ Pemesanan dibatalkan otomatis karena tidak ada konfirmasi dalam 1 menit.` }, { quoted: m })
   }
 }, 1 * 60 * 1000)
@@ -8837,7 +8582,6 @@ case 'y': {
   if (transactionIndex !== -1) {
     let transaction = transactions[transactionIndex];
     if (transaction.isQris) return
-    // Cek dari mana transaksi berasal
     if (transaction.dari === "digiflazz") {
       let buyerSkuCode = transaction.item; // item sebagai buyerSkuCode
       let customerNo = transaction.tujuan; // tujuan sebagai customerNo
@@ -8848,10 +8592,8 @@ case 'y': {
       console.log(orderResult);
 
       let refId = orderResult.data.ref_id; // ref_id yang diterima dari hasil order
-      // Fungsi untuk cek status transaksi Digiflazz
       m.reply(`Heyy, Wait. . .`)
 
-      // Update saldo pengguna terlebih dahulu, sebelum pengecekan status
       let updated = await updateSaldo(m.sender, -transaction.harga);
       if (!updated) {
         m.reply(`❌ Gagal memperbarui saldo.`);
@@ -8865,7 +8607,6 @@ case 'y': {
         console.log(orderStatus);
 
         if (orderStatus && orderStatus.data.status === "Sukses") {
-          // Transaksi berhasil
           clearInterval(intervalId); // Hentikan pengecekan
 
           let teksnya = `✅ Transaksi Sukses @${m.sender.split("@")[0]}
@@ -8903,7 +8644,6 @@ case 'y': {
       transactions[transactionIndex].status = "Processing";
       fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2));
 
-      // Update saldo pengguna terlebih dahulu, sebelum pengecekan status
       let updated = await updateSaldo(m.sender, -transaction.harga);
       if (!updated) {
         m.reply(`❌ Gagal memperbarui saldo.`);
@@ -8913,7 +8653,6 @@ case 'y': {
 
       let idOrderan = orderResult.data.id.toString(); // ID pesanan
       if (orderResult.status === true && transactions[transactionIndex].status === "Processing") {
-        // Kirim pesan sementara dengan ID order
         lenwy.sendMessage(m.chat, { text: `Processing, id order: ${orderResult.data.id}` }, { quoted: m });
 
         const checkStatus = async () => {
@@ -8925,7 +8664,6 @@ case 'y': {
             clearInterval(intervalId); // Hentikan pengecekan
             transactions.splice(transactionIndex, 1); // Hapus transaksi dari array
             fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2)); // Update file
-            // Mengembalikan saldo jika gagal
             await updateSaldo(m.sender, transaction.harga); // Mengembalikan saldo
             m.reply(`❌ Transaksi Error. Tag Admin\n\n> Note: ${currentStatus.msg || "Tidak ada informasi status."}`);
             return;
@@ -8952,7 +8690,6 @@ case 'y': {
             clearInterval(intervalId); // Hentikan pengecekan
             transactions.splice(transactionIndex, 1); // Hapus transaksi dari array
             fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2)); // Update file
-            // Mengembalikan saldo jika gagal
             await updateSaldo(m.sender, transaction.harga); // Mengembalikan saldo
             m.reply(`❌ Transaksi Gagal. Tag Admin
               
@@ -8962,7 +8699,6 @@ case 'y': {
           }
         };
 
-        // Set interval untuk mengecek status setiap 30 detik
         const intervalId = setInterval(checkStatus, 30000);
       } else {
         console.log(orderResult);
@@ -9332,7 +9068,7 @@ case 'cekdata': {
       return m.reply(`Nomor Harus Diawali Dengan Kode Nomor Negara (62)\n\n> Contoh: ${prefix + command} 6285261255548`)
     }
   } else if (!m.quoted && budy.includes('@')) {
-	user = text.split('@')[1] + '@s.whatsapp.net'
+  user = text.split('@')[1] + '@s.whatsapp.net'
     const cek = await lenwy.onWhatsApp(user.split("@")[0])
     if (cek.length < 1) return m.reply(`Nomor Tersebut Tidak Terdaftar Di WhatsApp\n\n> Contoh: ${prefix + command} @6285261255548`)
   } else if (m.quoted && !budy.includes('@')) {
@@ -9597,20 +9333,17 @@ break
 
 
 
-//----------------------------------------------------------------------------------------------------------------------------------------------------------
 case 'setppsewa': {
   if (!isCreator) return m.reply(mess.owner);
   if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`);
   
   const path = './storage/data/image/fotosewa'; // Menentukan path file foto
   
-  // Cek apakah file sudah ada, jika ada maka dihapus
   if (fs.existsSync(path)) {
     fs.unlinkSync(path); // Menghapus file yang sudah ada
     console.log(`File "${path}" berhasil dihapus.`);
   }
 
-  // Mengunduh dan menyimpan gambar yang di-quote ke file baru
   await lenwy.downloadAndSaveMediaMessage(quoted, path);
 
   m.reply('Foto berhasil diperbarui menjadi foto sewa.');
@@ -9635,7 +9368,6 @@ break
 
 case 'sewa': {
  async function createImage(url) {
- // Generating the image message content with a URL or local file path
  const { imageMessage } = await generateWAMessageContent({
  image: { url } // This will accept a URL or file path
  }, {
@@ -9647,7 +9379,6 @@ case 'sewa': {
  let tekssewa = global.text_sewa ? global.text_sewa : ` /) /) \n („• ֊ •„) \n╭───̇─∪─∪──̇──┈◯\n│❛ SEWA BOT ${botname} ˚\n│\n│1 вυℓαη : 𝖱𝗉 5.000\n│2 вυℓαη : 𝖱𝗉 10.000\n│𝟥 вυℓαη : 𝖱𝗉 15.000\n│𝟦 вυℓαη : 𝖱𝗉 18.000\n│𝟧 вυℓαη : 𝖱𝗉 21.000\n╰───────────✧✧✧`
  let teksppj = global.text_ppj ? global.text_ppj : '\n\n ╭─────────────❍\n │ ʚ˚̣̣̣͙ɞ・𝙥𝙚𝙧𝙥𝙖𝙣𝙟𝙖𝙣𝙜・ \n │\n │1 вυℓαη : 𝖱𝗉 5.000\n │𝟤 вυℓαη : 𝖱𝗉 10.000\n │𝟥 вυℓαη : 𝖱𝗉 15.000\n │ρєямαηєη : 𝖱𝗉 60.000\n │Tidak Ada,\n │Yang Abadi Tuan\n ╰─────────────❍'
 
- // Check if file exists and create the image accordingly
  let imageUrl
  if (fs.existsSync('./storage/data/image/fotosewa.jpg')) {
  imageUrl = await createImage('./storage/data/image/fotosewa.jpg');
@@ -9707,7 +9438,6 @@ case 'sewa': {
  })
  }];
 
- // Sending the message
  const bot = generateWAMessageFromContent(m.chat, {
  viewOnceMessage: {
  message: {
@@ -9749,12 +9479,10 @@ case 'tambahsewa': {
  let duration, groupId
 
  if (m.isGroup && !text.includes('http')) {
- // Dari grup langsung
  [duration] = text.split(' ')
  if (!duration) return m.reply(`Durasi harus diisi!\nContoh: ${prefix + command} 30d`)
  groupId = m.chat
  } else {
- // Dari PC dengan link
  let [d, link] = text.split(' ')
  if (!d || !link) return m.reply(`Durasi dan link grup harus diisi!\nContoh:\n${prefix + command} 30d https://chat.whatsapp.com/xxxxx`)
 if (link.includes('?')) link = link.split('?')[0]
@@ -9792,7 +9520,6 @@ if (link.includes('?')) link = link.split('?')[0]
  addSewaGroup(groupId, duration, sewa)
  m.reply(`✅ Grup berhasil ditambahkan ke daftar sewa selama *${duration}*.`)
  
- // Pesan sambutan jika dari PC
  if (!m.isGroup) {
  await lenwy.sendMessage(groupId, {text: `Hallo semua, saya adalah bot ${global.botname}. Grup ini telah disewa selama *${duration}*.\n\n- Admin dapat cek sisa waktu dengan ketik *${prefix}ceksewa*\n- Untuk fitur lengkap ketik *${prefix}allmenu*`})
  }
@@ -9857,14 +9584,12 @@ case 'ceksewa': {
  try {
  const currentDir = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
 
- // Periksa apakah grup saat ini ada dalam daftar sewa
  const entry = currentDir.find(entry => entry.groupId === groupId)
  if (!entry) {
  return m.reply(`Perintah ini hanya bisa dilakukan di dalam grup yang sudah di "${prefix}addsewa"`)
  }
 
  if (entry.isAlifetime) return m.reply(`Akan Habis Hingga Owner Pensiun.`)
- // Hitung durasi tersisa
  const expiry = entry.expired;
  const remainingTime = expiry - Date.now()
  var days = Math.floor(remainingTime / (1000 * 60 * 60 * 24))
@@ -9883,7 +9608,7 @@ case 'removeexpired':
 case 'cekexp':
 case 'cekexpired': {
   if (!isCreator) return m.reply(mess.owner)
-	const fs = require('fs')
+  const fs = require('fs')
     try {
         const currentDir = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
         await expiredCheck(lenwy, currentDir) // Asumsikan `conn` adalah objek koneksi bot
@@ -9930,14 +9655,12 @@ if (link.includes('?')) link = link.split('?')[0]
  if (isLifetime) {
  currentDir[pos].expired = null
  currentDir[pos].isAlifetime = true
- // Reset flags pengingat
  currentDir[pos].reminded1d = false
  currentDir[pos].reminded1h = false
  currentDir[pos].reminded1m = false
  m.reply(`✅ Masa sewa grup${m.isGroup ? '' : ` dengan ID ${groupId}`} diperpanjang menjadi *Permanen*.`)
  await lenwy.sendMessage(groupId, { text: `🎉 Masa sewa grup ini telah di ubah menjadi *Permanen*!` })
  } else {
- // Cek kalau sebelumnya lifetime, maka reset expired
  if (currentDir[pos].expired === null || currentDir[pos].isAlifetime === true) {
  currentDir[pos].expired = Date.now() + toMs('3s') // Atau kamu bisa langsung toMs(duration)
  await sleep(500)
@@ -9946,7 +9669,6 @@ if (link.includes('?')) link = link.split('?')[0]
  currentDir[pos].expired += toMs(duration)
  currentDir[pos].isAlifetime = false // Reset lifetime
 
- // Reset flags pengingat
  currentDir[pos].reminded1d = false
  currentDir[pos].reminded1h = false
  currentDir[pos].reminded1m = false
@@ -10068,18 +9790,15 @@ case 'botbackup': {
  const zipFileName = `Sc${global.ownername || 'Bot'}_${waktu}.zip`;
 
  try {
- // Buat zip dari file dan folder yang dipilih
  const command = `zip -r ${zipFileName} ${selectedFiles.join(" ")}`;
  execSync(command);
 
- // Kirim hasil zip ke owner
  await lenwy.sendMessage(ownerJid, {
  document: fs.readFileSync(`./${zipFileName}`),
  mimetype: "application/zip",
  fileName: zipFileName,
  }, { quoted: m });
 
- // Hapus zip setelah dikirim
  fs.unlink(`./${zipFileName}`, err => {
  if (err) console.error(`❌ Gagal hapus ${zipFileName}:`, err);
  else console.log(`✅ Backup "${zipFileName}" dikirim dan dihapus.`);
@@ -10144,16 +9863,12 @@ case 'setpayment': {
 
   let groupID = m.chat; // Menggunakan ID grup untuk penyimpanan data
 
-  // Menggabungkan groupID dan key untuk membuat ID unik untuk pembayaran
   let paymentDataId = `${groupID.split('@')[0]}-${paymentMethod}`; // Misal: 'groupID_gopay'
 
-  // Mendownload gambar dan menyimpannya
   let imageUrl = await lenwy.downloadAndSaveMediaMessage(quoted, `./storage/data/image/${paymentDataId}`);
 
-  // Membaca data dari database
   let _db = readDatabasePayment();
 
-  // Pastikan _db adalah array, jika tidak, buat array kosong
   if (!Array.isArray(_db)) {
       _db = [];
   }
@@ -10163,7 +9878,6 @@ case 'setpayment': {
       return m.reply(`Key dengan metode ${paymentMethod} sudah ada untuk grup ini.`);
   }
 
-  // Menambahkan data pembayaran ke database
   let obj_add = {
       id: groupID,
       key: paymentMethod,
@@ -10171,10 +9885,8 @@ case 'setpayment': {
       imageUrl: imageUrl
   };
 
-  // Menambahkan data ke array _db
   _db.push(obj_add);
 
-  // Menyimpan data ke database
   writeDatabasePayment(_db);
 
   return m.reply(`Pembayaran dengan metode ${paymentMethod} berhasil disimpan. Gambar pembayaran telah diterima.`);
@@ -10189,16 +9901,13 @@ case 'setbuttonurl': {
   let displayName = text.split('@')[1];
   let url = text.split('@')[2];
 
-  // Membaca data dari database
   let _db = readDatabasePayment();
 
-  // Cari data berdasarkan key dan group ID
   let paymentData = _db.find(item => item.key === key && item.id === m.chat);
   if (!paymentData) {
       return m.reply(`Key "${key}" tidak ditemukan di grup ini.`);
   }
 
-  // Membuat tombol URL
   let button = {
       name: "cta_url",
       buttonParamsJson: JSON.stringify({
@@ -10207,14 +9916,12 @@ case 'setbuttonurl': {
       })
   };
 
-  // Menambahkan tombol ke dalam buttonData array di bawah imageUrl
   if (!paymentData.buttonData) {
       paymentData.buttonData = []; // Inisialisasi jika belum ada buttonData
   }
 
   paymentData.buttonData.push(button);
 
-  // Menyimpan kembali data ke database
   writeDatabasePayment(_db);
 
   return m.reply(`Tombol URL dengan teks "${displayName}" dan URL "${url}" telah berhasil diset untuk key "${key}".`);
@@ -10228,16 +9935,13 @@ case 'setbuttoncopy': {
   let key = text.split('@')[0];
   let displayName = text.split('@')[1];
   let nilaiCopy = text.split('@')[2];
-  // Membaca data dari database
   let _db = readDatabasePayment();
 
-  // Cari data berdasarkan key dan group ID
   let paymentData = _db.find(item => item.key === key && item.id === m.chat);
   if (!paymentData) {
       return m.reply(`Key "${key}" tidak ditemukan di grup ini.`);
   }
 
-  // Membuat tombol salin
   let button = {
       name: "cta_copy",
       buttonParamsJson: JSON.stringify({
@@ -10247,14 +9951,12 @@ case 'setbuttoncopy': {
       })
   };
 
-  // Menambahkan tombol ke dalam buttonData array di bawah imageUrl
   if (!paymentData.buttonData) {
       paymentData.buttonData = []; // Inisialisasi jika belum ada buttonData
   }
 
   paymentData.buttonData.push(button);
 
-  // Menyimpan kembali data ke database
   writeDatabasePayment(_db);
 
   return m.reply(`Tombol salin dengan teks "${nilaiCopy}" telah berhasil diset untuk key "${key}".`);
@@ -10269,27 +9971,22 @@ case 'changewording': {
     
     if (!key || !newWording) return m.reply('Format yang benar: changewording key@newWording');
     
-    // Membaca data dari database pembayaran
     let _db = readDatabasePayment();
     
-    // Mencari data pembayaran yang sesuai dengan group ID (m.chat)
     let payments = _db.filter(item => item.id === m.chat);
     
     if (payments.length === 0) {
         return m.reply("Tidak ada data pembayaran yang ditemukan di grup ini.");
     }
     
-    // Mencari key yang sesuai
     let payment = payments.find(item => item.key === key);
     
     if (!payment) {
         return m.reply(`Key "${key}" tidak ditemukan di grup ini.`);
     }
 
-    // Mengupdate wording untuk key yang ditemukan
     payment.paymentData = newWording;
 
-    // Menyimpan kembali perubahan ke database
     writeDatabasePayment(_db);
 
     return m.reply(`Wording untuk key "${key}" berhasil diubah.`);
@@ -10304,27 +10001,22 @@ case 'delbutton': {
     
     if (!key) return m.reply('Contoh: delbutton key');
     
-    // Membaca data dari database pembayaran
     let _db = readDatabasePayment();
     
-    // Mencari data pembayaran yang sesuai dengan group ID (m.chat)
     let payments = _db.filter(item => item.id === m.chat);
     
     if (payments.length === 0) {
         return m.reply("Tidak ada data pembayaran yang ditemukan di grup ini.");
     }
     
-    // Mencari key yang sesuai
     let payment = payments.find(item => item.key === key);
     
     if (!payment) {
         return m.reply(`Key "${key}" tidak ditemukan di grup ini.`);
     }
 
-    // Menghapus semua buttonData untuk key yang ditemukan
     payment.buttonData = [];  // Empty the buttonData array
 
-    // Menyimpan kembali perubahan ke database
     writeDatabasePayment(_db);
 
     return m.reply(`Semua tombol untuk key "${key}" berhasil dihapus.`);
@@ -10332,10 +10024,8 @@ case 'delbutton': {
 break
 
 case 'pay': {
-  // Membaca data dari database pembayaran
   let _db = readDatabasePayment();
   
-  // Mencari data pembayaran yang sesuai dengan group ID (m.chat)
   let payments = _db.filter(item => item.id === m.chat);
   
   if (payments.length === 0) {
@@ -10345,18 +10035,15 @@ case 'pay': {
   let missingButtons = [];
 
   for (let payment of payments) {
-      // Cek jika buttonData tidak ada untuk setiap key
       if (!payment.buttonData || payment.buttonData.length === 0) {
           missingButtons.push(payment.key); // Menambahkan key ke array missingButtons
       }
   }
 
-  // Jika ada key yang belum di setbutton, kirimkan pesan dengan list key yang hilang
   if (missingButtons.length > 0) {
       return m.reply(`Key "${missingButtons.join(', ')}" belum di setbuttoncopy atau setbuttonurl.`);
   }
   
-  // Fungsi untuk menghasilkan gambar dari file lokal
   async function createImage(filePath) {
       let { imageMessage } = await generateWAMessageContent({
           image: { url: filePath }  // Menggunakan path file lokal
@@ -10366,7 +10053,6 @@ case 'pay': {
       return imageMessage;
   }
 
-  // Daftar pesan yang akan dikirim
   let push = payments.map(async (payment) => {
       let imageMessage = await createImage(payment.imageUrl); // Menggunakan imageUrl dari data JSON
       
@@ -10390,10 +10076,8 @@ case 'pay': {
       };
   });
 
-  // Tunggu hingga semua push card selesai dibuat
   let pushCards = await Promise.all(push);
 
-  // Mengirimkan pesan interaktif dengan tombol dan informasi pembayaran
   let bot = generateWAMessageFromContent(m.chat, {
       viewOnceMessage: {
           message: {
@@ -10415,7 +10099,6 @@ case 'pay': {
       }
   }, { quoted: m });
 
-  // Mengirimkan pesan
   await lenwy.relayMessage(m.chat, bot.message, {
       messageId: bot.key.id
   });
@@ -10424,35 +10107,25 @@ break
 
 case 'delpayment': {
   if (!isAdmins) return
-  let key = text; // Asumsikan key diberikan langsung setelah command delpayment
+  let key = text;
   if (!key) return m.reply("Harap kirimkan format yang benar: delpayment <key>");
 
-  // Membaca data dari database
   let _db = readDatabasePayment();
 
-  // Mencari data pembayaran berdasarkan key dan group ID
   let paymentIndex = _db.findIndex(item => item.key === key && item.id === m.chat);
 
-  // Jika data tidak ditemukan, tampilkan daftar key yang tersedia untuk grup ini
   if (paymentIndex === -1) {
-    // Mendapatkan semua key yang tersedia untuk grup ini
     let availableKeys = _db
       .filter(item => item.id === m.chat)
       .map((item, index) => `${index + 1}. ${item.key}`);
-
-    // Jika tidak ada data pembayaran untuk grup ini, beri tahu pengguna
     if (availableKeys.length === 0) {
       return m.reply("Tidak ada data pembayaran yang tersedia di grup ini.");
     }
-
-    // Menampilkan daftar key yang tersedia dengan format nomor urut
     return m.reply(`Key "${key}" tidak ditemukan. Key yang tersedia:\n${availableKeys.join('\n')}`);
   }
 
-  // Menghapus data pembayaran dari array
   let deletedPayment = _db.splice(paymentIndex, 1)[0];
 
-  // Menghapus file gambar terkait jika ada
   if (deletedPayment.imageUrl) {
     const fs = require('fs');
     fs.unlink(deletedPayment.imageUrl, (err) => {
@@ -10460,7 +10133,6 @@ case 'delpayment': {
     });
   }
 
-  // Menyimpan data ke database
   writeDatabasePayment(_db);
 
   m.reply(`Data pembayaran dengan key "${key}" berhasil dihapus.`);
@@ -10491,7 +10163,6 @@ const proses = await (await fetch(`https://${global.api.maelyn.domain}/api/canva
   }
 )).json()
  console.log(proses)
- // Send the image buffer as a sticker
  await lenwy.sendImageAsSticker(from, proses.result.url, m, { packname: global.packname, author: global.author });
  } catch (e) {
  console.log(e);
@@ -10516,7 +10187,6 @@ case 'ttp': {
   if (!q) return m.reply(`Gunakan dengan cara ${command} text\n\nContoh : ${command} lucu abis`)
   if (q.length > 75) return m.reply(`Teksnya terlalu panjang`)
   
-  //var data = await getBuffer(`https://api.xteam.xyz/attp?file&text=${encodeURIComponent(q)}`)
   var data = await getBuffer(`https://${global.api.lolhuman.domain}/api/ttp?apikey=${global.api.lolhuman.apikey}&text=${encodeURIComponent(q)}`)
   var rand2 = getRandom('.webp')
   fs.writeFileSync(`./${rand2}`, data)
@@ -10529,10 +10199,9 @@ case 'ttp': {
 break
         
 case 'attp': {
-	if (!q) return m.reply(`Gunakan dengan cara ${command} text\n\nContoh : ${command} lucu abiss`)
+  if (!q) return m.reply(`Gunakan dengan cara ${command} text\n\nContoh : ${command} lucu abiss`)
   if (q.length > 75) return reply(`Teksnya terlalu panjang`)
             
-  //var data = await getBuffer(`https://api.xteam.xyz/attp?file&text=${encodeURIComponent(q)}`)
   var data = await getBuffer(`https://${global.api.lolhuman.domain}/api/attp?apikey=${global.api.lolhuman.apikey}&text=${encodeURIComponent(q)}`)
   var rand2 = getRandom('.webp')
   fs.writeFileSync(`./${rand2}`, data)
@@ -10551,13 +10220,10 @@ case 'setstick': {
   let nameKey = text
   let groupID = m.chat; // Menggunakan ID grup untuk penyimpanan data
 
-  // Mendownload gambar dan menyimpannya
   let imageUrl = await lenwy.downloadAndSaveMediaMessage(quoted, `./storage/data/sticker/${nameKey + groupID}`)
 
-  // Membaca data dari database
   let db_sticker = JSON.parse(fs.readFileSync('./storage/databaseSticker.json'))
 
-  // Pastikan _db adalah array, jika tidak, buat array kosong
   if (!Array.isArray(db_sticker)) {
     db_sticker = [];
   }
@@ -10567,7 +10233,6 @@ case 'setstick': {
       return m.reply(`Sticker dengan key ${nameKey} sudah ada untuk grup ini.`);
   }
 
-  // Menambahkan data pembayaran ke database
   let obj_add = {
       id: groupID,
       key: nameKey,
@@ -10775,7 +10440,6 @@ case 'addripper': {
     if (cek.length < 1) return m.reply("Nomor Tersebut Tidak Terdaftar Di WhatsApp")
     const filePath = path.join(__dirname, './storage/dataRipper.json');
 
-    // Pastikan file ada
     if (!fs.existsSync(filePath)) {
         fs.writeFileSync(filePath, JSON.stringify([]));
     }
@@ -10800,7 +10464,6 @@ case 'delripper': {
     let nomor = text.replace(/[^0-9]/g, '');
     const filePath = path.join(__dirname, './storage/dataRipper.json');
 
-    // Pastikan file ada
     if (!fs.existsSync(filePath)) {
         return m.reply('Daftar ripper masih kosong.');
     }
@@ -10817,7 +10480,6 @@ case 'delripper': {
         return m.reply(`Nomor ${nomor} tidak ditemukan dalam daftar ripper.`);
     }
 
-    // Hapus nomor dari array
     data = data.filter(n => n !== nomor);
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 
@@ -10828,7 +10490,6 @@ break
 case 'listripper': {
   if (!isCreator) return m.reply(mess.owner)
 
-    // Membaca data premium dari file
     let owner;
     try {
         owner = JSON.parse(fs.readFileSync('./storage/dataRipper.json', 'utf8'))
@@ -10845,7 +10506,6 @@ case 'listripper': {
     }
     teksooo += `\nTotal: ${owner.length}`;
 
-    // Kirimkan pesan daftar premium
     lenwy.sendMessage(from, { text: teksooo.trim() }, { quoted: m })
 }
 break
@@ -11009,7 +10669,6 @@ default:
     }
   }
 
-  // command lookup -> copyNForward (lebih aman)
   if (isCmd && budy) {
     if (m.isBaileys || from.endsWith('broadcast')) return;
 
@@ -11034,7 +10693,6 @@ default:
     return;
   }
 
-  // log error besar secara aman
   console.error('[UNHANDLED ERROR]', err);
 }
 }
