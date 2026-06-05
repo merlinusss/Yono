@@ -1,0 +1,11054 @@
+// Theme Emoji ${global.emoji}
+// Bot Name ${botname}
+
+require('./len')
+const { WA_DEFAULT_EPHEMERAL, getAggregateVotesInPollMessage, generateWAMessageFromContent, proto, generateWAMessageContent, InteractiveMessage, generateWAMessage, prepareWAMessageMedia, downloadContentFromMessage, areJidsSameUser, getContentType } = require("baileys");
+const fs = require('fs')
+const path = require('path')
+const util = require('util')
+let ms;
+const toMs = require('ms');
+(async () => {
+  ms = (await import('parse-ms')).default;
+})()
+const chalk = require('chalk')
+const os = require('os')
+const axios = require('axios')
+const fsx = require('fs-extra')
+const crypto = require('crypto')
+const ffmpeg = require('fluent-ffmpeg')
+const moment = require('moment-timezone')
+const { JSDOM } = require('jsdom')
+const { color, bgcolor } = require('./library/color')
+const { uploader60Minute, uploaderLebih, up } = require('./library/uploader')
+const { fromBuffer } = require('file-type')
+const jsobfus = require('javascript-obfuscator')
+const cheerio = require('cheerio')
+const ytdl = require("ytdl-core")
+const speed = require('performance-now')
+const { performance } = require('perf_hooks')
+const { exec, spawn, execSync } = require("child_process")
+const { smsg, tanggal, getTime, formatp, isUrl, sleep, clockString, runtime, fetchJson, getBuffer, jsonformat, format, parseMention, getRandom, getGroupAdmins, generateProfilePicture, toJid } = require('./library/myfunc.js')
+const { FajarNews, BBCNews, metroNews, CNNNews, iNews, KumparanNews, TribunNews, DailyNews, DetikNews, OkezoneNews, CNBCNews, KompasNews, SindoNews, TempoNews, IndozoneNews, AntaraNews, RepublikaNews, VivaNews, KontanNews, MerdekaNews, KomikuSearch, AniPlanetSearch, KomikFoxSearch, KomikStationSearch, MangakuSearch, KiryuuSearch, KissMangaSearch, KlikMangaSearch, PalingMurah, LayarKaca21, AminoApps, Mangatoon, WAModsSearch, Emojis, CoronaInfo, JalanTikusMeme,Cerpen, Quotes, Couples, Darkjokes } = require("dhn-api")
+const { addResponList, delResponList, isAlreadyResponList, isAlreadyResponListGroup, sendResponList, updateResponList, getDataResponList, updateKey, readDatabasePayment, writeDatabasePayment, updateId, getGroupIdFromLink, resetList, deleteListSampah } = require('./library/respon-list')
+const { isKeyResponStick, getDataResponStick, isAlreadyResponStickGroup, delResponStick } = require('./library/funcStick')
+const { addSewaGroup, getSewaExpired, getSewaPosition, checkSewaGroup, getAllPremiumUser } = require('./library/sewa')
+const { number, command } = require('yargs')
+const { error } = require('console')
+const pathsewa = './storage/sewa.json';
+const { cekStatusAkunMedan, cekLayanan, orderLayanan, cekStatusOrderanKebsos } = require('./project/litensi')
+const { cekStatusAkunDigi, cekLayananDigiPrabayar, isiSaldoDigi, orderDigi, cekItemDigi, cekOrderanDigi } = require('./project/digiflazz')
+const { generateQris, checkQrisStatus, formatSaldo } = require('./project/paymentGateway.js')
+const { webpToMp4, imageToWebp, videoToWebp, writeExifImg, writeExifVid } = require('./library/exif')
+const { igdl } = require('btch-downloader')
+const { cekMl } = require('./library/mlRegi.js')
+const dns = require('dns').promises
+
+// read database
+global.db.data = JSON.parse(fs.readFileSync('./storage/database.json'))
+if (global.db.data) global.db.data = {
+users: {},
+chats: {},
+game: {},
+database: {},
+settings: {},
+setting: {},
+others: {},
+sticker: {},
+...(global.db.data || {})
+}
+
+let kuismath = db.data.game.math = []
+let tebakgambar = db.data.game.tebakgambar = []
+let tebakkata = db.data.game.tebakkata = []
+let caklontong = db.data.game.lontong = []
+let caklontong_desk = db.data.game.lontong_desk = []
+let tebakkalimat = db.data.game.kalimat = []
+let tebaklirik = db.data.game.lirik = []
+let tebaktebakan = db.data.game.tebakan = []
+let db_respon_list = JSON.parse(fs.readFileSync('./storage/list-message.json'))
+let reminders = {};
+
+const authorr = global.owner
+const pengguna = JSON.parse(fs.readFileSync('./storage/user.json'))
+const owner = JSON.parse(fs.readFileSync('./premium.json'))
+const authorFilePath = path.resolve(__dirname, './author.json')
+const author = JSON.parse(fs.readFileSync(authorFilePath))
+const dbgcFilePath = path.join(__dirname, './storage/databaseGroup.json')
+global.datagc
+try {
+  global.datagc = JSON.parse(fs.readFileSync(dbgcFilePath, 'utf-8'));
+} catch (error) {
+  console.error('Terjadi kesalahan saat membaca file database:', error);
+}
+
+
+module.exports = lenwy = async (lenwy, m, chatUpdate, store) => {
+ try {
+var body = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype === 'interactiveResponseMessage') ? JSON.parse(m.message.interactiveResponseMessage.nativeFlowResponseMessage.paramsJson).id : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.text) : ''
+var budy = (typeof m.text == 'string' ? m.text : '')
+const premiumFilePath = path.join("./premium.json")
+const dbFilePath = path.join(__dirname, './storage/database.json')
+
+
+//---------------------------------------------------------- Prefix SETTINGS *Batas* --------------------------------------------------------------------------------
+const rawBody = body || "";
+
+const prefix = /^[°zZ#$@+,.?=''():√%!¢£¥€π¤ΠΦ&><™©®Δ^βα¦|/\\©^]/.test(rawBody)
+  ? rawBody.match(/^[°zZ#$@+,.?=''():√%!¢£¥€π¤ΠΦ&><™©®Δ^βα¦|/\\©^]/gi)[0]
+  : '';
+
+const content = rawBody.slice(prefix.length).trim() || ""; 
+
+const parts = content.split(/ +/);
+const commandRaw = parts[0] || "";
+const args = parts.slice(1);
+
+const command = commandRaw.toLowerCase();
+const commandPrivate = commandRaw.toLowerCase();
+
+
+const isCmd = body?.startsWith(prefix)
+const cmd = prefix + command
+//---------------------------------------------------------- Prefix SETTINGS *Batas* --------------------------------------------------------------------------------
+
+
+
+
+
+
+
+function readDatabase() {
+    try {
+        const data = fs.readFileSync(dbFilePath, 'utf8')
+        return JSON.parse(data)
+    } catch (err) {
+        console.error('Error reading database:', err)
+        return { users: {} };
+    }
+}
+
+function writeDatabase(data) {
+    try {
+        fs.writeFileSync(dbFilePath, JSON.stringify(data, null, 2))
+    } catch (err) {
+        console.error('Error writing database:', err)
+    }
+}
+
+function updateUserLimits(numbers, limit) {
+    const data = readDatabase()
+
+    numbers.forEach(number => {
+        const userKey = `${number}@s.whatsapp.net`;
+        if (data.users[userKey]) {
+            data.users[userKey].limit = limit;
+        } else {
+            data.users[userKey] = {
+                limit: limit,
+                level: 0,
+                autolevelup: true,
+            };
+        }
+    })
+    writeDatabase(data)
+    console.log(`Updated limits to ${limit} for numbers: ${numbers.join(', ')}`)
+}
+
+function getUserLimit(sender) {
+    const data = readDatabase()
+    const userKey = `${sender}`;
+    return isPremiumUser(sender) ? Infinity : (data.users[userKey] ? data.users[userKey].limit : 50)
+}
+
+
+const full_args = body?.replace(command, '').slice(1).trim()
+const spychat = body?.replace().slice().trim()
+const pushname = m.pushName || "No Name"
+const text = q = args.join(" ")
+const { type, quotedMsg, mentioned, now, fromMe } = m
+const quoted = m.quoted ? m.quoted : m
+const quoted2 = (quoted.mtype == 'buttonsMessage') ? quoted[Object.keys(quoted)[1]] : (quoted.mtype == 'templateMessage') ? quoted.hydratedTemplate[Object.keys(quoted.hydratedTemplate)[1]] : (quoted.mtype == 'product') ? quoted[Object.keys(quoted)[0]] : m.quoted ? m.quoted : m
+const mime = (quoted.msg || quoted).mimetype || ''
+const isMedia = /image|video|sticker|audio/.test(mime)
+const from = m.key.remoteJid
+
+const rawIds = [lenwy.user?.id, lenwy.user?.jid].filter(Boolean)
+const botNumber = rawIds.map(v => {
+  const jid = typeof v === 'string' ? v : ''
+  return jid
+    .split('@')[0]
+    .split(':')[0]
+    .replace(/[^0-9]/g, '')
+}).filter(Boolean)
+const isBot = botNumber.includes(m.sender.replace(/[^0-9]/g, ''))
+
+const gcMutedPath = path.resolve(__dirname, './storage/gcMuted.json')
+const gcMuted = JSON.parse(fs.readFileSync(gcMutedPath))
+const isGcMuted = [...gcMuted].includes(m.chat)
+
+const gcTopupPath = path.resolve(__dirname, './project/database/gcTopup.json')
+const gcTopup = JSON.parse(fs.readFileSync(gcTopupPath))
+const isGcTopup = [...gcTopup].includes(m.chat)
+
+const creatorFilePathh = path.resolve(__dirname, './author.json')
+const creatorNumbers = JSON.parse(fs.readFileSync(creatorFilePathh))
+
+const premiumFilePathh = path.resolve(__dirname, './premium.json')
+const premiumNumbers = JSON.parse(fs.readFileSync(premiumFilePathh))
+const allPremium = [botNumber, ...creatorNumbers, ...premiumNumbers]
+
+const bannedFilePathh = path.resolve(__dirname, './banned.json')
+const bannedNumbers = JSON.parse(fs.readFileSync(bannedFilePathh))
+
+const sender = m.isGroup ? (m.key.participant ? m.key.participant : m.participant) : m.key.remoteJid
+const groupMetadata = m.isGroup ? await lenwy.groupMetadata(m.chat).catch(e => {}) : ''
+const groupName = m.isGroup ? await groupMetadata?.subject : ''
+const participants = m.isGroup ? await groupMetadata?.participants : []
+const groupAdmins = m.isGroup ? await getGroupAdmins(participants) : []
+
+const rawJid = m.isGroup ? m.key?.participantPn : m.key?.senderPn;
+const senderNumber = (rawJid || m.sender || '').replace(/[^0-9]/g, '');
+const isCreator = creatorNumbers.includes(senderNumber);
+const isPrem = allPremium.includes(senderNumber);
+const isBan = bannedNumbers.includes(senderNumber);
+
+const isBotAdmins = m.isGroup ? [lenwy.user.id, lenwy.user.lid].some(j => groupAdmins.includes(j?.replace(/:\d+@/, '@'))) : false
+const isAdmins = m.isGroup ? groupAdmins.includes(m.sender) : false
+const isUser = pengguna.includes(m.sender)
+const numberQuery = text.replace(new RegExp("[()+-/ +/]", "gi"), "") + "@s.whatsapp.net"
+const mentionByTag = m.mtype == "extendedTextMessage" && m.message.extendedTextMessage.contextInfo != null ? m.message.extendedTextMessage.contextInfo.mentionedJid : []
+const time = moment(Date.now()).tz('Asia/Jakarta').locale('id').format('HH:mm:ss z')
+const salam = moment(Date.now()).tz('Asia/Jakarta').locale('id').format('a')
+const qtod = m.quoted? "true":"false"
+const more = String.fromCharCode(8206)
+const readmore = more.repeat(4001)
+const isQuotedViewOnce = m.quoted?.viewOnce ? true : false
+
+
+const harinya = moment.tz('Asia/Jakarta').format('dddd')
+const tanggalnya = moment.tz('Asia/Jakarta').format('DD')
+const bulannya = moment.tz('Asia/Jakarta').format('MM')
+const tahunnya = moment.tz('Asia/Jakarta').format('YYYY')
+const namabulannya = moment.tz('Asia/Jakarta').format('MMMM')
+const jamnya = moment.tz('Asia/Jakarta').format('HH')
+const menitnya = moment.tz('Asia/Jakarta').format('mm')
+const detiknya = moment.tz('Asia/Jakarta').format('ss')
+
+
+const hariini = moment.tz('Asia/Jakarta').format('dddd, DD MMMM YYYY')
+const hariini2 = moment.tz('Asia/Jakarta').format('DD MMMM YYYY')
+const hariini3 = moment.tz('Asia/Jakarta').format('dddd')
+const hariini4 = moment.tz('Asia/Jakarta').format('DD-MMMM-YYYY')
+const waktubackup = moment.tz('Asia/Jakarta').format('DDMMMM')
+        const wib = moment.tz('Asia/Jakarta').format('HH : mm : ss')
+        const wit = moment.tz('Asia/Jayapura').format('HH : mm : ss')
+        const wita = moment.tz('Asia/Makassar').format('HH : mm : ss')
+
+        const time2 = moment().tz('Asia/Jakarta').format('HH:mm:ss')
+        if(time2 < "23:59:00"){
+        var ucapanWaktu = `${global.emoji} Selamat Malam`
+        }
+        if(time2 < "19:00:00"){
+        var ucapanWaktu = `${global.emoji} Selamat Petang`
+        }
+        if(time2 < "18:00:00"){
+        var ucapanWaktu = `${global.emoji} Selamat Sore`
+        }
+        if(time2 < "15:00:00"){
+        var ucapanWaktu = `${global.emoji} Selamat Siang`
+        }
+        if(time2 < "10:00:00"){
+        var ucapanWaktu = `${global.emoji} Selamat Pagi`
+        }
+        if(time2 < "05:00:00"){
+        var ucapanWaktu = `${global.emoji} Selamat Subuh`
+        }
+        if(time2 < "03:00:00"){
+        var ucapanWaktu = `${global.emoji} Selamat Tengah Malam`
+        }
+        
+
+const cap = 'LEN'
+try {
+pplu = await lenwy.profilePictureUrl(anu.id, 'image')
+} catch {
+pplu = 'https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg'
+}
+const len = {
+            key: {
+                participant: `0@s.whatsapp.net`,
+                ...(m.chat ? {
+                    remoteJid: `status@broadcast`
+                } : {})
+            },
+            message: {
+                "contactMessage": {
+                    'displayName': `${pushname}`,
+                    'vcard': `BEGIN:VCARD\nVERSION:3.0\nN:XL;Lenwy,;;;\nFN: Lenwy V2.0\nitem1.TEL;waid=${m.sender.split("@")[0]}:+${m.sender.split("@")[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD`,
+                    'jpegThumbnail': pplu,
+                    thumbnail: pplu,
+                    sendEphemeral: true
+                }   
+            }
+        }
+
+const len2 = {
+    key: {
+        fromMe: false,
+        participant: `0@s.whatsapp.net`,
+        ...(m.chat ? {
+            remoteJid: "status@broadcast"
+        } : {})
+    },
+    message: {
+        "extendedTextMessage": {
+            "text": ucapanWaktu,
+            "title": ``,
+            "thumbnailUrl": pplu
+        }
+    }
+}
+
+
+const onlygc = () => {
+lenwy.sendMessage(m.chat, {
+    text: `${global.emoji} *Bot Hanya Bisa Digunakan Didalam Grup*`,
+    contextInfo: {
+      externalAdReply: {
+        showAdAttribution: false,
+        title: `${ucapanWaktu}`,
+        body: `${botname}`,
+        thumbnailUrl: "https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg",
+        sourceUrl: "",
+        mediaType: 1,
+        renderLargerThumbnail: false
+      }
+    }
+   })
+   } 
+
+async function cekCasee(caseName) {
+  try {
+    const fileContent = await fs.promises.readFile("./lenwy.js", "utf-8");
+    const caseRegex = new RegExp(`case '${caseName}'[\\s\\S]*?break`, 'g');
+    const match = fileContent.match(caseRegex);
+    return match ? true : false;
+  } catch (error) {
+    console.error("Error reading file:", error);
+    return false;
+  }
+}
+    
+// Daftar kata-kata toxic
+const toxicWords = /(ewe|bangsad|mmk|koncol|puki|kojtol|kintil|momok|nigga|ajg|ewean|yatim|anjing|kontol|memek|bangsat|babi|goblok|goblog|kntl|pepek|ppk|ngentod|ngentd|ngntd|kentod|kntd|bgst|anjg|anj|fuck|hitam|ireng|jawir|gay|asw|ktl|ngentot|ngewe|bokep|bkp)/i;
+
+try {
+  if (m.isGroup) {    
+    if (!global.datagc[m.chat]) {
+      // Jika grup belum ada, tambahkan ke dalam objek dengan format default
+      global.datagc[m.chat] = {
+        "text_welcome": "",
+        "text_left": "",
+        "text_open": "",
+        "text_close": "",
+        "text_proses": "",
+        "text_done": "",
+        "text_list": "",
+        "text_list_simbol": "",
+        "waktu_Open": "",
+        "waktu_Close": ""
+      };
+    }
+    fs.writeFileSync(dbgcFilePath, JSON.stringify(global.datagc, null, 2), 'utf-8');
+  }
+} catch (error) {
+  console.error('Terjadi kesalahan saat membaca atau menulis file database:', error);
+}
+
+// Inisialisasi database jika belum ada
+try {
+    let isNumber = x => typeof x === 'number' && !isNaN(x)
+    let limitUser = global.limitawal.free;
+    let user = global.db.data.users[m.sender]
+    if (typeof user !== 'object') global.db.data.users[m.sender] = {};
+    if (user) {
+        if (!isNumber(user.afkTime)) user.afkTime = -1;
+        if (!('afkReason' in user)) user.afkReason = '';
+        if (!isNumber(user.limit)) user.limit = limitUser;
+        if (!isNumber(user.level)) user.level = 0;
+        if (!('autolevelup' in user)) user.autolevelup = true;
+    } else global.db.data.users[m.sender] = {
+        afkTime: -1,
+        afkReason: '',
+        limit: limitUser,
+        level: 0,
+        autolevelup: true
+    };
+
+    let chats = global.db.data.chats[m.chat]
+    if (typeof chats !== 'object') global.db.data.chats[m.chat] = {};
+    if (chats) {
+        if (!('mute' in chats)) chats.mute = false;
+        if (!('wlcm' in chats)) chats.wlcm = true;
+        if (!('left' in chats)) chats.left = true;
+        if (!('antitoxic1' in chats)) chats.antitoxic1 = false;
+        if (!('antitoxic2' in chats)) chats.antitoxic2 = false;
+        if (!('antilink' in chats)) chats.antilink = false;
+        if (!('antilink2' in chats)) chats.antilink2 = false;
+        if (!('antich' in chats)) chats.antich = false;
+        if (!('antich2' in chats)) chats.antich2 = false;
+        if (!('antilinkyt' in chats)) chats.antilinkyt = false;
+        if (!('antilinktt' in chats)) chats.antilinktt = false;
+        if (!('antivirtex' in chats)) chats.antivirtex = true;
+        if (!('antipanel' in chats)) chats.antipanel = false;
+        if (!('antilinkgc' in chats)) chats.antilinkgc = false;
+        if (!('antilinkgc2' in chats)) chats.antilinkgc2 = false;
+        if (!('antiwame' in chats)) chats.antiwame = false;
+        if (!('antibot' in chats)) chats.antibot = false;
+        if (!('linkgc' in chats)) chats.text_close = ``;
+    } else global.db.data.chats[m.chat] = {
+        mute: false,
+        wlcm: true,
+        left: true,
+        antitoxic1: false,
+        antitoxic2: false,
+        antilink: false,
+        antilink2: false,
+        antich: false,
+        antich2: false,
+        antilinkyt: false,
+        antilinktt: false,
+        antivirtex: true,
+        antipanel: false,
+        antiwame: false,
+        antilinkgc: false,
+        antilinkgc2: false,
+        antibot: false,
+        linkgc: ``
+    };
+
+    let setting = global.db.data.settings[botNumber]
+    if (typeof setting !== 'object') global.db.data.settings[botNumber] = {};
+    if (setting) {
+        if (!isNumber(setting.status)) setting.status = 0;
+        if (!('autobio' in setting)) setting.autobio = false;
+        if (!('autoread' in setting)) setting.autoread = false;
+    } else global.db.data.settings[botNumber] = {
+        status: 0,
+        autobio: false,
+        autoread: false
+    };
+
+} catch (err) {
+    console.error(err)
+}
+
+let cron = require('node-cron')
+        cron.schedule('02 12 * * *', () => {
+            let user = Object.keys(global.db.data.users)
+            let limitUser = isPrem ? global.limitawal.premium : global.limitawal.free
+            for (let jid of user) global.db.data.users[jid].limit = limitUser
+            console.log('Reseted Limit')
+        }, {
+            scheduled: true,
+            timezone: "Asia/Jakarta"
+        })
+
+function cwr(tMatch, tWr, wrReq) {
+    let tLose = tMatch * (100 - tWr) / 100;
+    let seratusPersen = tLose * (100 / (100 - wrReq))
+    let final = seratusPersen - tMatch;
+    return Math.round(final)
+  }                
+        
+function generateRandomPassword() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#%^&*'
+  const length = 10;
+  let password = '';
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length)
+    password += characters[randomIndex]
+  }
+  return password;
+}
+async function jarak(dari, ke) {
+    let html = (await axios(`https://www.google.com/search?q=${encodeURIComponent('jarak ' + dari + ' ke ' + ke)}&hl=id`)).data
+    let $ = cheerio.load(html), obj = {}
+    let img = html.split("var s=\'")?.[1]?.split("\'")?.[0]
+    obj.img = /^data:.*?\/.*?;base64,/i.test(img) ? Buffer.from(img.split`,` [1], 'base64') : ''
+    obj.desc = $('div.BNeawe.deIvCb.AP7Wnd').text()?.trim()
+    return obj
+}
+
+function pinterest(querry){
+    return new Promise(async(resolve,reject) => {
+         axios.get('https://id.pinterest.com/search/pins/?autologin=true&q=' + querry, {
+            headers: {
+            "cookie" : "_auth=1; _b=\"AVna7S1p7l1C5I9u0+nR3YzijpvXOPc6d09SyCzO+DcwpersQH36SmGiYfymBKhZcGg=\"; _pinterest_sess=TWc9PSZHamJOZ0JobUFiSEpSN3Z4a2NsMk9wZ3gxL1NSc2k2NkFLaUw5bVY5cXR5alZHR0gxY2h2MVZDZlNQalNpUUJFRVR5L3NlYy9JZkthekp3bHo5bXFuaFZzVHJFMnkrR3lTbm56U3YvQXBBTW96VUgzVUhuK1Z4VURGKzczUi9hNHdDeTJ5Y2pBTmxhc2owZ2hkSGlDemtUSnYvVXh5dDNkaDN3TjZCTk8ycTdHRHVsOFg2b2NQWCtpOWxqeDNjNkk3cS85MkhhSklSb0hwTnZvZVFyZmJEUllwbG9UVnpCYVNTRzZxOXNJcmduOVc4aURtM3NtRFo3STlmWjJvSjlWTU5ITzg0VUg1NGhOTEZzME9SNFNhVWJRWjRJK3pGMFA4Q3UvcHBnWHdaYXZpa2FUNkx6Z3RNQjEzTFJEOHZoaHRvazc1c1UrYlRuUmdKcDg3ZEY4cjNtZlBLRTRBZjNYK0lPTXZJTzQ5dU8ybDdVS015bWJKT0tjTWYyRlBzclpiamdsNmtpeUZnRjlwVGJXUmdOMXdTUkFHRWloVjBMR0JlTE5YcmhxVHdoNzFHbDZ0YmFHZ1VLQXU1QnpkM1FqUTNMTnhYb3VKeDVGbnhNSkdkNXFSMXQybjRGL3pyZXRLR0ZTc0xHZ0JvbTJCNnAzQzE0cW1WTndIK0trY05HV1gxS09NRktadnFCSDR2YzBoWmRiUGZiWXFQNjcwWmZhaDZQRm1UbzNxc21pV1p5WDlabm1UWGQzanc1SGlrZXB1bDVDWXQvUis3elN2SVFDbm1DSVE5Z0d4YW1sa2hsSkZJb1h0MTFpck5BdDR0d0lZOW1Pa2RDVzNySWpXWmUwOUFhQmFSVUpaOFQ3WlhOQldNMkExeDIvMjZHeXdnNjdMYWdiQUhUSEFBUlhUVTdBMThRRmh1ekJMYWZ2YTJkNlg0cmFCdnU2WEpwcXlPOVZYcGNhNkZDd051S3lGZmo0eHV0ZE42NW8xRm5aRWpoQnNKNnNlSGFad1MzOHNkdWtER0xQTFN5Z3lmRERsZnZWWE5CZEJneVRlMDd2VmNPMjloK0g5eCswZUVJTS9CRkFweHc5RUh6K1JocGN6clc1JmZtL3JhRE1sc0NMTFlpMVErRGtPcllvTGdldz0=; _ir=0"
+        }
+            }).then(({ data }) => {
+        const $ = cheerio.load(data)
+        const result = []
+        const hasil = []
+         $('div > a').get().map(b => {
+        const link = $(b).find('img').attr('src')
+            result.push(link)
+        })
+        result.forEach(v => {
+         if(v == undefined) return
+         hasil.push(v.replace(/230/g,'730'))
+            })
+            hasil.shift()
+        resolve(hasil)
+        })
+    })
+}
+
+function sort(property, ascending = true) {
+  if (property) return (...args) => args[ascending & 1][property] - args[!ascending & 1][property]
+  else return (...args) => args[ascending & 1] - args[!ascending & 1]
+}
+
+function toNumber(property, _default = 0) {
+  if (property) return (a, i, b) => {
+    return {...b[i], [property]: a[property] === undefined ? _default : a[property]}
+  }
+  else return a => a === undefined ? _default : a
+}
+
+function enumGetKey(a) {
+  return a.jid
+}
+
+function pickRandom(list) {
+return list[Math.floor(Math.random() * list.length)]
+}
+
+if (m.message) {
+if (global.db.data.settings[botNumber].autoread) {
+lenwy.readMessages([m.key])
+}
+}
+
+const downloadMp3 = async (Link) => {
+try {
+await ytdl.getInfo(Link)
+let mp3File = getRandom('.mp3')
+console.log(color('Download Audio With ytdl-core'))
+ytdl(Link, { filter: 'audioonly' })
+.pipe(fs.createWriteStream(mp3File))
+.on('finish', async () => {
+await lenwy.sendMessage(from, { audio: fs.readFileSync(mp3File), mimetype: 'audio/mp4' }, { quoted: m })
+fs.unlinkSync(mp3File)
+})
+} catch (err) {
+m.reply(`${err}`)
+}
+}
+
+function parseMention(text = '') {
+return [...text.matchAll(/@([0-9]{5,16}|0)/g)].map(v => v[1] + '@s.whatsapp.net')
+}
+
+const downloadMp4 = async (Link) => {
+try {
+await ytdl.getInfo(Link)
+let mp4File = getRandom('.mp4')
+console.log(color('Download Video With ytdl-core'))
+let nana = ytdl(Link)
+.pipe(fs.createWriteStream(mp4File))
+.on('finish', async () => {
+await lenwy.sendMessage(from, { video: fs.readFileSync(mp4File), gifPlayback: false }, { quoted: m })
+fs.unlinkSync(`./${mp4File}`)
+})
+} catch (err) {
+m.reply(`${err}`)
+}
+}
+
+async function LenwyLD() {
+  await sleep(100) // Jeda waktu (0.75 detik) antara reaksi
+  await lenwy.sendMessage(from, { react: { text: '🕒', key: m.key } })
+}
+
+//----------------------------------------------------------- [ CONSOLE LOG ] ---------------------------------------------------------------------------
+if (isCmd) {
+const listcolor = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white']
+const randomcolor = listcolor[Math.floor(Math.random() * listcolor.length)]
+    console.log(
+      color(`[ ${jamnya}:${menitnya}:${detiknya} ] `, randomcolor),
+      color(`[ ${m.isGroup ? groupName : m.chat.split("@")[0] || 'NoNameGroup'} ]`, `${randomcolor}`),
+      color(`<-->`, `${randomcolor}`),
+      color(`${pushname || 'NoName'}`, `${randomcolor}`),
+      color(` :`, `${randomcolor}`),
+      color(`${body}`, `white`)
+    )
+}
+//----------------------------------------------------------- [ CONSOLE LOG ] ---------------------------------------------------------------------------
+
+if (cmd) {
+  if (isGcMuted && !isCreator && !isPrem && !isBot) return
+  if (!m.isGroup && !isCreator && !isPrem && !isBot) return
+}
+
+if (isCmd && !isUser) {
+pengguna.push(sender)
+fs.writeFileSync('./storage/user.json', JSON.stringify(pengguna, null, 2))
+}
+
+if (m.isGroup && isAlreadyResponList(m.chat, body?.toLowerCase(), db_respon_list)) {
+  var get_data_respon = getDataResponList(m.chat, body?.toLowerCase(), db_respon_list)
+  if (get_data_respon.isImage === false) {
+    lenwy.sendMessage(m.chat, { text: sendResponList(m.chat, body?.toLowerCase(), db_respon_list) }, {quoted: m})
+  } else {
+    try {
+      lenwy.sendMessage(m.chat, { image: await getBuffer(get_data_respon.image_url), caption: get_data_respon.response }, {quoted: m})
+    } catch (e) {
+      m.reply(`Foto tidak tersedia silahkan chat admin untuk melakukan ${prefix}updatelist bergambar pada Key ${body}`)
+      await sleep(5000)
+      lenwy.sendMessage(m.chat, { text: sendResponList(m.chat, body?.toLowerCase(), db_respon_list) }, {quoted: m})
+    }
+  }
+}
+
+if (m.isGroup && isKeyResponStick(m.chat, body.toLowerCase(), JSON.parse(fs.readFileSync('./storage/databaseSticker.json')))) {
+  if (!isAdmins) return;
+  
+  var getRespon = getDataResponStick(m.chat, body.toLowerCase(), JSON.parse(fs.readFileSync('./storage/databaseSticker.json')));
+  let buffer = fs.readFileSync(getRespon.imageUrl);
+
+  if (await isWebPAnimated(buffer)) {
+      await lenwy.sendMessage(from, { sticker: buffer }, { quoted: m.quoted ? m.quoted.fakeObj : m })
+  } else {
+      await lenwy.sendMessage(from, { sticker: buffer }, { quoted: m.quoted ? m.quoted.fakeObj : m })
+  }
+}
+
+if (db.data.chats[m.chat].antispam) {
+  if (m.isGroup && m.message && antispam.isFiltered(from)) {
+  console.log(`[SPAM]`, color(moment(m.messageTimestamp * 100).format('DD/MM/YYYY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(m.pushName))
+  return await lenwy.sendMessage(m.chat, { delete: m.key })
+  }}   
+
+
+
+
+if (db.data.chats[m.chat].antitoxic1) {
+  const isToxic = toxicWords.exec(m.text)
+  if (!m.key.fromMe && !isCreator && !isAdmins) {
+    if (isToxic) {
+      lenwy.sendMessage(m.chat, { delete: m.key })
+    }
+  }
+}
+
+if (db.data.chats[m.chat].antitoxic2) {
+  const isToxic = toxicWords.exec(m.text)
+  if (!m.key.fromMe && !isCreator && !isAdmins) {
+    if (isToxic) {
+      lenwy.sendMessage(m.chat, { delete: m.key })
+      await sleep(1500)
+      await lenwy.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+    }
+  }
+}
+
+// Anti Link
+if (db.data.chats[m.chat].antilinkgc) {
+  let storedLink = db.data.chats[m.chat].linkgc;
+  let isLinkThisGc = new RegExp(storedLink, 'i') 
+  let isgclink = isLinkThisGc.test(m.text) 
+  if (!m.key.fromMe && !isCreator && !isAdmins && !isgclink) {
+    if (budy.match(`chat.whatsapp.com`)) {
+      m.reply(`*Anti Link Gc Sedang Aktif*\n⚠️ *Pesan Anda Akan Dihapus*`)
+      lenwy.sendMessage(m.chat, { delete: m.key }) 
+    }
+  }
+}
+
+if (db.data.chats[m.chat].antilinkgc2) {
+  let storedLink = db.data.chats[m.chat].linkgc;
+  let isLinkThisGc = new RegExp(storedLink, 'i') 
+  let isgclink = isLinkThisGc.test(m.text) 
+  if (!m.key.fromMe && !isCreator && !isAdmins && !isgclink) {
+    if (budy.match(`chat.whatsapp.com`)) {
+      m.reply(`*Anti Link Gc2 Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus Dan Anda Akan Di Keluarkan*`)
+      lenwy.sendMessage(m.chat, { delete: m.key })
+      await sleep(1500)
+      await lenwy.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+    }
+  }
+}
+
+if (db.data.chats[m.chat].antiwame) {
+  if (!m.key.fromMe && !isCreator && !isAdmins) {
+    if (budy.includes('https://wa.me') || budy.includes('wa.me') || budy.includes('Https://wa.me') || budy.includes('Wa.me') ) {
+      m.reply(`*Anti Wame Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`)
+      lenwy.sendMessage(m.chat, { delete: m.key })
+    }
+  }
+}
+
+if (db.data.chats[m.chat].antilink) {
+  let storedLink = db.data.chats[m.chat].linkgc;
+  let isLinkThisGc = new RegExp(storedLink, 'i') 
+  let isgclink = isLinkThisGc.test(m.text) 
+  if (!m.key.fromMe && !isCreator && !isAdmins && !isgclink) {
+    if (budy.includes('https:') || budy.includes('http')) {
+      m.reply(`*Anti Link Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`)
+      lenwy.sendMessage(m.chat, { delete: m.key })
+    }
+  }
+}
+
+if (db.data.chats[m.chat].antilink2) {
+  let storedLink = db.data.chats[m.chat].linkgc;
+  let isLinkThisGc = new RegExp(storedLink, 'i') 
+  let isgclink = isLinkThisGc.test(m.text) 
+  if (!m.key.fromMe && !isCreator && !isAdmins && !isgclink) {
+    if (budy.includes('https:') || budy.includes('http')) {
+      m.reply(`*Anti Link2 Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus Dan Anda Akan Di Keluarkan*`)
+      lenwy.sendMessage(m.chat, { delete: m.key })
+      await sleep(1500)
+      await lenwy.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+    }
+  }
+}
+
+if (db.data.chats[m.chat].antipanel) {
+  if (!m.key.fromMe && !isCreator && !isAdmins) {
+    if (budy.includes('PANEL') || budy.includes('Panel') || budy.includes('panel') || budy.includes('pnel')) {
+      m.reply(`*Anti Promosi Panel Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`)
+      lenwy.sendMessage(m.chat, { delete: m.key })
+    }
+  }
+}
+
+if (db.data.chats[m.chat].antitiktok) {
+  if (!m.key.fromMe && !isCreator && !isAdmins) {
+    if (budy.match(`https://vt.tiktok.com`)) {
+      m.reply(`*Anti Link Tiktok Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`)
+      lenwy.sendMessage(m.chat, { delete: m.key })
+    }
+  }
+}
+
+if (db.data.chats[m.chat].antiyoutube) {
+  if (!m.key.fromMe && !isCreator && !isAdmins) {
+    if (budy.match(`https://youtube`)) {
+      m.reply(`*Anti Link Youtube Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`)
+      lenwy.sendMessage(m.chat, { delete: m.key })
+    }
+  }
+}
+
+if (db.data.chats[m.chat].antibot) {
+  if (m.id.startsWith('3EB0') || m.id.startsWith('B1E') || m.id.startsWith('BAE')) {
+    m.reply(`*Bot Lain Terdeteksi*\n\n*Bot Akan Di Keluarkan, Karena Admin Mengaktifkan Anti Bot*`)
+    lenwy.sendMessage(m.chat, { delete: m.key })
+  }
+}
+
+
+
+
+
+
+
+let list = []
+for (let i of owner) {
+list.push({
+displayName: await lenwy.getName(i + '@s.whatsapp.net'),
+vcard: `BEGIN:VCARD\n
+VERSION:3.0\n
+N:${await lenwy.getName(i + '@s.whatsapp.net')}\n
+FN:${await lenwy.getName(i + '@s.whatsapp.net')}\n
+item1.TEL;waid=${i}:${i}\n
+item1.X-ABLabel:Ponsel\n
+item2.EMAIL;type=INTERNET:FakeLenwy@gmail.com\n
+item2.X-ABLabel:Email\n
+item3.URL:Youtube : Lenwy\n
+item3.X-ABLabel:Grup WangSaff\n
+item4.ADR:;;Mars Area 51;;;;\n
+item4.X-ABLabel:Region\n
+END:VCARD`
+})
+}
+
+// Respon Cmd with media
+if (isMedia && m.msg.fileSha256 && (m.msg.fileSha256.toString('base64') in global.db.data.sticker)) {
+let hash = global.db.data.sticker[m.msg.fileSha256.toString('base64')]
+let { text, mentionedJid } = hash
+let messages = await generateWAMessage(from, { text: text, mentions: mentionedJid }, {
+userJid: lenwy.user.id,
+quoted : m.quoted && m.quoted.fakeObj
+})
+messages.key.fromMe = areJidsSameUser(m.sender, lenwy.user.id)
+messages.key.id = m.key.id
+messages.pushName = m.pushName
+if (m.isGroup) messages.participant = m.sender
+let msg = {
+...chatUpdate,
+messages: [proto.WebMessageInfo.fromObject(messages)],
+type: 'append'
+}
+lenwy.ev.emit('messages.upsert', msg)
+}
+
+if (budy.startsWith('©️')) {
+try {
+return m.reply(JSON.stringify(eval(`${args.join(' ')}`),null,'\t'))
+} catch (e) {
+m.reply(e)
+}
+}
+
+async function sendGeekzMessage(chatId, message, options = {}){
+let generate = await generateWAMessage(chatId, message, options)
+let type2 = getContentType(generate.message)
+if ('contextInfo' in options) generate.message[type2].contextInfo = options?.contextInfo
+if ('contextInfo' in message) generate.message[type2].contextInfo = message?.contextInfo
+return await lenwy.relayMessage(chatId, generate.message, { messageId: generate.key.id })
+}
+
+async function obfus(query) {
+return new Promise((resolve, reject) => {
+try {
+const obfuscationResult = jsobfus.obfuscate(query,
+{
+compact: false,
+controlFlowFlattening: true,
+controlFlowFlatteningThreshold: 1,
+numbersToExpressions: true,
+simplify: true, 
+stringArrayShuffle: true,
+splitStrings: true,
+stringArrayThreshold: 1
+}
+)
+const result = {
+status: 200,
+author: `${global.ownername}`,
+result: obfuscationResult.getObfuscatedCode()
+}
+resolve(result)
+} catch (e) {
+reject(e)
+}
+})
+}
+
+async function aigpt(prompt) {
+  try {
+   const response = await axios.get("https://tools.revesery.com/ai/ai.php?query=" + prompt, {
+     headers: {
+      'Accept': '*/*',
+      'Content-Type': 'application/json',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.9999.999 Safari/537.36'
+      }
+    })
+    const res = response.data
+    const evaled = res.result
+    /*
+if (typeof evaled !== 'string') evaled = require('util').inspect(evaled)
+m.reply(evaled)
+*/
+  } catch (error) {
+  console.error(error)
+  }
+}
+
+async function ttslide(text) {
+    let response = await axios.get(`https://dlpanda.com/id?url=${text}&token=G7eRpMaa`)
+    const html = response.data
+    const $ = cheerio.load(html)
+    let asd = []
+    let imgSrc = []
+    let creator = 'Jikarinka'
+    $('div.col-md-12 > img').each((index,
+        element) => {
+        imgSrc.push($(element).attr('src'))
+    })
+    asd.push({
+        creator,
+        imgSrc
+    })
+    let fix = imgSrc.map((e,
+        i) => {
+        return {
+            img: e,
+            creator: creator[i]
+        }
+    })
+    for (let i of asd) {
+        return i
+    }
+}
+
+async function cai(query) {
+        let token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkVqYmxXUlVCWERJX0dDOTJCa2N1YyJ9.eyJnaXZlbl9uYW1lIjoiUkNTIiwiZmFtaWx5X25hbWUiOiJYWiIsIm5pY2tuYW1lIjoicmNzeHo2NDkiLCJuYW1lIjoiUkNTIFhaIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0lYbGpRdW11SWlQTjdwLUoxUk1HNjZ0ODZzTzJhMG9DcW93RTlZVDFzaj1zOTYtYyIsImxvY2FsZSI6ImlkIiwidXBkYXRlZF9hdCI6IjIwMjMtMTEtMDVUMTQ6NTM6NDkuNjM0WiIsImVtYWlsIjoicmNzeHo2NDlAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImlzcyI6Imh0dHBzOi8vY2hhcmFjdGVyLWFpLnVzLmF1dGgwLmNvbS8iLCJhdWQiOiJkeUQzZ0UyODFNcWdJU0c3RnVJWFloTDJXRWtucVp6diIsImlhdCI6MTY5OTE5NjAzNCwiZXhwIjoxNzAyNzk2MDM0LCJzdWIiOiJnb29nbGUtb2F1dGgyfDExMDY5MjA2MTkzMTI0MTU4NTgwNSIsInNpZCI6IjVhaklfSlRJeFBZWGpzU0piWmdzRnQ4MXhaTHRhRERyIiwibm9uY2UiOiJUQzE0V2xvMVNGSmlkVU5FWVVSbFJXb3dTV3RJU25acVRtVTRVR3hoUldReU0xQm5Rbk0yYjAwNWJ3PT0ifQ.jduu283Aycw7GwUL270EkwoF71bINRrLnFzVJGpoG9uOO4A-jxtZ07XRZIr_t4lT_gt2N19BWXg7SGxRR_coFbCJLfyUHLzxx6ZaDGMqUnCPhJ6WXBHABsTsqnlQIJs1sQPJyLKw01-FU5FoB8atW3OIyjt0nJayJtMSm4NzKkGR2gBWZSNR3FIqX7r4NY_wUSc-1Za50FaMiLg3XdGkfE59wxs_NdlxxdPVVG4G4uKBWQCIy6ofRDnnb22Wfw1knt8yXMjGfq8RtSsAkGMmjp_KVICSRDCqy0cCOtUdmih5LCRyEQagIRBl90SP753C7ehiue_ucidCYh9XrxP7HQ";
+    return new Promise(async (resolve, reject) => {
+    try {
+        LenwyLD()
+  await sleep(200)
+        const request = await axios({
+            method: "POST",
+            url: "https://beta.character.ai/chat/streaming/",
+            body: JSON.stringify(query),
+            headers: {
+            "authorization": "Token " + token,
+            "Content-Type": "application/json",
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36",
+            client: "Token " + token
+            }
+            })
+
+        if (request.status() === 200) {
+            const response = await JSON.parse(request)
+            const replies = response.replies;
+
+            const messages = []
+
+            for (let i = 0; i < replies.length; i++) {
+                lenwy.sendMessage(i, {text: `${text}`}, {quoted:m})
+            }
+            resolve(i)
+            }
+        } catch (error) {
+      reject(error)
+    }
+})
+}
+
+function setReminder(time, reminder, sender) {
+    let reminderTime = time * 60000;
+
+    let reminderDate = new Date(Date.now() + reminderTime)
+
+    reminders[sender] = {
+        time: reminderTime,
+        message: reminder,
+        reminderDate: reminderDate
+    };
+
+    setTimeout(() => {
+        delete reminders[sender]
+    }, reminderTime)
+}
+
+async function tiktoks(query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+        LenwyLD()
+  await sleep(200)
+      const response = await axios({
+        method: 'POST',
+        url: 'https://tikwm.com/api/feed/search',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Cookie': 'current_language=en',
+          'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36'
+        },
+        data: {
+          keywords: query,
+          count: 50,
+          cursor: 0,
+          HD: 1
+        }
+      })
+      const videos = response.data.data.videos;
+      if (videos.length === 0) {
+        reject("*Tidak Ada Video Yang Ditemukan* 😥")
+      } else {
+        const gywee = Math.floor(Math.random() * videos.length)
+        const videorndm = videos[gywee] 
+
+        const result = {
+          title: videorndm.title,
+          cover: videorndm.cover,
+          origin_cover: videorndm.origin_cover,
+          no_watermark: videorndm.play,
+          watermark: videorndm.wmplay,
+          music: videorndm.music
+        };
+        resolve(result)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+async function tiktok2(query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+        LenwyLD()
+  await sleep(200)
+    const encodedParams = new URLSearchParams()
+encodedParams.set('url', query)
+encodedParams.set('hd', '1')
+
+      const response = await axios({
+        method: 'POST',
+        url: 'https://tikwm.com/api/',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Cookie': 'current_language=en',
+          'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36'
+        },
+        data: encodedParams
+      })
+      const videos = response.data.data;
+        const result = {
+          title: videos.title,
+          cover: videos.cover,
+          origin_cover: videos.origin_cover,
+          no_watermark: videos.play,
+          watermark: videos.wmplay,
+          music: videos.music
+        };
+        resolve(result)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+const clean = (data) => {
+  let regex = /(<([^>]+)>)/gi;
+  data = data.replace(/(<br?\s?\/>)/gi, " \n")
+  return data.replace(regex, "")
+};
+
+async function shortener(url) {
+  return url;
+}
+
+async function tiktok11(query) {
+  let response = await axios("https://lovetik.com/api/ajax/search", {
+    method: "POST",
+    data: new URLSearchParams(Object.entries({ query })),
+  })
+
+  result = {};
+
+  result.creator = "YNTKTS";
+  result.title = clean(response.data.desc)
+  result.author = clean(response.data.author)
+  result.nowm = await shortener(
+    (response.data.links[0].a || "").replace("https", "http")
+  )
+  result.watermark = await shortener(
+    (response.data.links[1].a || "").replace("https", "http")
+  )
+  result.audio = await shortener(
+    (response.data.links[2].a || "").replace("https", "http")
+  )
+  result.thumbnail = await shortener(response.data.cover)
+  return result;
+}
+
+async function filterValidImages(images, limit) {
+  const validImages = []
+  for (const image of images) {
+    if (await isImageURL(image)) {
+      validImages.push(image)
+      if (validImages.length >= limit) {
+        break // Hentikan jika sudah mencapai jumlah gambar yang diminta
+      }
+    }
+  }
+  return validImages;
+}
+
+async function isImageURL(url) {
+  try {
+    const res = await fetch(url, { method: 'HEAD' })
+    const contentType = res.headers.get('content-type')
+    return contentType && contentType.startsWith('image') // Memeriksa apakah tipe file adalah gambar
+  } catch (error) {
+    return false; // Jika terjadi kesalahan dalam memeriksa URL, mengembalikan false
+  }
+}
+
+var createSerial = (size) => {
+return crypto.randomBytes(size).toString('hex').slice(0, size)
+}
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+if (kuismath.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
+kuis = true;
+jawaban = kuismath[m.sender.split('@')[0]]
+if (budy.toLowerCase() == jawaban) {
+await m.reply(`${global.emoji} *Kuis Matematika*\n\n🎁 *Jawaban Benar*\n\n📣 *Ingin Bermain Lagi? Silakan Ketik Math Mode*`)
+delete kuismath[m.sender.split('@')[0]]
+} else {
+m.reply('❌ *Jawaban Salah!*')
+}
+}
+
+if (tebakgambar.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
+kuis = true;
+jawaban = tebakgambar[m.sender.split('@')[0]]
+if (budy.toLowerCase() == jawaban) {
+m.reply(`${global.emoji} *Tebak Gambar*\n\n🎁 *Jawaban Benar*\n\n📣 *Ingin Bermain Lagi? Silakan Ketik Tebak Gambar*`)
+delete tebakgambar[m.sender.split('@')[0]]
+} else {
+m.reply('❌ *Jawaban Salah!*')
+}
+}
+
+if (tebakkata.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
+kuis = true
+jawaban = tebakkata[m.sender.split('@')[0]]
+if (budy.toLowerCase() == jawaban) {
+lenwy.sendMessage(m.chat, { text: `${global.emoji} *Tebak Kata*\n\n🎁 *Jawaban Benar*\n\n📣 *Ingin Bermain Lagi? Silahkan Ketik Tebak Kata*`}, {quoted:m}) 
+delete tebakkata[m.sender.split('@')[0]]
+} else m.reply('❌ *Jawaban Salah!*')
+}
+
+if (caklontong.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
+kuis = true;
+jawaban = caklontong[m.sender.split('@')[0]]
+deskripsi = caklontong_desk[m.sender.split('@')[0]]
+if (budy.toLowerCase() == jawaban) {
+m.reply(`${global.emoji} *Tebak Lontong*\n\n🎁 *Jawaban Benar*\n\n📣 *Ingin Bermain Lagi? Silakan Ketik Tebak Lontong*`)
+delete caklontong[m.sender.split('@')[0]]
+delete caklontong_desk[m.sender.split('@')[0]]
+} else {
+m.reply('❌ *Jawaban Salah!*')
+}
+}
+
+if (tebakkalimat.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
+kuis = true;
+jawaban = tebakkalimat[m.sender.split('@')[0]]
+if (budy.toLowerCase() == jawaban) {
+m.reply(`${global.emoji} *Tebak Kalimat*\n\n🎁 *Jawaban Benar*\n\n📣 *Ingin Bermain Lagi? Silakan Ketik Tebak Kalimat*`)
+delete tebakkalimat[m.sender.split('@')[0]]
+} else {
+m.reply('❌ *Jawaban Salah!*')
+}
+}
+
+if (tebaklirik.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
+kuis = true;
+jawaban = tebaklirik[m.sender.split('@')[0]]
+if (budy.toLowerCase() == jawaban) {
+m.reply(`${global.emoji} *Tebak Lirik*\n\n🎁 *Jawaban Benar*\n\n📣 *Ingin Bermain Lagi? Silakan Ketik Tebak Lirik*`)
+delete tebaklirik[m.sender.split('@')[0]]
+} else {
+m.reply('❌ *Jawaban Salah!*')
+}
+}
+
+if (tebaktebakan.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
+kuis = true;
+jawaban = tebaktebakan[m.sender.split('@')[0]]
+if (budy.toLowerCase() == jawaban) {
+m.reply(`${global.emoji} *Tebak Tebakan*\n\n🎁 *Jawaban Benar*\n\n📣 *Ingin Bermain Lagi? Silakan Ketik Tebak Tebakan*`)
+delete tebaktebakan[m.sender.split('@')[0]]
+} else {
+m.reply('❌ *Jawaban Salah!*')
+}
+}
+
+//TicTacToe
+this.game = this.game ? this.game : {}
+let room = Object.values(this.game).find(room => room.id && room.game && room.state && room.id.startsWith('tictactoe') && [room.game.playerX, room.game.playerO].includes(m.sender) && room.state == 'PLAYING')
+if (room) {
+let ok
+let isWin = !1
+let isTie = !1
+let isSurrender = !1
+// m.reply(`[DEBUG]\n${parseInt(m.text)}`)
+if (!/^([1-9]|(me)?nyerah|surr?ender|off|skip)$/i.test(m.text)) return
+isSurrender = !/^[1-9]$/.test(m.text)
+if (m.sender !== room.game.currentTurn) { // nek wayahku
+if (!isSurrender) return !0
+}
+if (!isSurrender && 1 > (ok = room.game.turn(m.sender === room.game.playerO, parseInt(m.text) - 1))) {
+m.reply({
+'-3': 'Game telah berakhir',
+'-2': 'Invalid',
+'-1': 'Posisi Invalid',
+0: 'Posisi Invalid',
+}[ok])
+return !0
+}
+if (m.sender === room.game.winner) isWin = true
+else if (room.game.board === 511) isTie = true
+let arr = room.game.render().map(v => {
+return {
+X: '❌',
+O: '⭕',
+1: '1️⃣',
+2: '2️⃣',
+3: '3️⃣',
+4: '4️⃣',
+5: '5️⃣',
+6: '6️⃣',
+7: '7️⃣',
+8: '8️⃣',
+9: '9️⃣',
+}[v]
+})
+if (isSurrender) {
+room.game._currentTurn = m.sender === room.game.playerX
+isWin = true
+}
+let winner = isSurrender ? room.game.currentTurn : room.game.winner
+let str = `Room ID: ${room.id}
+
+${arr.slice(0, 3).join('')}
+${arr.slice(3, 6).join('')}
+${arr.slice(6).join('')}
+
+${isWin ? `@${winner.split('@')[0]} Menang!` : isTie ? `Game berakhir` : `Giliran ${['❌', '⭕'][1 * room.game._currentTurn]} (@${room.game.currentTurn.split('@')[0]})`}
+❌: @${room.game.playerX.split('@')[0]}
+⭕: @${room.game.playerO.split('@')[0]}
+
+Ketik *nyerah* untuk menyerah dan mengakui kekalahan`
+if ((room.game._currentTurn ^ isSurrender ? room.x : room.o) !== from)
+room[room.game._currentTurn ^ isSurrender ? 'x' : 'o'] = from
+if (room.x !== room.o) await lenwy.sendText(room.x, str, m, { mentions: parseMention(str) } )
+await lenwy.sendText(room.o, str, m, { mentions: parseMention(str) } )
+if (isTie || isWin) {
+delete this.game[room.id]
+}
+}
+
+//Suit PvP
+this.suit = this.suit ? this.suit : {}
+let roof = Object.values(this.suit).find(roof => roof.id && roof.status && [roof.p, roof.p2].includes(m.sender))
+if (roof) {
+let win = ''
+let tie = false
+if (m.sender == roof.p2 && /^(acc(ept)?|terima|gas|oke?|tolak|gamau|nanti|ga(k.)?bisa|y)/i.test(m.text) && m.isGroup && roof.status == 'wait') {
+if (/^(tolak|gamau|nanti|n|ga(k.)?bisa)/i.test(m.text)) {
+lenwy.sendTextWithMentions(from, `@${roof.p2.split`@`[0]} menolak suit, suit dibatalkan`, m)
+delete this.suit[roof.id]
+return !0
+}
+roof.status = 'play'
+roof.asal = from
+clearTimeout(roof.waktu)
+//delete roof[roof.id].waktu
+lenwy.sendText(from, `Suit telah dikirimkan ke chat
+
+@${roof.p.split`@`[0]} dan 
+@${roof.p2.split`@`[0]}
+
+Silahkan pilih suit di chat masing"
+klik https://wa.me/${botNumber.split`@`[0]}`, m, { mentions: [roof.p, roof.p2] })
+if (!roof.pilih) lenwy.sendText(roof.p, `Silahkan pilih \n\nBatu🗿\nKertas📄\nGunting✂️`, m)
+if (!roof.pilih2) lenwy.sendText(roof.p2, `Silahkan pilih \n\nBatu🗿\nKertas📄\nGunting✂️`, m)
+roof.waktu_milih = setTimeout(() => {
+if (!roof.pilih && !roof.pilih2) lenwy.sendText(from, `Kedua pemain tidak niat main,\nSuit dibatalkan`)
+else if (!roof.pilih || !roof.pilih2) {
+win = !roof.pilih ? roof.p2 : roof.p
+lenwy.sendTextWithMentions(from, `@${(roof.pilih ? roof.p2 : roof.p).split`@`[0]} tidak memilih suit, game berakhir`, m)
+}
+delete this.suit[roof.id]
+return !0
+}, roof.timeout)
+}
+let jwb = m.sender == roof.p
+let jwb2 = m.sender == roof.p2
+let g = /gunting/i
+let b = /batu/i
+let k = /kertas/i
+let reg = /^(gunting|batu|kertas)/i
+if (jwb && reg.test(m.text) && !roof.pilih && !m.isGroup) {
+roof.pilih = reg.exec(m.text.toLowerCase())[0]
+roof.text = m.text
+m.reply(`Kamu telah memilih ${m.text} ${!roof.pilih2 ? `\n\nMenunggu lawan memilih` : ''}`)
+if (!roof.pilih2) lenwy.sendText(roof.p2, '_Lawan sudah memilih_\nSekarang giliran kamu', 0)
+}
+if (jwb2 && reg.test(m.text) && !roof.pilih2 && !m.isGroup) {
+roof.pilih2 = reg.exec(m.text.toLowerCase())[0]
+roof.text2 = m.text
+m.reply(`Kamu telah memilih ${m.text} ${!roof.pilih ? `\n\nMenunggu lawan memilih` : ''}`)
+if (!roof.pilih) lenwy.sendText(roof.p, '_Lawan sudah memilih_\nSekarang giliran kamu', 0)
+}
+let stage = roof.pilih
+let stage2 = roof.pilih2
+if (roof.pilih && roof.pilih2) {
+clearTimeout(roof.waktu_milih)
+if (b.test(stage) && g.test(stage2)) win = roof.p
+else if (b.test(stage) && k.test(stage2)) win = roof.p2
+else if (g.test(stage) && k.test(stage2)) win = roof.p
+else if (g.test(stage) && b.test(stage2)) win = roof.p2
+else if (k.test(stage) && b.test(stage2)) win = roof.p
+else if (k.test(stage) && g.test(stage2)) win = roof.p2
+else if (stage == stage2) tie = true
+lenwy.sendText(roof.asal, `_*Hasil Suit*_${tie ? '\nSERI' : ''}
+
+@${roof.p.split`@`[0]} (${roof.text}) ${tie ? '' : roof.p == win ? ` Menang \n` : ` Kalah \n`}
+@${roof.p2.split`@`[0]} (${roof.text2}) ${tie ? '' : roof.p2 == win ? ` Menang \n` : ` Kalah \n`}
+`.trim(), m, { mentions: [roof.p, roof.p2] })
+delete this.suit[roof.id]
+}
+}
+let mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
+for (let jid of mentionUser) {
+  let user = global.db.data.users[jid]
+  if (!user) continue
+  let afkTime = user.afkTime
+  if (!afkTime || afkTime < 0) continue
+  let reason = user.afkReason || ''
+  let ygSedangAfk = await lenwy.getName(jid) || jid
+  let pushnameYgNgetag = await lenwy.getName(m.sender) || m.sender
+
+  m.reply(`⚠️ *${pushnameYgNgetag} Jangan Tag ${ygSedangAfk}! Dia Sedang AFK*
+❗❗ *Dengan Alasan :* ${reason ? reason : 'Dia Ga Ngasih Alasan Jir. Lanjut Aja Tag Dia Lagi 💀'}
+🕒 *Selama : ${clockString(new Date - afkTime)}*
+`.trim())
+}
+
+if (global.db.data.users[m.sender].afkTime > -1) {
+  let user = global.db.data.users[m.sender]
+  m.reply(`
+*${pushname} Kembali Dari Afk*\n⚠️ ${'*Dengan Alasan :* ' + (user.afkReason ? user.afkReason : 'Tidak Ada')}\n🕒 *Selama : ${clockString(new Date - user.afkTime)}*
+`.trim())
+  user.afkTime = -1
+  user.afkReason = ''
+}
+
+async function limit50(m) {
+  const user = global.db.data.users[m.sender]
+
+  // Cek apakah pengguna adalah premium
+  if (isPrem(m.sender)) {
+    m.reply('🎉 *Akun Premium Kamu Aktif* Limit tidak berkurang.')
+    return true; // Mengembalikan true untuk menunjukkan bahwa limit tidak perlu dikurangi
+  } else {
+    // Jika pengguna bukan premium, periksa dan kurangi limit
+    if (user.limit < 50) {
+      m.reply('⚠️ *Limit Kamu Habis*')
+      return false; // Mengembalikan false jika limit habis
+    } else {
+      user.limit -= 50;
+      m.reply('50 Limit Digunakan')
+      return true; // Mengembalikan true jika limit berhasil dikurangi
+    }
+  }
+}
+
+async function limit25(m) {
+  const user = global.db.data.users[m.sender]
+
+  // Cek apakah pengguna adalah premium
+  if (isPrem(m.sender)) {
+    m.reply('🎉 *Akun Premium Kamu Aktif* Limit tidak berkurang.')
+    return true; // Mengembalikan true untuk menunjukkan bahwa limit tidak perlu dikurangi
+  } else {
+    // Jika pengguna bukan premium, periksa dan kurangi limit
+    if (user.limit < 25) {
+      m.reply('⚠️ *Limit Kamu Habis*')
+      return false; // Mengembalikan false jika limit habis
+    } else {
+      user.limit -= 25;
+      m.reply('25 Limit Digunakan')
+      return true; // Mengembalikan true jika limit berhasil dikurangi
+    }
+  }
+}
+function saveDatabase() {
+  fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
+}
+
+// Function untuk memperbarui status welcome
+async function updateWelcomeStatus(m, status) {
+  if (!m.isGroup) return m.reply(mess.group)
+  if (!isAdmins) return m.reply(mess.admin)
+
+  // Pastikan data grup ada di global.db.data
+  if (!global.db.data.chats[m.chat]) global.db.data.chats[m.chat] = {};
+
+  const currentWelcmStatus = global.db.data.chats[m.chat].wlcm;
+
+  if (status === "on") {
+      if (currentWelcmStatus) return m.reply('Fitur Welcome sudah aktif di grup ini.')
+
+      // Aktifkan fitur welcome untuk grup ini
+      global.db.data.chats[m.chat].wlcm = true;
+      saveDatabase() // Simpan perubahan ke file
+
+      var groupMetadata = await lenwy.groupMetadata(m.chat)
+      var members = groupMetadata['participants']
+      var mems = []
+      members.map(adm => {
+          mems.push(adm.id.replace('c.us', 's.whatsapp.net'))
+      })
+      lenwy.sendMessage(m.chat, { text: `Fitur Welcome Diaktifkan Di Grup Ini`}, { quoted: m })
+  } else if (status === "off") {
+      if (!currentWelcmStatus) return m.reply('Fitur Welcome sudah nonaktif di grup ini.')
+
+      // Nonaktifkan fitur welcome untuk grup ini
+      global.db.data.chats[m.chat].wlcm = false;
+      saveDatabase() // Simpan perubahan ke file
+      m.reply('Fitur Welcome berhasil dinonaktifkan.')
+
+  } else {
+      m.reply('Ketik on untuk mengaktifkan atau off untuk menonaktifkan fitur welcome.')
+  }
+}
+
+async function updateLeftStatus(m, status) {
+  if (!m.isGroup) return m.reply(mess.group)
+  if (!isAdmins) return m.reply(mess.admin)
+
+  // Pastikan data grup ada di global.db.data
+  if (!global.db.data.chats[m.chat]) global.db.data.chats[m.chat] = {};
+
+  const currentWelcmStatus = global.db.data.chats[m.chat].left;
+
+  if (status === "on") {
+      if (currentWelcmStatus) return m.reply('Fitur Left sudah aktif di grup ini.')
+
+      // Aktifkan fitur left untuk grup ini
+      global.db.data.chats[m.chat].left = true;
+      saveDatabase() // Simpan perubahan ke file
+
+      var groupMetadata = await lenwy.groupMetadata(m.chat)
+      var members = groupMetadata['participants']
+      var mems = []
+      members.map(adm => {
+          mems.push(adm.id.replace('c.us', 's.whatsapp.net'))
+      })
+      lenwy.sendMessage(m.chat, { text: `Fitur Left Diaktifkan Di Grup Ini`}, { quoted: m })
+  } else if (status === "off") {
+      if (!currentWelcmStatus) return m.reply('Fitur Left sudah nonaktif di grup ini.')
+
+      // Nonaktifkan fitur left untuk grup ini
+      global.db.data.chats[m.chat].left = false;
+      saveDatabase() // Simpan perubahan ke file
+      m.reply('Fitur Left berhasil dinonaktifkan.')
+
+  } else {
+      m.reply('Ketik on untuk mengaktifkan atau off untuk menonaktifkan fitur left.')
+  }
+}
+
+async function updateTextWelcome(m, message) {
+  if (!m.isGroup) return m.reply(mess.group)
+  if (!isAdmins) return m.reply(mess.admin)
+    let textnya = `${message}`
+    global.datagc[m.chat].text_welcome = textnya;
+    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
+}
+
+async function updateTextLeft(m, message) {
+  if (!m.isGroup) return m.reply(mess.group)
+  if (!isAdmins) return m.reply(mess.admin)
+    let textnya = `${message}`
+    global.datagc[m.chat].text_left = textnya;
+    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
+}
+
+async function updateTextOpen(m, message) {
+  if (!m.isGroup) return m.reply(mess.group)
+  if (!isAdmins) return m.reply(mess.admin)
+    let textnya = `${message}`
+    global.datagc[m.chat].text_open = textnya;
+    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
+}
+
+async function updateTextClose(m, message) {
+  if (!m.isGroup) return m.reply(mess.group)
+  if (!isAdmins) return m.reply(mess.admin)
+    let textnya = `${message}`
+    global.datagc[m.chat].text_close = textnya;
+    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
+}
+
+async function updateTextDone(m, message) {
+  if (!m.isGroup) return m.reply(mess.group)
+  if (!isAdmins) return m.reply(mess.admin)
+    let textnya = `${message}`
+    global.datagc[m.chat].text_done = textnya;
+    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
+}
+
+async function updateTextProses(m, message) {
+  if (!m.isGroup) return m.reply(mess.group)
+  if (!isAdmins) return m.reply(mess.admin)
+    let textnya = `${message}`
+    global.datagc[m.chat].text_proses = textnya;
+    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
+}
+
+async function updateTextList(m, message) {
+  if (!m.isGroup) return m.reply(mess.group)
+  if (!isAdmins) return m.reply(mess.admin)
+    let textnya = `${message}`
+    global.datagc[m.chat].text_list = textnya;
+    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
+}
+
+async function updateTextListSimbol(m, message) {
+  if (!m.isGroup) return m.reply(mess.group)
+  if (!isAdmins) return m.reply(mess.admin)
+    let textnya = `${message}`
+    global.datagc[m.chat].text_list_simbol = textnya;
+    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
+}
+
+async function revokeGc(m) {
+  if (!m.isGroup) return m.reply(mess.group)
+  if (!isAdmins) return m.reply(mess.admin)
+  if (!isBotAdmins) return m.reply(mess.botAdmin)
+      
+      if (!global.db.data.chats[m.chat]) {
+        global.db.data.chats[m.chat] = {};
+    }
+    await lenwy.groupRevokeInvite(from)
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    let newLink = await lenwy.groupInviteCode(from)
+    global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
+    saveDatabase()
+    return newLink
+}
+
+async function catatLinkGc(m) {
+  if (!m.isGroup) return m.reply(mess.group)
+  if (!isAdmins) return m.reply(mess.admin)
+  if (!isBotAdmins) return m.reply(mess.botAdmin)
+      
+      if (!global.db.data.chats[m.chat]) {
+        global.db.data.chats[m.chat] = {};
+    }
+    let newLink = await lenwy.groupInviteCode(from)
+    global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
+    saveDatabase()
+}
+
+async function upgradeRole(role, user) {
+  let userTopup = {
+    id: [user],
+    role: role,
+    saldo: 0
+  };
+  let data = [];
+
+  try {
+    const fileData = fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8');
+    if (fileData.trim()) {
+      data = JSON.parse(fileData);
+    }
+  } catch (err) {
+    console.log('Error saat membaca atau parsing file:', err.message);
+  }
+
+  const existingUserIndex = data.findIndex(item => {
+    if (Array.isArray(item.id)) {
+      return (
+        item.id.length >= 2 &&
+        item.id[0].endsWith('@s.whatsapp.net') &&
+        item.id[1].endsWith('@lid') &&
+        item.id.includes(user)
+      );
+    } else {
+      return item.id === user;
+    }
+  });
+
+  if (existingUserIndex !== -1) {
+    const existingSaldo = data[existingUserIndex].saldo;
+    data[existingUserIndex].role = role;
+    data[existingUserIndex].saldo = existingSaldo;
+  } else {
+    data.push(userTopup);
+  }
+
+  fs.writeFileSync('./project/database/dataBuyerDigi.json', JSON.stringify(data, null, 2));
+}
+
+async function updateSaldo(user, saldo) {
+  let data = [];
+  try {
+    const fileData = fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8');
+    if (fileData.trim()) {
+      data = JSON.parse(fileData);
+    }
+  } catch (err) {
+    console.log('Error saat membaca atau parsing file:', err.message);
+  }
+
+  const existingUserIndex = data.findIndex(item => {
+    if (Array.isArray(item.id)) {
+      return (
+        item.id.length >= 2 &&
+        item.id[0].endsWith('@s.whatsapp.net') &&
+        item.id[1].endsWith('@lid') &&
+        item.id.includes(user)
+      );
+    } else {
+      return item.id === user;
+    }
+  });
+
+  if (existingUserIndex !== -1) {
+    if (data[existingUserIndex].saldo === null || isNaN(data[existingUserIndex].saldo)) {
+      data[existingUserIndex].saldo = 0;
+    } else {
+      data[existingUserIndex].saldo = parseFloat(data[existingUserIndex].saldo);
+    }
+
+    data[existingUserIndex].saldo += saldo;
+
+    fs.writeFileSync('./project/database/dataBuyerDigi.json', JSON.stringify(data, null, 2));
+    return true; // Berhasil
+  } else {
+    return false;
+  }
+}
+
+function getUserRole(userId) {
+  let buyers = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'));
+
+  // Cari user berdasarkan id
+  let userData = buyers.find(u => {
+    if (Array.isArray(u.id)) {
+      if (
+        u.id.length >= 2 &&
+        u.id[0].endsWith('@s.whatsapp.net') &&
+        u.id[1].endsWith('@lid')
+      ) {
+        return u.id.includes(userId);
+      }
+    }
+    return false;
+  });
+
+  // Kalau user tidak ditemukan
+  if (!userData) return null
+
+  let rolenya = null;
+  if (userData.role === "1") rolenya = global.settings.roles.role1;
+  else if (userData.role === "2") rolenya = global.settings.roles.role2;
+  else if (userData.role === "3") rolenya = global.settings.roles.role3;
+  else if (userData.role === "4") rolenya = global.settings.roles.role4;
+
+  return rolenya;
+}
+
+async function getUserSaldo(userId) {
+  let userstopup = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'));
+
+  let usertopup = userstopup.find(u => {
+    if (Array.isArray(u.id)) {
+      if (u.id.length >= 2 && 
+          u.id[0].endsWith('@s.whatsapp.net') && 
+          u.id[1].endsWith('@lid')) {
+        return u.id.includes(userId);
+      }
+      return false
+    } else {
+      return false;
+    }
+  });
+  return usertopup && usertopup.saldo != null
+    ? Number(usertopup.saldo)
+    : 0
+}
+
+function getUserTopup(userId) {
+  let userstopup = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'));
+
+  let usertopup = userstopup.find(u => {
+    if (Array.isArray(u.id)) {
+      if (u.id.length >= 2 && 
+          u.id[0].endsWith('@s.whatsapp.net') && 
+          u.id[1].endsWith('@lid')) {
+        return u.id.includes(userId);
+      }
+      return false
+    } else {
+      return false;
+    }
+  });
+
+  return Boolean(usertopup);
+}
+
+
+
+
+if (m.msg?.contextInfo?.mentionedJid?.some(jid => global.owner.includes(jid.replace(/@s\.whatsapp\.net$/, '')))) {
+  if (fromMe) return
+  return m.reply(mess.tagOwner);
+}
+
+
+//----------------------------------------------//Case ADDCASE DLL\\------------------------------------------------------------------------
+
+const totalfitur = () =>{
+var mytext = fs.readFileSync("./lenwy.js").toString()
+var numUpper = (mytext.match(/case '/g) || []).length
+return numUpper
+}  
+
+const listCase = () => {
+const code = fs.readFileSync("./lenwy.js", "utf8")
+var regex = /case\s+'([^']+)':/g;
+var matches = []
+var match;
+while ((match = regex.exec(code))) {
+matches.push(match[1])
+}
+let teks = `*Total Case*: ${matches.length} \n\n` 
+matches.forEach(function (x) {
+   teks += "  ◦  " + x + "\n"
+})
+return teks
+}
+
+const getcase = (cases) => {
+  const fileContent = fs.readFileSync("./lenwy.js").toString()
+  let validasii = fileContent.split(`case '${cases}'`)
+  const caseSplit = validasii? validasii : fileContent.split(`case '${cases}'`)
+  
+  if (caseSplit.length < 2) {
+      throw new Error(`Case '${cases}' tidak ditemukan.`)
+  }
+
+  const caseContent = caseSplit[1].split("break")[0]
+  
+  return "case " + `'${cases}'` + caseContent + "break";
+}
+
+
+async function dellCase(filePath, q) {
+  fs.readFile(filePath, "utf8", (err, data) => {
+    if (err) {
+      console.error("Kesalahan untuk menambahkan case:", err)
+      return
+    }
+
+    // Regex yang menangkap spasi di sekitar ':' dan pola case yang diinginkan
+    const regex = new RegExp(`case\\s*['"]${q}['"]\\s*:.*?break?`, "gs")
+    const modifiedData = data.replace(regex, "")
+    if (modifiedData === data) {
+      console.log(`Case '${q}' tidak ditemukan.`)
+    } else {
+      fs.writeFile(filePath, modifiedData, "utf8", (err) => {
+        if (err) {
+            m.reply(`Case ${q} Tidak Ada`)
+          console.error("Terjadi kesalahan saat menulis file:", err)
+          return
+        }
+		m.reply(`Mas, Done. Coba Cek`)
+        console.log(`Teks dari case '${q}' telah dihapus dari file.`)
+      })
+    }
+  })
+}
+
+
+
+
+
+
+
+//------------------------------------------------------//Case ADDCASE DLL\\------------------------------------------------------------------------
+
+
+//----------------------------------------------------------------------- [ GAME TEBAKANGKA ] ------------------------------------------------------------------------
+
+
+
+const gameState = {
+  angkaAcak: null,
+  jumlahTebakan: 0
+};
+
+
+//----------------------------------------------------------------------- [ GAME TEBAKANGKA ] ------------------------------------------------------------------------
+
+if (!lenwy.public) {
+  let IS_BOT = [lenwy.user.id, lenwy.user.lid].includes(m.sender.replace(/[^0-9]/g, ''))
+  if (!isCreator && !IS_BOT) return
+}
+
+switch (command) {
+
+
+case 'menu': 
+case 'mainmenu': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+LenwyLD()
+await sleep(200)
+    
+let anu = ` ❛❛ Hai, I'm ${global.botname} 👋 ❛❛
+
+   ➜ Whatsapp Bot To Solve Your Problems 🙌
+   ➜ Please Dont Call Bots Or Get Blocked 🚫
+ 
+   ╭─ ─ ─ ❛❛𝓘𝗇𝖿𝗈 𝓑𝗈𝗍 ❛❛
+   │ ꖛ 𝗿𝘂𝗻𝘁𝗶𝗺𝗲 ⵓ ${runtime(process.uptime())}
+   │ ꖛ 𝗰𝗿𝗲𝗮𝘁𝗼𝗿 ⵓ wa.me/${authorr}
+   │ ꖛ 𝗺𝗼𝗱𝗲 𝗯𝗼𝘁 ⵓ ${lenwy.public ? `Public Mode` : `Self Mode`}
+   ╰╌╌╌╌╌╌╌╌╌𖧷⃝⃝⃝⏤͟͟͞͞ 
+
+   ╭─ ─ ─ ❛❛𝓘𝗇𝖿𝗈𝓤𝗌𝖾𝗋 ❛❛
+   │ ꖛ 𝗻𝗮𝗺𝗲 ⵓ ${pushname}
+   │ ꖛ 𝗻𝘂𝗺𝗯𝗲𝗿 ⵓ wa.me/${m.sender.split('@')[0]}
+   │ ꖛ 𝘀𝘁𝗮𝘁𝘂𝘀 ⵓ ${isCreator ? `${global.emoji} Creator` : isPrem ? '🎁 Premium' : "🏷️ User"}
+   ╰╌╌╌╌╌╌╌╌╌𖧷⃝⃝⃝⏤͟͟͞͞ 
+   
+   ❛❛ 𝓚 𝖾𝗍𝖾𝗋𝖺𝗇𝗀𝖺𝗇 ❛❛
+   ➜ 𝗵𝗲𝗹𝗽 ⵓ Menunjukkan Panduan
+   ➜ 𝗺𝗲𝗻𝘂 ⵓ Menunjukkan Simple Menu
+   ➜ 𝗮𝗹𝗹𝗺𝗲𝗻𝘂 ⵓ Menunjukkan Semua Menu
+   ➜ 𝗹𝗶𝘀𝘁 ⵓ Menunjukkan List
+
+
+
+   ╭─ ─ ─ ❛❛𝑀𝖾𝗇𝗎 ❛❛
+   ││ ♡゙ Aboutmenu ( Menu Tentang )
+   ││ ♡゙ Ownermenu ( Menu Owner )
+   ││ ♡゙ Groupmenu ( Menu Grup )
+   ││ ♡゙ Funmenu ( Menu Fun )
+   ││ ♡゙ Toolsmenu ( Menu Tools )
+   ││ ♡゙ Gamemenu ( Menu Game )
+   ││ ♡゙ Beritamenu ( Menu Berita )
+   ││ ♡゙ Randommenu ( Menu Random )
+   ││ ♡゙ Downloadmenu ( Menu Download )
+   ││ ♡゙ Islamimenu ( Menu Islam )
+   ││ ♡゙ Searchmenu ( Menu Search )
+   ││ ♡゙ Antimenu ( Menu Anti )
+   ╰╌╌╌╌╌╌╌╌╌𖧷⃝⃝⃝⏤͟͟͞͞ 
+
+⚠️ *Kalo Ada Error Bisa Chat Owner Ya*
+`
+m.reply(anu)
+}
+break
+
+case 'almenu': 
+case 'allmenu': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+LenwyLD()
+await sleep(200)
+let anu = `               /)  /)  
+             („• ֊ •„) 
+◯┈──̇─∪─∪──̇──┈◯
+ ❛❛ Hai, I'm ${global.botname} 👋 ❛❛
+
+   ➜ Whatsapp Bot To Solve Your Problems 🙌
+   ➜ Please Dont Call Bots Or Get Blocked 🚫
+ 
+   ╭─ ─ ─ ❛❛𝓘𝗇𝖿𝗈 𝓑𝗈𝗍 ❛❛
+   │ ꖛ 𝗿𝘂𝗻𝘁𝗶𝗺𝗲 ⵓ ${runtime(process.uptime())}
+   │ ꖛ 𝗰𝗿𝗲𝗮𝘁𝗼𝗿 ⵓ wa.me/${authorr}
+   │ ꖛ 𝗺𝗼𝗱𝗲 𝗯𝗼𝘁 ⵓ ${lenwy.public ? `Public Mode` : `Self Mode`}
+   ╰╌╌╌╌╌╌╌╌╌𖧷⃝⃝⃝⏤͟͟͞͞ 
+
+   ╭─ ─ ─ ❛❛𝓘𝗇𝖿𝗈𝓤𝗌𝖾𝗋 ❛❛
+   │ ꖛ 𝗻𝗮𝗺𝗲 ⵓ ${pushname}
+   │ ꖛ 𝗻𝘂𝗺𝗯𝗲𝗿 ⵓ wa.me/${m.sender.split('@')[0]}
+   │ ꖛ 𝘀𝘁𝗮𝘁𝘂𝘀 ⵓ ${isCreator ? `${global.emoji} Creator` : isPrem ? '🎁 Premium' : "🏷️ User"}
+   ╰╌╌╌╌╌╌╌╌╌𖧷⃝⃝⃝⏤͟͟͞͞ 
+   
+   ❛❛ 𝓚 𝖾𝗍𝖾𝗋𝖺𝗇𝗀𝖺𝗇 ❛❛
+   ➜ 𝗵𝗲𝗹𝗽 ⵓ Menunjukkan Panduan
+   ➜ 𝗺𝗲𝗻𝘂 ⵓ Menunjukkan Simple Menu
+   ➜ 𝗮𝗹𝗹𝗺𝗲𝗻𝘂 ⵓ Menunjukkan Semua Menu
+   ➜ 𝗹𝗶𝘀𝘁 ⵓ Menunjukkan List
+
+
+
+   ╭───── 私❛❛ About Menu
+   ││
+   ││ ♡゙ Owner
+   ││ ♡゙ Developer
+   ││ ♡゙ Sewa
+   ││ ♡゙ Sc
+   ││ ♡゙ Ping
+   ││ ♡゙ Catatan
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+
+
+   ╭───── 私❛❛ Owner Menu
+   ││
+   ││ ♡゙ Cekidgc
+   ││ ♡゙ Pushkontak
+   ││ ♡゙ Pushkontak2
+   ││ ♡゙ Savekontak
+   ││ ♡゙ Public
+   ││ ♡゙ Self
+   ││ ♡゙ Enc
+   ││ ♡゙ Addallprem
+   ││ ♡゙ Delallprem
+   ││ ♡゙ Addprem
+   ││ ♡゙ Delprem
+   ││ ♡゙ Listprem
+   ││ ♡゙ Banall
+   ││ ♡゙ Delbanall
+   ││ ♡゙ Ban
+   ││ ♡゙ Delban
+   ││ ♡゙ Listban
+   ││ ♡゙ Resetlimit
+   ││ ♡゙ Addlimit
+   ││ ♡゙ Setppbot
+   ││ ♡゙ Setppbotpanjang
+   ││ ♡゙ Join
+   ││ ♡゙ Leave
+   ││ ♡゙ Addgc
+   ││ ♡゙ Delgc
+   ││ ♡゙ Bcgc
+   ││ ♡゙ Bcgcvideo
+   ││ ♡゙ Autoread
+   ││ ♡゙ Block
+   ││ ♡゙ Unblock
+   ││ ♡゙ Listdb
+   ││ ♡゙ Getdb
+   ││ ♡゙ Getuser
+   ││ ♡゙ Restart
+   ││ ♡゙ Delsesi
+   ││ ♡゙ Delsampah
+   ││ ♡゙ Setppsewa
+   ││ ♡゙ Changewdsewa
+   ││ ♡゙ Changewdppj
+   ││ ♡゙ Addsewa
+   ││ ♡゙ Delsewa
+   ││ ♡゙ Ceksewa
+   ││ ♡゙ Cekexpired
+   ││ ♡゙ Perpanjangsewa
+   ││ ♡゙ Listsewa
+   ││ ♡゙ Backupbot
+   ││ ♡゙ Cekip
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Cekstatusakun
+   ││ ♡゙ Listlayanankebsos
+   ││ ♡゙ Addkebsos
+   ││ ♡゙ Delkebsos
+   ││ ♡゙ cekorderankebsos
+   ││ ♡゙ Addgctopup
+   ││ ♡゙ Delgctopup
+   ││ ♡゙ Upgrade
+   ││ ♡゙ Deposit
+   ││ ♡゙ Profit
+   ││ ♡゙ Setprofit
+   ││ ♡゙ Cekdata
+   ││ ♡゙ Getcase
+   ││ ♡゙ Addcase
+   ││ ♡゙ Editcase
+   ││ ♡゙ Delcase
+   ││ ♡゙ Cekcase
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+
+
+   ╭───── 私❛❛ Group Menu
+   ││
+   ││ ♡゙ Antich (on/off)
+   ││ ♡゙ Antiwame (on/off)
+   ││ ♡゙ Antilink (on/off)
+   ││ ♡゙ Antipl (on/off)
+   ││ ♡゙ Antitoxic1 (on/off)
+   ││ ♡゙ Antitoxic2 (on/off)
+   ││ ♡゙ Antilinktt (on/off)
+   ││ ♡゙ Antilinkyt (on/off)
+   ││ ♡゙ Antilinkgc1 (on/off)
+   ││ ♡゙ Antilinkgc2 (on/off)
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Addlist (key@Respon)
+   ││ ♡゙ Dellist (key)
+   ││ ♡゙ updatenamelist (key@newKey)
+   ││ ♡゙ updatelist (key@newRespon)
+   ││ ♡゙ setpayment (key@wording)
+   ││ ♡゙ changewording (key@newWording)
+   ││ ♡゙ delbutton (key)
+   ││ ♡゙ setbuttoncopy
+   ││ ♡゙ setbuttonurl
+   ││ ♡゙ pay
+   ││ ♡゙ Hidetag (textnya)
+   ││ ♡゙ Faketag (textnya)
+   ││ ♡゙ Tagall (textnya)
+   ││ ♡゙ Kick (628xx)
+   ││ ♡゙ Add (628xx)
+   ││ ♡゙ Promote (628xx)
+   ││ ♡゙ Demote (628xx)
+   ││ ♡゙ Sendlinkgc (628xx)
+   ││ ♡゙ Inspect (linknya)
+   ││ ♡゙ Inspect2 (linknya)
+   ││ ♡゙ Promoteall
+   ││ ♡゙ Demoteall
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Setdesk (on/off)
+   ││ ♡゙ Welcome (on/off)
+   ││ ♡゙ Left (on/off)
+   ││ ♡゙ Setwelcome (text)
+   ││ ♡゙ Setleft (text)
+   ││ ♡゙ Setopen (text)
+   ││ ♡゙ Setclose (text)
+   ││ ♡゙ Setdone (text)
+   ││ ♡゙ Setproses (text)
+   ││ ♡゙ Setlist (text)
+   ││ ♡゙ Setsimbol (text)
+   ││ ♡゙ SetGrup (open/close)
+   ││ ♡゙ Open
+   ││ ♡゙ Close
+   ││ ♡゙ Jeda
+   ││ ♡゙ Editsubjek (textnya)
+   ││ ♡゙ Editdesk (textnya)
+   ││ ♡゙ Setppgc
+   ││ ♡゙ Linkgroup
+   ││ ♡゙ Resetlinkgc
+   ││ ♡゙ Afk
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Saran
+   ││ ♡゙ Reportbug
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+
+
+   ╭───── 私❛❛ Fun Menu
+   ││
+   ││ ♡゙ Truth
+   ││ ♡゙ Dare
+   ││ ♡゙ Rate
+   ││ ♡゙ Apakah
+   ││ ♡゙ Kapankah
+   ││ ♡゙ Bisakah
+   ││ ♡゙ Bagaimanakah
+   ││ ♡゙ Gantengcek
+   ││ ♡゙ Cantikcek
+   ││ ♡゙ Jodoh
+   ││ ♡゙ Readmore
+   ││ ♡゙ Cwr
+   ││ ♡゙ Couple
+   ││ ♡゙ Meme
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Cekkodam
+   ││ ♡゙ FML
+   ││ ♡゙ Bucin
+   ││ ♡゙ Quotes
+   ││ ♡゙ Motivasi
+   ││ ♡゙ Katabijak
+   ││ ♡゙ Katacinta
+   ││ ♡゙ Katagalau
+   ││ ♡゙ Katahacker
+   ││ ♡゙ Katailham
+   ││ ♡゙ Katasenja
+   ││ ♡゙ Katasindiran
+   ││ ♡゙ Quotesanime
+   ││ ♡゙ Quotespubg
+   ││ ♡゙ Quotesislamic
+   ││ ♡゙ Nickff
+   ││ ♡゙ Puisi
+   ││ ♡゙ Pantun
+   ││ ♡゙ Faktaunik
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+
+
+   ╭───── 私❛❛ Tools Menu
+   ││
+   ││ ♡゙ Sticker
+   ││ ♡゙ Smeme
+   ││ ♡゙ Qc
+   ││ ♡゙ Qckode
+   ││ ♡゙ Wm
+   ││ ♡゙ Brat
+   ││ ♡゙ Brat2
+   ││ ♡゙ Ttp
+   ││ ♡゙ Attp
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Createqr
+   ││ ♡゙ Detectqr
+   ││ ♡゙ Toimg
+   ││ ♡゙ Ocr
+   ││ ♡゙ Rvo
+   ││ ♡゙ Hd
+   ││ ♡゙ Hd2
+   ││ ♡゙ Hd3
+   ││ ♡゙ Hd4
+   ││ ♡゙ Removebg
+   ││ ♡゙ Toanime
+   ││ ♡゙ Tocyberpunk
+   ││ ♡゙ Todreamscape
+   ││ ♡゙ Tocomic
+   ││ ♡゙ Todonghua
+   ││ ♡゙ Todisney
+   ││ ♡゙ Toghibli
+   ││ ♡゙ Img2Txt
+   ││ ♡゙ Txt2img
+   ││ ♡゙ Txt2anime
+   ││ ♡゙ Txt2flux
+   ││ ♡゙ Txt2photoleap
+   ││ ♡゙ Txt2waifu
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Hdvid
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ text2speech
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Ssweb
+   ││ ♡゙ Sstab
+   ││ ♡゙ Sshp
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Cwr
+   ││ ♡゙ Ffstalk
+   ││ ♡゙ Mlstalk
+   ││ ♡゙ Ttstalk
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Reminder
+   ││ ♡゙ Getname
+   ││ ♡゙ Getpic
+   ││ ♡゙ Confes
+   ││ ♡゙ Confes2
+   ││ ♡゙ Readmore
+   ││ ♡゙ Cwr
+   ││ ♡゙ Tourl
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+
+
+   ╭───── 私❛❛ Game Menu
+   ││
+   ││ ♡゙ TTC
+   ││ ♡゙ Deltc
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Tebak Kata
+   ││ ♡゙ Tebak Gambar
+   ││ ♡゙ Tebak Lirik
+   ││ ♡゙ Tebak Kalimat
+   ││ ♡゙ Tebak Lontong
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Kuismath Noob
+   ││ ♡゙ Kuismath Easy
+   ││ ♡゙ Kuismath Medium
+   ││ ♡゙ Kuismath Hard
+   ││ ♡゙ Kuismath Extreme
+   ││ ♡゙ Kuismath Imposibble
+   ││ ♡゙ Kuismath Imposibble2
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+
+
+   ╭───── 私❛❛ Berita Menu
+   ││
+   ││ ♡゙ Inews
+   ││ ♡゙ Kontan
+   ││ ♡゙ KompasNews
+   ││ ♡゙ DetikNews
+   ││ ♡゙ DailyNews
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+
+
+   ╭───── 私❛❛ Random Menu
+   ││
+   ││ ♡゙ Qc
+   ││ ♡゙ Nickff
+   ││ ♡゙ Puisi
+   ││ ♡゙ Pantun
+   ││ ♡゙ Qckode
+   ││ ♡゙ Sticker
+   ││ ♡゙ Smeme
+   ││ ♡゙ Reminder
+   ││ ♡゙ Faktaunik
+   ││ ♡゙ Couple
+   ││ ♡゙ Meme
+   ││ ♡゙ Getname
+   ││ ♡゙ Getpic
+   ││ ♡゙ Confes
+   ││ ♡゙ Menfes
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+
+
+   ╭───── 私❛❛ Download Menu
+   ││
+   ││ ♡゙ Fb (linknya)
+   ││ ♡゙ Fbvideo (linknya)
+   ││ ♡゙ Fbfoto (linknya)
+   ││ ♡゙ Fbaudio (linknya)
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Ig (linknya)
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Tt (linknya)
+   ││ ♡゙ Ttaudio (linknya)
+
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Twitter (linknya)
+   ││ ♡゙ Twittervideo (linknya)
+   ││ ♡゙ Twitterfoto (linknya)
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Play (linknya)
+   ││ ♡゙ Ytmp3 (linknya)
+   ││ ♡゙ Ytmp4 (linknya)
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Mediafire (linknya)
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Spotify (text)
+   ││ ♡゙ Spotifydl (Linknya)
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+
+
+   ╭───── 私❛❛ Islami Menu
+   ││
+   ││ ♡゙ Doa
+   ││ ♡゙ Asmaul Husna
+   ││ ♡゙ Ayat Kursi
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+
+
+   ╭───── 私❛❛ Search Menu
+   ││
+   ││ ♡゙ Ai
+   ││ ♡゙ Yuna
+   ││ ♡゙ Search
+   ││ ♡゙ Imdb
+   ││ ♡゙ Chord
+   ││ ♡゙ Lirik
+   ││ ♡゙ Cuaca
+   ││ ♡゙ Jarak
+   ││ ♡゙ Google
+   ││ ♡゙ Mcserver
+   ││ ♡゙ Apksearch
+   ││ ♡゙ Animesearch
+   ││ ♡゙ Animeinfo
+   ││ ♡゙ Animedownload
+   ││ ♡゙ Translate
+   ││ ♡゙ Kodebahasa
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+
+
+   ╭───── 私❛❛ Anti Menu
+   ││
+   ││ ♡゙ Antich
+   ││ ♡゙ Antiwame
+   ││ ♡゙ Antilink
+   ││ ♡゙ Antipl
+   ││ ♡゙ Antitoxic1
+   ││ ♡゙ Antitoxic2
+   ││ ♡゙ Antilinktt
+   ││ ♡゙ Antilinkyt
+   ││ ♡゙ Antilinkgc1
+   ││ ♡゙ Antilinkgc2
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+
+⚠️ Kalo Ada Error Bisa Chat Owner Ya
+`
+m.reply(anu)
+}
+break
+
+
+
+
+
+//------------------------------------------------------------------[ MENU ]------------------------------------------------------------------------
+
+
+
+
+
+case 'aboutmenu': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+LenwyLD()
+await sleep(200)
+m.reply(`   ╭───── 私❛❛ About Menu
+   ││
+   ││ ♡゙ Owner
+   ││ ♡゙ Developer
+   ││ ♡゙ Sewa
+   ││ ♡゙ Sc
+   ││ ♡゙ Ping
+   ││ ♡゙ Catatan
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+`)
+}
+break
+
+case 'ownermenu':
+case 'menuowner': {
+  if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+  LenwyLD()
+  await sleep(200)
+  m.reply(`   ╭───── 私❛❛ Owner Menu
+   ││
+   ││ ♡゙ Cekidgc
+   ││ ♡゙ Pushkontak
+   ││ ♡゙ Pushkontak2
+   ││ ♡゙ Savekontak
+   ││ ♡゙ Public
+   ││ ♡゙ Self
+   ││ ♡゙ Enc
+   ││ ♡゙ Addallprem
+   ││ ♡゙ Delallprem
+   ││ ♡゙ Addprem
+   ││ ♡゙ Delprem
+   ││ ♡゙ Listprem
+   ││ ♡゙ Banall
+   ││ ♡゙ Delbanall
+   ││ ♡゙ Ban
+   ││ ♡゙ Delban
+   ││ ♡゙ Listban
+   ││ ♡゙ Resetlimit
+   ││ ♡゙ Addlimit
+   ││ ♡゙ Setppbot
+   ││ ♡゙ Setppbotpanjang
+   ││ ♡゙ Join
+   ││ ♡゙ Leave
+   ││ ♡゙ Addgc
+   ││ ♡゙ Delgc
+   ││ ♡゙ Bcgc
+   ││ ♡゙ Bcgcvideo
+   ││ ♡゙ Autoread
+   ││ ♡゙ Block
+   ││ ♡゙ Unblock
+   ││ ♡゙ Listdb
+   ││ ♡゙ Getdb
+   ││ ♡゙ Getuser
+   ││ ♡゙ Restart
+   ││ ♡゙ Delsesi
+   ││ ♡゙ Delsampah
+   ││ ♡゙ Setppsewa
+   ││ ♡゙ Changewdsewa
+   ││ ♡゙ Changewdppj
+   ││ ♡゙ Addsewa
+   ││ ♡゙ Delsewa
+   ││ ♡゙ Ceksewa
+   ││ ♡゙ Cekexpired
+   ││ ♡゙ Perpanjangsewa
+   ││ ♡゙ Listsewa
+   ││ ♡゙ Backupbot
+   ││ ♡゙ Cekip
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Cekstatusakun
+   ││ ♡゙ Listlayanankebsos
+   ││ ♡゙ Addkebsos
+   ││ ♡゙ Delkebsos
+   ││ ♡゙ cekorderankebsos
+   ││ ♡゙ Addgctopup
+   ││ ♡゙ Delgctopup
+   ││ ♡゙ Upgrade
+   ││ ♡゙ Deposit
+   ││ ♡゙ Profit
+   ││ ♡゙ Setprofit
+   ││ ♡゙ Cekdata
+   ││ ♡゙ Getcase
+   ││ ♡゙ Addcase
+   ││ ♡゙ Editcase
+   ││ ♡゙ Delcase
+   ││ ♡゙ Cekcase
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+`)
+}
+break
+
+case 'groupmenu':
+case 'grupmenu': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+LenwyLD()
+await sleep(200)
+m.reply(`   ╭───── 私❛❛ Group Menu
+   ││
+   ││ ♡゙ Antich (on/off)
+   ││ ♡゙ Antiwame (on/off)
+   ││ ♡゙ Antilink (on/off)
+   ││ ♡゙ Antipl (on/off)
+   ││ ♡゙ Antitoxic1 (on/off)
+   ││ ♡゙ Antitoxic2 (on/off)
+   ││ ♡゙ Antilinktt (on/off)
+   ││ ♡゙ Antilinkyt (on/off)
+   ││ ♡゙ Antilinkgc1 (on/off)
+   ││ ♡゙ Antilinkgc2 (on/off)
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Addlist (key@Respon)
+   ││ ♡゙ Dellist (key)
+   ││ ♡゙ updatenamelist (key@newKey)
+   ││ ♡゙ updatelist (key@newRespon)
+   ││ ♡゙ setpayment (key@wording)
+   ││ ♡゙ setbuttoncopy (key@disButn@cpyVal)
+   ││ ♡゙ setbuttonurl (key@disButn@urlVal)
+   ││ ♡゙ changewording (key@newWording)
+   ││ ♡゙ delbutton (key)
+   ││ ♡゙ pay
+   ││ ♡゙ Hidetag (textnya)
+   ││ ♡゙ Faketag (textnya)
+   ││ ♡゙ Tagall (textnya)
+   ││ ♡゙ Kick (628xx)
+   ││ ♡゙ Add (628xx)
+   ││ ♡゙ Promote (628xx)
+   ││ ♡゙ Demote (628xx)
+   ││ ♡゙ Sendlinkgc (628xx)
+   ││ ♡゙ Inspect (linknya)
+   ││ ♡゙ Inspect2 (linknya)
+   ││ ♡゙ Promoteall
+   ││ ♡゙ Demoteall
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Setdesk (on/off)
+   ││ ♡゙ Welcome (on/off)
+   ││ ♡゙ Left (on/off)
+   ││ ♡゙ Setwelcome (text)
+   ││ ♡゙ Setleft (text)
+   ││ ♡゙ Setopen (text)
+   ││ ♡゙ Setclose (text)
+   ││ ♡゙ Setdone (text)
+   ││ ♡゙ Setproses (text)
+   ││ ♡゙ Setlist (text)
+   ││ ♡゙ Setsimbol (text)
+   ││ ♡゙ SetGrup (open/close)
+   ││ ♡゙ Open
+   ││ ♡゙ Close
+   ││ ♡゙ Jeda
+   ││ ♡゙ Editsubjek (textnya)
+   ││ ♡゙ Editdesk (textnya)
+   ││ ♡゙ Setppgc
+   ││ ♡゙ Linkgroup
+   ││ ♡゙ Resetlinkgc
+   ││ ♡゙ Afk
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Saran
+   ││ ♡゙ Reportbug
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+`)
+}
+break
+
+case 'funmenu': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+LenwyLD()
+await sleep(200)
+m.reply(`   ╭───── 私❛❛ Fun Menu
+   ││
+   ││ ♡゙ Truth
+   ││ ♡゙ Dare
+   ││ ♡゙ Rate
+   ││ ♡゙ Apakah
+   ││ ♡゙ Kapankah
+   ││ ♡゙ Bisakah
+   ││ ♡゙ Bagaimanakah
+   ││ ♡゙ Gantengcek
+   ││ ♡゙ Cantikcek
+   ││ ♡゙ Jodoh
+   ││ ♡゙ Readmore
+   ││ ♡゙ Cwr
+   ││ ♡゙ Couple
+   ││ ♡゙ Meme
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ FML
+   ││ ♡゙ FML
+   ││ ♡゙ Bucin
+   ││ ♡゙ Quotes
+   ││ ♡゙ Motivasi
+   ││ ♡゙ Katabijak
+   ││ ♡゙ Katacinta
+   ││ ♡゙ Katagalau
+   ││ ♡゙ Katahacker
+   ││ ♡゙ Katailham
+   ││ ♡゙ Katasenja
+   ││ ♡゙ Katasindiran
+   ││ ♡゙ Quotesanime
+   ││ ♡゙ Quotespubg
+   ││ ♡゙ Quotesislamic
+   ││ ♡゙ Nickff
+   ││ ♡゙ Puisi
+   ││ ♡゙ Pantun
+   ││ ♡゙ Faktaunik
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+`)
+}
+break
+
+case 'toolsmenu':
+case 'toolmenu': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+LenwyLD()
+await sleep(200)
+m.reply(`   ╭───── 私❛❛ Tools Menu
+   ││
+   ││ ♡゙ Sticker
+   ││ ♡゙ Smeme
+   ││ ♡゙ Qc
+   ││ ♡゙ Qckode
+   ││ ♡゙ Wm
+   ││ ♡゙ Brat
+   ││ ♡゙ Brat2
+   ││ ♡゙ Ttp
+   ││ ♡゙ Attp
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Createqr
+   ││ ♡゙ Detectqr
+   ││ ♡゙ Toimg
+   ││ ♡゙ Ocr
+   ││ ♡゙ Rvo
+   ││ ♡゙ Hd
+   ││ ♡゙ Hd2
+   ││ ♡゙ Hd3
+   ││ ♡゙ Hd4
+   ││ ♡゙ Removebg
+   ││ ♡゙ Toanime
+   ││ ♡゙ Tocyberpunk
+   ││ ♡゙ Todreamscape
+   ││ ♡゙ Tocomic
+   ││ ♡゙ Todonghua
+   ││ ♡゙ Todisney
+   ││ ♡゙ Toghibli
+   ││ ♡゙ Img2Txt
+   ││ ♡゙ Txt2img
+   ││ ♡゙ Txt2anime
+   ││ ♡゙ Txt2flux
+   ││ ♡゙ Txt2photoleap
+   ││ ♡゙ Txt2waifu
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Hdvid
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ text2speech
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Ssweb
+   ││ ♡゙ Sstab
+   ││ ♡゙ Sshp
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Cwr
+   ││ ♡゙ Ffstalk
+   ││ ♡゙ Mlstalk
+   ││ ♡゙ Ttstalk
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Reminder
+   ││ ♡゙ Getname
+   ││ ♡゙ Getpic
+   ││ ♡゙ Confes
+   ││ ♡゙ Confes2
+   ││ ♡゙ Readmore
+   ││ ♡゙ Cwr
+   ││ ♡゙ Tourl
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+`)
+}
+break
+
+case 'gamemenu': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+LenwyLD()
+await sleep(200)
+m.reply(`   ╭───── 私❛❛ Game Menu
+   ││
+   ││ ♡゙ TTC
+   ││ ♡゙ Deltc
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Tebak Kata
+   ││ ♡゙ Tebak Gambar
+   ││ ♡゙ Tebak Lirik
+   ││ ♡゙ Tebak Kalimat
+   ││ ♡゙ Tebak Lontong
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Kuismath Noob
+   ││ ♡゙ Kuismath Easy
+   ││ ♡゙ Kuismath Medium
+   ││ ♡゙ Kuismath Hard
+   ││ ♡゙ Kuismath Extreme
+   ││ ♡゙ Kuismath Imposibble
+   ││ ♡゙ Kuismath Imposibble2
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+`)
+}
+break
+
+case 'beritamenu': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+LenwyLD()
+await sleep(200)
+m.reply(`   ╭───── 私❛❛ Berita Menu
+   ││
+   ││ ♡゙ Inews
+   ││ ♡゙ Kontan
+   ││ ♡゙ KompasNews
+   ││ ♡゙ DetikNews
+   ││ ♡゙ DailyNews
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+`)
+}
+break
+
+case 'randommenu':
+case 'randmenu':{
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+const y11 = `   ╭───── 私❛❛ Random Menu
+   ││
+   ││ ♡゙ Qc
+   ││ ♡゙ Nickff
+   ││ ♡゙ Puisi
+   ││ ♡゙ Pantun
+   ││ ♡゙ Qckode
+   ││ ♡゙ Sticker
+   ││ ♡゙ Smeme
+   ││ ♡゙ Reminder
+   ││ ♡゙ Faktaunik
+   ││ ♡゙ Couple
+   ││ ♡゙ Meme
+   ││ ♡゙ Getname
+   ││ ♡゙ Getpic
+   ││ ♡゙ Confes
+   ││ ♡゙ Menfes
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+`
+m.reply(y11)
+}
+break
+
+case 'downmenu':
+case 'downloadmenu': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+LenwyLD()
+await sleep(200)
+m.reply(`   ╭───── 私❛❛ Download Menu
+   ││
+   ││ ♡゙ Fb (linknya)
+   ││ ♡゙ Fbvideo (linknya)
+   ││ ♡゙ Fbfoto (linknya)
+   ││ ♡゙ Fbaudio (linknya)
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Ig (linknya)
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Tt (linknya)
+   ││ ♡゙ Ttaudio (linknya)
+
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Twitter (linknya)
+   ││ ♡゙ Twittervideo (linknya)
+   ││ ♡゙ Twitterfoto (linknya)
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Play (linknya)
+   ││ ♡゙ Ytmp3 (linknya)
+   ││ ♡゙ Ytmp4 (linknya)
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Mediafire (linknya)
+   ││ - - - - - - - - - - - -
+   ││ ♡゙ Spotify (text)
+   ││ ♡゙ Spotifydl (Linknya)
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+`)
+}
+break
+
+case 'islamimenu': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+LenwyLD()
+await sleep(200)
+m.reply(`   ╭───── 私❛❛ Islami Menu
+   ││
+   ││ ♡゙ Doa
+   ││ ♡゙ Asmaul Husna
+   ││ ♡゙ Ayat Kursi
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+`)
+}
+break
+
+case 'searchmenu': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+LenwyLD()
+await sleep(200)
+m.reply(`   ╭───── 私❛❛ Search Menu
+   ││
+   ││ ♡゙ Ai
+   ││ ♡゙ Yuna
+   ││ ♡゙ Imdb
+   ││ ♡゙ Chord
+   ││ ♡゙ Lirik
+   ││ ♡゙ Cuaca
+   ││ ♡゙ Jarak
+   ││ ♡゙ Google
+   ││ ♡゙ Mcserver
+   ││ ♡゙ Apksearch
+   ││ ♡゙ Animesearch
+   ││ ♡゙ Animeinfo
+   ││ ♡゙ Animedownload
+   ││ ♡゙ Translate
+   ││ ♡゙ Kodebahasa
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+`)
+}
+break
+
+case 'antimenu': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+LenwyLD()
+await sleep(200)
+m.reply(`   ╭───── 私❛❛ Anti Menu
+   ││
+   ││ ♡゙ Antich
+   ││ ♡゙ Antiwame
+   ││ ♡゙ Antilink
+   ││ ♡゙ Antipl
+   ││ ♡゙ Antitoxic1
+   ││ ♡゙ Antitoxic2
+   ││ ♡゙ Antilinktt
+   ││ ♡゙ Antilinkyt
+   ││ ♡゙ Antilinkgc1
+   ││ ♡゙ Antilinkgc2
+   ╰───── ♡゙𓇼𓂃 𓆪𐚁
+`)
+}
+break
+
+
+
+
+
+//------------------------------------------------------------------[ MENU ]------------------------------------------------------------------------
+
+
+
+
+
+
+case 'help': {
+m.reply(`*Panduan Untuk Menggunakan Fitur Bot*
+
+*#1 Membuat Sticker Whatsapp*
+*#2 Membuat Sticker Video*
+*#3 Mengubah Watermark Sticker*
+*#4 Meningkatkan Kualitas Gambar*
+*#5 Mengunduh Foto/Video Dari Link*
+*#6 Mengunduh Audio/Video Youtube*
+*#7 Mengunduh Lagu/Musik*
+*#8 Bertanya Kepada Bot*
+*#9 Mencari Berita*
+*#10 Mengubah Gambar Menjadi Link*
+*#11 Mengetahui Jarak Kota*
+*#12 Menghapus Pesan Bot*
+
+🎁 *Untuk Menampilkan Panduan Ketik Sesuai Nomor, Contoh : NO1* 
+
+⚠️ *Kalo Ada Error Bisa Chat Owner Ya* 😄
+`)
+}
+break
+
+case '#1': case 'no1': {
+m.reply(`*Membuat Sticker Whatsapp*
+
+🎁 *Untuk Membuat Sticker Whatsapp Kirim Foto/Video Dengan Caption S, Stiker, Sticker*
+🎁 *Untuk Membuat Sticker Dengan Caption Gunakan Smeme : Contoh Smeme Lenwy*`)
+}
+break
+
+case 'no2': {
+m.reply(`*Membuat Sticker Video*
+
+🎁 *Untuk Membuat Sticker Video Kirim Video Minimal 9 Detik Dengan CAption S*`)
+}
+break
+
+case 'no3': {
+m.reply(`*Mengubah Watermark Sticker*
+
+🎁 *Untuk Mengubah Watermark Sticker Balas Sticker Dengan Mengetik : Wm (Teks)*
+🎁 *Contoh : Wm ${global.ownername}*`)
+}
+break
+
+case 'no4': {
+m.reply(`*Meningkatkan Kualitas Gambar*
+
+🎁 *Untuk Meningkatkan Kualitas Gambar Kirim Gambar/Foto Dengan Caption Hd, Remini*`)
+}
+break
+
+case 'no5': {
+m.reply(`*Mengunduh Foto/Video Dari Link*
+
+🎁 *Untuk Mengunduh Foto/Video Dari Link Ketik : Tiktok (Link Tiktok)*
+🎁 *Lebih Lengkapnya Ketik Downmenu*
+
+⚠️ *Pastikan Link Sesuai Dengan Perintah*`)
+}
+break
+
+case 'no6': {
+m.reply(`*Mengambil Audio/Video Dari Youtube*
+
+🎁 *Untuk mengambil Audio/Video Dari Youtube Ketik : Ytmp4 (Link)*
+🎁 *Ytmp3 Untuk Audio | Ytmp4 Untuk Video*
+
+⚠️ *Audio/Video Lebih Dari 5 Menit Kemungkinan Gagal Dikirim*`)
+}
+break
+
+case 'no7': {
+m.reply(`*Mengunduh Lagu/Musik*
+
+🎁 *Untuk Mengunduh Lagu ketik : Play (Nama Lagu)*
+🎁 *Contoh : Play Boa - Duvet*`)
+}
+break
+
+case 'no8': {
+m.reply(`*Bertanya Kepada Bot*
+
+🎁 *Untuk Bertanya kepada Bot Ketik : Ask (Pertanyaan)*
+🎁 *Contoh : Ask Sejarah Indonesia*`)
+}
+break
+
+case 'no9': {
+m.reply(`*Mencari Berita*
+
+🎁 *Untuk Mencari Berita Ketik : Inews*
+🎁 *Lebih Lengkapnya Ketik Beritamenu*`)
+}
+break
+
+case 'no10': {
+m.reply(`*Mengubah Gambar Menjadi Link*
+
+🎁 *Untuk Mengubah Gambar Menjadi Link Kirim Gmbar Dengan caption Tourl*`)
+}
+break
+
+case 'no11': {
+m.reply(`*Mengetahui Jarak Kota*
+
+🎁 *Untuk Mengetahui Jarak Kota ketik : Jarak (Nama Kota)|(Nama Kota)*
+🎁 *Contoh : Jarak Bandung|Jakarta*`)
+}
+break
+
+case 'no12': {
+m.reply(`*Menghapus Pesan Bot*
+
+🎁 *Untuk Menghapus Pesan Bot, Balas Pesan Bot Dengan Mengetik : Del*`)
+}
+break
+
+case 'translate': {
+if (!text) return m.reply(`Masukkan Teks Yang Ingin Di Translate`)
+let hasil = await (await fetch(`https://${global.api.lolhuman.domain}/api/translate/auto/id?apikey=${global.api.lolhuman.apikey}&text=${text}`)).json()
+let resu = `Mentranslate teks dari Bahasa ${hasil.result.from} ke Bahasa ${hasil.result.to}
+
+Arti dari '${hasil.result.original}' adalah
+
+> ${hasil.result.translated}`
+m.reply(resu)
+}
+break
+
+case 'kodebahasa': {
+m.reply(`📦 *Kode Bahasa*
+
+ *⨠ Af: Afrikaans* 
+ *⨠ Sq: Albanian*
+ *⨠ Ar: Arabic*
+ *⨠ Hy: Armenian*
+ *⨠ Ca: Catalan* 
+ *⨠ Zh: Chinese*
+ *⨠ Zh-Cn: Chinese (Mandarin/China)*
+ *⨠ Zh-Tw: Chinese (Mandarin/Taiwan)*
+ *⨠ Zh-Yue: Chinese (Cantonese)*
+ *⨠ Hr: Croatian*
+ *⨠ Cs: Czech*
+ *⨠ Da: Danish*
+ *⨠ Nl: Dutch*
+ *⨠ En: English*    
+ *⨠ En-Au: English (Australia)*
+ *⨠ En-Uk: English (United Kingdom)*
+ *⨠ en-Us: English (United States)* 
+ *⨠ Eo: Esperanto* 
+ *⨠ Fi: Finnish* 
+ *⨠ Fr: French*
+ *⨠ De: German*
+ *⨠ El: Greek* 
+ *⨠ Ht: Haitian Creole* 
+ *⨠ Hi: Hindi* 
+ *⨠ Hu: Hungarian* 
+ *⨠ Ss: Icelandic* 
+ *⨠ Id: Indonesian* 
+ *⨠ It: Italian*
+ *⨠ Ja: Japanese*
+ *⨠ Ko: Korean*
+ *⨠ La: Latin*
+ *⨠ Lv: Latvian*
+ *⨠ Mk: Macedonian*
+ *⨠ No: Norwegian*
+ *⨠ Pl: Polish*
+ *⨠ Pt: Portuguese*
+ *⨠ Pt-Br: Portuguese (Brazil)*
+ *⨠ Ro: Romanian*
+ *⨠ Ru: Russian*
+ *⨠ Sr: Serbian*
+ *⨠ Sk: Slovak*
+ *⨠ Es: Spanish* 
+ *⨠ Es-Es: Spanish (Spain)*
+ *⨠ Es-Us: Spanish (United States)*
+ *⨠ Sw: Swahili*
+ *⨠ Sv: Swedish*
+ *⨠ Ta: Tamil*
+ *⨠ Th: Thai*
+ *⨠ Tr: Turkish*
+ *⨠ Vi: Vietnamese* 
+ *⨠ Cy: Welsh*
+
+⚠️ *Kalo Ada Error Bisa Chat Owner Ya*
+`)
+}
+break
+
+/* ------------------------------------------------------------------------------------------------------------------------------------------- */
+
+case 'sc':
+case 'script': {
+if (text) return
+let buy = `*Script?*
+📑 *No Enc, Pairing Code*
+🎁 *Beli? :* wa.me/${global.developer}
+🤖 *Sewa? :* wa.me/${global.owner}`
+m.reply(buy)
+}
+break
+
+case 'hai': {
+m.reply('*Hallo Juga*')
+}
+break
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------//
+
+case 'setlist': {
+  if (!m.isGroup) return m.reply(mess.group)
+  if (!isAdmins) return m.reply(mess.admin)
+  let teks = text || ''
+  await updateTextList(m, teks);
+  m.reply(mess.success);
+}
+break
+
+case 'setsimbol': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins) return m.reply(mess.admin);
+  let teks_simbol = text || ''
+  await updateTextListSimbol(m, teks_simbol)
+  m.reply(mess.success)
+}
+break
+
+case 'list':
+case 'listmenu': {
+  if (text) return
+  if (db_respon_list.length === 0) return m.reply(`*Belum Ada List Yang Ditambahkan*`);
+  if (!isAlreadyResponListGroup(m.chat, db_respon_list)) return m.reply(`*Belum Ada List Yang Terdaftar Di Grup Ini*`);
+
+  const groupID = m.chat;
+  const usertag = `@${m.sender.split("@")[0]}`;
+
+  if (!global.datagc[groupID]) {
+    global.datagc[groupID] = {
+      text_list: '',
+      text_list_simbol: ''
+    };
+    fs.writeFileSync('./db/databaseGroup.json', JSON.stringify(global.datagc, null, 2));
+  }
+
+  const textListTemplate = global.datagc[groupID].text_list || `Halo {TAG}
+  selamat datang di *{GROUPNAME}*
+
+── .✦ Hari : {HARI}
+── .✦ Tanggal : {TANGGAL}/{BULAN}/{TAHUN}
+── .✦ Jam : {JAM}:{MENIT}:{DETIK}
+
+ㅤㅤㅤ⤿─ ⓘ 𝗰ׅ𝝰ׄ𝘁𝝰ׄ𝗹ׅ𝝾︩ׄ𝗴ׄ{SIMBOL}
+ㅤㅤㅤ──┈─┈──┈─┈ 𓈀 ──┈─┈──┈─┈`
+
+  const simbol = global.datagc[groupID].text_list_simbol || 'ㅤㅤㅤㅤˑ𓂃𔓕';
+
+  const replaceTags = (text) => {
+    return text
+      .replace(/{TAG}/gi, usertag)
+      .replace(/{GROUPNAME}/gi, groupName)
+      .replace(/{JAM}/gi, jamnya)
+      .replace(/{MENIT}/gi, menitnya)
+      .replace(/{DETIK}/gi, detiknya)
+      .replace(/{HARI}/gi, harinya)
+      .replace(/{TANGGAL}/gi, tanggalnya)
+      .replace(/{BULAN}/gi, bulannya)
+      .replace(/{NAMABULAN}/gi, namabulannya)
+      .replace(/{TAHUN}/gi, tahunnya);
+  };
+
+  try {
+    const sortedList = db_respon_list.filter(i => i.id === groupID)
+      .sort((a, b) => a.key.localeCompare(b.key));
+
+    if (sortedList.length === 0) return m.reply(`*Tidak ada list yang tersedia di grup ini*`);
+
+    const listBody = sortedList.map(i => `\n${simbol} *${i.key.toUpperCase()}*`).join('');
+
+    const finalText = replaceTags(textListTemplate).replace('{SIMBOL}', listBody);
+
+    lenwy.sendMessage(m.chat, { text: finalText, mentions: [m.sender] }, { quoted: m });
+
+    await sleep(200);
+
+
+    let buttons = sortedList.map(i => ({
+      title: i.key,
+      id: i.key
+    }));
+
+	let sections = [{
+  		title: "Daftar List",
+  		description: "", // opsional
+  		rows: buttons
+	}];
+
+    let buttonParamsJson = {
+      title: "[ LIST ]",
+      sections
+    }
+
+    let botakk = generateWAMessageFromContent(m.from, {
+      viewOnceMessage: {
+        message: {
+          messageContextInfo: {
+            deviceListMetadata: {},
+            deviceListMetadataVersion: 2,
+          },
+          interactiveMessage: proto.Message.InteractiveMessage.create({
+            body: proto.Message.InteractiveMessage.Body.create({
+              text: "Ketik Nama Barang Diatas Atau Pilih Barang Menggunakan Tombol Ini"
+            }),
+            footer: proto.Message.InteractiveMessage.Footer.create({
+              text: '',
+            }),
+            header: proto.Message.InteractiveMessage.Header.create({
+              title: '',
+            }),
+            nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
+              buttons: [{
+                name: "single_select",
+                buttonParamsJson: JSON.stringify(buttonParamsJson)
+              }]
+            }),
+          }),
+        },
+      },
+    }, { quoted: m })
+
+    lenwy.relayMessage(m.key.remoteJid, botakk.message, {
+    additionalNodes: [
+      {
+        tag: "biz",
+        attrs: {},
+        content: [
+          {
+            tag: "interactive",
+            attrs: {
+              type: "native_flow",
+              v: "1",
+            },
+            content: [
+              {
+                tag: "native_flow",
+                attrs: {
+                  name: "quick_reply",
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  })
+  } catch (err) {
+    console.error(err);
+    m.reply(`❌ *Terjadi Kesalahan Saat Menampilkan List*`);
+  }
+}
+break
+
+case 'addlist': {
+if (!isAdmins) return m.reply(mess.admin)
+if (!m.isGroup) return m.reply(mess.group)
+let args = q.split("@")
+let args1 = args[0].toLowerCase().trim()
+let args2 = args[1]
+if (!q.includes('@') && args1 == args2) return m.reply(`*Cara Pengunaan : ${prefix+command} Key@Respon*\n🎁 *Contoh : addlist wdp@harga wdp _-*`)
+if (!args1 || !args2) return m.reply(`Key Dan Respon Harus Diisi!!`)
+if (isAlreadyResponList(from, args1, db_respon_list)) return m.reply(`⚠️ *Nama Key ${args1} Sudah Ada Dalam Group Ini*`)
+if (/image/.test(mime)) {
+media = await lenwy.downloadAndSaveMediaMessage(quoted)
+mem = await uploaderLebih(media)
+addResponList(from, args1, args2, true, `${mem}`, db_respon_list)
+m.reply(`Successfully set list message with key : *${args1}*`)
+if (fs.existsSync(media)) fs.unlinkSync(media)
+} else {
+addResponList(from, args1, args2, false, '-', db_respon_list)
+m.reply(`📑 *Sukses Menambahkan Key Dengan Kode : ${args1}*`)
+}
+}
+break
+
+case 'dellist': {
+if (!m.isGroup) return m.reply(mess.group)
+if (!isAdmins) return m.reply(mess.admin)
+if (db_respon_list.length === 0) return m.reply(`*Belum Ada List Yang Ditambahkan*`)
+if (!text) return m.reply(`*Ketik Nama Item Yang Ingin Dihapus*`)
+  let sortedList = db_respon_list.filter(i => i.id === m.chat).sort((a, b) => {
+    if (a.key < b.key) return -1;
+    if (a.key > b.key) return 1;
+    return 0;
+})
+    let buttons = sortedList.map(i => ({
+        title: `${prefix}dellist ${i.key}`,
+        id: `${prefix}dellist ${i.key}` // Mengubah ID di sini
+    }))
+let buttonParamsJson = JSON.stringify({
+    title: "[ LIST ]",
+    sections: [{
+        title: "Daftar List",
+        rows: buttons
+    }]
+})
+let msg = generateWAMessageFromContent(m.chat, {
+    viewOnceMessage: {
+        message: {
+            "messageContextInfo": {
+                "deviceListMetadata": {},
+                "deviceListMetadataVersion": 2
+            },
+            interactiveMessage: {
+                body: {
+                    text: "Ketik Nama Item Nya Atau Coba Klik List Dibawah Ini"
+                },
+                footer: {
+                    text: ""
+                },
+                header: {
+                    title: "",
+                    subtitle: "",
+                    hasMediaAttachment: false
+                },
+                nativeFlowMessage: {
+                    buttons: [{
+                        name: "single_select",
+                        buttonParamsJson: buttonParamsJson
+                    }/*,{
+                       name: "quick_reply",
+                        buttonParamsJson: `{"display_text":"Payment","id":"pay a"}`          						
+                    }*/]
+                },
+                contextInfo: {
+                    mentionedJid: [m.sender],
+                }
+            }
+        }
+    }
+}, { quoted: m })
+if (!isAlreadyResponList(m.chat, q.toLowerCase(), db_respon_list)) {
+await lenwy.sendMessage(m.chat, {
+text: "Periksa Lagi List Nya Dan Ketikkan Dengan Benar Atau Gunakan Tombol Dibawah Jika Tidak Muncul.\n\nSilahkan Hubungi Owner Jika Anda Mengalami Kesulitan Dalam Penghapusan List."
+}, {
+quoted: m
+})
+    lenwy.relayMessage(m.key.remoteJid, msg.message, {
+    additionalNodes: [
+      {
+        tag: "biz",
+        attrs: {},
+        content: [
+          {
+            tag: "interactive",
+            attrs: {
+              type: "native_flow",
+              v: "1",
+            },
+            content: [
+              {
+                tag: "native_flow",
+                attrs: {
+                  name: "quick_reply",
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  })
+}
+if (isAlreadyResponList(m.chat, q.toLowerCase(), db_respon_list)) {
+delResponList(m.chat, q.toLowerCase(), db_respon_list)
+m.reply(`⚠️ *Sukses Menghapus Item Dengan kode : ${q}*`)
+}
+}
+break
+
+case 'updatenamelist': {
+ if (!m.isGroup) return m.reply(mess.group)
+ if (!isAdmins) return m.reply(mess.admin)
+ let args = q.split("@")
+ let oldKey = args[0].toLowerCase().trim()
+ let newKey = args[1].toLowerCase().trim()
+ if (!oldKey || !newKey) return m.reply(`*Cara Penggunaan : Updatenamelist OldKey@NewKey*\n🎁 *Contoh : Updatenamelist wdp@antri wdp*`)
+ if (updateKey(m.chat, oldKey, newKey, db_respon_list)) {
+ m.reply(`📑 *Sukses Memperbarui Kode Dari ${oldKey} Menjadi ${newKey}*`)
+ } else {
+ m.reply(`⚠️ *Nama Item ${oldKey} Belum Terdaftar Dalam Group Ini*`)
+ }
+}
+break
+
+case 'updatelist': {
+if (!m.isGroup) return m.reply(mess.group)
+if (!isAdmins) return m.reply(mess.admin)
+let args = q.split("@")
+let args1 = args[0].toLowerCase()
+let args2 = args[1]
+// Check if the input contains the separator '|'
+if (!q.includes("@")) return m.reply(`*Cara Pengunaan : Updatelist Item@Respon*\n🎁 *Contoh : Updatelist wdp@harga wdp eaa apala*`)
+// Check if the list item exists in the group
+if (!isAlreadyResponList(m.chat, args1, db_respon_list)) return m.reply(`⚠️ *Nama Item ${args1} Belum Terdaftar Dalam Group Ini*`)
+// Check if the message contains an image
+if (/image/.test(mime)) {
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+let mem = await uploaderLebih(media)
+// Update response list with the new image
+updateResponList(m.chat, args1, args2, true, `${mem}`, db_respon_list)
+m.reply(`📑 *Sukses Memperbarui Item Dengan Kode : ${args1}*`)
+// Clean up the media file
+if (fs.existsSync(media)) fs.unlinkSync(media)
+} else {
+// Update response list without an image
+updateResponList(m.chat, args1, args2, false, '-', db_respon_list)
+m.reply(`📑 *Sukses Memperbarui Item Dengan Kode : ${args1}*`)
+}
+}
+break
+
+case 'sendlist': {
+  let oldId
+  let newId
+  if (!m.isGroup) {
+    if (!isCreator) return
+    if (!text) return m.reply(`*Cara Penggunaan : ${prefix + command} linkGroup1|linkGroup2*`)
+    if (!budy.includes('|')) return m.reply(`*Cara Penggunaan : ${prefix + command} linkGroup1|linkGroup2*`)
+    let links = text.split('|')
+    oldId = await getGroupIdFromLink(links[0].trim(), lenwy)
+    newId = await getGroupIdFromLink(links[1].trim(), lenwy)
+  } else {
+    if (!isAdmins) return m.reply(mess.admin)
+    if (!text) return m.reply(`*Cara Penggunaan : ${prefix + command} linkGroup2*`)
+    oldId = m.chat
+    newId = await getGroupIdFromLink(text, lenwy)
+  }
+  let datagrup = await lenwy.groupMetadata(newId)
+  if (updateId(oldId, newId, db_respon_list)) {
+      m.reply(`📑 *Sukses mengirimkan list ke Group ${datagrup.subject}*`);
+  } else {
+      m.reply(`⚠️ *Gagal mengirimkan list ke Group ${datagrup.subject}*`);
+  }
+}
+break
+
+case 'resetlist': {
+  if (!isAdmins) return m.reply(mess.admin)
+  if (!m.isGroup) return m.reply(mess.group)
+  if (resetList(m.chat, db_respon_list)) {
+      m.reply(`📑 *Sukses mereset list*`);
+  } else {
+      m.reply(`⚠️ *Gagal mereset list*`);
+  }
+}
+break
+
+case 'dellistsampah': {
+  if (!isCreator) return m.reply(mess.owner)
+  LenwyLD()
+  m.reply('🧹 Sedang memeriksa daftar grup dan membersihkan list sampah... (harap tunggu)')
+
+  let getGroups = await lenwy.groupFetchAllParticipating()
+  let groups = Object.entries(getGroups).map(([_, v]) => v)
+
+  let groupIDs = []
+
+  for (let i = 0; i < groups.length; i++) {
+      try {
+          let metadata = await lenwy.groupMetadata(groups[i].id)
+          groupIDs.push(metadata.id)
+          console.log(`✅ Dapat metadata grup: ${metadata.subject} (${metadata.id})`)
+      } catch (e) {
+          console.log(`⚠️ Gagal fetch metadata grup ke-${i + 1}:`, e.message)
+      }
+
+      await sleep(5000)
+  }
+
+  let deletedCount = deleteListSampah(db_respon_list, groupIDs)
+
+  if (deletedCount > 0) {
+      m.reply(`🧾 *Selesai membersihkan list sampah!*\n🗑️ *Total dihapus:* ${deletedCount} data`)
+  } else {
+      m.reply(`✨ *Tidak ada list sampah yang ditemukan!*`)
+  }
+}
+break
+
+case 'kalkulator':
+case 'calculator': {
+    if (!q) return m.reply(`*Contoh:*
+> kalkulator 12/2
+> kalkulator 12*2
+> kalkulator 12+2
+> kalkulator 12-2`)
+
+    const operator = q.match(/[+\-*/]/)?.[0]
+    if (!operator) return m.reply('*Operator tidak valid!*')
+
+    const [a, b] = q.split(operator).map(x => Number(x.trim()))
+    if (isNaN(a) || isNaN(b)) return m.reply('*Input harus berupa angka!*')
+    if (operator === '/' && b === 0) return m.reply('*Pembagian dengan nol tidak diperbolehkan!*')
+
+    const hasil = {
+        '+': a + b,
+        '-': a - b,
+        '*': a * b,
+        '/': a / b
+    }[operator]
+
+    m.reply(`🎁 *Hasil:* ${hasil}`)
+}
+break
+
+case 'saran': {
+let lenwy_txt = args[0]
+if (!text) return m.reply('*Mana Teksnya?*')
+if (text.length > 30) return m.reply(`*Maksimal 30 Karakter*`)    
+m.reply('*Saran Berhasil Terkirim, Terimakasih*')
+lenwy.sendMessage(`${global.owner}@s.whatsapp.net`, { text: `📦 *Saran / Masukan*\n🎁 *Dari :* @${sender.split('@')[0]}\n📃 *Pesan :* ${q}\n\n 📣 *Saran Ini Dikirim Oleh ${botname}*`, mentions: [sender]}, { quoted: m })
+}
+break
+
+case 'reportbug': {
+let lenwy_txt = args[0]
+if (!text) return m.reply('*Mana Teksnya?*')
+if (text.length > 15) return m.reply(`*Maksimal 15 Karakter*`)    
+m.reply('⚠️ *Report Berhasil Terkirim, Terimakasih*')
+lenwy.sendMessage(`${global.owner}@s.whatsapp.net`, { text: `⚠️ *Report Bug*\n🎁 *Dari :* @${sender.split('@')[0]}\n📃 *Pesan :* ${q}\n\n 📣 *Laporan Ini Dikirim Oleh ${botname}*`, mentions: [sender]}, { quoted: m })
+}
+break
+
+case 'bot': {
+if (text) return
+m.reply(`Iya Kak, ${pushname}`)
+}
+break
+
+case 'malas': {
+if (text) return 
+const t3xt = require(`./storage/teks/${command}.json`)
+const r4andT3xt = t3xt[Math.floor(Math.random() * t3xt.length)]
+lenwy.sendMessage(from, { text: r4andT3xt }, { quoted: m })
+}
+break
+
+case 'assalamualaikum': {
+m.reply(`*Waalaikumussalam*`)
+}
+break
+
+case 'hi': {
+m.reply(`*Halo Juga*`)
+}
+break
+
+case 'bokep': {
+m.reply(`*Haduhh Otak Mesum*`)
+}
+break
+
+case 'panel': {
+if (text) return
+m.reply(`Panel? Kalo minat chat no berikut: wa.me/6285261255548`)
+}
+break
+
+case 'huft': case 'hmmph': {
+const t3xt = require(`./storage/teks/${command}.json`)
+const r4andT3xt = t3xt[Math.floor(Math.random() * t3xt.length)]
+lenwy.sendMessage(from, { text: r4andT3xt }, { quoted: m })
+}
+break
+
+
+case 'rate': {
+if (!q) return m.reply(`*Contoh: ${prefix + command} Penampilan gw*`)
+if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
+const ra = ['5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60', '65', '70', '75', '80', '85', '90', '95', '100']
+const te = ra[Math.floor(Math.random() * ra.length)]
+m.reply(`*Rate : ${q}*\n🎁 *Jawaban : ${te}%*`)
+}
+break
+
+case 'apakah': {
+if (!q) return m.reply(`*Contoh: ${prefix + command} gw lagi marah*`)
+if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
+const apa = ['Iya', 'Tidak', 'Bisa Jadi', 'Betul']
+const kah = apa[Math.floor(Math.random() * apa.length)]
+m.reply(`*Pertanyaan : Apakah ${q}*\n🎁 *Jawaban : ${kah}*`)
+}
+break
+
+case 'kapankah': {
+if (!q) return m.reply(`*Contoh: ${prefix + command} gw masuk rsj*`)
+if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
+const kapan = ['5 Hari Lagi', '10 Hari Lagi', '15 Hari Lagi', '20 Hari Lagi', '25 Hari Lagi', '30 Hari Lagi', '35 Hari Lagi', '40 Hari Lagi', '45 Hari Lagi', '50 Hari Lagi', '55 Hari Lagi', '60 Hari Lagi', '65 Hari Lagi', '70 Hari Lagi', '75 Hari Lagi', '80 Hari Lagi', '85 Hari Lagi', '90 Hari Lagi', '95 Hari Lagi', '100 Hari Lagi', '5 Bulan Lagi', '10 Bulan Lagi', '15 Bulan Lagi', '20 Bulan Lagi', '25 Bulan Lagi', '30 Bulan Lagi', '35 Bulan Lagi', '40 Bulan Lagi', '45 Bulan Lagi', '50 Bulan Lagi', '55 Bulan Lagi', '60 Bulan Lagi', '65 Bulan Lagi', '70 Bulan Lagi', '75 Bulan Lagi', '80 Bulan Lagi', '85 Bulan Lagi', '90 Bulan Lagi', '95 Bulan Lagi', '100 Bulan Lagi', '1 Tahun Lagi', '2 Tahun Lagi', '3 Tahun Lagi', '4 Tahun Lagi', '5 Tahun Lagi', 'Besok', 'Lusa', `Abis Command Ini Juga Lu ${q}`]
+const kapankah = kapan[Math.floor(Math.random() * kapan.length)]
+m.reply(`*Pertanyaan : Kapankah ${q}*\n🎁 *Jawaban : ${kapankah}*`)
+}
+break
+
+case 'bisakah': {
+if (!q) return m.reply(`*Contoh: ${prefix + command} gw hamil*`)
+if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
+const bisa = ['Bisa', 'Gak Bisa', 'Gak Bisa Awokawok', 'TENTU KAMU PASTI BISA!!!!']
+const ga = bisa[Math.floor(Math.random() * bisa.length)]
+m.reply(`*Pertanyaan : Bisakah ${q}*\n🎁 *Jawaban : ${ga}*`)
+}
+break
+
+case 'bagaimanakah': {
+if (!q) return m.reply(`*Contoh: ${prefix + command} gw kuyang*`)
+if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
+const gimana = ['Ya Begitulah', 'Gak Normal', 'Maaf Bot Tidak Bisa Menjawab', 'Coba Deh Cari Di Gugel', 'Kayaknya Lanjut Part 2', 'Kepo Kamu', 'Gimana Aja']
+const ya = gimana[Math.floor(Math.random() * gimana.length)]
+m.reply(`*Pertanyaan : Bagaimanakah ${q}*\n🎁 *Jawaban : ${ya}*`)
+}
+break
+
+case 'gantengcek': case 'cekganteng': {
+if (!q) return m.reply(`*Contoh: ${prefix + command} gw*`)
+if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
+const gan = ['Normal','Ganteng Njir','Ganteng Amat Bang','Jaga Penampilan Ya','Kurang :c','Lumayan','Boleh Juga']
+const teng = gan[Math.floor(Math.random() * gan.length)]
+m.reply(`*Nama* ${q}\n🎁 *Jawaban : ${teng}*`)
+}
+break
+
+case 'cantikcek': case 'cekcantik': {
+if (!q) return m.reply(`*Contoh: ${prefix + command} gw*`)
+if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
+const can = ['Normal','Cantik Njir','Cantik Amat Sih','Jaga Penampilan Ya','Kurang :c','Lumayan','Boleh Juga']
+const tik = can[Math.floor(Math.random() * can.length)]
+m.reply(`*Nama* ${q}\n🎁 *Jawaban : ${tik}*`)
+}
+break
+
+case 'createqr': {
+if (!text) return m.reply(`*Contoh : Createqr ${botname}*`)
+LenwyLD()
+await sleep(200)
+const qrcode = require('qrcode')
+const qyuer = await qrcode.toDataURL(text, { scale: 8 })
+let data = new Buffer.from(qyuer.replace('data:image/png;base64,', ''), 'base64')
+lenwy.sendMessage(from, { image: data, caption: mess.success }, { quoted: m })
+}
+break
+
+case 'detectqr': {
+LenwyLD()
+await sleep(200)
+try {
+mee = await lenwy.downloadAndSaveMediaMessage(quoted)
+mem = await uploader60Minute(mee)
+const res = await fetch(`http://api.qrserver.com/v1/read-qr-code/?fileurl=${mem}`)
+const data = await res.json()
+  LenwyLD()
+  await sleep(200) 
+m.reply(util.format(data[0]))
+} catch (err) {
+m.reply(`*Mana Qrnya?*`)
+}
+}
+break
+
+case 'cekidgc': {
+if (!isCreator) return m.reply(mess.owner)
+LenwyLD()
+await sleep(200)
+let getGroups = await lenwy.groupFetchAllParticipating()
+let groups = Object.entries(getGroups).slice(0).map((entry) => entry[1])
+let anu = groups.map((v) => v.id)
+let teks = `*List Grup Yang Dimasuki ${botname}*\n🎁 *Total Group : ${anu.length} Group*\n\n`
+
+for (let x of anu) {
+  await sleep(5000)
+  let metadata2 = await lenwy.groupMetadata(x)
+  try {
+    let response2 = await lenwy.groupInviteCode(metadata2.id)
+    linkgc = `https://chat.whatsapp.com/${response2}`
+  } catch {
+    linkgc = '-'
+  }
+  teks += `*Nama Group : ${metadata2.subject}*
+🎁 *ID Group : ${metadata2.id}*
+📦 *Total Member Group : ${metadata2.participants.length}*
+📎 *Link Group : ${linkgc}*
+────────────────────────\n\n`
+  }
+  m.reply(teks + `*Cara Penggunaan : Pushkontak ID Group|Teks*\n🎁 *Contoh : Pushkontak ID Group|Save ${botname}*`)
+}
+break
+
+  case 'public': {
+  if (!isCreator) return m.reply(mess.owner) 
+  lenwy.public = true
+  m.reply('Sukses Change To Public')
+  }
+  break
+  
+  case 'self': {
+  if (!isCreator) return m.reply(mess.owner) 
+  lenwy.public = false
+  m.reply('Sukses Change To Self')
+  }
+  break
+  
+  case 'enc': {
+  if (!isCreator) return m.reply(mess.owner)
+  if (!q) return m.reply(`Contoh ${prefix+command} const hai = 'Aku Merlinus'`)
+  let res = await (await fetch (`https://endpoint.web.id/tools/encrypt?key=315602&query=${q}`)).json()
+  m.reply(res.result)
+  }
+  break
+
+//=============================================================================================================================================================//
+
+case 'addallprem': {
+  if (!isCreator) return m.reply(mess.owner)
+  if (!m.isGroup) return m.reply(`*Perintah Ini Hanya Dapat Digunakan Di Dalam Grup.*`)
+
+  // Mengambil metadata grup
+  let groupMetadata;
+  try {
+      groupMetadata = await lenwy.groupMetadata(from)
+  } catch (e) {
+      console.error('Error fetching group metadata:', e)
+      return m.reply('*Gagal Mengambil Metadata Grup.*')
+  }
+
+  // Mendapatkan peserta grup
+  let participants;
+  try {
+      participants = groupMetadata.participants;
+  } catch (e) {
+      console.error('Error fetching group participants:', e)
+      return m.reply('*Gagal Mengambil Daftar Peserta Grup.*')
+  }
+
+  if (!participants || participants.length === 0) return m.reply('Tidak ada peserta dalam grup.')
+
+  // Membaca daftar premium dari file
+  let owner;
+  try {
+      owner = JSON.parse(fs.readFileSync('./premium.json', 'utf8'))
+  } catch (err) {
+      console.error('Error reading premium.json:', err)
+      return m.reply('*Gagal Memuat Daftar Premium.*')
+  }
+
+  let addedNumbers = []
+  let existingNumbers = []
+
+  // Proses setiap peserta
+  for (let participant of participants) {
+      let number = participant.id.replace('@s.whatsapp.net', '').replace(/[^0-9]/g, '')
+      if (number.length > 0 && !owner.includes(number)) {
+          owner.push(number)
+          addedNumbers.push(number)
+      } else if (owner.includes(number)) {
+          existingNumbers.push(number)
+      }
+  }
+
+  // Simpan daftar premium yang telah diperbarui
+  try {
+      fs.writeFileSync('./premium.json', JSON.stringify(owner, null, 2))
+  } catch (err) {
+      console.error('Error writing premium.json:', err)
+      return m.reply('*Gagal Menyimpan Daftar Premium.*')
+  }
+
+  // Kirimkan pesan balasan
+  if (addedNumbers.length > 0) {
+      m.reply(`*Nomor Berikut Telah Ditambahkan Ke Daftar Premium:*\n\n${addedNumbers.join('\n')}`)
+  }
+  if (existingNumbers.length > 0) {
+      m.reply(`*Nomor Berikut Sudah Ada Di Daftar Premium:*\n\n${existingNumbers.join('\n')}`)
+  }
+}
+break
+
+
+case 'delallprem': {
+    if (!isCreator) return m.reply(mess.owner)
+    if (!m.isGroup) return m.reply(`Perintah ini hanya dapat digunakan di dalam grup.`)
+
+    // Mengambil metadata grup
+    let groupMetadata;
+    try {
+        groupMetadata = await lenwy.groupMetadata(from)
+    } catch (e) {
+        console.error('Error fetching group metadata:', e)
+      return m.reply('*Gagal Mengambil Metadata Grup.*')
+    }
+
+    // Mendapatkan peserta grup
+    let participants;
+    try {
+        participants = groupMetadata.participants;
+    } catch (e) {
+        console.error('Error fetching group participants:', e)
+      return m.reply('*Gagal Mengambil Daftar Peserta Grup.*')
+    }
+
+    if (!participants || participants.length === 0) return m.reply('Tidak ada peserta dalam grup.')
+
+    // Membaca daftar premium dari file
+    let owner;
+    try {
+        owner = JSON.parse(fs.readFileSync('./premium.json', 'utf8'))
+    } catch (err) {
+        console.error('Error reading premium.json:', err)
+      return m.reply('*Gagal Memuat Daftar Premium.*')
+    }
+
+    let removedNumbers = []
+    let notFoundNumbers = []
+
+    // Proses setiap peserta
+    for (let participant of participants) {
+        let number = participant.id.replace('@s.whatsapp.net', '').replace(/[^0-9]/g, '')
+        if (number.length > 0) {
+            let index = owner.indexOf(number)
+            if (index !== -1) {
+                owner.splice(index, 1)
+                removedNumbers.push(number)
+            } else {
+                notFoundNumbers.push(number)
+            }
+        }
+    }
+
+    // Simpan daftar premium yang telah diperbarui
+    try {
+        fs.writeFileSync('./premium.json', JSON.stringify(owner, null, 2))
+    } catch (err) {
+        console.error('Error writing premium.json:', err)
+      return m.reply('*Gagal Menyimpan Daftar Premium.*')
+    }
+
+    // Kirimkan pesan balasan
+    if (removedNumbers.length > 0) {
+        m.reply(`*Nomor Berikut Telah Dihapus Dari Daftar Premium.*\n\n${removedNumbers.join('\n')}`)
+    }
+    if (notFoundNumbers.length > 0) {
+        m.reply(`*Nomor Berikut Tidak Ditemukan Di Daftar Premium:*\n\n${notFoundNumbers.join('\n')}`)
+    }
+}
+break
+
+
+case 'addprem': {
+  if (!isCreator) return m.reply(mess.owner)
+  if (!args[0]) return m.reply('*Mana Nomornya?*')
+
+  // Ambil semua nomor dari args
+  let numbers = text.split('|')[0].split(/\s+/).map(number => number.replace(/[^0-9]/g, ''))
+
+  if (numbers.length === 0) return m.reply('*Tidak Ada Nomor Yang Diberikan.*')
+
+  let invalidNumbers = []
+  let validNumbers = []
+
+  // Periksa setiap nomor
+  for (let number of numbers) {
+    if (number.length === 0) continue;
+
+    let ceknye = await lenwy.onWhatsApp(number + '@s.whatsapp.net')
+    if (ceknye.length === 0) {
+      invalidNumbers.push(number)
+    } else {
+      validNumbers.push(number)
+    }
+  }
+
+  // Tambahkan nomor valid ke daftar premium
+  if (validNumbers.length > 0) {
+    let owner = JSON.parse(fs.readFileSync('./premium.json', 'utf8'))
+    owner = Array.from(new Set([...owner, ...validNumbers])) // Menghindari duplikasi
+    fs.writeFileSync('./premium.json', JSON.stringify(owner, null, 2))
+
+    // Perbarui limit menjadi Infinity untuk nomor premium
+    let user = global.db.data.users;
+    validNumbers.forEach(number => {
+      if (!user[number]) {
+        user[number] = {}; // Pastikan data pengguna ada
+      }
+      user[number].limit = Infinity; // Set limit ke Infinity
+    })
+
+    m.reply(`Nomor ${validNumbers.join(', ')} Ditambahkan Kedalam Daftar Premium dan Limitnya Diatur ke Infinity.`)
+  }
+
+  // Kirimkan pesan jika ada nomor yang tidak valid
+  if (invalidNumbers.length > 0) {
+    m.reply(`Nomor berikut tidak valid: ${invalidNumbers.join(', ')}`)
+  }
+}
+break
+
+
+  
+case 'delprem': {
+    if (!isCreator) return m.reply(mess.owner)
+    if (!args[0]) return m.reply(`*Mana Nomornya?*`)
+
+    // Ambil semua nomor dari args
+    let numbers = text.split('|')[0].split(/\s+/).map(number => number.replace(/[^0-9]/g, ''))
+
+    if (numbers.length === 0) return m.reply(`*Tidak Ada Nomor Yang Diberikan.*`)
+
+    let removedNumbers = []
+    let notFoundNumbers = []
+
+    // Baca daftar premium dari file
+    let owner = JSON.parse(fs.readFileSync('./premium.json', 'utf8'))
+
+    // Periksa setiap nomor
+    for (let number of numbers) {
+        if (number.length === 0) continue;
+
+        let index = owner.indexOf(number)
+        if (index !== -1) {
+            owner.splice(index, 1)
+            removedNumbers.push(number)
+        } else {
+            notFoundNumbers.push(number)
+        }
+    }
+
+    // Simpan daftar premium yang telah diperbarui
+    fs.writeFileSync('./premium.json', JSON.stringify(owner, null, 2))
+
+    // Kirimkan pesan balasan
+    if (removedNumbers.length > 0) {
+        m.reply(`Nomor ${removedNumbers.join(', ')} telah dihapus dari daftar premium.`)
+    }
+    if (notFoundNumbers.length > 0) {
+        m.reply(`Nomor berikut tidak ditemukan dalam daftar premium: ${notFoundNumbers.join(', ')}`)
+    }
+}
+break
+
+  
+case 'listprem': {
+    if (!isCreator) return m.reply(mess.owner)
+
+    // Membaca data premium dari file
+    let owner;
+    try {
+        owner = JSON.parse(fs.readFileSync('./premium.json', 'utf8'))
+    } catch (err) {
+        console.error('Error reading premium.json:', err)
+        return m.reply('*Gagal Memuat Daftar Premium.*')
+    }
+
+    if (owner.length === 0) return m.reply('*Daftar Premium Masih Kosong.*')
+
+    let teksooo = 'List Premium\n';
+    for (let i of owner) {
+        teksooo += `✉️ ${i}\n`
+    }
+    teksooo += `\nTotal: ${owner.length}`;
+
+    // Kirimkan pesan daftar premium
+    lenwy.sendMessage(from, { text: teksooo.trim() }, { quoted: m })
+}
+break
+
+  
+//===============================================================================================================================================================//
+case 'banall': {
+    if (!isCreator) return m.reply(mess.owner)
+    if (!m.isGroup) return m.reply('*Perintah ini hanya bisa digunakan dalam grup.*')
+
+    // Ambil metadata grup
+    let groupMetadata;
+    try {
+        groupMetadata = await lenwy.groupMetadata(m.chat)
+    } catch (err) {
+        console.error('Error fetching group metadata:', err)
+        return m.reply('*Gagal mengambil metadata grup.*')
+    }
+
+    // Ambil daftar peserta grup
+    let participants = groupMetadata.participants || []
+    
+    // Baca daftar banned dari file
+    let banned;
+    try {
+        banned = JSON.parse(fs.readFileSync('./banned.json', 'utf8'))
+    } catch (err) {
+        console.error('Error reading banned.json:', err)
+        banned = []
+    }
+
+    // Menyimpan nomor yang berhasil dibanned dan yang sudah ada di daftar banned
+    let bannedNumbers = []
+    let alreadyBannedNumbers = []
+
+    // Proses setiap peserta grup
+    for (let participant of participants) {
+        let orgnye = participant.id;
+        if (banned.includes(orgnye)) {
+            alreadyBannedNumbers.push(orgnye)
+        } else {
+            banned.push(orgnye)
+            bannedNumbers.push(orgnye)
+        }
+    }
+
+    // Simpan daftar banned yang telah diperbarui
+    try {
+        fs.writeFileSync('./banned.json', JSON.stringify(banned, null, 2))
+    } catch (err) {
+        console.error('Error writing banned.json:', err)
+        return m.reply('*Gagal menyimpan daftar banned.*')
+    }
+
+    // Kirimkan pesan balasan
+    if (bannedNumbers.length > 0) {
+        m.reply(`*Nomor Berikut Telah Dibanned:*\n\n${bannedNumbers.join('\n')}`)
+    }
+    if (alreadyBannedNumbers.length > 0) {
+        m.reply(`*Nomor Berikut Sudah Ada Dalam Daftar Banned:*\n\n${alreadyBannedNumbers.join('\n')}`)
+    }
+}
+break
+
+
+case 'delbanall': {
+    if (!isCreator) return m.reply(mess.owner)
+    if (!m.isGroup) return m.reply('*Perintah ini hanya bisa digunakan dalam grup.*')
+
+    // Ambil metadata grup
+    let groupMetadata;
+    try {
+        groupMetadata = await lenwy.groupMetadata(m.chat)
+    } catch (err) {
+        console.error('Error fetching group metadata:', err)
+        return m.reply('*Gagal mengambil metadata grup.*')
+    }
+
+    // Ambil daftar peserta grup
+    let participants = groupMetadata.participants || []
+    
+    // Baca daftar banned dari file
+    let banned;
+    try {
+        banned = JSON.parse(fs.readFileSync('./banned.json', 'utf8'))
+    } catch (err) {
+        console.error('Error reading banned.json:', err)
+        banned = []
+    }
+
+    // Menyimpan nomor yang berhasil dihapus dan yang tidak ditemukan dalam daftar banned
+    let removedNumbers = []
+    let notFoundNumbers = []
+
+    // Proses setiap peserta grup
+    for (let participant of participants) {
+        let orgnye = participant.id;
+        const index = banned.indexOf(orgnye)
+        if (index !== -1) {
+            banned.splice(index, 1) // Menghapus nomor dari daftar banned
+            removedNumbers.push(orgnye)
+        } else {
+            notFoundNumbers.push(orgnye) // Nomor tidak ditemukan dalam daftar banned
+        }
+    }
+
+    // Simpan daftar banned yang telah diperbarui
+    try {
+        fs.writeFileSync('./banned.json', JSON.stringify(banned, null, 2))
+    } catch (err) {
+        console.error('Error writing banned.json:', err)
+        return m.reply('*Gagal menyimpan daftar banned.*')
+    }
+
+    // Kirimkan pesan balasan
+    if (removedNumbers.length > 0) {
+        m.reply(`*Nomor Berikut Telah Dihapus dari Daftar Banned:*\n\n${removedNumbers.join('\n')}`)
+    }
+    if (notFoundNumbers.length > 0) {
+        m.reply(`*Nomor Berikut Tidak Ditemukan dalam Daftar Banned:*\n\n${notFoundNumbers.join('\n')}`)
+    }
+}
+break
+
+case 'mulaiabsen': {
+if (!m.isGroup) return m.reply('Hanya Di Group')
+    const chatId = m.chat; 
+    const userId = m.sender;   
+    if (absenData[chatId]) {
+        m.reply('Absen sudah dimulai di obrolan ini!');
+    }
+    absenData[chatId] = {
+        admin: userId, 
+        participants: [], 
+    };    
+    m.reply('Absen telah dimulai! Gunakan perintah *.absen* untuk bergabung dalam absen ini.');
+}
+break;
+
+case 'absen': {
+ m.reply('Anda telah absen!');
+}
+break
+
+case 'cekabsen': {
+    if (!m.isGroup) return m.reply('Hanya Di Group');
+    
+    const chatId = m.chat;
+    if (!absenData[chatId]) {
+        return m.reply('Tidak ada proses absen yang sedang berlangsung di obrolan ini!');
+    }
+    
+    const participants = absenData[chatId].participants;
+    const participantTags = participants.map(id => `@${id.replace('@s.whatsapp.net', '')}`).join('\n');
+    lenwy.sendMessage(m.chat, `Yang Sudah Absen:\n${participantTags}`, {
+        mentions: participants,
+        quoted: m
+    });
+}
+break
+
+case 'hapusabsen': {
+if (!m.isGroup) return m.reply('Hanya Di Group')  
+    const chatId = m.chat;
+    if (absenData[chatId] && absenData[chatId].admin === m.sender) {  
+        delete absenData[chatId];      
+        m.reply('Proses absen telah dihapus!');
+    } else {
+        m.reply('Anda tidak memiliki izin untuk menghapus proses absen!');
+    }
+}
+break
+
+case 'ban': {
+    if (!isCreator) return m.reply(mess.owner)
+    // Mendapatkan ID yang ditandai
+    let mentionedJids = m.mentionedJidList || []
+    
+    // Jika tidak ada yang ditandai, ambil nomor dari args
+    if (mentionedJids.length === 0) {
+        if (!args[0]) return m.reply(`*Bukan Gitu Loh*\n\n> *Contoh : ${command} @tag1 @tag2 @tag3*`)
+        // Proses args jika tidak ada yang ditandai
+        mentionedJids = args.map(number => number.replace(/[^0-9]/g, '') + "@s.whatsapp.net")
+    }
+    
+    // Baca daftar banned dari file
+    let banned;
+    try {
+        banned = JSON.parse(fs.readFileSync('./banned.json', 'utf8'))
+    } catch (err) {
+        console.error('Error reading banned.json:', err)
+        banned = []
+    }
+
+    // Menyimpan nomor yang berhasil dibanned dan yang sudah ada di daftar banned
+    let bannedNumbers = []
+    let alreadyBannedNumbers = []
+
+    // Proses setiap ID
+    for (let orgnye of mentionedJids) {
+        if (banned.includes(orgnye)) {
+            alreadyBannedNumbers.push(orgnye)
+        } else {
+            banned.push(orgnye)
+            bannedNumbers.push(orgnye)
+        }
+    }
+
+    // Simpan daftar banned yang telah diperbarui
+    try {
+        fs.writeFileSync('./banned.json', JSON.stringify(banned, null, 2))
+    } catch (err) {
+        console.error('Error writing banned.json:', err)
+        return m.reply('*Gagal Menyimpan Daftar Banned.*')
+    }
+
+    // Kirimkan pesan balasan
+    if (bannedNumbers.length > 0) {
+        m.reply(`*Nomor Telah Dibanned:*\n\n${bannedNumbers.join('\n')}`)
+    }
+    if (alreadyBannedNumbers.length > 0) {
+        m.reply(`*Nomor Berikut Sudah Ada Dalam Daftar Banned:*\n\n${alreadyBannedNumbers.join('\n')}`)
+    }
+}
+break
+
+
+case 'delban': {
+    if (!isCreator) return m.reply(mess.owner)
+
+    // Mendapatkan ID yang ditandai
+    let mentionedJids = m.mentionedJidList || []
+    
+    // Jika tidak ada yang ditandai, ambil nomor dari args
+    if (mentionedJids.length === 0) {
+        if (!args[0]) return m.reply(`*Bukan Gitu Loh*\n\n> *Contoh : ${command} @tag1 @tag2 @tag3*`)
+        // Proses args jika tidak ada yang ditandai
+        mentionedJids = args.map(number => number.replace(/[^0-9]/g, '') + "@s.whatsapp.net")
+    }
+    
+    // Baca daftar banned dari file
+    let banned;
+    try {
+        banned = JSON.parse(fs.readFileSync('./banned.json', 'utf8'))
+    } catch (err) {
+        console.error('Error reading banned.json:', err)
+        banned = []
+    }
+
+    // Menyimpan nomor yang berhasil dihapus dan yang tidak ditemukan
+    let removedNumbers = []
+    let notFoundNumbers = []
+
+    // Proses setiap ID
+    for (let orgnye of mentionedJids) {
+        const index = banned.indexOf(orgnye)
+        if (index !== -1) {
+            banned.splice(index, 1) // Menghapus nomor dari daftar banned
+            removedNumbers.push(orgnye)
+        } else {
+            notFoundNumbers.push(orgnye) // Nomor tidak ditemukan dalam daftar banned
+        }
+    }
+
+    // Simpan daftar banned yang telah diperbarui
+    try {
+        fs.writeFileSync('./banned.json', JSON.stringify(banned, null, 2))
+    } catch (err) {
+        console.error('Error writing banned.json:', err)
+        return m.reply('*Gagal Menyimpan Daftar Banned.*')
+    }
+
+    // Kirimkan pesan balasan
+    if (removedNumbers.length > 0) {
+        m.reply(`*Nomor Telah Dihapus dari Daftar Banned:*\n\n${removedNumbers.join('\n')}`)
+    }
+    if (notFoundNumbers.length > 0) {
+        m.reply(`*Nomor Berikut Tidak Ditemukan dalam Daftar Banned:*\n\n${notFoundNumbers.join('\n')}`)
+    }
+}
+break
+
+
+case 'listban': {
+    if (!isCreator) return m.reply(mess.owner)
+
+    // Baca daftar banned dari file
+    let banned;
+    try {
+        banned = JSON.parse(fs.readFileSync('./banned.json', 'utf8'))
+    } catch (err) {
+        console.error('Error reading banned.json:', err)
+        return m.reply('*Gagal Membaca Daftar Banned.*')
+    }
+
+    // Buat pesan daftar banned
+    let response = '*Daftar Banned:*\n\n';
+    if (banned.length === 0) {
+        response += '*Daftar Banned Kosong.*';
+    } else {
+        response += banned.map((number, index) => `${index + 1}. ${number}`).join('\n')
+    }
+
+    // Kirimkan pesan daftar banned
+    m.reply(response)
+}
+break
+
+  
+
+//===============================================================================================================================================================//
+
+
+  case 'owner':
+  case 'creator': 
+  case 'developer': {
+  if (text) return
+  await lenwy.sendContact(m.chat, author.map( i => i.split("@")[0]), m.quoted ? m.quoted.fakeObj : m)
+  }
+  break
+  
+  case 'limit': {
+  if (text) return
+  m.reply('Sisa Limit Kamu : ' + (db.data.users[m.sender].limit))
+  }
+  break
+  
+  case 'resetlimit': {
+  if (!isCreator) return m.reply(mess.owner)
+  let list = Object.entries(global.db.data.users)
+    let lim = !args || !args[0] ? 50 : isNumber(args[0]) ? parseInt(args[0]) : 50
+    lim = Math.max(1, lim)
+    list.map(([user, data], i) => (Number(data.limit = lim)))
+      lenwy.sendMessage(m.chat, {text: `Limit Direset ${lim} / User`}, { quoted: m })
+      }
+  break
+  
+  case 'addlimit': {
+  if (!isCreator) return m.reply(mess.owner)
+  if (!text) return m.reply('Masukkan Jumlah Limit Yang Akan Diberi')
+      let who
+      if (m.isGroup) who = m.mentionedJid[0]
+      else who = m.chat
+      if (!who) m.reply('Tag Orangnya')
+      let txt = text.replace('@' + who.split`@`[0], '').trim()
+      if (isNaN(txt)) m.reply('Hanya Angka')
+      let poin = parseInt(txt)
+      let limit = poin
+      if (limit < 1) m.reply( 'Minimal 1')
+      let user = global.db.data.users
+      user[who].limit += poin
+      if (limit > 9999999) return m.reply('Kebanyakan')
+      if (txt.toLowerCase() === 'infinity') {
+        limit = Infinity;
+      } if (!user[who]) {
+      user[who] = {}; // Pastikan data pengguna ada
+  }
+  user[who].limit = limit; // Set limit ke Infinity atau jumlah yang ditentukan
+// Kirim pesan ke pengguna
+let limitText = limit === Infinity ? 'Infinity' : `+${limit}`;
+lenwy.sendMessage(m.chat, {
+  text: `🎁 *Selamat @${who.split`@`[0]}. Kamu Mendapatkan ${limitText} Limit!*`
+}, { quoted: m })
+}
+break
+
+case 'hdvid':
+case 'hdvidio':
+case 'hdvideo': {
+  const who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? lenwy.user.jid : m.sender;
+  const q = m.quoted ? m.quoted : m;
+  const mime = (q.msg || q).mimetype || '';
+
+  if (!mime) return m.reply(`Videonya mana?`)
+  if (!/video/.test(mime)) {
+    return m.reply(`Kirim/kutip video dengan caption ${prefix + command}`)
+  }
+
+  LenwyLD()
+  await sleep(200)
+  let media = await q.download()
+let video = Math.floor(Math.random() * 100) + 1;
+
+  const inputFilePath = `./input${video}.mp4`;
+  fs.writeFileSync(inputFilePath, media)
+
+  const outputFilePath = `./output${video}.mp4`;
+  const dir = './';
+  if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir)
+  }
+
+  const ffmpegCommand = `ffmpeg -i ${inputFilePath} -vf "hqdn3d=1.5:1.5:6:6,unsharp=3:3:0.6,eq=brightness=0.05:contrast=1.1:saturation=1.05" -vcodec libx264 -preset slower -crf 22 -acodec copy -movflags +faststart ${outputFilePath}`;
+
+  exec(ffmpegCommand, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error: ${error.message}`)
+      return
+    }
+    console.log(`stdout: ${stdout}`)
+    console.error(`stderr: ${stderr}`)
+    lenwy.sendMessage(m.chat, { caption: `_Video berhasil ditingkatkan kualitasnya_`, video: { url: outputFilePath } }, { quoted: m })
+    fs.unlinkSync(inputFilePath)
+  })
+}
+break
+
+case 'hd':
+case 'hdr':
+case 'remini': {
+ if (!quoted) return m.reply(`Fotonya Mana?`)
+ if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`)
+ await LenwyLD()
+ try {
+ let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+ let anu = await uploader60Minute(media)
+ let result = (util.format(anu))
+ console.log(anu)
+ await lenwy.sendMessage(m.chat, { image: { url: `https://api.nexray.eu.cc/tools/v1/enhancer?url=${result}` }, caption: 'SUCCESS ✅' }, { quoted: m })
+ } catch (e) {
+ console.error(e);
+ return m.reply('Error, Coba Pakai hd2')
+ }
+}
+break
+
+case 'hd2':
+case 'hdr2':
+case 'remini2': {
+if (!quoted) return m.reply('Fotonya Mana?')
+if (!/image/.test(mime)) return m.reply('Fotonya Mana?')
+LenwyLD()
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+let anu = await uploader60Minute(media)
+let result = util.format(anu)
+try {
+ await lenwy.sendMessage(m.chat, { image: { url: `https://api.nexray.eu.cc/tools/upscale?url=${result}&resolusi=2` }, caption: 'Selesai' }, { quoted: m })
+} catch {
+ return m.reply('Error, Coba Pakai hd3')
+}
+}
+break
+
+case 'hd3':
+case 'hdr3':
+case 'remini3': {
+if (!quoted) return m.reply(`Fotonya Mana?`)
+if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`)
+LenwyLD()
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+let anu = await uploader60Minute(media)
+let result = (util.format(anu))
+try {
+ await lenwy.sendMessage(m.chat,{ image:{ url: `https://api.nexray.eu.cc/tools/v1/upscale?url=${result}` }, caption:'Selesai' },{ quoted: m })
+} catch (e) {
+ return m.reply('Error, Coba Pakai hd4')
+}
+}
+break
+
+case 'hd4':
+case 'hdr4':
+case 'remini4': {
+if (!quoted) return m.reply(`Fotonya Mana?`)
+if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`)
+LenwyLD()
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+let anu = await uploader60Minute(media)
+let result = (util.format(anu))
+try {
+  await lenwy.sendMessage(m.chat,{ image:{ url: `https://api.nexray.eu.cc/tools/v3/upscale?url=${result}` }, caption:'Selesai' },{ quoted: m })
+} catch (e) {
+  return m.reply('Error, Coba Pakai hd5')
+}
+}
+break
+
+case 'hd5':
+case 'hdr5':
+case 'remini5': {
+if (!quoted) return m.reply(`Fotonya Mana?`)
+if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`)
+LenwyLD()
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+let anu = await uploader60Minute(media)
+let result = (util.format(anu))
+try {
+  const { data } = await axios.get(`https://api.vreden.my.id/api/v1/artificial/imglarger/enhance?url=${result}`, { headers: { 'User-Agent': 'Mozilla/5.0' } })
+  console.log(data.result)
+  await lenwy.sendMessage(m.chat,{ image:{ url: data.result.download }, caption:'Selesai' },{ quoted: m })
+} catch (e) {
+  return m.reply('Error')
+}
+}
+break
+
+case 'skinswap': {
+  if (!quoted) return m.reply(`Fotonya Mana?`)
+  if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`)
+
+  let color_Skin = ["black", "pink", "green", "blue", "purple", "red", "gold", "silver", "brown", "orange"]
+
+  if (!color_Skin.includes(text.toLowerCase())) {
+      return m.reply(`Warna *${text}* tidak tersedia!\nGunakan salah satu dari:\n${color_Skin.join(', ')}`)
+  }
+
+  LenwyLD()
+  await sleep(200)
+  let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+  let anu = await uploader60Minute(media)
+  let result = (util.format(anu))
+  try {
+      const result2 = await (await fetch(`https://${global.api.maelyn.domain}/api/img2img/skinswap?url=${result}&style=${text.toLowerCase()}`, {
+          headers: {
+              'x-maelyn-auth': global.api.maelyn.apikey
+          }
+      })).json()
+      await lenwy.sendMessage(m.chat, { image: { url: result2.result }, caption: 'Selesai' }, { quoted: m })
+  } catch (e) {
+      console.log(e)
+      return m.reply('Error saat proses skinswap!')
+  }
+}
+break
+
+case 'ocr': {
+if (!quoted) return m.reply(`Fotonya Mana?`)
+if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`)
+try{
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+let anu = await uploader60Minute(media)
+let result = (util.format(anu))
+const proses = await (await fetch(`https://deoberon-api.vercel.app/tools/ocr?url=${result}`)).json()
+let teks = proses.result
+await lenwy.sendMessage(m.chat, { text: `Hasilnya: ${teks}` }, { quoted: m})
+} catch (error) {
+console.error(error)
+m.reply('Error')
+}
+}
+break
+
+case 'removebg':
+case 'nobg': {
+if (!quoted) return m.reply(`Fotonya Mana?`)
+if (!/image/.test(mime)) return m.reply(`Mana Fotonya?`)
+LenwyLD()
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+let anu = await uploader60Minute(media)
+let result = (util.format(anu))
+const proses = await (await fetch(`https://${global.api.ham.domain}/tools/removebg?apikey=${global.api.ham.apikey}&url=${result}`)).json()
+console.log(proses)
+await lenwy.sendMessage(m.chat, { image: { url: proses.result.url }, caption: '🎁 *Removebg Selesai*'}, { quoted: m })
+}
+break
+
+  
+case 'qc': {
+    if (!q) return m.reply(`*Contoh :* Qc white Lenwy\n🎁 *Kode Warna:* Qckode`)
+    if (q.length > 400) return m.reply('*Maksimal 400 Karakter*')
+
+    const [color, ...msg] = q.split(' ')
+    const message = msg.join(' ')
+    if (!message) return m.reply('*Teks tidak boleh kosong!*')
+
+    const colors = {
+        pink: '#f68ac9',
+        blue: '#6cace4',
+        red: '#f44336',
+        green: '#4caf50',
+        yellow: '#ffeb3b',
+        purple: '#9c27b0',
+        darkblue: '#0d47a1',
+        lightblue: '#03a9f4',
+        ash: '#9e9e9e',
+        orange: '#ff9800',
+        black: '#000000',
+        white: '#ffffff',
+        teal: '#008080',
+        lightpink: '#ffc0cb',
+        chocolate: '#a52a2a',
+        salmon: '#ffa07a',
+        magenta: '#ff00ff',
+        tan: '#d2b48c',
+        wheat: '#f5deb3',
+        deeppink: '#ff1493',
+        fire: '#b22222',
+        lenwyblue: '#00bfff',
+        brightlenwyblue: '#1e90ff',
+        hotpink: '#ff69b4',
+        lightlenwyblue: '#87ceeb',
+        seagreen: '#20b2aa',
+        darkred: '#8b0000',
+        orangered: '#ff4500',
+        cyan: '#48d1cc',
+        violet: '#ba55d3',
+        mossgreen: '#00ff7f',
+        darkgreen: '#008000',
+        navyblue: '#191970',
+        darkorange: '#ff8c00',
+        darkpurple: '#9400d3',
+        fuchsia: '#ff00ff',
+        darkmagenta: '#8b008b',
+        darkgray: '#2f4f4f',
+        peachpuff: '#ffdab9',
+        darkishgreen: '#bdb76b',
+        darkishred: '#dc143c',
+        goldenrod: '#daa520',
+        darkishgray: '#696969',
+        darkishpurple: '#483d8b',
+        gold: '#ffd700',
+        silver: '#c0c0c0'
+    }
+
+    const backgroundColor = colors[color]
+    if (!backgroundColor) {
+        return m.reply(
+            '☘ *Kode Warna Tidak Ditemukan*\n' +
+            '🎁 Contoh : Qc white Lenwy\n' +
+            '⚠ Gunakan huruf kecil'
+        )
+    }
+
+    const obj = {
+        type: 'quote',
+        format: 'png',
+        backgroundColor,
+        width: 512,
+        height: 768,
+        scale: 2,
+        messages: [{
+            entities: [],
+            avatar: true,
+            from: {
+                id: 1,
+                name: pushname,
+                photo: {
+                    url: await lenwy.profilePictureUrl(m.sender, 'image')
+                        .catch(() => 'https://telegra.ph/file/6880771a42bad09dd6087.jpg')
+                }
+            },
+            text: message,
+            replyMessage: {}
+        }]
+    }
+
+    const res = await axios.post('https://bot.lyo.su/quote/generate', obj)
+    const buffer = Buffer.from(res.data.result.image, 'base64')
+
+    await lenwy.sendImageAsSticker(m.chat, buffer, m, { packname: global.packname, author: global.author })
+}
+break
+
+case 'qckode': {
+m.reply(`📦 Kode Warna Qc
+ *⨠ Pink*
+ *⨠ Blue*
+ *⨠ Red*
+ *⨠ Green*
+ *⨠ Yellow*
+ *⨠ Purple*
+ *⨠ Darkblue*
+ *⨠ Lightblue*
+ *⨠ Ash*
+ *⨠ Orange*
+ *⨠ Black*
+ *⨠ White*
+ *⨠ Teal*
+ *⨠ Lightpink*
+ *⨠ Chocolate*
+ *⨠ Salmon*
+ *⨠ Magenta*
+ *⨠ Tan*
+ *⨠ Wheat*
+ *⨠ Deeppink*
+ *⨠ Fire*
+ *⨠ lenwyblue*
+ *⨠ Safron*
+ *⨠ Brightlenwyblue*
+ *⨠ Hotpink*
+ *⨠ Lightlenwyblue*
+ *⨠ Seagreen*
+ *⨠ Darkred*
+ *⨠ Orangered*
+ *⨠ Cyan*
+ *⨠ Violet*
+ *⨠ Mossgreen*
+ *⨠ Darkgreen*
+ *⨠ Navyblue*
+ *⨠ Darkorange*
+ *⨠ Darkpurple*
+ *⨠ Fuchsia*
+ *⨠ Darkmagenta*
+ *⨠ Darkgray*
+ *⨠ Peachpuff*
+ *⨠ Blackishgreen*
+ *⨠ Darkishred*
+ *⨠ Goldenrod*
+ *⨠ Darkishgray*
+ *⨠ Darkishpurple*
+ *⨠ Gold*
+ *⨠ Silver*
+
+⚠️ Kalo Ada Error Bisa Chat Owner Ya
+`)
+}
+break
+
+case 'img2txt':
+if (!/image/.test(mime)) return m.reply(`Gambarnya Mana?`)
+if (/image/.test(mime)) {
+LenwyLD()
+await sleep(200)
+let mee = await lenwy.downloadAndSaveMediaMessage(quoted)
+let mem = await uploader60Minute(mee)
+let len = await (await fetch(`https://itzpire.com/tools/img2text?url=${mem}`)).json()
+  LenwyLD()
+  await sleep(200)
+let result = len.result
+lenwy.sendMessage(m.chat,{image:{url: mem}, caption:`${result}`},{quoted: m})
+}
+break
+
+case 'txt2img':
+case 'texttoimage':
+case 'tekstoimage':
+case 'text2image':
+case 'teks2image':
+case 'txt2image': {
+    if (!q) return m.reply(`*Mau Gambar Apa?*`)
+
+    // Kirim reaksi dan pesan tunggu
+    LenwyLD
+    await sleep(200)
+
+
+    try {
+        // Buat URL request dengan prompt dari pengguna
+        const apiUrl = `https://endpoint.web.id/ai/txt2img?key=315602&prompt=${encodeURIComponent(q)}`;
+
+        // Ambil hasil dari API
+        let response = await fetch(apiUrl)
+        let json = await response.json()
+
+        // Periksa status API
+        if (json.status && json.code === 200) {
+            let imageUrl = json.result.url;
+
+            // Kirim gambar hasil ke chat
+            lenwy.sendMessage(m.chat, { image: { url: imageUrl }, caption: `Gambar untuk prompt: "${q}"` }, { quoted: m })
+        } else {
+            m.reply(`Gagal mendapatkan gambar. Silakan coba lagi.`)
+        }
+    } catch (error) {
+        console.error('Error:', error)
+        m.reply(`Terjadi kesalahan saat memproses permintaan.`)
+    }
+}
+break
+
+case 'geminiimg': {
+if (!quoted) return m.reply('Mana Gambarnya?')
+m.reply('Sabar Yaa')
+if (!/image/.test(mime)) return m.reply("Hanya Support Gambar")
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+let anu = await uploader60Minute(media)
+let { data } = await axios.get("https://gmni.vercel.app/api/img?imageUrl="+ anu +"&prompt=" + text)
+m.reply(data.text)
+}
+break
+
+case 'lirik':
+case 'liriklagu': {
+  if (!text) return m.reply(`Masukan Judul Lagu`)
+  if (text.length > 30) return m.reply(`Maksimal 30 Karakter`)    
+  LenwyLD()
+  await sleep(200)
+  try{
+    let anu = await (await fetch(`https://endpoint.web.id/tools/lirik?key=315602&query=${text}`)).json()
+    let result = anu.result
+    let caption = '📃 Judul : ' + result.title + '\n📣 Artis : ' + result.artist + '\n\n🎁 Lirik :\n' + result.lyrics
+    m.reply(caption)
+  } catch (error) {
+    m.reply(`⚠️ Lirik Lagu Tidak Ditemukan ${error}`)
+  }
+}
+break
+
+case 'linkgroup':
+case 'linkgc': {
+    if (!m.isGroup) return m.reply(mess.group)
+    if (!isBotAdmins) return m.reply(mess.botAdmin)
+    
+    try {
+        // Ambil metadata grup
+        const groupMetadata = await lenwy.groupMetadata(from)
+
+        // Ambil link undangan grup
+        let response = await lenwy.groupInviteCode(from)
+
+        // Kirim pesan dengan link dan ID grup
+        const message = `*Nama Group :* ${groupMetadata.subject}\n\n\n🎁 *Link Group :* https://chat.whatsapp.com/${response}\n\n🎁 *ID Group :* ${from}`;
+        lenwy.sendText(from, message, m, { detectLink: true })
+    } catch (error) {
+        console.error('Error while fetching group info:', error)
+        m.reply('Terjadi kesalahan saat mengambil informasi grup.')
+    }
+}
+break
+
+case 'resetlinkgc': {
+  if (!isAdmins) return m.reply(mess.admin)
+  if (!m.isGroup) return m.reply(mess.group)
+  if (!isBotAdmins) return m.reply(mess.botAdmin)
+
+  try {
+      let newLink = await revokeGc(m)
+      m.reply(`*Link Grup Berhasil Di Reset*\n\n*Menjadi:* https://chat.whatsapp.com/${newLink}`)
+      
+  } catch (err) {
+      console.error('Error saat mereset link grup:', err)
+      m.reply('Terjadi kesalahan saat mereset link grup.')
+  }
+}
+break
+
+case 'sendlinkgc': {
+if (!m.isGroup) return m.reply(mess.group)
+if (!isBotAdmins) return m.reply(mess.botAdmin)
+if (!text) return m.reply(`Penggunaan ${prefix+command} nomor\nContoh ${prefix+command} 6285261255548`)
+if (!args[0]) return m.reply(`Penggunaan ${prefix+command} nomor\nContoh ${prefix+command} 6285261255548`)
+var bnnd =  m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
+var cek = await lenwy.onWhatsApp(`${bnnd.split("@")[0]}`)
+if (cek.length < 1) return m.reply("Nomor Tersebut Tidak Terdaftar Di WhatsApp")
+try {
+let response = await lenwy.groupInviteCode(from)
+await lenwy.sendText(bnnd, `https://chat.whatsapp.com/${response}\n\nLink Group : ${groupMetadata.subject}`, len, { detectLink: true })
+m.reply('Selesai')
+} catch (e) {
+console.log(e)
+m.reply('Gini Loh\n\n> sendlinkgc 628xx')
+}
+}
+break
+
+case 'add':
+case 'addmember': {
+if (!m.isGroup) return m.reply(mess.group)
+if (!isAdmins) return m.reply(mess.admin)
+if (!isBotAdmins) return m.reply(mess.botAdmin)
+var teks =  m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
+var cek = await lenwy.onWhatsApp(`${teks.split("@")[0]}`)
+if (cek.length < 1) return m.reply("Nomor Tersebut Tidak Terdaftar Di WhatsApp")
+var a = await lenwy.groupParticipantsUpdate(m.chat, [teks], 'add')
+if (a[0].status == 200) lenwy.sendMessage(m.chat, {text: `Berhasil Menambahkan @${teks.split("@")[0]} Kedalam Grup Ini`, mentions: [`${teks}`]}, {quoted: m}).catch((err) => m.reply(err.toString()))
+if (a[0].status == 408) lenwy.sendMessage(m.chat, {text: `Gagal Menambahkan @${teks.split("@")[0]} Ke Dalam Grup Ini, Karna Target Tidak Mengizinkan Orang Lain Dapat Menambahkan Dirinya Ke Dalam Grup`, mentions: [`${teks}`]}, {quoted: m}).catch((err) => m.reply(err.toString()))
+if (a[0].status == 409) lenwy.sendMessage(m.chat, {text: `@${teks.split("@")[0]} Sudah Ada Di Dalam Grup Ini!`, mentions: [`${teks}`]}, {quoted: m}).catch((err) => m.reply(err.toString()))
+if (a[0].status == 403) lenwy.sendMessage(m.chat, {text: `Gagal Menambahkan @${teks.split("@")[0]} Ke Dalam Grup Ini, Karna Target Tidak Mengizinkan Orang Lain Dapat Menambahkan Dirinya Ke Dalam Grup`, mentions: [`${teks}`]}, {quoted: m}).catch((err) => m.reply(err.toString()))
+}
+break
+
+case 'kickall': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins) return m.reply(mess.admin);
+  if (!isBotAdmins) return m.reply(mess.botAdmin);
+
+  try {
+      const groupe = await lenwy.groupMetadata(from);
+      const members = groupe.participants;
+
+      const mems = members
+          .filter(member => member.id !== m.sender && member.id !== botNumber)
+          .map(member => member.id);
+
+      if (mems.length === 0) {
+          return m.reply("Tidak ada anggota yang dapat dikeluarkan.");
+      }
+
+      await lenwy.groupParticipantsUpdate(from, mems, 'remove')
+          .then(() => m.reply(`Berhasil mengeluarkan ${mems.length} anggota dari grup.`))
+          .catch(err => m.reply(`Gagal mengeluarkan anggota: ${err.toString()}`));
+  } catch (error) {
+      return m.reply(`Terjadi kesalahan: ${error.toString()}`);
+  }
+}
+break
+
+case 'dor':
+case 'kick': {
+if (!m.isGroup) return m.reply(mess.group)
+if (!isAdmins) return m.reply(mess.admin)
+if (!isBotAdmins) return m.reply(mess.botAdmin)
+if (text || m.quoted) {
+try {
+let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
+await lenwy.groupParticipantsUpdate(m.chat, [users], 'remove').then((res) => lenwy.sendMessage(m.chat, {text: `Berhasil Mengeluarkan @${users.split("@")[0]} Dari Grup Ini`, mentions: [`${users}`]}, {quoted: m})).catch((err) => m.reply(err.toString()))
+} catch (e) {
+  return m.reply(e)
+}
+} else {
+return m.reply(`tag atau @user`)
+}
+}
+break
+
+case 'promote': {
+if (!m.isGroup) return m.reply(mess.group)
+if (!isBotAdmins) return m.reply(mess.botAdmin)
+if (!isAdmins) return m.reply(mess.admin)
+let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
+await lenwy.groupParticipantsUpdate(from, [users], 'promote')
+m.reply(mess.success)
+}
+break
+
+case 'demote': {
+if (!m.isGroup) return m.reply(mess.group)
+if (!isBotAdmins) return m.reply(mess.botAdmin)
+if (!isAdmins) return m.reply(mess.admin)
+let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
+await lenwy.groupParticipantsUpdate(from, [users], 'demote')
+m.reply(mess.success)
+}
+break
+
+case 'promoteall': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins) return m.reply(mess.admin);
+  if (!isBotAdmins) return m.reply(mess.botAdmin);
+
+  try {
+      const groupe = await lenwy.groupMetadata(from);
+      const members = groupe.participants;
+
+      const mems = members
+          .filter(member => member.id !== m.sender && member.id !== botNumber)
+          .map(member => member.id);
+
+      if (mems.length === 0) {
+          return m.reply("Tidak ada anggota yang dapat di-promote.");
+      }
+
+      await lenwy.groupParticipantsUpdate(from, mems, 'promote')
+          .then(() => m.reply(`Berhasil mempromosikan ${mems.length} anggota ke admin.`))
+          .catch(err => m.reply(`Gagal mempromosikan anggota: ${err.toString()}`));
+  } catch (error) {
+      return m.reply(`Terjadi kesalahan: ${error.toString()}`);
+  }
+}
+break
+
+case 'demoteall': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins) return m.reply(mess.admin);
+  if (!isBotAdmins) return m.reply(mess.botAdmin);
+
+  try {
+      const groupe = await lenwy.groupMetadata(from);
+      const members = groupe.participants;
+
+      const mems = members
+          .filter(member => member.id !== m.sender && member.id !== botNumber)
+          .map(member => member.id);
+
+      if (mems.length === 0) {
+          return m.reply("Tidak ada anggota yang dapat di-demote.");
+      }
+
+      await lenwy.groupParticipantsUpdate(from, mems, 'demote')
+          .then(() => m.reply(`Berhasil mendemote ${mems.length} admin dari grup.`))
+          .catch(err => m.reply(`Gagal mendemote anggota: ${err.toString()}`));
+  } catch (error) {
+      return m.reply(`Terjadi kesalahan: ${error.toString()}`);
+  }
+}
+break
+
+
+case 'setppbot': {
+if (!isCreator) return m.reply(mess.owner)
+if (!quoted) return m.reply(`Kirim/Balas Image Dengan Caption ${prefix + command}`)
+if (!/image/.test(mime)) return m.reply(`Kirim/Balas Image Dengan Caption ${prefix + command}`)
+if (/webp/.test(mime)) return m.reply(`Kirim/Balas Image Dengan Caption ${prefix + command}`)
+var medis = await lenwy.downloadAndSaveMediaMessage(quoted, 'ppbot')
+if (args[0] == `/full`) {
+var { img } = await generateProfilePicture(medis)
+await lenwy.query({
+tag: 'iq',
+attrs: {
+to: botNumber,
+type:'set',
+xmlns: 'w:profile:picture'
+},
+content: [
+{
+tag: 'picture',
+attrs: { type: 'image' },
+content: img
+}
+]
+})
+fs.unlinkSync(medis)
+m.reply(mess.success)
+} else {
+var memeg = await lenwy.updateProfilePicture(botNumber, { url: medis })
+fs.unlinkSync(medis)
+m.reply(mess.success)
+}
+}
+break
+
+case 'setppbotpanjang': {
+if (!isCreator) return m.reply(mess.owner)
+if (!quoted) return m.reply(`Kirim/Balas Image Dengan Caption ${prefix + command}`)
+if (!/image/.test(mime)) return m.reply(`Mana Fotonya?`)
+if (/image/g.test(mime)) {
+if (/webp/.test(mime)) return m.reply(`Kirim/Balas Image Dengan Caption ${prefix + command}`)
+var medis = await lenwy.downloadAndSaveMediaMessage(quoted, 'ppbot')
+var { img } = await generateProfilePicture(medis)
+await lenwy.query({
+tag: 'iq',
+attrs: {
+to: botNumber,
+type:'set',
+xmlns: 'w:profile:picture'
+},
+content: [
+{
+tag: 'picture',
+attrs: { type: 'image' },
+content: img
+}
+]
+})
+fs.unlinkSync(medis)
+m.reply(`Sukses`)
+} else {
+var memeg = await lenwy.updateProfilePicture(botNumber, { url: medis })
+fs.unlinkSync(medis)
+m.reply(mess.success)
+}
+}
+break
+
+case 'setppgroup':
+case 'setppgrup':
+case 'setppgc': {
+if (!m.isGroup) return m.reply(mess.group)
+if (!isAdmins) return m.reply(mess.admin)
+if (!/image/.test(mime)) return m.reply(`Mana Fotonya?`)
+
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+await lenwy.updateProfilePicture(m.chat, { url: media }).catch((err) => fs.unlinkSync(media))
+m.reply(mess.success)
+}
+break
+
+case 'setppgcpanjang': {
+  const jimp = require('jimp')
+  
+  async function processImage(media) {
+    const image = await jimp.read(media)
+    const cropped = image.crop(0, 0, image.getWidth(), image.getHeight())
+    return {
+      img: await cropped.scaleToFit(720, 720).getBufferAsync(jimp.MIME_JPEG),
+      preview: await cropped.normalize().getBufferAsync(jimp.MIME_JPEG)
+    };
+  }
+
+  let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+  var { img } = await processImage(media)
+
+  await lenwy.query({
+    tag: "iq",
+    attrs: {
+      to: m.chat,
+      type: "set",
+      xmlns: "w:profile:picture",
+    },
+    content: [
+      {
+        tag: "picture",
+        attrs: { type: "image" },
+        content: img,
+      },
+    ],
+  })
+  
+  await lenwy.sendMessage(m.chat, {
+    react: {
+      text: "✅",
+      key: m.key,
+    },
+  })
+  
+  m.reply(mess.success)
+}
+break
+
+case 'hidetag':
+case 'h': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins) return m.reply(mess.admin);
+  const texthidetag_ = text ? text : (m.quoted ? m.quoted.text : '')
+  const mime = m.quoted ? m.quoted.mtype : m.mtype
+  try {
+    if (/image/.test(mime)) {
+      const media = await (m.quoted ? m.quoted.download() : m.download())
+      console.log(media)
+      if (!media) return m.reply("Gambar tidak ditemukan atau gagal diunduh.")
+      await lenwy.sendMessage(from, { image: media, caption: texthidetag_, mentions: participants.map(a => a.id) },{ quoted: m })
+    } else if (/video/.test(mime)) {
+      const media = await (m.quoted ? m.quoted.download() : m.download())
+      if (!media) return m.reply("Video tidak ditemukan atau gagal diunduh.")
+      await lenwy.sendMessage(from, { video: media, caption: texthidetag_, mentions: participants.map(a => a.id) }, { quoted: m })
+    } else {
+      lenwy.sendMessage(from,{ text: texthidetag_, mentions: participants.map(a => a.id) }, { quoted: m })
+    }
+  } catch (err) {
+    console.error(err);
+    m.reply("Terjadi kesalahan saat memproses media.");
+  }
+}
+break
+
+case 'setgrup':
+case 'setgroup': {   
+if (!m.isGroup) return m.reply(mess.group)
+if (!isAdmins) return m.reply(mess.admin)
+if (args[0] === 'close'){
+let settextclose = global.db.data.chats[m.chat]?.text_close || `_*Group Berhasil Ditutup*_ 「 🔒 」`
+await lenwy.groupSettingUpdate(from, 'announcement').then((res) => m.reply(settextclose)).catch((err) => m.reply(jsonformat(err)))
+} else if (args[0] === 'open'){
+let settextopen = global.db.data.chats[m.chat]?.text_open || `_*Group Berhasil Dibuka*_ 「 🔓 」`
+await lenwy.groupSettingUpdate(from, 'not_announcement').then((res) => m.reply(settextopen)).catch((err) => m.reply(jsonformat(err)))
+} else {
+lenwy.sendMessage(m.chat, { image: ppnyauser, caption: `*Silahkan Ketik*
+${command} open
+${command} close`}, { quoted: m }) 
+}
+}
+break
+
+case 'close': {
+  if (!m.isGroup) return m.reply(mess.group)
+  if (!isAdmins) return m.reply(mess.admin)
+  if (!isBotAdmins) return m.reply(mess.botAdmin)
+
+  let settextclose = global.datagc[from].text_close
+  let usertag = `@${m.sender.split("@")[0]}`
+
+  if (settextclose.includes('@tagreply')) {
+    if (m.quoted) {
+      let userreply = `@${m.quoted.sender.split("@")[0]}`
+      settextclose = settextclose.replace('@tagreply', userreply)
+    } else {
+      return m.reply(`Anda menggunakan @tagreply, anda harus mereply pesan seseorang untuk mengetag nya`)
+    }
+  }
+  
+  if (settextclose.includes('@groupname')) {
+    settextclose = settextclose.replace('@groupname', groupName)
+  } 
+  if (settextclose.includes('@tagdiri')) {
+    settextclose = settextclose.replace('@tagdiri', usertag)
+  }
+  if (settextclose.includes('@jam')) {
+    settextclose = settextclose.replace('@jam', jamnya)
+  }
+  if (settextclose.includes('@menit')) {
+    settextclose = settextclose.replace('@menit', menitnya)
+  }
+  if (settextclose.includes('@detik')) {
+    settextclose = settextclose.replace('@detik', detiknya)
+  }
+  if (settextclose.includes('@hari')) {
+    settextclose = settextclose.replace('@hari', harinya)
+  }
+  if (settextclose.includes('@tanggal')) {
+    settextclose = settextclose.replace('@tanggal', tanggalnya)
+  }
+  if (settextclose.includes('@bulan')) {
+    settextclose = settextclose.replace('@bulan', bulannya)
+  }
+  if (settextclose.includes('@tahun')) {
+    settextclose = settextclose.replace('@tahun', tahunnya)
+  }
+  if (settextclose.includes('@namabulan')) {
+    settextclose = settextclose.replace('@namabulan', namabulannya)
+  }
+  
+  if (!settextclose) {
+    settextclose = `_*Group Berhasil Ditutup*_ 「 🔒 」`
+  }
+
+  await lenwy.groupSettingUpdate(from, 'announcement')
+    .then((res) => lenwy.sendMessage(from, { text: settextclose, mentions: [m.sender] }, { quoted: m }))
+    .catch((err) => m.reply(jsonformat(err)))
+}
+break
+
+case 'open': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins) return m.reply(mess.admin);
+  if (!isBotAdmins) return m.reply(mess.botAdmin)
+
+  let settextopen = global.datagc[m.chat].text_open
+  let usertag = `@${m.sender.split("@")[0]}`
+
+  if (settextopen.includes('@tagreply')) {
+    if (m.quoted) {
+      let userreply = `@${m.quoted.sender.split("@")[0]}`
+      settextopen = settextopen.replace('@tagreply', userreply)
+    } else {
+      return m.reply(`Anda menggunakan @tagreply, anda harus mereply pesan seseorang untuk mengetag nya`)
+    }
+  }
+
+  if (settextopen.includes('@groupname')) {
+    settextopen = settextopen.replace('@groupname', groupName)
+  } 
+  if (settextopen.includes('@tagdiri')) {
+    settextopen = settextopen.replace('@tagdiri', usertag)
+  }
+  if (settextopen.includes('@jam')) {
+    settextopen = settextopen.replace('@jam', jamnya)
+  }
+  if (settextopen.includes('@menit')) {
+    settextopen = settextopen.replace('@menit', menitnya)
+  }
+  if (settextopen.includes('@detik')) {
+    settextopen = settextopen.replace('@detik', detiknya)
+  }
+  if (settextopen.includes('@hari')) {
+    settextopen = settextopen.replace('@hari', harinya)
+  }
+  if (settextopen.includes('@tanggal')) {
+    settextopen = settextopen.replace('@tanggal', tanggalnya)
+  }
+  if (settextopen.includes('@bulan')) {
+    settextopen = settextopen.replace('@bulan', bulannya)
+  }
+  if (settextopen.includes('@tahun')) {
+    settextopen = settextopen.replace('@tahun', tahunnya)
+  }
+  if (settextopen.includes('@namabulan')) {
+    settextopen = settextopen.replace('@namabulan', namabulannya)
+  }
+  
+
+  if (!settextopen) {
+      settextopen = `_*Group Berhasil Dibuka*_ 「 🔓 」`
+  }
+
+  await lenwy.groupSettingUpdate(from, 'not_announcement')
+    .then((res) => lenwy.sendMessage(from, { text: settextopen, mentions: [m.sender] }, { quoted: m }))
+    .catch((err) => m.reply(jsonformat(err)));
+}
+break
+
+case 'setopen': {
+if (!m.isGroup) return m.reply(mess.group)
+if (!isAdmins) return m.reply(mess.admin)
+let teks = text ? text : ''
+await updateTextOpen(m, teks)
+m.reply(mess.success)
+}
+break
+
+case 'setclose': {
+if (!m.isGroup) return m.reply(mess.group)
+if (!isAdmins) return m.reply(mess.admin)
+let teks = text ? text : ''
+await updateTextClose(m, teks)
+m.reply(mess.success)
+}
+break
+
+case 'jeda': {
+    if (!m.isGroup) return m.reply(mess.group)
+    if (!isAdmins) return m.reply(mess.admin)
+    if (!isBotAdmins) return m.reply(mess.botAdmin)
+    if (!args[0]) return m.reply(`*Pilih Waktu:*\n-s = Second\n-m = Minute\n-h = Hour\n-d = Day\n\n*Contoh:*\n${prefix+command} 10m`)
+    // Ekstrak nilai waktu dan unit
+    let timeArg = args[0]
+    let timer = toMs(timeArg)
+    // Menutup grup
+    m.reply(`*Group akan ditutup selama ${timeArg}*`)
+    lenwy.groupSettingUpdate(from, 'announcement')
+        .then(() => {
+            // Mengirim pesan bahwa grup ditutup
+            m.reply(`Group telah ditutup selama ${timeArg}. Grup akan dibuka kembali setelah waktu habis.`)
+            // Mengatur waktu untuk membuka grup kembali
+            setTimeout(() => {
+                lenwy.groupSettingUpdate(from, 'not_announcement')
+                    .then(() => {
+                        m.reply(`Group telah dibuka kembali setelah ${timeArg}.`)
+                    })
+                    .catch(err => {
+                        console.error('Error membuka grup:', err)
+                        m.reply(`Terjadi kesalahan saat membuka grup kembali.`)
+                    })
+            }, timer)
+        })
+        .catch(err => {
+            console.error('Error menutup grup:', err)
+            m.reply(`Terjadi kesalahan saat menutup grup.`)
+        })
+}
+break
+
+case 'setdesk': {
+if (!m.isGroup) return m.reply(mess.group)
+if (!isAdmins) return m.reply(mess.admin)
+ if (q == 'on'){
+await lenwy.groupSettingUpdate(from, 'unlocked').then((res) => m.reply(`Sukses Membuka Edit Info Group 🫡`)).catch((err) => m.reply(jsonformat(err)))
+ } else if (q == 'off'){
+await lenwy.groupSettingUpdate(from, 'locked').then((res) => m.reply(`Sukses Menutup Edit Info Group 🫡`)).catch((err) => m.reply(jsonformat(err)))
+ } else {
+ lenwy.sendMessage(m.chat, { image: ppnyauser, caption: ` Silahkan Ketik
+Setdesk on
+Setdesk off`}, {quoted:m}) 
+
+}
+}
+break
+
+case 'join': {
+ if (!isCreator) return m.reply(mess.owner)
+ if (!text) return m.reply('Masukkan Link Group!')
+ if (!isUrl(text) || !text.includes('whatsapp.com')) return m.reply('Link tidak valid! 🤔')
+ let linknya = text
+ if (text.includes('?')) linknya = text.split('?')[0]
+ m.reply('Sabar Yaa')
+
+ try {
+ let result = linknya.split('https://chat.whatsapp.com/')[1]
+ if (!result) return m.reply('Link tidak valid! 🤔')
+ 
+ await lenwy.groupAcceptInvite(result)
+ m.reply('Bot berhasil bergabung ke grup!')
+ } catch (err) {
+ if (err.message.includes('not-authorized')) {
+ return m.reply('Gagal bergabung ke grup. Bot kemungkinan baru saja dikeluarkan.')
+ } else if (err.message.includes('gone')) {
+ return m.reply('Link grup sudah di reset.')
+ } else if (err.message.includes('conflict')) {
+ m.reply('Bot sudah berada di dalam grup.')
+ } else if (err.message.includes('already-exists')) {
+ return m.reply('Bot sudah meminta gabung ke grup.')
+ } else {
+ console.log(err)
+ return m.reply('Terjadi error yang tidak dikenali.')
+ }
+ }
+}
+break
+
+case 'leave': {
+ if (!isCreator) return m.reply(mess.owner)
+
+ if (m.isGroup) {
+ if (text) return
+ setTimeout(async () => {
+ try {
+ await lenwy.groupLeave(m.chat)
+ console.log(`Successfully left the group ${m.chat}`)
+ } catch (err) {
+ console.error('Error leaving the group:', err)
+ await m.reply('*Gagal meninggalkan grup.*')
+ }
+ }, 2000)
+ } else if (!m.isGroup) {
+ if (!text) return m.reply('*Mana ID Grup / Link Nya?*\n*Ketik cekidgc Buat Liat Id Nya*')
+ let groupId
+ if (text.includes('https://chat.whatsapp.com')) {
+ let linknya = text
+ if (text.includes('?')) linknya = text.split('?')[0]
+ groupId = await getGroupIdFromLink(linknya, lenwy)
+ } else if (text.includes('@g.us')) {
+ groupId = text
+ } else {
+ return m.reply(`Itu bukan id grup ataupun link grup`)
+ }
+ setTimeout(async () => {
+ try {
+ await lenwy.groupLeave(groupId)
+ m.reply(`Berhasil keluar dari grup ${groupId}`)
+ } catch (err) {
+ console.error('Error leaving the group:', err)
+ await m.reply('*Gagal meninggalkan grup.*')
+ }
+ }, 2000) // 5000 ms = 5 detik
+ }
+}
+break
+
+case 'editsubjek': {
+if (!m.isGroup) return m.reply(mess.group)
+if (!isBotAdmins) return m.reply(mess.botAdmin)
+if (!isAdmins) return m.reply(mess.admin)
+if (!text) m.reply('Text nya ?')
+await lenwy.groupUpdateSubject(from, text).catch((err) => m.reply(jsonformat(err)))
+}
+break
+
+case 'editdesk': {
+if (!m.isGroup) return m.reply(mess.group)
+if (!isBotAdmins) return m.reply(mess.botAdmin)
+if (!isAdmins) return m.reply(mess.admin)
+if (!text) m.reply('Text Nya ?')
+await lenwy.groupUpdateDescription(from, text).catch((err) => m.reply(jsonformat(err)))
+}
+break
+
+case 'tagall': {
+if (!m.isGroup) return m.reply(mess.group)
+if (!isAdmins) return m.reply(mess.admin)
+let teks = `*Tag All*
+🎁 *Pesan : ${q ? q : 'Kosong'}*\n\n`
+for (let mem of participants) {
+teks += `⨠ @${mem.id.split('@')[0]}\n`
+}
+lenwy.sendMessage(m.chat, { text: teks, mentions: participants.map(a => a.id) }, { quoted:m })
+}
+break
+
+case 'inspect': {
+if (isBan) return m.reply('*Lu Di Ban Owner*')
+if (!args[0]) return m.reply("Linknya?")
+let linkRegex = args.join(" ")
+let coded = linkRegex.split("https://chat.whatsapp.com/")[1]
+if (!coded) return m.reply("Link Invalid 🤔")
+lenwy.query({
+tag: "iq",
+attrs: {
+type: "get",
+xmlns: "w:g2",
+to: "@g.us"
+},
+content: [{ tag: "invite", attrs: { code: coded } }]
+}).then(async(res) => { 
+tekse = `*Group Link Yang Di Inspect*
+
+ *⨠ Nama Group : ${res.content[0].attrs.subject ? res.content[0].attrs.subject : "undefined"}*
+ *⨠ Deskripsi Di Ubah : ${res.content[0].attrs.s_t ? moment(res.content[0].attrs.s_t *1000).tz("Asia/Jakarta").format("DD-MM-YYYY, HH:mm:ss") : "undefined"}*
+ *⨠ Pembuat Group : ${res.content[0].attrs.creator ? "@" + res.content[0].attrs.creator.split("@")[0] : "undefined"}*
+ *⨠ Group Di Buat : ${res.content[0].attrs.creation ? moment(res.content[0].attrs.creation * 1000).tz("Asia/Jakarta").format("DD-MM-YYYY, HH:mm:ss") : "undefined"}*
+ *⨠ Total Member : ${res.content[0].attrs.size ? res.content[0].attrs.size : "undefined"} Member*
+
+*⨠ ID Group  : ${res.content[0].attrs.id ? res.content[0].attrs.id : "undefined"}*
+🎁 *By ${botname}*`
+try {
+pp = await lenwy.profilePictureUrl(res.content[0].attrs.id + "@g.us", "image")
+} catch {
+pp = "https://tse2.mm.bing.net/th?id=OIP.n1C1oxOvYLLyDIavrBFoNQHaHa&pid=Api&P=0&w=153&h=153"
+}
+lenwy.sendFile(from, pp, "", m, { caption: tekse, mentions: await lenwy.parseMention(tekse) })
+
+})
+}
+break
+
+case 'inspect2': {
+if (isBan) return m.reply('Lu Di Ban Owner')
+if (!args[0]) return m.reply("Linknya?")
+let linkRegex = args.join(" ")
+let coded = linkRegex.split("https://chat.whatsapp.com/")[1]
+if (!coded) return reply("Link Invalid")
+lenwy.query({
+tag: "iq",
+attrs: {
+type: "get",
+xmlns: "w:g2",
+to: "@g.us"
+},
+content: [{ tag: "invite", attrs: { code: coded } }]
+}).then(async(res) => { 
+tekse = `「 Group Link Yang Di Inspect 」
+▸ Nama Group : ${res.content[0].attrs.subject ? res.content[0].attrs.subject : "undefined"}
+
+▸ Deskripsi Di Ubah : ${res.content[0].attrs.s_t ? moment(res.content[0].attrs.s_t *1000).tz("Asia/Jakarta").format("DD-MM-YYYY, HH:mm:ss") : "undefined"}
+▸ Pembuat Group : ${res.content[0].attrs.creator ? "@" + res.content[0].attrs.creator.split("@")[0] : "undefined"}
+▸ Group Di Buat : ${res.content[0].attrs.creation ? moment(res.content[0].attrs.creation * 1000).tz("Asia/Jakarta").format("DD-MM-YYYY, HH:mm:ss") : "undefined"}
+▸ Total Member : ${res.content[0].attrs.size ? res.content[0].attrs.size : "undefined"} Member
+
+▸ ID Group  : ${res.content[0].attrs.id ? res.content[0].attrs.id : "undefined"}@g.us
+
+©By ${botname}`
+try {
+pp = await lenwy.profilePictureUrl(res.content[0].attrs.id + "@g.us", "image")
+} catch {
+pp = "https://tse2.mm.bing.net/th?id=OIP.n1C1oxOvYLLyDIavrBFoNQHaHa&pid=Api&P=0&w=153&h=153"
+}
+lenwy.sendFile(from, pp, "", m, { caption: tekse, mentions: await lenwy.parseMention(tekse) })
+
+})
+}
+break
+
+case 'ping':
+case 'botstatus':
+case 'statusbot': {
+    const { execSync } = require('child_process');
+    const used = process.memoryUsage();
+    const cpus = os.cpus().map(cpu => {
+        cpu.total = Object.keys(cpu.times).reduce((last, type) => last + cpu.times[type], 0);
+        return cpu;
+    });
+    const cpu = cpus.reduce((last, cpu, _, { length }) => {
+        last.total += cpu.total;
+        last.speed += cpu.speed / length;
+        last.times.user += cpu.times.user;
+        last.times.nice += cpu.times.nice;
+        last.times.sys += cpu.times.sys;
+        last.times.idle += cpu.times.idle;
+        last.times.irq += cpu.times.irq;
+        return last;
+    }, { speed: 0, total: 0, times: { user: 0, nice: 0, sys: 0, idle: 0, irq: 0 } });
+
+    let timestamp = speed();
+    let latensi = speed() - timestamp;
+    let neww = performance.now();
+    let oldd = performance.now();
+
+    let serverLocation = 'Tidak diketahui';
+    let ispName = 'Tidak diketahui';
+    let timeZone = 'Tidak diketahui';
+    try {
+        const res = await fetch('http://ip-api.com/json/');
+        const data = await res.json();
+        serverLocation = `${data.city}, ${data.regionName}, ${data.country}`;
+        ispName = data.isp;
+        timeZone = data.timezone;
+    } catch (e) {
+        serverLocation = 'Gagal mengambil data lokasi';
+        ispName = 'Gagal mengambil ISP';
+    }
+
+    let diskSpace = 'Tidak diketahui';
+    try {
+        if (os.platform() === 'win32') {
+            diskSpace = 'Gagal membaca (OS Windows)';
+        } else {
+            diskSpace = execSync("df -h / | awk 'NR==2 {print $3\" Terpakai dari \"$2\" (\"$5\")\"}'").toString().trim();
+        }
+    } catch (err) {
+        diskSpace = 'Error membaca disk';
+    }
+
+    const loadAvg = os.loadavg().map(v => v.toFixed(2)).join(' | ');
+
+    let respon = `
+⏱️ *Kecepatan Respon :* ${latensi.toFixed(4)} Detik
+🚀 *Speed :* ${oldd - neww} Milidetik
+
+🤖 *INFO BOT*
+ *⨠ Runtime Bot :* ${runtime(process.uptime())}
+ *⨠ Process ID :* ${process.pid}
+ *⨠ Storage / Disk :* ${diskSpace}
+ *⨠ Total RAM :* ${formatp(os.totalmem())}
+ *⨠ RAM Terpakai Bot :* ${formatp(used.rss)}
+ *⨠ RAM Sisa Sistem :* ${formatp(os.freemem())}
+
+💻 *INFO VPS & SERVER*
+ *⨠ Hostname :* ${os.hostname()}
+ *⨠ Node.js :* ${process.version}
+ *⨠ Platform :* ${os.platform()} ${os.arch()}
+ *⨠ Uptime Server :* ${runtime(os.uptime())}
+ *⨠ Provider/ISP :* ${ispName}
+ *⨠ Region VPS :* ${serverLocation}
+ *⨠ Timezone :* ${timeZone}
+
+📈 *INFO CPU & BEBAN SISTEM*
+ *⨠ Load Average :* ${loadAvg} (1m | 5m | 15m)
+${cpus[0] ? ` *⨠ Model :* ${cpus[0].model.trim()} (${cpu.speed} MHZ)
+${Object.keys(cpu.times).map(type => ` *⨠ ${(type + '*').padEnd(6)}:* ${(100 * cpu.times[type] / cpu.total).toFixed(2)}%`).join('\n')}
+ *⨠ Core(s) :* ${cpus.length} Core` : ''}
+`.trim();
+
+    m.reply(respon);
+}
+break
+
+case 'bcgc':
+case 'bcgroup': {
+    if (!isCreator) return m.reply(mess.OnlyOwner)
+    // Memastikan teks query tidak kosong
+    if (!q) return m.reply(`*Bukan Gitu Loh*\n> *Contoh : ${prefix + command} OEE SEMUAANYAA*`)
+    // Pastikan ada teks untuk broadcast
+    if (!text) return m.reply(`*Teks Broadcast Tidak Ditemukan*\n> *Contoh : ${prefix + command} OEEE*`)
+
+    // Mengambil semua grup yang Anda ikuti
+    let getGroups;
+    try {
+        getGroups = await lenwy.groupFetchAllParticipating()
+    } catch (err) {
+        console.error('Error fetching groups:', err)
+        return m.reply('*Gagal mengambil daftar grup.*')
+    }
+    let groups = Object.entries(getGroups).slice(0).map(entry => entry[1])
+    let groupIds = groups.map(v => v.id)
+    // Menyampaikan informasi broadcast
+    m.reply(`*Mengirim Broadcast Ke ${groupIds.length} Group Chat, Waktu Selesai ${groupIds.length * 1.5} detik*`)
+    // Mengirim pesan ke semua grup
+    for (let groupId of groupIds) {
+        await sleep(200)
+        try {
+            await lenwy.sendMessage(groupId, { text: `${text}` }, { quoted: m })
+        } catch (err) {
+            console.error('Error sending message to group:', groupId, err)
+        }
+    }
+    m.reply(`*Sukses Mengirim Broadcast Ke ${groupIds.length} Group*`)
+}
+break
+
+
+case 'bcimg':
+case 'bcvid':
+case 'bcvideo':
+case 'share': {
+    if (!isCreator) return m.reply('Maaf, Command ini Khusus untuk Developer Bot WhatsApp')
+    if (m.isGroup) return m.reply(mess.private)
+    if (!text) return m.reply(`*Penggunaan Salah Silahkan Gunakan Seperti Ini*\n${prefix + command} teks\n\nReply Gambar/Video Untuk Mengirim Gambar/Video Ke Semua Group`)
+
+    // Mengirim pesan tunggu
+
+
+    // Mengambil semua grup yang Anda ikuti
+    let getGroups;
+    try {
+        getGroups = await lenwy.groupFetchAllParticipating()
+    } catch (err) {
+        console.error('Error fetching groups:', err)
+        return m.reply('*Gagal mengambil daftar grup.*')
+    }
+
+    let groups = Object.entries(getGroups).map(entry => entry[1])
+    let groupIds = groups.map(v => v.id)
+
+    // Mengatur teks broadcast global
+    global.teksjpm = text;
+
+    // Mengambil tipe MIME dari pesan yang di-reply
+    let mime = m.quoted ? m.quoted.mimetype : '';
+
+    // Mengirim pesan ke semua grup
+    for (let groupId of groupIds) {
+        let metadata;
+        try {
+            metadata = await lenwy.groupMetadata(groupId)
+        } catch (err) {
+            console.error(`Error fetching metadata for group ${groupId}:`, err)
+            continue; // Lanjutkan ke grup berikutnya jika terjadi kesalahan
+        }
+
+        let participants = metadata.participants || []
+
+        try {
+            if (/image/.test(mime)) {
+                // Mengirim gambar
+                if (!m.quoted) return m.reply('Tidak ada gambar yang di-reply.')
+                let media = await lenwy.downloadAndSaveMediaMessage(m.quoted)
+                let mediaUrl = await uploader60Minute(media)
+                await lenwy.sendMessage(groupId, { image: { url: mediaUrl }, caption: global.teksjpm, contextInfo: { mentionedJid: participants.map(p => p.id) } }, { quoted: m })
+            } else if (/video/.test(mime)) {
+                // Mengirim video
+                if (!m.quoted) return m.reply('Tidak ada video yang di-reply.')
+                let media = await lenwy.downloadAndSaveMediaMessage(m.quoted)
+                let mediaUrl = await uploader60Minute(media)
+                await lenwy.sendMessage(groupId, { video: { url: mediaUrl }, caption: global.teksjpm, contextInfo: { mentionedJid: participants.map(p => p.id) } }, { quoted: m })
+            } else {
+                // Mengirim teks
+                await lenwy.sendMessage(groupId, { text: global.teksjpm, contextInfo: { mentionedJid: participants.map(p => p.id) } }, { quoted: m })
+            }
+            await sleep(200) // Tunggu 2 detik antara pengiriman pesan
+        } catch (err) {
+            console.error(`Error sending message to group ${groupId}:`, err)
+        }
+    }
+
+    m.reply(`*Sukses Mengirim Broadcast Ke ${groupIds.length} Group*`)
+}
+break
+
+
+
+
+// ---------------------------------------------------------------[ ANTI MENU ]----------------------------------------------------------------
+
+
+
+
+case 'antich': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins && !isCreator) return m.reply(mess.admin);
+  if (!isBotAdmins) return m.reply(mess.botAdmin);
+  if (q === 'on') {
+      global.db.data.chats[m.chat].antich = true;
+      m.reply(`*Berhasil Mengaktifkan ${command}*`);
+  } else if (q === 'off') {
+      global.db.data.chats[m.chat].antich = false;
+      m.reply(`*Menonaktifkan ${command}*`);
+  } else {
+      m.reply(`*Ketik ${prefix + command} on/off*`);
+  }
+}
+break
+
+case 'antich2': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins && !isCreator) return m.reply(mess.admin);
+  if (!isBotAdmins) return m.reply(mess.botAdmin);
+  if (q === 'on') {
+      global.db.data.chats[m.chat].antich2 = true;
+      m.reply(`*Berhasil Mengaktifkan ${command}*`);
+  } else if (q === 'off') {
+      global.db.data.chats[m.chat].antich2 = false;
+      m.reply(`*Menonaktifkan ${command}*`);
+  } else {
+      m.reply(`*Ketik ${prefix + command} on/off*`);
+  }
+}
+break
+
+case 'antiwame': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins && !isCreator) return m.reply(mess.admin);
+  if (!isBotAdmins) return m.reply(mess.botAdmin);
+  if (q === 'on') {
+      global.db.data.chats[m.chat].antiwame = true;
+      m.reply(`*Berhasil Mengaktifkan ${command}*`);
+  } else if (q === 'off') {
+      global.db.data.chats[m.chat].antiwame = false;
+      m.reply(`*Menonaktifkan ${command}*`);
+  } else {
+      m.reply(`*Ketik ${prefix + command} on/off*`);
+  }
+}
+break
+
+case 'antilink': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins && !isCreator) return m.reply(mess.admin);
+  if (!isBotAdmins) return m.reply(mess.botAdmin);
+  if (q === 'on') {
+      await catatLinkGc(m);
+      global.db.data.chats[m.chat].antilink = true;
+      m.reply(`*Berhasil Mengaktifkan ${command}*`);
+  } else if (q === 'off') {
+      await catatLinkGc(m);
+      global.db.data.chats[m.chat].antilink = false;
+      m.reply(`*Menonaktifkan ${command}*`);
+  } else {
+      m.reply(`*Ketik ${prefix + command} on/off*`);
+  }
+}
+break
+
+case 'antilink2': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins && !isCreator) return m.reply(mess.admin);
+  if (!isBotAdmins) return m.reply(mess.botAdmin);
+  if (q === 'on') {
+      await catatLinkGc(m);
+      global.db.data.chats[m.chat].antilink2 = true;
+      m.reply(`*Berhasil Mengaktifkan ${command}*`);
+  } else if (q === 'off') {
+      await catatLinkGc(m);
+      global.db.data.chats[m.chat].antilink2 = false;
+      m.reply(`*Menonaktifkan ${command}*`);
+  } else {
+      m.reply(`*Ketik ${prefix + command} on/off*`);
+  }
+}
+break
+
+case 'antipl': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins && !isCreator) return m.reply(mess.admin);
+  if (!isBotAdmins) return m.reply(mess.botAdmin);
+  if (q === 'on') {
+      global.db.data.chats[m.chat].antipanel = true;
+      m.reply(`*Berhasil Mengaktifkan ${command}*`);
+  } else if (q === 'off') {
+      global.db.data.chats[m.chat].antipanel = false;
+      m.reply(`*Menonaktifkan ${command}*`);
+  } else {
+      m.reply(`*Ketik ${prefix + command} on/off*`);
+  }
+}
+break
+
+case 'antitoxic1': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins && !isCreator) return m.reply(mess.admin);
+  if (!isBotAdmins) return m.reply(mess.botAdmin);
+  if (q === 'on') {
+      db.data.chats[m.chat].antitoxic1 = true;
+      m.reply(`*Berhasil Mengaktifkan ${command}*`);
+  } else if (q === 'off') {
+      db.data.chats[m.chat].antitoxic1 = false;
+      m.reply(`*Menonaktifkan ${command}*`);
+  } else {
+      m.reply(`*Ketik ${prefix + command} on/off*`);
+  }
+}
+break
+
+case 'antitoxic2': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins && !isCreator) return m.reply(mess.admin);
+  if (!isBotAdmins) return m.reply(mess.botAdmin);
+  if (q === 'on') {
+      db.data.chats[m.chat].antitoxic2 = true;
+      m.reply(`*Berhasil Mengaktifkan ${command}*`);
+  } else if (q === 'off') {
+      db.data.chats[m.chat].antitoxic2 = false;
+      m.reply(`*Menonaktifkan ${command}*`);
+  } else {
+      m.reply(`*Ketik ${prefix + command} on/off*`);
+  }
+}
+break
+
+case 'antilinkgc1': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins && !isCreator) return m.reply(mess.admin);
+  if (!isBotAdmins) return m.reply(mess.botAdmin);
+  if (q === 'on') {
+      await catatLinkGc(m);
+      global.db.data.chats[m.chat].antilinkgc = true;
+      m.reply(`*Berhasil Mengaktifkan ${command}*
+🎁 *Ketik Antilinkgc2 Untuk Mengaktifkan Autokick*`);
+  } else if (q === 'off') {
+      await catatLinkGc(m);
+      global.db.data.chats[m.chat].antilinkgc = false;
+      m.reply(`*Menonaktifkan ${command}*`);
+  } else {
+      m.reply(`*Ketik ${prefix + command} on/off*`);
+  }
+}
+break
+
+case 'antilinkgc2': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins && !isCreator) return m.reply(mess.admin);
+  if (!isBotAdmins) return m.reply(mess.botAdmin);
+  if (q === 'on') {
+      await catatLinkGc(m);
+      db.data.chats[m.chat].antilinkgc2 = true;
+      m.reply(`*Berhasil Mengaktifkan ${command}*`);
+  } else if (q === 'off') {
+      await catatLinkGc(m);
+      db.data.chats[m.chat].antilinkgc2 = false;
+      m.reply(`*Menonaktifkan ${command}*`);
+  } else {
+      m.reply(`*Ketik ${prefix + command} on/off*`);
+  }
+}
+break
+
+case 'antilinktt': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins && !isCreator) return m.reply(mess.admin);
+  if (!isBotAdmins) return m.reply(mess.botAdmin);
+  if (q === 'on') {
+      global.db.data.chats[m.chat].antitiktok = true;
+      m.reply(`*Berhasil Mengaktifkan ${command}*`);
+  } else if (q === 'off') {
+      global.db.data.chats[m.chat].antitiktok = false;
+      m.reply(`*Menonaktifkan ${command}*`);
+  } else {
+      m.reply(`*Ketik ${prefix + command} on/off*`);
+  }
+}
+break
+
+case 'antilinkyt': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins && !isCreator) return m.reply(mess.admin);
+  if (!isBotAdmins) return m.reply(mess.botAdmin);
+  if (q === 'on') {
+      global.db.data.chats[m.chat].antiyoutube = true;
+      m.reply(`*Berhasil Mengaktifkan ${command}*`);
+  } else if (q === 'off') {
+      global.db.data.chats[m.chat].antiyoutube = false;
+      m.reply(`*Menonaktifkan ${command}*`);
+  } else {
+      m.reply(`*Ketik ${prefix + command} on/off*`);
+  }
+}
+break
+
+case 'antispam': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins && !isCreator) return m.reply(mess.admin);
+  if (!isBotAdmins) return m.reply(mess.botAdmin);
+  if (q === 'on') {
+      db.data.chats[from].antispam = true;
+      m.reply(`*Berhasil Mengaktifkan ${command}*`);
+  } else if (q === 'off') {
+      db.data.chats[from].antispam = false;
+      m.reply(`*Menonaktifkan ${command}*`);
+  } else {
+      m.reply(`*Ketik ${prefix + command} on/off*`);
+  }
+}
+break
+
+case 'antibot': {
+  if (!m.isGroup) return m.reply(mess.group);
+  if (!isAdmins && !isCreator) return m.reply(mess.admin);
+  if (!isBotAdmins) return m.reply(mess.botAdmin);
+  if (q === 'on') {
+      db.data.chats[m.chat].antibot = true;
+      m.reply(`*Berhasil Mengaktifkan ${command}*`);
+  } else if (q === 'off') {
+      db.data.chats[m.chat].antibot = false;
+      m.reply(`*Menonaktifkan ${command}*`);
+  } else {
+      m.reply(`*Ketik ${prefix + command} on/off*`);
+  }
+}
+break
+
+case 'autoread': {
+  if (!isCreator) return m.reply(mess.owner);
+  if (q === 'on') {
+      global.db.data.settings[botNumber].autoread = true;
+      m.reply(`Berhasil mengubah autoread ke ${q}`);
+  } else if (q === 'off') {
+      global.db.data.settings[botNumber].autoread = false;
+      m.reply(`Berhasil mengubah autoread ke ${q}`);
+  } else {
+      m.reply(`*Ketik ${prefix + command} on/off*`);
+  }
+}
+break
+
+
+
+
+// ---------------------------------------------------------------[ ANTI MENU ]----------------------------------------------------------------
+
+
+
+
+
+case 'stiker':
+case 'sticker':
+case 's':
+case 'stickers':
+case 'sgif': {
+ if (isBan) return m.reply('⚠ *Kamu Di Ban Owner*')
+ if (!quoted) return m.reply(`Balas Video/Image Dengan Caption ${prefix + command}`)
+ if (!/image/.test(mime) && !/video/.test(mime)) return
+ if (/image/.test(mime)) {
+ var stream = await downloadContentFromMessage(m.quoted? quoted : m.message.imageMessage, 'image');
+ var buffer = Buffer.from([]);
+ for await(const chunk of stream) {
+ buffer = Buffer.concat([buffer, chunk]);
+ }
+ let buffers = await writeExifImg(buffer, { packname: global.packname, author: global.author });
+ await lenwy.sendMessage(from, { sticker: { url: buffers } }, { quoted: m });
+ } else if (/video/.test(mime)) {
+ var stream = await downloadContentFromMessage(m.quoted? quoted : m.message.videoMessage, 'video');
+ var buffer = Buffer.from([]);
+ for await(const chunk of stream) {
+ buffer = Buffer.concat([buffer, chunk]);
+ }
+ let buffers = await writeExifVid(buffer, { packname: global.packname, author: global.author });
+ await lenwy.sendMessage(from, { sticker: { url: buffers } }, { quoted: m });
+ } else {
+ m.reply(`Balas gambar/video/sticker dengan caption ${prefix + 'sticker'} \n*(MAKSIMAL 10 DETIK!*)`);
+ } 
+ }
+break
+
+case 'smeme':
+case 'stickermeme':
+case 'stickmeme': {
+let respond = `Kirim/reply image/sticker dengan caption ${prefix + command} text1|text2`
+if (!/image/.test(mime)) return
+if (!text) return m.reply(respond)
+LenwyLD()
+await sleep(200)
+let atas = text.split('|')[0] ? text.split('|')[0] : '-'
+let bawah = text.split('|')[1] ? text.split('|')[1] : '-'
+try {
+let mee = await lenwy.downloadAndSaveMediaMessage(quoted)
+let mem = await uploader60Minute(mee)
+let smeme = `https://api.memegen.link/images/custom/${encodeURIComponent(atas)}/${encodeURIComponent(bawah)}.png?background=${mem}`
+let awikwok = await lenwy.sendImageAsSticker(m.chat, smeme, m, { packname: global.packname, author: global.author })
+await fs.unlinkSync(awikwok)
+} catch (e) {
+m.reply(mess.error + e)
+}
+}
+break
+
+case 'cuaca': {
+if (!text) return m.reply('*Mana Lokasinya?*')
+if (text.length > 20) return m.reply(`*Maksimal 20 Karakter*`)
+LenwyLD()
+await sleep(200)
+try {
+let wdata = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${text}&units=metric&appid=060a6bcfa19809c2cd4d97a212b19273&language=id`)
+let Lenwy_txt = ""
+Lenwy_txt += `*Cuaca Dari : ${text}*\n`
+Lenwy_txt += `☁️ *Cuaca :* *${wdata.data.weather[0].main}*\n`
+Lenwy_txt += `🧾 *Deskripsi :* *${wdata.data.weather[0].description}*\n`
+Lenwy_txt += `🌡️ *Suhu Rata Rata :* *${wdata.data.main.temp}*\n`
+Lenwy_txt += `💨 *Tekanan :* *${wdata.data.main.pressure}*\n`
+Lenwy_txt += `🧴 *kelembapan :* *${wdata.data.main.humidity}*\n`
+Lenwy_txt += `🛳️ *Garis Bujur :* *${wdata.data.coord.lat}*\n`
+Lenwy_txt += `🌏 *Negara :* *${wdata.data.sys.country}*\n`
+lenwy.sendMessage(m.chat, { text: Lenwy_txt, }, { quoted: m })
+} catch (e) {
+m.reply(`Pastikan Wilayahnya Adalah Kota`)
+}
+}
+break
+
+case 'gpt4':
+case 'gpt':
+case 'ai': {
+if (!text) return m.reply(`*Mau Nanya Apa Ama AI?*`) 
+ LenwyLD()
+ if (/image/.test(mime)) {
+  try {
+    if (quoted && /image/.test(mime)) {
+        try {
+          let media = await merlynn.downloadAndSaveMediaMessage(quoted)
+          let anu = await uploader60Minute(media)
+          let data = await (await fetch(`https://${global.api.maelyn.domain}/api/ai/gemini`,
+                    {
+                      method: "POST",
+                      headers: {
+                        "x-maelyn-auth": global.api.maelyn.apikey,
+                        "Content-Type": "application/json"
+                      },
+                      body: JSON.stringify({
+                        "prompt": text,
+                        "model": "gemini-3-flash-preview",
+                        "mode": "chat",
+                        "images": [
+                          anu
+                        ]
+                      })
+                    }
+                  )).json();
+          console.log(data)
+          m.reply(data.result.text)
+        } catch (e) {
+          console.log(e)
+          return m.reply("*maaf, sedang terjadi error saat ini*")
+        }
+      } else {
+        let gpt = await (await fetch(`https://${global.api.maelyn.domain}/api/ai/gemini`,
+                    {
+                      method: "POST",
+                      headers: {
+                        "x-maelyn-auth": global.api.maelyn.apikey,
+                        "Content-Type": "application/json"
+                      },
+                      body: JSON.stringify({
+                        "prompt": text,
+                        "mode": "chat",
+                        "model": "gemini-3-flash-preview"
+                      })
+                    }
+                  )).json();
+        console.log(gpt)
+        m.reply(gpt.result.text)
+      }
+   } catch (e) {
+    console.log(e)
+    return m.reply("*Error Kak :(*")
+   }
+ }
+}
+break
+
+case 'search':
+case 'searchai':
+  if (!text) return m.reply(`*Begini Loh*\n\n> *${command} Gempa di jepang*`)
+  LenwyLD()
+  try {
+     let you = await (await fetch(`https://${global.api.maelyn.domain}/api/perplexity?q=${text}`, {
+       headers: {
+         'x-maelyn-auth': global.api.maelyn.apikey
+       }
+     })).json()
+     console.log(you)
+     let result = you.result
+     let sourcenya = `> *Source*\n`
+     result.source.forEach((url, index) => {
+     	sourcenya += `(${index + 1}) ${url}\n`
+     });
+     m.reply(`${result.answer}
+
+${sourcenya}`)
+   } catch (e) {
+       lenwy.sendMessage (m.chat, { react: { text: `❌`, key: m.key }})
+     }
+break
+
+
+case 'imdb':
+if (!text) return m.reply(`*Masukan Judul Filmnya*`)
+LenwyLD()
+await sleep(200)
+if (text.length > 20) return m.reply(`*Maksimal 20 Karakter*`)
+            let fids = await axios.get(`http://www.omdbapi.com/?apikey=742b2d09&t=${text}&plot=full`)
+            let Lenwy_txt = ""
+            console.log(fids.data)
+Lenwy_txt += "*IMDB Search*\n"
+Lenwy_txt += "📖 *Judul :* *" + fids.data.Title + "*\n"
+Lenwy_txt += "📅 *Tahun :* *" + fids.data.Year + "*\n"
+Lenwy_txt += "📦 *Rilis :* *" + fids.data.Released + "*\n"
+Lenwy_txt += "🕒 *Durasi :* *" + fids.data.Runtime + "*\n"
+Lenwy_txt += "📰 *Genre :* *" + fids.data.Genre + "*\n"
+Lenwy_txt += "📋 *Direktur :* *" + fids.data.Director + "*\n"
+Lenwy_txt += "📝 *Penulis :* *" + fids.data.Writer + "*\n"
+Lenwy_txt += "👤 *Aktor :* *" + fids.data.Actors + "*\n"     
+Lenwy_txt += "💬 *Bahasa :* *" + fids.data.Language + "*\n"
+Lenwy_txt += "🌏 *Negara :* *" + fids.data.Country + "*\n"
+Lenwy_txt += "🏆 *Penghargaan :* *" + fids.data.Awards + "*\n"
+Lenwy_txt += "🪙 *Keuntungan :* *" + fids.data.BoxOffice + "*\n"
+Lenwy_txt += "🏷️ *Nilai :* *" + fids.data.imdbRating + "*\n"
+Lenwy_txt += "📣 *Pemungutan Suara :* *" + fids.data.imdbVotes + "*\n\n"
+Lenwy_txt += "📃 *Plot :*\n" + fids.data.Plot + ""
+           lenwy.sendMessage(m.chat, {
+                image: {
+                    url: fids.data.Poster,
+                },
+                caption: Lenwy_txt,
+            }, {
+                quoted: m,})
+            .catch(console.error)
+            break
+
+case 'asmaul husna': {
+const t3xt = require(`./storage/teks/${command}.json`)
+const r4andT3xt = t3xt[Math.floor(Math.random() * t3xt.length)]
+lenwy.sendMessage(from, { text: r4andT3xt }, { quoted: m })
+}
+break
+
+case 'ayat kursi': {
+let result = `🎁 *Ayat Kursi*
+
+✉️ *Arab :*
+اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ
+
+✉️ *Latin :*
+*“Alloohu laa ilaaha illaa huwal hayyul qoyyuum, laa ta’khudzuhuu sinatuw walaa naum. Lahuu maa fissamaawaati wa maa fil ardli man dzal ladzii yasyfa’u ‘indahuu illaa biidznih, ya’lamu maa baina aidiihim wamaa kholfahum wa laa yuhiithuuna bisyai’im min ‘ilmihii illaa bimaa syaa’ wasi’a kursiyyuhus samaawaati wal ardlo walaa ya’uuduhuu hifdhuhumaa wahuwal ‘aliyyul ‘adhiim.”*
+
+✉️ *Artinya:*
+Allah, tidak ada Tuhan (yang berhak disembah) melainkan Dia Yang Hidup kekal lagi terus menerus mengurus (makhluk-Nya) tidak mengantuk dan tidak tidur. Kepunyaan-Nya apa yang di langit dan di bumi. Tiada yang dapat memberi syafa'at di sisi Allah tanpa izin-Nya.
+Allah mengetahui apa-apa yang di hadapan mereka dan di belakang mereka, dan mereka tidak mengetahui apa-apa dari ilmu Allah melainkan apa yang dikehendaki-Nya. Kursi Allah meliputi langit dan bumi. Dan Allah tidak merasa berat memelihara keduanya, dan Allah Maha Tinggi lagi Maha Besar." 
+*(QS. Al Baqarah: 255)*`
+lenwy.sendMessage(m.chat, { image: { url: 'https://telegra.ph/file/afb17800d56775ad1791d.png' }, caption: result}, { quoted: m })
+}
+
+break
+
+case 'kisahnabi': {
+if (!text) return m.reply(`*Tolong Masukkan Nama Nabi*`) 
+try{
+let ilenwy = await fetchJson(`https://api.zeeoneofc.my.id/api/islam/kisahnabi?apikey=QIO8xicLNkEV43Y&nabi=${text}`)
+const namanabi = ilenwy.result.name
+const kelahiran = ilenwy.result.birth
+const wafat = ilenwy.result.death_age
+const asal = ilenwy.result.country_from
+const ceritanabi = ilenwy.result.story
+var lenwy_result = `*Kisah Nabi*
+🎁 *Nama Nabi : ${namanabi}*
+🗓️ *Hari Kelahiran : ${kelahiran}*
+🕒 *Wafat Pada Umur : ${wafat}*
+🌏 *Asal : ${asal}*
+
+📑 *Kisah Dari Nabi ${namanabi} :*
+${ceritanabi}`
+m.reply(lenwy_result) 
+} catch (error) {
+    return m.reply(mess.error)
+}
+}
+break
+
+case 'doa': {
+if (!text) return m.reply(`*Tolong Masukkan Doa Yang Ingin Dicari*`) 
+try{
+LenwyLD()
+await sleep(200)
+let ilenwy = await fetchJson(`https://doa-doa-api-ahmadramadhan.fly.dev/api/doa/${text}`)
+const namadoa = ilenwy.doa
+const ayat = ilenwy.ayat
+const latin = ilenwy.latin
+var lenwy_result = `*Pencarian : ${namadoa}*
+
+*${ayat}*
+
+*${latin}*`
+m.reply(lenwy_result) 
+} catch (error) {
+    return m.reply(mess.error)
+}
+}
+break
+
+case 'toimg': {
+if (isBan) return m.reply(mess.ban)
+try {
+  LenwyLD()
+  await sleep(200)
+if (!quoted) return m.reply ('Reply Image')
+if (!/webp/.test(mime)) reply `Balas sticker dengan caption *${prefix + command}*`
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+let ran = await getRandom('.png')
+exec(`ffmpeg -i ${media} ${ran}`, (err) => {
+fs.unlinkSync(media)
+if (err) m.reply(err)
+let buffer = fs.readFileSync(ran)
+lenwy.sendMessage(from, { image: buffer }, {quoted:m})
+fs.unlinkSync(ran)
+})
+} catch (e) {
+    m.reply('[!] pastikan kamu reply stiker yang tidak gerak')
+}
+}
+break
+
+case 'tovid': {
+  if (isBan) return m.reply(mess.ban);
+  try {
+    // Pastikan ada quoted message yang dikirim
+    if (!quoted) return m.reply(`Balas sticker dengan caption *${prefix + command}*`);
+
+    // Cek MIME type untuk memastikan formatnya adalah webp atau video
+    if (!/webp/.test(mime)) return m.reply(`Balas sticker dengan caption *${prefix + command}*`);
+
+    // Jika yang dibalas adalah sticker (format .webp), konversi ke video
+    if (/webp/.test(mime)) {
+      let media = await lenwy.downloadAndSaveMediaMessage(quoted); // Download sticker
+      let ran = await getRandom('.mp4'); // Generate nama file video
+
+      // Memeriksa apakah file webp adalah animasi
+      const isAnimated = await isAnimatedWebp(media);
+      if (!isAnimated) {
+        return m.reply('Sticker yang kamu kirim bukan animasi webp. Harap kirim sticker animasi.');
+      }
+
+      // Jika file adalah animasi, coba konversi menggunakan ffmpeg
+      exec(`ffmpeg -v error -i ${media} -t 10 -c:v libx264 -pix_fmt yuv420p -f mp4 ${ran}`, (err) => {
+        fs.unlinkSync(media); // Hapus file sticker
+        if (err) {
+          // Jika ada error, balas pesan error
+          return m.reply(`Terjadi kesalahan saat mengonversi sticker: ${err.message}`);
+        }
+
+        let buffer = fs.readFileSync(ran); // Baca file video
+        lenwy.sendMessage(from, { video: buffer, caption: 'Sticker converted to video' }, { quoted: m }); // Kirim video hasil konversi
+        fs.unlinkSync(ran); // Hapus file video setelah dikirim
+      });
+    }
+  } catch (e) {
+    m.reply(`[!] Pastikan kamu reply sticker dengan benar (format sticker GIF atau video). Error: ${e.message}`);
+  }
+}
+break;
+
+case 'chord':
+  if (!text) return m.reply('masukkan judul lagunya!')
+  try {
+    let chord = await (await fetch('https://endpoint.web.id/search/chord?key=315602&query=' + text)).json()
+    LenwyLD()
+    await sleep(200)
+    let result = chord.result;
+    
+    // Menyusun pesan dengan semua informasi
+    let message = `${result.title}\n\n`
+    message += `Artis: ${result.artist}\n`
+    message += `URL: ${result.url}\n`
+    message += `URL Artis: ${result.artistUrl}\n\n`
+    message += `Chord:\n${result.lyrics}`;
+    
+    lenwy.sendMessage(m.chat, { text: message }, { quoted: m })
+  } catch (e) {
+    m.reply('terjadi kesalahan: ' + e)
+  }
+break
+
+case 'jodoh': {
+if (!m.isGroup) return
+let member = participants.map(u => u.id)
+let me = m.sender
+let jodoh = member[Math.floor(Math.random() * member.length)]
+await lenwy.sendMessage(from, { text : `@${me.split('@')[0]} ❤ @${jodoh.split('@')[0]}`, mentions : [me, jodoh] }, { quoted: m })
+}
+break
+
+case 'jodoh2': {
+  if (!m.isGroup) return
+  let member = participants.map(u => u.id)
+  let me = m.sender
+  let jodoh = member[Math.floor(Math.random() * member.length)]
+  let msg = generateWAMessageFromContent(m.chat, {
+    viewOnceMessage: {
+      message: {
+          "messageContextInfo": {
+            "deviceListMetadata": {},
+            "deviceListMetadataVersion": 2
+          },
+          interactiveMessage: proto.Message.InteractiveMessage.create({
+            body: proto.Message.InteractiveMessage.Body.create({
+              text: `@${me.split('@')[0]} ❤ @${jodoh.split('@')[0]}`
+            }),
+            footer: proto.Message.InteractiveMessage.Footer.create({
+              text: "HALOO INI FOOTER"
+            }),
+            header: proto.Message.InteractiveMessage.Header.create({
+              title: "HAIII INi header",
+              subtitle: "HUEEEEEKKK",
+              hasMediaAttachment: false
+            }),
+            nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
+              buttons: [
+                {
+                  name: "single_select",
+                  "buttonParamsJson": JSON.stringify({
+                    title:"[ PILIH ]",
+                    sections:[{
+                      title: "INI JUDUL",
+
+                      rows:[{
+                        title: "pay a",
+                        id: `pay a`
+                      }]
+                    }]
+                  })
+                }
+              ],
+            }),
+            contextInfo: {
+            mentionedJid: [me, jodoh], 
+            forwardingScore: 9999,
+            isForwarded: true
+            }
+         })
+      }
+    }
+  }, { quoted: m })
+  await lenwy.relayMessage(msg.key.remoteJid, msg.message, {
+  messageId: msg.key.id
+  })
+  }
+  break
+
+
+
+//------------------------------------------------------------------- [ YT DOWNLOADER ] -----------------------------------------------------------------------------
+
+
+case 'play':
+case 'song': {
+ if (isBan) return m.reply(mess.ban);
+ if (!text) return m.reply(`*Mau Dengerin Lagu Apa?*`);
+ LenwyLD();
+
+ try {
+ let searchnya = await (await fetch(`https://api.nexray.eu.cc/search/youtube?q=${encodeURIComponent(text)}`)).json();
+ let res = searchnya.result; // Ambil semua hasil pencarian
+ let audioInfo = res?.[0] || {};
+ let procees = await (await fetch(`https://api.nexray.eu.cc/downloader/v1/ytmp3?url=${audioInfo.url}`)).json();
+ console.log(procees)
+ await lenwy.sendMessage(m.chat, { audio: { url: procees.result.url }, mimetype: 'audio/mp4' }, { quoted: m })
+ } catch (e) {
+ console.log(e)
+ }
+}
+break
+
+case 'ytmp3': {
+ if (!text) return m.reply(`*Link Youtubenya Mana?*`)
+try {
+LenwyLD()
+await sleep(200)
+m.reply('Process sending audio, mungkin ini membutuhkan 1-3 menit jika durasi audio terlalu panjang!')
+let procees = await (await fetch(`https://api.nexray.eu.cc/downloader/v1/ytmp3?url=${encodeURIComponent(text)}`)).json();
+console.log(procees)
+// Pilih audio dengan kualitas 128kbps
+let audioUrl = procees.result.url
+
+lenwy.sendMessage(m.chat, { audio: { url: audioUrl }, mimetype: 'audio/mp4' }, { quoted: m });
+} catch (e) {
+m.reply('terjadi error :' + e)
+}
+}
+break
+
+case 'ytmp4': {
+if (!text) return m.reply(`*Link Youtubenya Mana?*`)
+try {
+LenwyLD()
+m.reply('Process sending video, mungkin membutuhkan 1-3 menit jika durasi video terlalu panjang!')
+let procees = await (await fetch(`https://api.nexray.eu.cc/downloader/v1/ytmp4?url=${encodeURIComponent(text)}`)).json();
+console.log(procees)
+lenwy.sendMessage(m.chat,{ video: {url: procees.result.url }, caption: `Caption: ${procees.result.title}` }, {quoted: m})
+} catch (e) {
+m.reply('terjadi error :' + e)
+}
+}
+break
+
+//------------------------------------------------------------------- [ YT DOWNLOADER ] -----------------------------------------------------------------------------
+
+
+
+//------------------------------------------------------------------- [ SPO DOWNLOADER ] ----------------------------------------------------------------------------
+
+
+case 'spotify': {
+  if (!text) return m.reply("*Mau Cari Lagu Apa?*");
+  LenwyLD();
+  try {
+    var result = await axios.get(`https://api.vreden.my.id/api/v1/search/spotify?query=${text}&limit=3`, { headers: { 'User-Agent': 'Mozilla/5.0' } })
+  } catch (error) {
+    return m.reply('*Gagal melakukan pencarian, coba lagi nanti.*');
+  }
+
+  if (!result || !result.data.result || result.data.result.search_data.length === 0) {
+    return m.reply('*Tidak ada hasil ditemukan*');
+  }
+
+  let res = result.data.result.search_data; // Ambil semua hasil pencarian
+  let audioInfo = res[Math.floor(Math.random() * res.length)];
+  console.log(audioInfo.song_link)
+  let { data } = await axios.get(`https://api.vreden.my.id/api/v1/download/spotify?url=${audioInfo.song_link}`, { headers: { 'User-Agent': 'Mozilla/5.0' } })
+  console.log(data)
+
+  if (data.result) {
+    lenwy.sendMessage(m.chat, { audio: { url: data.result.download }, mimetype: 'audio/mp4' }, { quoted: m });
+  } else {
+    return m.reply('*Gagal mendapatkan audio preview, coba lagi nanti.*');
+  }
+}
+break
+
+
+//------------------------------------------------------------------- [ SPO DOWNLOADER ] ----------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------- [ TT DOWNLOADER ] -----------------------------------------------------------------------------
+
+case 'ttdl':
+case 'tt': {
+  if (!text) return m.reply(`*Link Tiktoknya Mana?*`);
+  if (!isUrl(text)) return m.reply(mess.link);
+  
+  LenwyLD();
+
+  try {
+    let response = await (await fetch(`https://api.siputzx.my.id/api/d/tiktok/v2?url=${encodeURIComponent(text)}`)).json();
+    console.log(response);
+
+    if (!response.status || !response.data) {
+      return m.reply("Gagal mengambil data dari API.");
+    }
+
+    let data = response.data;
+    
+    let capt = `*Title:* ${data.text || 'No Title'}\n` +
+               `*Author:* ${data.author_nickname}\n` +
+               `*Views:* ${data.play_count.toLocaleString()} | *Likes:* ${data.like_count.toLocaleString()}\n` +
+               `*Shares:* ${data.share_count.toLocaleString()}`;
+
+    if (data.slides && typeof data.slides === 'object') {
+      for (const key in data.slides) {
+        const slide = data.slides[key];
+        if (slide?.url) {
+          await lenwy.sendMessage(m.chat, { image: { url: slide.url } }, { quoted: m });
+        }
+      }
+      m.reply(capt || '');
+    } else if (data.no_watermark_link) {
+      let videoUrl = data.no_watermark_link;
+      await lenwy.sendMessage(m.chat, {
+        video: { url: videoUrl },
+        caption: capt
+      }, { quoted: m });
+    } else {
+      m.reply("Tipe konten tidak dikenali atau media tidak ditemukan.");
+    }
+
+    if (data.music_link) {
+      let audioTitle = 'Tiktok_Audio';
+      await lenwy.sendMessage(m.chat, {
+        audio: { url: data.music_link },
+        mimetype: 'audio/mpeg',
+        fileName: `${audioTitle}.mp3`
+      }, { quoted: m });
+    }
+
+  } catch (error) {
+    console.error("Error TikTok DL:", error);
+    m.reply("Terjadi kesalahan saat memproses permintaan.");
+  }
+}
+break
+
+
+//------------------------------------------------------------------- [ TT DOWNLOADER ] -----------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------- [ IG DOWNLOADER ] -----------------------------------------------------------------------------
+
+case 'ig':
+case 'igdl': {
+  if (!text) return m.reply(`*Link Instagramnya Mana?*`)
+  if (!isUrl(text)) return m.reply(mess.link)
+  
+  LenwyLD()
+  await sleep(200)
+  try {
+    let ress = await igdl(text);
+    console.log(ress);
+    
+    const total = ress.length;
+    const step = Math.floor(Math.sqrt(total));
+    const batas = step;
+    for (let i = 0; i < step; i++) {
+      let responseIg = await axios.head(ress[i].url); 
+      let contentType = responseIg.headers['content-type'];
+      if (contentType.startsWith('image/')) {
+        await lenwy.sendMessage(m.chat, { image: { url: ress[i].url}, caption: mess.success }, { quoted: m });
+      } else {
+        await lenwy.sendMessage(m.chat, { video: { url: ress[i].url}, caption: mess.success }, { quoted: m });
+      }
+    }
+  } catch (e) {
+    m.reply(e)
+  }
+}
+break
+
+//------------------------------------------------------------------- [ IG DOWNLOADER ] -----------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------- [ FB DOWNLOADER ] -----------------------------------------------------------------------------
+
+
+
+case 'fb':
+case 'fbdl': {
+ if (!text) return m.reply(`*Link Fbnya Mana?*`)
+ if (!isUrl(text)) return m.reply(mess.link)
+ LenwyLD()
+ await sleep(200)
+ try {
+ let { status, result } = await (await fetch(`https://${global.api.maelyn.domain}/api/facebook?url=${text}`, {
+   headers: {
+     'x-maelyn-auth': global.api.maelyn.apikey
+   }
+ })).json()
+ if (status === "Success") {
+ let videoHD = result.medias.find(media => media.quality === 'hd')
+ await lenwy.sendMessage(m.chat, { video: { url: videoHD?.url }}, { quoted: m })
+ } else {
+ m.reply(`Gagal mengambil data`)
+ }
+ } catch (error) {
+ m.reply(`Error: ${error}`)
+ console.log(error)
+ }
+}
+break
+
+
+
+//------------------------------------------------------------------- [ FB DOWNLOADER ] -----------------------------------------------------------------------------
+
+//------------------------------------------------------------------- [ X DOWNLOADER ] -----------------------------------------------------------------------------
+
+
+case 'twitter':
+case 'xdl': {
+  if (!text) return m.reply(`*Link Twitternya Mana?*`)
+  if (!isUrl(text)) return m.reply(mess.link)
+  LenwyLD()
+  try {
+    let response = await (await fetch(`https://${global.api.maelyn.domain}/api/x?url=${text}`, {
+      headers: {
+        'x-maelyn-auth': global.api.maelyn.apikey
+      }
+    })).json()
+    lenwy.sendMessage(m.chat, { video: { url: response.result.video_hd }, caption: `Caption: ${response.result.desc}` }, { quoted: m })
+    await sleep(200)
+    await lenwy.sendMessage(m.chat, { audio: { url: response.result.audio }, mimetype: 'audio/mp4' }, { quoted: m });
+  } catch (error) {
+    console.error(error)
+    m.reply(mess.error)
+  }
+}
+break
+
+
+
+//------------------------------------------------------------------- [ X DOWNLOADER ] -----------------------------------------------------------------------------
+
+
+
+
+case 'mediafire': {
+  if (isBan) return m.reply(mess.ban)
+  if (!text) return m.reply(mess.link)
+  LenwyLD()
+  await sleep(200)
+  const baby1 = await (await fetch('https://endpoint.web.id/downloader/mediafire?key=315602&url=' + text)).json()
+  const shanz = baby1.result;
+  const extension = shanz.filename.split('.').pop().toLowerCase()
+
+  const mimeTypes = {
+      'pdf': 'application/pdf',
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'png': 'image/png',
+      'gif': 'image/gif',
+      'mp4': 'video/mp4',
+      'mp3': 'audio/mpeg',
+      'zip': 'application/zip',
+      'txt': 'text/plain',
+      //tambahin mimetype lagi kalo mau
+  };
+  const mimeType = mimeTypes[extension] || 'application/octet-stream';
+
+  const result4 = `🔧 *MEDIAFIRE DOWNLOADER*\r\n\r\n🔖 *Name* : ${shanz.name}\r\n💽 *Size* : ${shanz.size}\r\n📌 *Desc* : ${shanz.desc}`
+  
+  lenwy.sendMessage(m.chat, {
+      document: { url: shanz.media },
+      fileName: shanz.filename,
+      mimetype: mimeType,
+      caption: result4
+  }, { quoted: m })
+}
+break
+
+case 'ssweb': 
+case 'ssdesktop':
+case 'ssdesk': {
+  if (!q) return m.reply(`*Contoh ${prefix + command} Link Kamu*`)
+  // URL API dengan parameter
+  try {
+      lenwy.sendMessage(from, { image: { url: `https://api.autoresbot.com/api/ssweb?url=${encodeURIComponent(q)}&apikey=4c04faf21fb8524bad4a9cb7` }, caption: mess.success }, { quoted: m })
+  } catch (error) {
+    console.error('Error saat memanggil API:', error)
+    m.reply('Terjadi kesalahan saat memproses permintaan.')
+  }
+}
+break
+        
+case 'sswebhp': 
+case 'sshp':
+case 'sshandphone': {
+  if (!q) return m.reply(`*Contoh ${prefix + command} Link Kamu*`)
+  // URL API dengan parameter
+  const apiUrl = `https://endpoint.web.id/tools/sswebphone?key=315602&url=${encodeURIComponent(q)}`;
+  try {
+    // Memanggil API
+    const response = await axios.get(apiUrl)
+    // Mengecek status dan kode
+    if (response.data.status && response.data.code === 200) {
+      // Mendapatkan URL gambar dari hasil API
+      const imageUrl = response.data.result;
+      // Mengirim gambar dengan captio
+      lenwy.sendMessage(from, { image: { url: imageUrl }, caption: mess.success }, { quoted: m })
+    } else {
+      m.reply('Gagal mendapatkan tangkapan layar dari API.')
+    }
+  } catch (error) {
+    console.error('Error saat memanggil API:', error)
+    m.reply('Terjadi kesalahan saat memproses permintaan.')
+  }
+}
+break
+       
+case 'sstab': {
+  if (!q) return m.reply(`*Contoh ${prefix + command} Link Kamu*`)
+  // URL API dengan parameter
+  const apiUrl = `https://endpoint.web.id/tools/sswebtab?key=315602&url=${encodeURIComponent(q)}`;
+  try {
+    // Memanggil API
+    const response = await axios.get(apiUrl)
+    // Mengecek status dan kode
+    if (response.data.status && response.data.code === 200) {
+      // Mendapatkan URL gambar dari hasil API
+      const imageUrl = response.data.result;
+      // Mengirim gambar dengan caption
+      lenwy.sendMessage(from, { image: { url: imageUrl }, caption: mess.success }, { quoted: m })
+    } else {
+      m.reply('Gagal mendapatkan tangkapan layar dari API.')
+    }
+  } catch (error) {
+    console.error('Error saat memanggil API:', error)
+    m.reply('Terjadi kesalahan saat memproses permintaan.')
+  }
+}
+break
+
+case 'wm': {
+  if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+  if (!quoted) return m.reply(`⚠️ Balas sticker dengan caption ${prefix + command}`)
+  if (!text) return m.reply(`Contoh: ${prefix + command} teks_packname|teks_author`)
+
+  let teks_packname = text.split('|')[0] || ''
+  let teks_author = text.split('|')[1] || ''
+  const { Sticker, StickerTypes } = require('wa-sticker-formatter')
+
+  try {
+    // Cek apakah yang di-reply sticker
+    if (quoted.mtype !== 'stickerMessage') {
+      return m.reply(`⚠️ Fitur ini khusus untuk reply ke *sticker*, bukan gambar/video.`)
+    }
+
+    const webpBuffer = await quoted.download()
+    let stickerBuffer
+
+    if (quoted.isAnimated) {
+      // Sticker Animated → convert ke MP4
+      const mp4Buffer = await webpToMp4(webpBuffer)
+      const sticker = new Sticker(mp4Buffer, {
+        pack: teks_packname,
+        author: teks_author,
+        type: StickerTypes.FULL, // animasi
+        quality: 80
+      })
+      stickerBuffer = await sticker.toBuffer()
+    } else {
+      // Sticker Biasa
+      const sticker = new Sticker(webpBuffer, {
+        pack: teks_packname,
+        author: teks_author,
+        type: StickerTypes.FULL,
+        quality: 80
+      })
+      stickerBuffer = await sticker.toBuffer()
+    }
+
+    await lenwy.sendMessage(from, { sticker: stickerBuffer }, { quoted: m })
+
+  } catch (err) {
+    console.error(err)
+    m.reply('⚠️ Terjadi kesalahan saat memproses sticker. Pastikan sticker valid!')
+  }
+}
+break
+
+case 'pin':
+case 'pinterest': {
+  if (!text) return m.reply(`*Contoh:* ${prefix + command} FF🗿`)
+  
+  LenwyLD()
+  await sleep(200)
+  let push = []
+  try {
+    async function createImage(url) {
+      const { imageMessage } = await generateWAMessageContent({
+        image: { url }
+      }, {
+        upload: lenwy.waUploadToServer
+      })
+      return imageMessage;
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        let randIndex = Math.floor(Math.random() * (i + 1));
+        [array[i], array[randIndex]] = [array[randIndex], array[i]];
+      }
+    }
+    
+    // Request ke API NexRay
+    let { data } = await axios.get(`https://api.nexray.eu.cc/search/pinterest?q=${encodeURIComponent(text)}`)
+    
+    if (!data.status || !data.result || data.result.length === 0) {
+      throw new Error("Gagal mengambil data atau gambar tidak ditemukan")
+    }
+    
+    let res = data.result
+    shuffleArray(res) // Acak urutan gambarnya
+    res = res.slice(0, 10) // Ambil maksimal 10 gambar
+
+    let i = 1;
+    for (let pinData of res) {
+      push.push({
+        body: proto.Message.InteractiveMessage.Body.fromObject({
+          // Mengambil judul dari API, jika kosong pakai default text
+          text: `*${pinData.grid_title || 'Pinterest'}*\n\nImage Ke ${i++}/${res.length}`
+        }),
+        footer: proto.Message.InteractiveMessage.Footer.fromObject({
+          text: `By ${botname}`
+        }),
+        header: proto.Message.InteractiveMessage.Header.fromObject({
+          title: '', 
+          hasMediaAttachment: false,
+          imageMessage: await createImage(pinData.images_url) // Ambil link gambar dari JSON terbaru
+        }),
+        nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
+          buttons: [
+            {
+              "name": "cta_url",
+              // Menggunakan link pin aslinya dari JSON
+              "buttonParamsJson": `{"display_text":"Source Pin","url":"${pinData.pin}","merchant_url":"${pinData.pin}"}`
+            }
+          ]
+        })
+      })
+    }
+    
+    const botMsg = generateWAMessageFromContent(m.chat, {
+      viewOnceMessage: {
+        message: {
+          messageContextInfo: {
+            deviceListMetadata: {},
+            deviceListMetadataVersion: 2
+          },
+          interactiveMessage: proto.Message.InteractiveMessage.fromObject({
+            body: proto.Message.InteractiveMessage.Body.create({
+              text: '*P I N T E R E S T*', 
+            }),
+            footer: proto.Message.InteractiveMessage.Footer.create({
+              text: '*Hasil Dari:* ' + text,
+            }),
+            header: proto.Message.InteractiveMessage.Header.create({
+              hasMediaAttachment: false
+            }),
+            carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({
+              cards: [...push]
+            })
+          })
+        }
+      }
+    }, {quoted: m})
+
+    await lenwy.relayMessage(m.chat, botMsg.message, {
+      messageId: botMsg.key.id
+    })
+
+  } catch (e) {
+    console.log(e) 
+    m.reply('Yah error di bagian: ' + e.message) 
+  }
+}
+break
+
+case 'bucin': case 'dare': case 'faktaunik': case 'fml': case 'katabijak': case 'katacinta': case 'katagalau': case 'katahacker': case 'katailham': case 'katasenja': case 'katasindiran': case 'motivasi': case 'nickff': case 'pantun': case 'puisi': case 'quotesislamic': case 'quotespubg': case 'truth': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+const t3xt = require(`./storage/teks/${command}.json`)
+const r4andT3xt = t3xt[Math.floor(Math.random() * t3xt.length)]
+lenwy.sendMessage(from, { text: r4andT3xt }, { quoted: m })
+}
+break
+
+case 'quotes': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+var resi = await Quotes()
+teks = `\n${global.emoji} *Author: ${resi.author}*\n`
+teks = `\n🎁 *Quotes:*\n`
+teks = `*${resi.quotes}*\n`
+m.reply(teks)
+}
+break
+
+case 'quotesanime': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+const an1 = JSON.parse(fs.readFileSync("./storage/text/quotesanime.json"))
+const r4ndan1 = an1[Math.floor(Math.random() * an1.length)]
+const tgt99 = `*Random Quotes Anime*
+
+🍁 *Nama Anime : ${r4ndan1.anime}*
+🍁 *Nama Character : ${r4ndan1.character}*
+🍁 *Episode : ${r4ndan1.episode}*
+
+🎁 *Quotes : ${r4ndan1.quotes}*`
+lenwy.sendMessage(from, { text: tgt99 }, { quoted: m })
+}
+break
+
+case 'meme': {
+var reis = await JalanTikusMeme()
+teks = ""
+teks += "*Random Meme*\n\n"
+teks += `🎁 *Source Meme :* ${reis}`
+teks += ""
+lenwy.sendMessage(m.chat, { image : { url : reis }, caption: teks }, { quoted:m })
+}
+break
+
+case 'tourl': {
+if (!/image/.test(mime) && !/video/.test(mime)) return m.reply(`*Mana Foto Atau Video Nya?*`)
+if (/image/.test(mime)) {
+LenwyLD()
+await sleep(200)
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+let anu = await uploader60Minute(media)
+m.reply(util.format(anu))
+} else if (/video/.test(mime)) {
+  let q = m.quoted ? m.quoted : m;
+
+    let media = await q.download()
+    let link = await uploader60Minute(media)
+    console.log(link)
+    await m.reply(`${link}`)
+} else {
+m.reply(`Mokad kah? Chat Developer!!!`)
+}
+}
+break
+
+case 'tourl2': {
+if (!/image/.test(mime) && !/video/.test(mime)) return m.reply(`*Mana Foto Atau Video Nya?*`)
+if (/image/.test(mime)) {
+LenwyLD()
+await sleep(200)
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+let anu = await uploaderLebih(media)
+m.reply(util.format(anu))
+} else if (/video/.test(mime)) {
+  let q = m.quoted ? m.quoted : m;
+
+    let media = await q.download()
+    let link = await uploader60Minute(media)
+    console.log(link)
+    await m.reply(`${link}`)
+} else {
+m.reply(`Mokad kah? Chat Developer!!!`)
+}
+}
+break
+
+case 'tourlvid': {
+if (!/video/.test(mime)) return m.reply(`*Mana Video Nya?*`)
+LenwyLD()
+await sleep(200)
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+if (/video/.test(mime)) {
+  let q = m.quoted ? m.quoted : m;
+
+    let media = await q.download()
+    let link = await uploader60Minute(media)
+    await m.reply(`${link}`)
+} else if (/video/.test(mime)) {
+let anu = await uploader60Minute(media)
+m.reply(util.format(anu))
+} else {
+m.reply(`Mokad kah? Chat Developer!!!`)
+}
+await fs.unlinkSync(media)
+}
+break
+
+case 'reminder': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+if (!args[0] || !args[1]) return m.reply('*Format : Reminder Waktu s/m/h/d Pesan*\n\n📑 *Contoh : Reminder 30m Jangan Lupa Sholat*')
+const time = toMs(args[0])
+const message = args.slice(1).join(' ')
+setTimeout(() => {
+lenwy.sendMessage(from, { text : `*Reminder Untuk @${sender.split("@")[0]}*\n\n📑 *Dengan Pesan :* ${message}`, contextInfo:{mentionedJid:[sender]}}, { quoted: m })}, time)
+m.reply(`📑 *Berhasil Mengatur Reminder Untuk ${args[0]} ${args[1]} Ke Depan*`)
+}
+break
+
+case 'jarak': {
+if (!text) return m.reply(`*Contoh: ${prefix + command} Jakarta|Bandung*`)
+if (text.length > 80) return m.reply(`*Maksimal 80 Karakter*`)    
+LenwyLD()
+await sleep(200)
+let [from, to] = text.split(/[^\w\s]/g)
+if (!(from && to)) return m.reply (`*Contoh: ${prefix + command} Jakarta|Bandung*`) 
+let data = await jarak(from, to)
+if (data.img) return lenwy.sendMessage(m.chat, { image: data.img, caption: data.desc }, { quoted: m })
+else m.reply(data.desc)
+}
+break
+
+case 'couple': {
+LenwyLD()
+await sleep(200)
+let anu = await fetchJson('https://raw.githubusercontent.com/iamriz7/kopel_/main/kopel.json')
+let random = anu[Math.floor(Math.random() * anu.length)]
+lenwy.sendMessage(from, { image: { url: random.male }, caption: `🎁 *Couple Male*` }, {quoted:m})
+lenwy.sendMessage(from, { image: { url: random.female }, caption: `🎁 *Couple Female*` }, {quoted:m})
+}
+break
+
+case 'getname': {
+if (qtod === "true") {
+namenye = await lenwy.getName(m.quoted.sender)
+m.reply(`Namanya: ${namenye}`)
+} else if (qtod === "false") {
+lenwy.sendMessage(from, {text:"✉️ *Reply Orangnya*"}, {quoted:m})
+}
+}
+break
+
+case 'getpic': {
+if (qtod === "true") {
+try {
+pporg = await lenwy.profilePictureUrl(m.quoted.sender, 'image')
+} catch {
+pporg = 'https://i0.wp.com/www.gambarunik.id/wp-content/uploads/2019/06/Top-Gambar-Foto-Profil-Kosong-Lucu-Tergokil-.jpg'
+}
+lenwy.sendMessage(from, { image : { url : pporg }, caption:`*Selesai*` }, {quoted:m})
+} else if (qtod === "false") {
+try {
+pporgs = await lenwy.profilePictureUrl(from, 'image')
+} catch {
+pporgs = 'https://i0.wp.com/www.gambarunik.id/wp-content/uploads/2019/06/Top-Gambar-Foto-Profil-Kosong-Lucu-Tergokil-.jpg'
+}
+lenwy.sendMessage(from, { image : { url : pporgs }, caption:`*Selesai*` }, {quoted:m})
+}
+}
+break
+
+case 'block': {
+if (!isCreator) return m.reply(mess.owner)
+LenwyLD()
+await sleep(200)
+let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
+await lenwy.updateBlockStatus(users, 'block').then((res) => m.reply(jsonformat(res))).catch((err) => m.reply(jsonformat(err)))
+}
+break
+
+case 'unblock': {
+if (!isCreator) return m.reply(mess.owner)
+LenwyLD()
+await sleep(200)
+let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
+await lenwy.updateBlockStatus(users, 'unblock').then((res) => m.reply(jsonformat(res))).catch((err) => m.reply(jsonformat(err)))
+}
+break
+
+case 'cwr': {
+if (!text) return m.reply('*Format : Cwr [Total Match] [Winrate Saat Ini] [Target Winrate]*\n\n📑 *Contoh : Cwr 1200 67% 89%*')
+var cwl = text.split(' ')
+if (!cwl || cwl.length !== 3) return m.reply('*Format : Cwr [Total Match] [Winrate Saat Ini] [Target Winrate]*\n\n📑 *Contoh : Cwr 1200 67% 89%*')          
+const tMatch = parseFloat(cwl[0])
+const tWr = parseFloat(cwl[1])
+const wrReq = parseFloat(cwl[2])          
+if (isNaN(tMatch) || isNaN(tWr) || isNaN(wrReq)) {
+return m.reply('⚠️ *Pastikan Semuanya Berupa Angka*')
+}          
+const resultNum = cwr(tMatch, tWr, wrReq)
+const tekl = `*Winrate Calculator Mobile Legend*
+
+📑 *Data Yang Diberikan*
+ *⨠ Total Petandingan : ${tMatch}*
+ *⨠ Winrate Saat Ini : ${tWr}%*
+ *⨠ Target Winrate : ${wrReq}%*
+
+🎁 *Hasil :*
+*Butuh ${resultNum} Pertandingan Tanpa Kalah Untuk Mencapai ${wrReq}% Winrate*`;
+m.reply(tekl)
+}
+break
+
+case 'afk': {
+if (!isAdmins) return
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+if (text.length > 100) return m.reply(`*Maksimal 100 Karakter*`)    
+let user = global.db.data.users[m.sender]
+user.afkTime = + new Date
+user.afkReason = text
+lenwy.sendMessage(m.chat, { text: `*${pushname} Sedang AFK*\n⚠️ *Dengan Alasan :* ${text ? text : 'Tidak Ada'}` })
+}
+break
+
+case 'tebak': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+ if (args[0] === "gambar") {
+ if (tebakgambar.hasOwnProperty(m.sender.split('@')[0])) m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan!*')
+ let anu = await fetchJson('https://raw.githubusercontent.com/BochilTeam/database/master/games/tebakgambar.json')
+ let result = anu[Math.floor(Math.random() * anu.length)]
+ lenwy.sendImage(from, result.img, `*Silahkan Jawab Soal Di Atas Ini*\n\n📑 *Deskripsi :* ${result.deskripsi}\n\n🕒 *Waktu : 60s*`, m).then(() => {
+ tebakgambar[m.sender.split('@')[0]] = result.jawaban.toLowerCase()
+ })
+ await sleep(60000)
+ if (tebakgambar.hasOwnProperty(m.sender.split('@')[0])) {
+ console.log("Jawaban: " + result.jawaban)
+ lenwy.sendMessage(m.chat, { text: `🕒 *Waktu Habis*\n🎁 *Jawaban : ${tebakgambar[m.sender.split('@')[0]]}*\n\n📣 *Ingin Bermain Lagi? Ketik Tebak Gambar*`}, {quoted:m}) 
+ delete tebakgambar[m.sender.split('@')[0]]
+ }
+ } else if (args[0] === 'kata') {
+ if (tebakkata.hasOwnProperty(m.sender.split('@')[0])) m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan!*')
+ let anu = await fetchJson('https://raw.githubusercontent.com/BochilTeam/database/master/games/tebakkata.json')
+ let result = anu[Math.floor(Math.random() * anu.length)]
+ lenwy.sendText(from, `*Silahkan Jawab Pertanyaan Berikut :*\n\n📦 *${result.soal}*\n\n🕒 *Waktu : 60s*`, m).then(() => {
+ tebakkata[m.sender.split('@')[0]] = result.jawaban.toLowerCase()
+ })
+ await sleep(60000)
+ if (tebakkata.hasOwnProperty(m.sender.split('@')[0])) {
+ console.log("Jawaban: " + result.jawaban)
+ lenwy.sendMessage(m.chat, { text: `🕒 *Waktu Habis*\n🎁 *Jawaban : ${tebakkata[m.sender.split('@')[0]]}*\n\n📣 *Ingin Bermain Lagi? Ketik Tebak Kata*` }, {quoted:m}) 
+ delete tebakkata[m.sender.split('@')[0]]
+ }
+ } else if (args[0] === 'kalimat') {
+ if (tebakkalimat.hasOwnProperty(m.sender.split('@')[0])) m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan!*')
+ let anu = await fetchJson('https://raw.githubusercontent.com/BochilTeam/database/master/games/tebakkalimat.json')
+ let result = anu[Math.floor(Math.random() * anu.length)]
+ lenwy.sendText(from, `*Silahkan Jawab Pertanyaan Berikut :*\n\n📦 *Pertanyaan :* ${result.soal}\n\n🕒 *Waktu : 60s*`, m).then(() => {
+ tebakkalimat[m.sender.split('@')[0]] = result.jawaban.toLowerCase()
+ })
+ await sleep(60000)
+ if (tebakkalimat.hasOwnProperty(m.sender.split('@')[0])) {
+ console.log("Jawaban: " + result.jawaban)
+ lenwy.sendMessage(m.chat, { text:`🕒 *Waktu Habis*\n🎁 *Jawaban : ${tebakkalimat[m.sender.split('@')[0]]}*\n\n📣 *Ingin Bermain Lagi? Ketik Tebak Kalimat*`}, {quoted:m}) 
+ delete tebakkalimat[m.sender.split('@')[0]]
+ }
+ } else if (args[0] === 'lirik') {
+ if (tebaklirik.hasOwnProperty(m.sender.split('@')[0])) m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan!*')
+ let anu = await fetchJson('https://raw.githubusercontent.com/BochilTeam/database/master/games/tebaklirik.json')
+ let result = anu[Math.floor(Math.random() * anu.length)]
+ lenwy.sendText(from, `*Ini Adalah Lirik Dari Lagu? :* \n\n📦 *${result.soal}?*\n\n🕒 *Waktu : 60s*`, m).then(() => {
+ tebaklirik[m.sender.split('@')[0]] = result.jawaban.toLowerCase()
+ })
+ await sleep(60000)
+ if (tebaklirik.hasOwnProperty(m.sender.split('@')[0])) {
+ console.log("Jawaban: " + result.jawaban)
+ lenwy.sendMessage(m.chat, { text: `🕒 *Waktu Habis*\n🎁 *Jawaban : ${tebaklirik[m.sender.split('@')[0]]}*\n\n📣 *Ingin Bermain Lagi? Ketik Tebak Lirik*`} , {quoted:m}) 
+ delete tebaklirik[m.sender.split('@')[0]]
+ }
+ } else if (args[0] === 'lontong') {
+ if (caklontong.hasOwnProperty(m.sender.split('@')[0])) m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan!*')
+ let anu = await fetchJson('https://raw.githubusercontent.com/BochilTeam/database/master/games/caklontong.json')
+ let result = anu[Math.floor(Math.random() * anu.length)]
+ lenwy.sendText(from, `*Jawablah Pertanyaan Berikut :*\n📦 *${result.soal}*\n🕒 *Waktu : 60s*`, m).then(() => {
+ caklontong[m.sender.split('@')[0]] = result.jawaban.toLowerCase()
+caklontong_desk[m.sender.split('@')[0]] = result.deskripsi
+ })
+ await sleep(60000)
+ if (caklontong.hasOwnProperty(m.sender.split('@')[0])) {
+ console.log("Jawaban: " + result.jawaban)
+ lenwy.sendMessage(m.chat, { text:`🕒 *Waktu Habis*\n🎁 *Jawaban : ${caklontong[m.sender.split('@')[0]]}*\n\n📑 *Deskripsi : ${caklontong_desk[m.sender.split('@')[0]]}* \n\n📣 *Ingin Bermain Lagi? Ketik Tebak Lontong*`}, {quoted:m}) 
+ delete caklontong[m.sender.split('@')[0]]
+delete caklontong_desk[m.sender.split('@')[0]]
+ }
+ }
+}
+break
+
+case 'kuismath':
+case 'math': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+ if (kuismath.hasOwnProperty(m.sender.split('@')[0])) m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan!*')
+ let { genMath, modes } = require('./library/math')
+ if (!text) m.reply `Mode: ${Object.keys(modes).join(' | ')}\nContoh penggunaan: ${prefix}math medium`
+ let result = await genMath(text.toLowerCase())
+ lenwy.sendText(from, `*Berapa Hasil Dari : ${result.soal.toLowerCase()}*?\n\n🕒 *Waktu : ${(result.waktu / 1000).toFixed(2)} detik*`, m).then(() => {
+ kuismath[m.sender.split('@')[0]] = result.jawaban
+ })
+ await sleep(result.waktu)
+ if (kuismath.hasOwnProperty(m.sender.split('@')[0])) {
+ console.log("Jawaban: " + result.jawaban)
+ m.reply("🕒 *Waktu Habis*\n🎁 *Jawaban :* " + kuismath[m.sender.split('@')[0]])
+ delete kuismath[m.sender.split('@')[0]]
+ }
+}
+break
+
+case 'tebakangka': {
+    if (gameState.angkaAcak === null) {
+        // Jika angka belum ditentukan, inisialisasi angka acak
+        gameState.angkaAcak = Math.floor(Math.random() * 20) + 1;
+        gameState.jumlahTebakan = 0; // Reset jumlah tebakan
+        m.reply('Aku sudah memikirkan sebuah angka antara 1-20. Coba tebak!')
+    } else {
+        // Jika angka sudah ditentukan, periksa tebakan
+        const tebakan = parseInt(text)
+        if (isNaN(tebakan) || tebakan < 1 || tebakan > 20) {
+            return m.reply('Tebakan harus berupa angka antara 1-20.')
+        }
+
+        gameState.jumlahTebakan++;
+
+        if (tebakan < gameState.angkaAcak) {
+            return m.reply("Tebakan Anda terlalu rendah. Coba lagi!")
+        } else if (tebakan > gameState.angkaAcak) {
+            return m.reply("Tebakan Anda terlalu tinggi. Coba lagi!")
+        } else {
+            // Jika tebakan benar
+            m.reply(`Selamat! Anda telah menebak angka ${gameState.angkaAcak} dengan ${gameState.jumlahTebakan} tebakan.`)
+            // Reset permainan
+            gameState.angkaAcak = null;
+        }
+    }
+}
+break
+
+case 'ttc': case 'ttt': case 'tictactoe': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+let TicTacToe = require("./library/tictactoe")
+this.game = this.game ? this.game : {}
+if (Object.values(this.game).find(room => room.id.startsWith('tictactoe') && [room.game.playerX, room.game.playerO].includes(m.sender))) return m.reply('⚠️ *Kamu Masih Didalam Permainan Atau Menunggu Lawan Bermain*\n\n> Ketik delttc atau nyerah untuk keluar dari permainan')
+let room = Object.values(this.game).find(room => room.state === 'WAITING' && (text ? room.name === text : true))
+if (room) {
+m.reply('*Lawan Bermain Ditemukan*')
+room.o = from
+room.game.playerO = m.sender
+room.state = 'PLAYING'
+let arr = room.game.render().map(v => {
+return {
+X: '❌',
+O: '⭕',
+1: '1️⃣',
+2: '2️⃣',
+3: '3️⃣',
+4: '4️⃣',
+5: '5️⃣',
+6: '6️⃣',
+7: '7️⃣',
+8: '8️⃣',
+9: '9️⃣',
+}[v]
+})
+let str = `Room ID: ${room.id}
+
+${arr.slice(0, 3).join('')}
+${arr.slice(3, 6).join('')}
+${arr.slice(6).join('')}
+
+Menunggu @${room.game.currentTurn.split('@')[0]}
+
+Ketik *nyerah* untuk menyerah dan mengakui kekalahan`
+if (room.x !== room.o) await lenwy.sendText(room.x, str, m, { mentions: parseMention(str) } )
+await lenwy.sendText(room.o, str, m, { mentions: parseMention(str) } )
+} else {
+room = {
+id: 'tictactoe-' + (+new Date),
+x: from,
+o: '',
+game: new TicTacToe(m.sender, 'o'),
+state: 'WAITING'
+}
+if (text) room.name = text
+m.reply('*Menunggu Lawan Bermain*' + (text ? ` mengetik command dibawah ini ${prefix}${command} ${text}` : ''))
+this.game[room.id] = room
+}
+}
+break
+
+case 'delttc': case 'delttt': {
+if (isBan) return m.reply('*Lu Di Ban Owner Gak Usah Sok asik Tolol*')
+let roomnya = Object.values(this.game).find(room => room.id.startsWith('tictactoe') && [room.game.playerX, room.game.playerO].includes(m.sender))
+if (!roomnya) return m.reply('Kamu sedang tidak berada di room tictactoe!')
+delete this.game[roomnya.id]
+m.reply('Berhasil delete session room tictactoe!')
+}
+break   
+
+case 'del':
+case 'delete': {
+ if (!isPrem && !isAdmins) return m.reply(mess.admin)
+ if (!isBotAdmins) return m.reply(mess.botAdmin)
+ if (!m.quoted) return m.reply("*Balas Pesan Yang Ingin Dihapus Oleh Bot*")
+ let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, "") + "@s.whatsapp.net";
+ await lenwy.sendMessage(m.chat, {
+ delete: {
+ remoteJid: m.chat,
+ id: m.quoted.id,
+ participant: m.quoted.sender,
+ },
+ })
+}
+break
+
+case 'setdone': {
+if (!m.isGroup) return m.reply(mess.group)
+if (!isAdmins) return m.reply(mess.admin)
+let teks = text ? text : ''
+await updateTextDone(m, teks)
+m.reply(mess.success)
+}
+break
+
+case 'done': {
+if (!m.isGroup) return
+if (!isAdmins) return
+if (!m.quoted) return m.reply('⚠️ *Reply Pesan Si Pemesan*')
+const quotedSender = m.quoted.sender;
+const quotedSenderTag = `@${quotedSender.split("@")[0]}`; // Format tag pengirim yang dibalas
+const yangmemesan = quotedSenderTag;
+const query = q ? `*${q}*` : ''
+let teks = `         ∧    ∧ ‎
+ ☆ (๑╹ꇴ╹๑)  ☆
+‎───〇─〇──ೇ .꒰ !! ꒱ 
+╭┄꯭───ׂ──────꒰🫧꒱─────ׂ┄꯭───ׂ╮
+│ ᥡᥱᥡᥡᥡ ⍴ᥱsᥲᥒᥲᥒ ${yangmemesan}
+│ 𝗍ᥱᥣᥲһ sᥙᥴᥴsᥱs
+│ sіᥣᥲkᥲᥒ ძі ᥴᥱk ȷᥲᥒgᥲᥒ ᥣᥙ⍴ᥲ ss ᥡᥲᥕᥕ 
+│(●'▽'●)ゝ
+│
+│ 𝝑𝝔 𝘱𝘦𝘴𝘢𝘯𝘢𝘯  : ${query}
+│ 𝝑𝝔 𝘵𝘢𝘯𝘨𝘨𝘢𝘭    : *${hariini}*
+│ 𝝑𝝔 𝘸𝘢𝘬𝘵𝘶       : *${time}*
+│ 𝝑𝝔 𝘴𝘦𝘵𝘢𝘵𝘶𝘴    : *Succes*
+╰──ׂ┄꯭───ׂ┄꯭──────ׂ┄꯭───────╯`;
+
+let settextdone = global.datagc[from].text_done
+let usertag = `@${m.sender.split("@")[0]}`
+
+if (settextdone.includes('@tagreply')) {
+  if (m.quoted) {
+    let userreply = `@${m.quoted.sender.split("@")[0]}`
+    settextdone = settextdone.replace('@tagreply', userreply)
+  } else {
+    return m.reply(`Anda menggunakan @tagreply, anda harus mereply pesan seseorang untuk mengetag nya`)
+  }
+}
+
+if (settextdone.includes('@pesanan')) {
+  settextdone = settextdone.replace('@pesanan', query)
+} 
+if (settextdone.includes('@groupname')) {
+  settextdone = settextdone.replace('@groupname', groupName)
+} 
+if (settextdone.includes('@tagdiri')) {
+  settextdone = settextdone.replace('@tagdiri', usertag)
+}
+if (settextdone.includes('@jam')) {
+  settextdone = settextdone.replace('@jam', jamnya)
+}
+if (settextdone.includes('@menit')) {
+  settextdone = settextdone.replace('@menit', menitnya)
+}
+if (settextdone.includes('@detik')) {
+  settextdone = settextdone.replace('@detik', detiknya)
+}
+if (settextdone.includes('@hari')) {
+  settextdone = settextdone.replace('@hari', harinya)
+}
+if (settextdone.includes('@tanggal')) {
+  settextdone = settextdone.replace('@tanggal', tanggalnya)
+}
+if (settextdone.includes('@bulan')) {
+  settextdone = settextdone.replace('@bulan', bulannya)
+}
+if (settextdone.includes('@tahun')) {
+  settextdone = settextdone.replace('@tahun', tahunnya)
+}
+if (settextdone.includes('@namabulan')) {
+  settextdone = settextdone.replace('@namabulan', namabulannya)
+}
+
+if (!settextdone) {
+  settextdone = teks
+}
+
+lenwy.sendMessage(m.chat, { text: settextdone, mentions: [quotedSender] }, { quoted: m })
+}
+break
+
+case 'setproses': {
+if (!m.isGroup) return m.reply(mess.group)
+if (!isAdmins) return m.reply(mess.admin)
+let teks = text ? text : ''
+await updateTextProses(m, teks)
+m.reply(mess.success)
+}
+break
+
+case 'proses': {
+if (!m.isGroup) return
+if (!isAdmins) return
+if (!m.quoted) return m.reply('⚠️ *Reply Pesan Si Pemesan*')
+const quotedSender = m.quoted.sender;
+const quotedSenderTag = `@${quotedSender.split("@")[0]}`; // Format tag pengirim yang dibalas
+const yangmemesan = quotedSenderTag;
+const query = q ? `*${q}*` : ''
+let teks = `         ∧    ∧ ‎
+ ☆ (๑╹ꇴ╹๑)  ☆
+‎───〇─〇──ೇ .꒰ !! ꒱ 
+╭┄꯭───ׂ──────꒰🫧꒱─────ׂ┄꯭───ׂ╮
+│ ⍴ᥱsᥲᥒᥲᥒ ${yangmemesan}
+│ sᥱძᥲᥒg ძі ⍴r᥆sᥱs
+│ m᥆һ᥆ᥒ ᥙᥒ𝗍ᥙk mᥱᥒᥙᥒggᥙ (๑'ᴗ')ゞ
+│
+│ 𝝑𝝔 𝘱𝘦𝘴𝘢𝘯𝘢𝘯  : ${query}
+│ 𝝑𝝔 𝘵𝘢𝘯𝘨𝘨𝘢𝘭    : *${hariini}*
+│ 𝝑𝝔 𝘸𝘢𝘬𝘁𝘂       : *${time}*
+│ 𝝑𝝔 𝘴𝘦𝘁𝘢𝘁𝘶𝘀    : *Proses*
+╰──ׂ┄꯭───ׂ┄꯭──────ׂ┄꯭───────╯`;
+let settextproses = global.datagc[from].text_proses
+let usertag = `@${m.sender.split("@")[0]}`
+
+if (settextproses.includes('@tagreply')) {
+  if (m.quoted) {
+    let userreply = `@${m.quoted.sender.split("@")[0]}`
+    settextproses = settextproses.replace('@tagreply', userreply)
+  } else {
+    return m.reply(`Anda menggunakan @tagreply, anda harus mereply pesan seseorang untuk mengetag nya`)
+  }
+}
+
+if (settextproses.includes('@pesanan')) {
+  settextproses = settextproses.replace('@pesanan', query)
+} 
+if (settextproses.includes('@groupname')) {
+  settextproses = settextproses.replace('@groupname', groupName)
+} 
+if (settextproses.includes('@tagdiri')) {
+  settextproses = settextproses.replace('@tagdiri', usertag)
+}
+if (settextproses.includes('@jam')) {
+  settextproses = settextproses.replace('@jam', jamnya)
+}
+if (settextproses.includes('@menit')) {
+  settextproses = settextproses.replace('@menit', menitnya)
+}
+if (settextproses.includes('@detik')) {
+  settextproses = settextproses.replace('@detik', detiknya)
+}
+if (settextproses.includes('@hari')) {
+  settextproses = settextproses.replace('@hari', harinya)
+}
+if (settextproses.includes('@tanggal')) {
+  settextproses = settextproses.replace('@tanggal', tanggalnya)
+}
+if (settextproses.includes('@bulan')) {
+  settextproses = settextproses.replace('@bulan', bulannya)
+}
+if (settextproses.includes('@tahun')) {
+  settextproses = settextproses.replace('@tahun', tahunnya)
+}
+if (settextproses.includes('@namabulan')) {
+  settextproses = settextproses.replace('@namabulan', namabulannya)
+}
+
+if (!settextproses) {
+  settextproses = teks
+}
+
+lenwy.sendMessage(m.chat, { text: settextproses, mentions: [quotedSender] }, { quoted: m })
+}
+break
+
+case 'ffstalk': {
+ if (isBan) return m.reply(mess.ban)
+ if (!text) return m.reply('*Contoh :*\n> *ffstalk* 587531837')
+try {
+ let checkerResult = await (await fetch(`https://${global.api.ham.domain}/stalk/ff?apikey=${global.api.ham.apikey}&id=${text}`)).json()
+console.log(checkerResult)
+ m.reply(`Username: ${checkerResult.result.nickname || '-'}
+Region: ${checkerResult.result.region || '-'}
+Id: ${text}`)
+} catch (e) {
+ m.reply('terjadi error :' + e)
+}
+}
+break
+
+case 'stalkml':     
+case 'mlstalk': {
+ if (!q) return m.reply(`Contoh ${prefix + command} 696964467(8770)`)
+ let parts = q.split("(");
+ let id = parts[0].trim();
+ let serverId = parts[1] ? parts[1].replace(")", "").trim() : "";
+
+ let nicknameUser = '-';
+ let regionUser = '-';
+ let checkerResult = {};
+ try {
+ checkerResult = await (await fetch(`https://deoberon-api.vercel.app/stalk/mlbb?apikey=merl&userId=${id}&zoneId=${serverId}`)).json();
+ } catch (e) {
+ console.error('Gagal fetch checkerResult:', e);
+ }
+
+const matchFlag = checkerResult.country?.match(/(.*?)(🇦🇨|🇦🇩|🇦🇪|🇦🇫|🇦🇬|🇦🇮|🇦🇱|🇦🇲|🇦🇴|🇦🇶|🇦🇷|🇦🇸|🇦🇹|🇦🇺|🇦🇼|🇦🇽|🇦🇿|🇧🇦|🇧🇧|🇧🇩|🇧🇪|🇧🇫|🇧🇬|🇧🇭|🇧🇮|🇧🇯|🇧🇱|🇧🇲|🇧🇳|🇧🇴|🇧🇶|🇧🇷|🇧🇸|🇧🇹|🇧🇻|🇧🇼|🇧🇾|🇧🇿|🇨🇦|🇨🇨|🇨🇩|🇨🇫|🇨🇬|🇨🇭|🇨🇮|🇨🇰|🇨🇱|🇨🇲|🇨🇳|🇨🇴|🇨🇷|🇨🇺|🇨🇻|🇨🇼|🇨🇽|🇨🇾|🇨🇿|🇩🇪|🇩🇯|🇩🇰|🇩🇲|🇩🇴|🇩🇿|🇪🇨|🇪🇪|🇪🇬|🇪🇷|🇪🇸|🇪🇹|🇪🇺|🇫🇮|🇫🇯|🇫🇰|🇫🇲|🇫🇴|🇫🇷|🇬🇦|🇬🇧|🇬🇩|🇬🇪|🇬🇫|🇬🇬|🇬🇭|🇬🇮|🇬🇱|🇬🇲|🇬🇳|🇬🇵|🇬🇶|🇬🇷|🇬🇹|🇬🇺|🇬🇼|🇬🇾|🇭🇰|🇭🇲|🇭🇳|🇭🇷|🇭🇹|🇭🇺|🇮🇨|🇮🇩|🇮🇪|🇮🇱|🇮🇲|🇮🇳|🇮🇴|🇮🇶|🇮🇷|🇮🇸|🇮🇹|🇯🇪|🇯🇲|🇯🇴|🇯🇵|🇰🇪|🇰🇬|🇰🇭|🇰🇮|🇰🇲|🇰🇳|🇰🇵|🇰🇷|🇰🇼|🇰🇾|🇰🇿|🇱🇦|🇱🇧|🇱🇨|🇱🇮|🇱🇰|🇱🇷|🇱🇸|🇱🇹|🇱🇺|🇱🇻|🇱🇾|🇲🇦|🇲🇨|🇲🇩|🇲🇪|🇲🇫|🇲🇬|🇲🇭|🇲🇰|🇲🇱|🇲🇲|🇲🇳|🇲🇴|🇲🇵|🇲🇶|🇲🇷|🇲🇸|🇲🇹|🇲🇺|🇲🇻|🇲🇼|🇲🇽|🇲🇾|🇲🇿|🇳🇦|🇳🇨|🇳🇪|🇳🇫|🇳🇬|🇳🇮|🇳🇱|🇳🇴|🇳🇵|🇳🇷|🇳🇺|🇳🇿|🇴🇲|🇵🇦|🇵🇪|🇵🇫|🇵🇬|🇵🇭|🇵🇰|🇵🇱|🇵🇲|🇵🇳|🇵🇷|🇵🇸|🇵🇹|🇵🇼|🇵🇾|🇶🇦|🇷🇪|🇷🇴|🇷🇸|🇷🇺|🇷🇼|🇸🇦|🇸🇧|🇸🇨|🇸🇩|🇸🇪|🇸🇬|🇸🇭|🇸🇮|🇸🇯|🇸🇰|🇸🇱|🇸🇲|🇸🇳|🇸🇴|🇸🇷|🇸🇸|🇸🇹|🇸🇻|🇸🇾|🇸🇿|🇸🇽|🇸🇾|🇹🇦|🇹🇨|🇹🇩|🇹🇫|🇹🇬|🇹🇭|🇹🇯|🇹🇰|🇹🇱|🇹🇲|🇹🇳|🇹🇴|🇹🇷|🇹🇹|🇹🇻|🇹🇼|🇹🇿|🇺🇦|🇺🇬|🇺🇸|🇺🇾|🇺🇿|🇻🇦|🇻🇨|🇻🇪|🇻🇬|🇻🇮|🇻🇳|🇻🇺|🇼🇫|🇼🇸|🇽🇰|🇾🇪|🇾🇹|🇿🇦|🇿🇲|🇿🇼)$/);
+let regionFlag = matchFlag[2] || undefined
+
+ // Ambil data first topup
+ let topupText = "";
+ try {
+ let urlFirstTopup = await axios.get(`https://${global.api.ham.domain}/stalk/ml-first-topup?apikey=${global.api.ham.apikey}&id=${id}&zoneId=${serverId}`);
+ let topupJson = urlFirstTopup?.data;
+
+ if (topupJson?.result?.first_recharge?.length > 0) {
+ for (let pkg of topupJson.result.first_recharge) {
+ topupText += `• ${pkg.title} 💎: ${pkg.available ? "✅" : "❌"}\n`;
+ }
+ } else {
+ topupText += "-";
+ }
+ 
+ } catch (e) {
+ console.error('Gagal fetch firstTopup:', e);
+ topupText += "-";
+ }
+ nicknameUser = checkerResult?.username
+ regionUser = matchFlag[1] || checkerResult?.country
+m.reply(`👤 *Username:* ${nicknameUser}
+🆔 *ID:* ${id}
+🌐 *Server ID:* ${serverId}
+📍 *Region:* ${regionUser} 
+🏳 *Bendera:* ${regionFlag}
+
+🛒 *First Recharge:*
+${topupText}`);
+}
+break
+
+case 'jadinyata':
+case 'toreal':
+case 'toanime':
+case 'jadianime': {
+    if (!quoted) return m.reply('*Fotonya Mana?*')
+    if (!/image/.test(mime)) return m.reply(`*Send/Reply Foto Dengan Caption ${prefix + command}*`)
+
+    const { key } = await lenwy.sendMessage(m.chat, { text: mess.wait }, { quoted: m })
+    const type = ['jadinyata', 'toreal'].includes(command) ? 'anime2real' : 'anime2d'
+
+    try {
+        const media = await lenwy.downloadAndSaveMediaMessage(quoted)
+        const url = await uploader60Minute(media)
+
+        const res = await fetch(`${api.xterm.url}/api/img2img/filters?action=${type}&url=${url}&key=${api.xterm.key}`).then(v => v.json())
+        if (!res.status) return m.reply(res.msg || 'Error!')
+
+        let i = 0
+        while (i < 55) {
+            const s = await fetch(`${api.xterm.url}/api/img2img/filters/batchProgress?id=${res.id}`).then(v => v.json())
+            await lenwy.sendMessage(m.chat, { text: s.progress || 'Prepare...', edit: key }, { quoted: m })
+
+            if (s.status === 3) return s.url
+                ? lenwy.sendMessage(m.chat, { image: { url: s.url } }, { quoted: m })
+                : m.reply('Gambar tidak tersedia. Coba lagi.')
+
+            if (s.status === 4) return m.reply('Terjadi kesalahan. Gunakan gambar lain.')
+
+            await new Promise(r => setTimeout(r, 5000))
+            i++
+        }
+    } catch (e) {
+        console.error(e)
+        m.reply(e.message || 'Terjadi kesalahan')
+    }
+}
+break
+
+case 'tocyberpunk':
+case 'jadicyberpunk': {
+    if (isBan) return m.reply(mess.ban)
+    if (!quoted) return m.reply('*Fotonya Mana?*')
+    if (!/image/.test(mime)) return m.reply(`*Send/Reply Foto Dengan Caption ${prefix + command}*`)
+
+    try {
+        m.reply('Process converting image, mohon tunggu...')
+        const q = m.quoted || m
+        const url = await uploader60Minute(await q.download())
+        const res = await fetch(`https://api.nyxs.pw/ai-image/jadicyberpunk?url=${url}`).then(v => v.json())
+
+        lenwy.sendMessage(m.chat, { image: { url: res.result }, caption: 'Nih Bos' }, { quoted: m })
+    } catch (e) {
+        console.error(e)
+        m.reply('Harap coba beberapa saat lagi')
+    }
+}
+break
+
+case 'todreamscape':
+case 'jadidreamscape': {
+    if (isBan) return m.reply(mess.ban)
+    if (!quoted) return m.reply('*Fotonya Mana?*')
+    if (!/image/.test(mime)) return m.reply(`*Send/Reply Foto Dengan Caption ${prefix + command}*`)
+
+    try {
+        m.reply('Process converting image, mohon tunggu...')
+        const q = m.quoted || m
+        const url = await uploader60Minute(await q.download())
+        const res = await fetch(`https://api.nyxs.pw/ai-image/jadidreamscape?url=${url}`).then(v => v.json())
+
+        lenwy.sendMessage(m.chat, { image: { url: res.result }, caption: 'Nih Bos' }, { quoted: m })
+    } catch (e) {
+        console.error(e)
+        m.reply('Harap coba beberapa saat lagi')
+    }
+}
+break
+
+case 'tocomic':
+case 'jadicomic': {
+    if (isBan) return m.reply(mess.ban)
+    if (!quoted) return m.reply('*Fotonya Mana?*')
+    if (!/image/.test(mime)) return m.reply(`*Send/Reply Foto Dengan Caption ${prefix + command}*`)
+
+    try {
+        m.reply('Process converting image, mohon tunggu...')
+        const q = m.quoted || m
+        const url = await uploader60Minute(await q.download())
+        const res = await fetch(`https://api.nyxs.pw/ai-image/jadivaporwave?url=${url}`).then(v => v.json())
+
+        lenwy.sendMessage(m.chat, { image: { url: res.result }, caption: 'Nih Bos' }, { quoted: m })
+    } catch (e) {
+        console.error(e)
+        m.reply('Harap coba beberapa saat lagi')
+    }
+}
+break
+
+case 'todonghua':
+case 'jadidonghua': {
+    if (isBan) return m.reply(mess.ban)
+    if (!quoted) return m.reply('*Fotonya Mana?*')
+    if (!/image/.test(mime)) return m.reply(`*Send/Reply Foto Dengan Caption ${prefix + command}*`)
+
+    try {
+        m.reply('Process converting image, mohon tunggu...')
+        const q = m.quoted || m
+        const url = await uploader60Minute(await q.download())
+        const res = await fetch(`https://api.nyxs.pw/ai-image/jadianime?url=${url}`).then(v => v.json())
+
+        lenwy.sendMessage(m.chat, { image: { url: res.result }, caption: 'Nih Bos' }, { quoted: m })
+    } catch (e) {
+        console.error(e)
+        m.reply('Harap coba beberapa saat lagi')
+    }
+}
+break
+
+case 'todisney':
+case 'jadidisney': {
+    if (isBan) return m.reply(mess.ban)
+    if (!quoted) return m.reply('*Fotonya Mana?*')
+    if (!/image/.test(mime)) return m.reply(`*Send/Reply Foto Dengan Caption ${prefix + command}*`)
+
+    try {
+        m.reply('Process converting image, mohon tunggu...')
+        const q = m.quoted || m
+        const url = await uploader60Minute(await q.download())
+        const res = await fetch(`https://api.nyxs.pw/ai-image/jadidisney?url=${url}`).then(v => v.json())
+
+        lenwy.sendMessage(m.chat, { image: { url: res.result }, caption: 'Nih Bos' }, { quoted: m })
+    } catch (e) {
+        console.error(e)
+        m.reply('Harap coba beberapa saat lagi')
+    }
+}
+break
+
+case 'toghibli':
+case 'jadighibli': {
+    if (isBan) return m.reply(mess.ban)
+    if (!quoted) return m.reply('*Fotonya Mana?*')
+    if (!/image/.test(mime)) return m.reply(`*Send/Reply Foto Dengan Caption ${prefix + command}*`)
+
+    try {
+        m.reply('Process converting image, mohon tunggu...')
+        const q = m.quoted || m
+        const url = await uploader60Minute(await q.download())
+        const res = await fetch(`https://api.nyxs.pw/ai-image/jadighibli?url=${url}`).then(v => v.json())
+
+        lenwy.sendMessage(m.chat, { image: { url: res.result }, caption: 'Nih Bos' }, { quoted: m })
+    } catch (e) {
+        console.error(e)
+        m.reply('Harap coba beberapa saat lagi')
+    }
+}
+break
+
+case 'fluxschenell':
+case 'flux':
+case 'txt2flux':
+case 'texttoflux': {
+if (isBan) return m.reply(mess.ban)
+if (!text) return m.reply(`*Mau Gambar Apa?*`)
+LenwyLD()
+await sleep(200)
+try{
+let result = await (await fetch(`https://endpoint.web.id/ai/flux-schnell?key=315602&prompt=${text}`)).json()
+lenwy.sendMessage(m.chat, { image: { url: result.result }, caption: `Gambar untuk prompt: "${text}"` }, { quoted: m })
+} catch (error) {
+m.reply(mess.error)
+}
+}
+break
+
+case 'photoleap':
+case 'txt2photoleap':
+case 'texttophotoleap': {
+    if (isBan) return m.reply(mess.ban)
+    if (!text) return m.reply(`*Mau Gambar Apa?*`)
+    // Kirim reaksi dan pesan tunggu
+    LenwyLD()
+    await sleep(200)
+    try {
+        let result = await (await fetch(`https://endpoint.web.id/ai/photoleap?key=315602&prompt=${text}`)).json()
+        let imageUrl = result.result.result_url;
+        lenwy.sendMessage(m.chat, { image: { url: imageUrl }, caption: `Gambar untuk prompt: "${text}"` }, { quoted: m })
+    } catch (error) {
+        console.error(error)
+        m.reply(mess.error)
+    }
+}
+break
+
+case '2waifu':
+case 'towaifu':
+case 'txt2waifu':
+case 'texttowaifu': {
+  if (isBan) return m.reply(mess.ban)
+  if (!text) return m.reply(`*Mau Gambar Apa?*`)
+  // Kirim reaksi dan pesan tunggu
+  LenwyLD()
+  await sleep(200)
+  try {
+      let result = await (await fetch(`https://endpoint.web.id/ai/sdxl-waifu?key=315602&prompt=${text}`)).json()
+      let imageUrl = result.result.image;
+      lenwy.sendMessage(m.chat, { image: { url: imageUrl }, caption: `Gambar untuk prompt: "${text}"` }, { quoted: m })
+  } catch (error) {
+      console.error(error)
+      m.reply(mess.error)
+  }
+}
+break
+
+case 'readmore': {
+m.reply(`*Pemisahnya adalah "|"*\n\n*Contoh:*\n> ${command} Hai, |Nama Saya Adalah ${botname}`)
+let [l, r] = text.split`|`
+if (!l) l = ''
+if (!r) r = ''
+lenwy.sendMessage(m.chat, {text: l + readmore + r}, {quoted: m})
+}
+break
+
+case 'tinyurl': {
+  if (!text) return m.reply(`*Mana Link Yang Akan Di Pendekkan?*`)
+
+  let urlToShorten = q; // Pastikan q berisi URL yang valid
+  let response = await fetch(`https://api.ryzendesu.vip/api/tool/tinyurl?url=${urlToShorten}`)
+  
+  // Periksa apakah respons sukses
+  if (!response.ok) {
+      return m.reply(`*Error: ${response.status} ${response.statusText}*`)
+  }
+  
+  let result = await response.json()
+  let shortUrl = result.shortUrl;
+  m.reply(shortUrl)
+}
+break
+
+case 'rvo':
+case 'readviewonce': {
+if (!m.isGroup) return m.reply(mess.group)
+if (!isAdmins && !isCreator) return m.reply(mess.admin)
+if (!isQuotedViewOnce) return m.reply('*Reply Foto, Video Atau Voice Note Yang Di View Once*')
+let type = m.quoted.mtype
+let media = await downloadContentFromMessage(quoted, type === "audioMessage" ? "audio" : type === "imageMessage" ? "image" : "video");
+let buffer = Buffer.from([])
+for await (const chunk of media) {
+buffer = Buffer.concat([buffer, chunk])
+}
+if (/video/.test(type)) {
+await lenwy.sendMessage(m.chat, { video: buffer, caption: `Caption: ${m.quoted?.fakeObj?.message.videoMessage.text || ''}` }, {quoted: m})
+} else if (/image/.test(type)) {
+await lenwy.sendMessage(m.chat, { image: buffer, caption: `Caption: ${m.quoted?.fakeObj?.message.imageMessage.text || ''}` }, {quoted: m})
+} else if (/audio/.test(type)) {
+await lenwy.sendMessage(m.chat, { audio: buffer, mimetype: 'audio/mp4', ptt: true}, {quoted: m})
+}
+}
+break
+
+case 'tovn': {
+  if (!/audio|video/.test(mime)) return m.reply('*Reply ke pesan audio atau video*');
+
+  if (/video/.test(mime)) {
+    let media;
+    try {
+      media = await downloadContentFromMessage(quoted, type === "audioMessage" ? 'audio' : 'video');
+    } catch (err) {
+      console.log('Error saat download media:', err);
+      return m.reply('*Gagal mengunduh media*');
+    }
+  
+    if (!media) {
+      return m.reply('*Media tidak valid*');
+    }
+  
+    const tempFilePath = path.join(__dirname, `temp_${Date.now()}.${mime.includes('audio') ? 'mp3' : 'mp4'}`);
+    const outputFilePath = path.join(__dirname, `output_${Date.now()}.mp3`);
+    let buffer = Buffer.from([]);
+  
+    try {
+      for await (const chunk of media) {
+        buffer = Buffer.concat([buffer, chunk]);
+      }
+      fs.writeFileSync(tempFilePath, buffer);
+    } catch (err) {
+      console.log('Error saat memproses buffer:', err);
+      return m.reply('*Gagal memproses media*');
+    }
+  
+    if (mime.includes('video')) {
+      try {
+        await new Promise((resolve, reject) => {
+          exec(`ffmpeg -i "${tempFilePath}" -vn -acodec libmp3lame -y "${outputFilePath}"`, (err) => {
+            if (err) return reject(err);
+            resolve();
+          });
+        });
+        buffer = fs.readFileSync(outputFilePath);
+      } catch (err) {
+        console.log('Error saat konversi video ke audio:', err);
+        return m.reply('*Gagal mengonversi video ke audio*');
+      } finally {
+        fs.unlinkSync(tempFilePath)
+        if (fs.existsSync(outputFilePath)) fs.unlinkSync(outputFilePath);
+      }
+    }
+  
+    try {
+      await lenwy.sendMessage(m.chat, { audio: buffer, mimetype: 'audio/mp4', ptt: true }, { quoted: m });
+    } catch (error) {
+      console.log('Error saat mengirim pesan:', error);
+    }  
+  } else if (/audio/.test(mime)) {
+    let media;
+    try {
+      media = await downloadContentFromMessage(quoted, 'audio');
+    } catch (err) {
+      console.log('Error saat mengunduh media:', err);
+      return m.reply('*Gagal mengunduh media. Pastikan Anda mereply ke pesan audio yang valid.*');
+    }
+  
+    let buffer = Buffer.from([]);
+    try {
+      for await (const chunk of media) {
+        buffer = Buffer.concat([buffer, chunk]);
+      }
+    } catch (err) {
+      console.log('Error saat memproses buffer:', err);
+      return m.reply('*Gagal memproses audio.*');
+    }
+  
+    if (buffer.length === 0) {
+      return m.reply('*Audio kosong atau gagal diproses.*');
+    }
+  
+    try {
+      await lenwy.sendMessage(m.chat, {
+        audio: buffer,
+        mimetype: 'audio/mp4',
+        ptt: true
+      }, { quoted: m });
+    } catch (error) {
+      console.log('Error saat mengirim pesan:', error);
+      return m.reply('*Gagal mengirim audio.*');
+    }
+  }
+}
+break
+
+case 'bingimg': {
+await lenwy.sendMessage(m.chat, { react: { text: "🕛",key: m.key,}
+})
+await lenwy.sendMessage(m.chat, { react: { text: "🕒",key: m.key,}
+})
+await lenwy.sendMessage(m.chat, { react: { text: "🕕",key: m.key,}
+})
+await lenwy.sendMessage(m.chat, { react: { text: "🕘",key: m.key,}
+})
+await lenwy.sendMessage(m.chat, { react: { text: "✅️",key: m.key,}
+})
+if (!text) return m.reply('Masukan Gambarannya\nContoh:\nAnime cowok memakai baju hitam sedang coding bertuliskan ${botname}')
+m.reply('*Proses ini membutuhkan waktu beberapa saat silahkan tunggu*')
+try {
+let img = await fetchJson(`http://15.235.142.199/api/ai/bingAi?prompt=${text}&apikey=DdUFIJY3sIGZW0g`)
+let imgs = img.image
+let c = 0
+for (let ims of img.image) {
+if (c == 0) await lenwy.sendMessage(m.chat, { image: { url: ims }, caption: `*[ V1 ]* Bing ${botname} ☑\n\n${m.isGroup ? '_Sisa Foto Dikirim Di Private Chat_' : ""}` }, { quoted: m })
+else await lenwy.sendMessage(m.sender, { image: { url: ims }}, { quoted: m })
+c += 4
+await sleep(200)
+}
+} catch {
+m.reply('Terjadi kesalahan!')
+}
+}
+break
+
+case 'texttospeech':
+case 'tekstospeech':
+case 'txt2speech':
+case 'tts': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+if (args.length == 0) return m.reply(`*Mo Convert Text Apa Ke Suara?*`)
+try {
+  let result = await (await fetch(`https://deoberon-api.vercel.app/tools/text-to-speech?text=${q}`)).json()
+  let data = result.result
+  let dataTts = data.find(u => u.voice_name.toLowerCase() == "eminem")
+  lenwy.sendMessage(m.chat, { audio: { url: dataTts.eminem }, mimetype: 'audio/mp4' })
+} catch (e) {
+m.reply('Error')
+console.log(e)
+}
+}
+break
+
+case 'sdxl':
+case 'texttoanime':
+case 'tekstoanime':
+case 'text2anime':
+case 'teks2anime':
+case 'txt2anime': {
+if (!text) return m.reply(`*Mau Gambar Apa?*`)
+// Kirim reaksi dan pesan tunggu
+LenwyLD
+await sleep(200)
+LenwyLD()
+await sleep(200)
+try{
+let mauGambar = text
+// Buat URL request dengan prompt dari pengguna
+let result = await (await fetch(`https://endpoint.web.id/ai/sdxl-anime?key=315602&prompt=${q}`)).json()
+lenwy.sendMessage(m.chat, { image: { url: result.result.image }, caption: `Gambar untuk prompt: "${mauGambar}"` }, { quoted: m })
+} catch (error) {
+m.reply(mess.error)
+}
+}
+break
+
+case 'welcome': {
+if (!isAdmins) return
+let args = m.text.split(' ').slice(1)
+if (args.length < 1) return m.reply('Ketik on untuk mengaktifkan\nKetik off untuk menonaktifkan')
+await updateWelcomeStatus(m, args[0])
+}
+break
+
+case 'left': {
+if (!isAdmins) return
+let args = m.text.split(' ').slice(1)
+if (args.length < 1) return m.reply('Ketik on untuk mengaktifkan\nKetik off untuk menonaktifkan')
+await updateLeftStatus(m, args[0])
+}
+break
+
+case 'setwelcome': {
+if (!isAdmins) return
+let teksnye = text ? text : ""
+await updateTextWelcome(m, teksnye)
+m.reply(mess.success)
+}
+break
+
+case 'setleft': {
+if (!isAdmins) return
+let teksnye = text ? text : ""
+await updateTextLeft(m, teksnye)
+m.reply(mess.success)
+}
+break
+
+case 'restart': {
+if (!isCreator) return m.reply(mess.owner)
+if (text) return
+m.reply(`restarting ${botname}`)
+await sleep(1500)
+process.exit()
+}
+break
+
+case 'tagsubject':
+case 'faketag': {
+if (!m.isGroup) return m.reply(mess.group)
+if (!isAdmins) return
+if (!q) return m.reply(`Teks Nya Mana Kak?`)
+lenwy.sendMessage(m.chat, {
+    text: "@"+m.chat,
+    contextInfo: {
+        mentionedJid: participants.map(a => a.id),
+        groupMentions: [{
+            groupJid: m.chat,
+            groupSubject: q
+        }]
+    }
+})
+}
+break
+
+case 'delsession': 
+case 'delsesi': {
+ if (!isCreator) return
+ fs.readdir(`./${sessionName}`, async function(err, files) {
+ if (err) {
+ console.log('Unable to scan directory: ' + err)
+ return m.reply('Unable to scan directory: ' + err)
+ }
+ let filteredArray = files.filter(item => 
+ item.startsWith("pre-key") || 
+ item.startsWith("sender-key") || 
+ item.startsWith("session-") || 
+ item.startsWith("app-state")
+ )
+ console.log(filteredArray.length)
+ let teks = `Detected ${filteredArray.length} junk files\n\n`
+ if (filteredArray.length === 0) return m.reply('Sedang menghapus sampah...')
+ filteredArray.forEach((item, i) => {
+ teks += (i + 1) + `. ${item}\n`
+ })
+ console.log(teks)
+ await sleep(200)
+ m.reply("Menghapus session...")
+ for (const file of filteredArray) {
+ fs.unlinkSync(`./${sessionName}/${file}`)
+ }
+ await sleep(200)
+ m.reply('Sukses menghapus session!')
+ })
+}
+break
+
+case 'delsampah': {
+if (!isCreator) return
+let directoryPath = path.join("./")
+fs.readdir(directoryPath, async function (err, files) {
+if (err) {
+  return m.reply("Tidak dapat memindai direktori: " + err)
+}
+let filteredArray = await files.filter(
+  (item) =>
+item.endsWith("gif") ||
+item.endsWith("png") ||
+item.endsWith("mp3") ||
+item.endsWith("mp4") ||
+item.endsWith("jpg") ||
+item.endsWith("jpeg") ||
+item.endsWith("webp") ||
+item.endsWith("webm"),
+)
+var teks = `Terdeteksi ${filteredArray.length} file sampah\n\n`
+if (filteredArray.length == 0) return m.reply(teks)
+filteredArray.map(function (e, i) {
+  teks += i + 1 + `. ${e}\n`
+})
+m.reply(teks)
+await sleep(200)
+m.reply("Menghapus file sampah...")
+await filteredArray.forEach(function (file) {
+  fs.unlinkSync(`./${file}`)
+})
+await sleep(200)
+m.reply("Berhasil menghapus semua sampah")
+  })
+}
+break
+
+case 'catatan': {
+if (text) return
+let catat =`Fitur untuk Setopen dan Setclose
+1. @groupname = menampilkan nama group
+2. @tagdiri = mentag pengirim/sender
+3. @tagreply = tag orang yang pesannya di reply
+4. @jam = menampilkan jam saat ini
+5. @menit = menampilkan menit saat ini
+6. @detik = menampilkan detik saat ini
+7. @hari = menampilkan hari saat ini
+8. @tanggal = menampilkan tanggal saat ini
+9. @bulan = menampilkan bulan saat ini
+10. @tahun = menampilkan tahun saat ini
+11. @namabulan = menampilkan nama bulan saat ini
+
+
+Fitur untuk setdone dan setproses
+1. @groupname = menampilkan nama group
+2. @tagdiri = mentag pengirim/sender
+3. @tagreply = tag orang yang pesannya di reply
+4. @jam = menampilkan jam saat ini
+5. @menit = menampilkan menit saat ini
+6. @detik = menampilkan detik saat ini
+7. @hari = menampilkan hari saat ini
+8. @tanggal = menampilkan tanggal saat ini
+9. @bulan = menampilkan bulan saat ini
+10. @tahun = menampilkan tahun saat ini
+11. @namabulan = menampilkan nama bulan saat ini
+12. @pesanan = isi text untuk menjadikan nya bahan yang di pesan
+
+
+Fitur untuk setwelcome dan setleft
+1. @groupname = menampilkan nama group
+2. @usertag = mentag user saat join atau left
+3. @jam = menampilkan jam saat ini
+4. @menit = menampilkan menit saat ini
+5. @detik = menampilkan detik saat ini
+6. @hari = menampilkan hari saat ini
+7. @tanggal = menampilkan tanggal saat ini
+8. @bulan = menampilkan bulan saat ini
+9. @tahun = menampilkan tahun saat ini
+10. @namabulan = menampilkan nama bulan saat ini
+
+
+Fitur untuk setlist
+1. {GROUPNAME} = menampilkan nama group
+2. {TAG} = mentag pengirim/sender
+3. {JAM} = menampilkan jam saat ini
+4. {MENIT} = menampilkan menit saat ini
+5. {DETIK} = menampilkan detik saat ini
+6. {HARI} = menampilkan hari saat ini
+7. {TANGGAL} = menampilkan tanggal saat ini
+8. {BULAN} = menampilkan bulan saat ini
+9. {TAHUN} = menampilkan tahun saat ini
+10. {NAMABULAN} = menampilkan nama bulan saat ini
+11. {SIMBOL} = menampilkan list-list yang ada`
+
+m.reply(catat)
+}
+break
+
+case 'statusgc': {
+  try {
+      const databasegc = JSON.parse(fs.readFileSync('./storage/databaseGroup.json', 'utf8'))
+      // Cek apakah ID grup ada di dalam objek chats
+      if (global.db.data.chats[from]) {
+          const groupData = global.db.data.chats[from]
+          const datasetgc = databasegc[from]
+          let statusMessage = `*Status Grup*\n` +
+                              `ID Grup: ${from}\n\n` +
+                              `Wlcm: ${groupData.wlcm ? 'Aktif' : 'Tidak Aktif'}\n` +
+                              `left: ${groupData.left ? 'Aktif' : 'Tidak Aktif'}\n` +
+                              `Antitoxic1: ${groupData.antitoxic1 ? 'Aktif' : 'Tidak Aktif'}\n` +
+                              `Antitoxic2: ${groupData.antitoxic2 ? 'Aktif' : 'Tidak Aktif'}\n` +
+                              `Antilink: ${groupData.antilink ? 'Aktif' : 'Tidak Aktif'}\n` +
+                              `Antilinkyt: ${groupData.antilinkyt ? 'Aktif' : 'Tidak Aktif'}\n` +
+                              `Antilinktt: ${groupData.antilinktt ? 'Aktif' : 'Tidak Aktif'}\n` +
+                              `Antipanel: ${groupData.antipanel ? 'Aktif' : 'Tidak Aktif'}\n` +
+                              `Antiwame: ${groupData.antiwame ? 'Aktif' : 'Tidak Aktif'}\n` +
+                              `antilinkgc1: ${groupData.antilinkgc ? 'Aktif' : 'Tidak Aktif'}\n` +
+                              `antilinkgc2: ${groupData.antilinkgc2 ? 'Aktif' : 'Tidak Aktif'}\n` +
+                              `text_welcome: ${datasetgc.text_welcome}\n` +
+                              `text_left: ${datasetgc.text_left}\n` +
+                              `text_open: ${datasetgc.text_open}\n` +
+                              `text_close: ${datasetgc.text_close}\n` +
+                              `text_proses: ${datasetgc.text_proses}\n` +
+                              `text_done: ${datasetgc.text_done}\n` +
+                              `text_list: ${datasetgc.text_list}\n`
+          m.reply(statusMessage)
+      } else {
+          m.reply('ID grup tidak ditemukan dalam database.')
+      }
+  } catch (error) {
+      console.error('Terjadi kesalahan:', error)
+      m.reply('Terjadi kesalahan saat membaca database.')
+  }
+}
+break
+
+case 'cekstatusakun': {
+  if (!isCreator) return
+
+  let statusDataMedan = await cekStatusAkunMedan()
+  let statusDataDigi = await cekStatusAkunDigi()
+
+  let dataMedan = statusDataMedan?.data || {}
+  let dataDigi = statusDataDigi?.data || {}
+
+  let mesnya = ` [ Status Akun ]
+Nama Lengkap Kebsos: ${dataMedan.full_name || '-'}
+Username Kebsos: ${dataMedan.username || '-'}
+Saldo Kebsos: ${formatSaldo(dataMedan.balance) || '-'}
+
+Saldo Topup: ${formatSaldo(dataDigi.deposit) || '-'}
+`
+  m.reply(mesnya)
+}
+break
+
+case 'addgctopup': {
+  if (!isCreator) return
+  const gcnya = m.chat; // Mendapatkan ID grup
+
+  // Membaca file JSON yang ada
+  let gcList;
+  try {
+    const data = fs.readFileSync('./project/database/gcTopup.json', 'utf-8');
+    gcList = JSON.parse(data);
+  } catch (error) {
+    console.error('Error membaca file gcTopup.json:', error);
+    gcList = []; // Inisialisasi dengan array kosong jika terjadi kesalahan
+  }
+
+  // Memeriksa apakah ID grup sudah ada
+  if (gcList.includes(gcnya)) {
+    return m.reply(`Grup dengan ID "${gcnya}" sudah ada dalam daftar.`);
+  }
+
+  // Menambahkan ID grup ke daftar
+  gcList.push(gcnya);
+
+  // Menyimpan kembali ke file JSON
+  fs.writeFileSync('./project/database/gcTopup.json', JSON.stringify(gcList, null, 2));
+  console.log(`ID grup "${gcnya}" berhasil ditambahkan ke gcTopup.json`);
+  m.reply(`ID grup "${gcnya}" berhasil ditambahkan ke daftar gcTopup.`);
+}
+break
+
+case 'delgctopup': {
+  if (!isCreator) return
+  const gcnya = m.chat; // Mendapatkan ID grup
+
+  // Membaca file JSON yang ada
+  let gcList;
+  try {
+    const data = fs.readFileSync('./project/database/gcTopup.json', 'utf-8');
+    gcList = JSON.parse(data);
+  } catch (error) {
+    console.error('Error membaca file gcTopup.json:', error);
+    gcList = []; // Inisialisasi dengan array kosong jika terjadi kesalahan
+  }
+
+  // Memeriksa apakah ID grup ada dalam daftar
+  const index = gcList.indexOf(gcnya);
+  if (index === -1) {
+    return m.reply(`Grup dengan ID "${gcnya}" tidak ditemukan dalam daftar.`);
+  }
+
+  // Menghapus ID grup dari daftar
+  gcList.splice(index, 1);
+
+  // Menyimpan kembali ke file JSON
+  fs.writeFileSync('./project/database/gcTopup.json', JSON.stringify(gcList, null, 2));
+  console.log(`ID grup "${gcnya}" berhasil dihapus dari gcTopup.json`);
+  m.reply(`ID grup "${gcnya}" berhasil dihapus dari daftar gcTopup.`);
+}
+break
+
+case 'listlayanankebsos': {
+  if (!isCreator) return
+  if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`)
+
+  const layananData = await cekLayanan()
+  if (layananData.data) {
+    let categories = []
+    
+    // Mengambil kategori dari layanan
+    layananData.data.forEach(service => {
+      if (!categories.includes(service.category)) {
+        categories.push(service.category)
+      }
+    })
+
+    // Mengurutkan kategori secara alfabetik
+    categories.sort()
+
+    // Membuat tampilan dekorasi
+    let replyMessage = `╭─ ─ ─ LIST KEBSOS OTOMATIS\n`
+
+    // Menambahkan kategori dengan dekorasi .✦
+    categories.forEach((category) => {
+      replyMessage += `│ ── .✦ ${category}\n`
+    })
+
+    replyMessage += `╰╌╌╌╌╌╌╌╌╌╌╌╌`
+
+    m.reply(replyMessage)
+  } else {
+    m.reply('Gagal mendapatkan daftar layanan.')
+  }
+}
+break
+
+case 'addkebsos': {
+  if (!isCreator) return;
+
+  // Membaca file JSON yang ada
+  let daftarProduk;
+  try {
+    const data = fs.readFileSync('./project/database/daftarCategoryLitensi.json');
+    daftarProduk = JSON.parse(data);
+  } catch (error) {
+    console.error('Error membaca file JSON:', error);
+    return m.reply('Gagal membaca daftar produk.');
+  }
+
+  // Mengambil data layanan
+  const layananData = await cekLayanan();
+
+  // Pastikan layananData ada dan sukses
+  if (!layananData || layananData.length === 0) {
+    return m.reply('Gagal mendapatkan data layanan.');
+  }
+
+  let dataProdukLitensi = layananData.data; // Ambil data produk dari layanan
+
+  // Pastikan dataProdukLitensi terdefinisi dan valid
+  if (!Array.isArray(dataProdukLitensi) || dataProdukLitensi.length === 0) {
+    return m.reply('Data produk tidak ditemukan.');
+  }
+
+  // Mendapatkan input kategori dari pengguna
+  const inputKategori = text.trim().toLowerCase(); // Misalnya "Instagram Followers"
+  console.log(`Input kategori: ${inputKategori}`); // Debug log
+
+  // Mencari semua produk berdasarkan kategori
+  const produkDitemukan = dataProdukLitensi.filter(product => 
+    product.category && product.category.toLowerCase() === inputKategori
+  );
+
+  if (produkDitemukan.length === 0) {
+    return m.reply(`Kategori "${inputKategori}" tidak ditemukan.`);
+  }
+
+  let produkBaruDitambahkan = [];
+  let produkGagalDitambahkan = [];
+
+  // Memeriksa setiap produk dan menambahkannya ke daftar
+  for (const produk of produkDitemukan) {
+    if (!produk.name) {
+      console.warn(`Produk tanpa nama ditemukan: ${JSON.stringify(produk)}`);
+      continue; // Lewatkan produk yang tidak memiliki nama
+    }
+
+    // Mengecek apakah kategori sudah ada dalam daftar
+    const kategoriAda = daftarProduk.some(item => 
+      item.category && item.category.toLowerCase() === produk.category.toLowerCase()
+    );
+
+    if (kategoriAda) {
+      // Jika kategori sudah ada, masukkan ke list gagal
+      produkGagalDitambahkan.push(produk.category);
+    } else {
+      // Menambahkan kategori baru ke daftarProduk
+      const produkBaru = {
+        category: produk.category
+      };
+
+      daftarProduk.push(produkBaru);
+      produkBaruDitambahkan.push(produkBaru.category); // Menyimpan kategori yang ditambahkan
+    }
+  }
+
+  // Menyimpan kembali ke file JSON
+  fs.writeFileSync('./project/database/daftarCategoryLitensi.json', JSON.stringify(daftarProduk, null, 2));
+
+  // Mengirimkan pesan hasil
+  if (produkBaruDitambahkan.length > 0) {
+    m.reply(`Kategori baru berhasil ditambahkan: ${text}.`);
+  } else if (produkGagalDitambahkan.length > 0) {
+    m.reply(`Gagal menambahkan kategori: ${text} sudah ada di file JSON.`);
+  }
+}
+break
+
+case 'delkebsos': {
+  if (!isCreator) return;
+
+  // Membaca file JSON yang ada
+  let daftarProduk;
+  try {
+    const data = fs.readFileSync('./project/database/daftarCategoryLitensi.json', 'utf-8');
+    daftarProduk = JSON.parse(data);
+  } catch (error) {
+    console.error('Error membaca file JSON:', error);
+    return m.reply('Gagal membaca daftar produk.');
+  }
+
+  // Mendapatkan input kategori dari pengguna
+  const inputKategori = text.trim().toLowerCase(); // Misalnya "Instagram Followers"
+
+  // Mencari produk berdasarkan kategori
+  const produkSebelum = daftarProduk.length; // Menghitung jumlah produk sebelum penghapusan
+  daftarProduk = daftarProduk.filter(product => product.category.toLowerCase() !== inputKategori);
+
+  // Mengecek jika ada produk yang dihapus
+  const produkSetelah = daftarProduk.length; // Menghitung jumlah produk setelah penghapusan
+  const jumlahDihapus = produkSebelum - produkSetelah;
+
+  // Menyimpan kembali ke file JSON
+  fs.writeFileSync('./project/database/daftarCategoryLitensi.json', JSON.stringify(daftarProduk, null, 2))
+
+  // Mengirimkan pesan hasil
+  if (jumlahDihapus > 0) {
+    m.reply(`Berhasil menghapus ${jumlahDihapus} produk dengan kategori "${inputKategori}".`);
+  } else {
+    m.reply(`Tidak ada produk dengan kategori "${inputKategori}" yang ditemukan.`);
+  }
+}
+break
+
+case 'cekorderankebsos': {
+  if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`)
+  let idorderan = text;
+  if (!idorderan) {
+      return m.reply(`Contoh: ${prefix + command} idorderan`)
+  }
+
+let layananData = await cekStatusOrderanKebsos(idorderan)
+console.log(layananData)
+let teksnyee = `┌─ ❀*̥ 
+┆ Status: ${layananData.data.status}
+┆ Dimulai: ${layananData.data.start_count}
+┆ Sisa: ${layananData.data.remains}
+└───❀*̥˚──────────❀*̥˚┘`
+lenwy.sendMessage(m.chat, { text: teksnyee }, { quoted: m })
+}
+break
+
+case 'daftarharga': {
+  if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`);
+
+  let responseDigi = await cekLayananDigiPrabayar();
+  let responseLitensi = await cekLayanan();
+
+  let dataProdukDigi = Array.isArray(responseDigi?.data) ? responseDigi.data : [];
+  let dataLitensi = Array.isArray(responseLitensi?.data) ? responseLitensi.data : [];
+
+  let dataProdukLitensi = JSON.parse(fs.readFileSync('./project/database/daftarCategoryLitensi.json', 'utf8'));
+  if (!getUserTopup(m.sender)) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`)
+  let userRole = await getUserRole(m.sender)
+  const aliasMap = {
+    ml: 'mobile legends',
+    ff: 'free fire',
+    pubg: 'pubg mobile',
+    mlf: 'mobile legends filipina',
+    mlb: 'mobile legends brazil',
+    mlm: 'mobile legends malaysia',
+    mlg: 'mobile legends global',
+    mlw: 'mobile legends membership',
+    tseldata: 'telkomsel data',
+    ttview: 'tiktok view'
+  };
+
+  const categoryGroup = ['Pulsa', 'Data'];
+  let profitData = JSON.parse(fs.readFileSync('./project/database/config.json', 'utf8'));
+
+  let input = text.toLowerCase().trim();
+  input = aliasMap[input] || input || '-';
+
+  // --- Digi Produk Handler ---
+  let uniqueBrands = [];
+  if (dataProdukDigi.length > 0) {
+    uniqueBrands = [...new Set(dataProdukDigi.map(product => {
+      let brand = product.brand.toLowerCase();
+      let type = product.type?.toLowerCase() || 'umum';
+      return type !== 'umum' ? `${brand} ${type}` : brand;
+    }))];
+  }
+
+  // --- Litensi Produk Handler ---
+  let uniqueCategories = [];
+  if (dataProdukLitensi.length > 0) {
+    uniqueCategories = [...new Set(dataProdukLitensi.map(product => product.category.toLowerCase()))];
+  }
+
+  // --- Handle pencarian berdasarkan brand Digi ---
+if (uniqueBrands.some(brand => input.includes(brand))) {
+  let filteredProducts = dataProdukDigi.filter(product => {
+    let brand = product.brand.toLowerCase();
+    let type = product.type?.toLowerCase() || 'umum';
+    let fullTypeMatch = type !== 'umum' ? `${brand} ${type}` : brand;
+    return input.includes(fullTypeMatch);
+  });
+
+    if (filteredProducts.length > 0) {
+      filteredProducts.sort((a, b) => a.price - b.price);
+      let header = `  *List ${filteredProducts[0].brand}${(filteredProducts[0].type && filteredProducts[0].type.toUpperCase() !== 'UMUM') ? ' ' + filteredProducts[0].type : ''}*\n\n`;
+
+      let messages = filteredProducts.map(product => {
+        let basePrice = product.price;
+        let harga1 = Math.round(basePrice * (1 + profitData.profit1Topup / 100));
+        let harga2 = Math.round(basePrice * (1 + profitData.profit2Topup / 100));
+        let harga3 = Math.round(basePrice * (1 + profitData.profit3Topup / 100));
+        let adjustedPrice =
+          userRole === global.settings.roles.role1 ? Math.round(basePrice * (1 + profitData.profit1Topup / 100)) :
+          userRole === global.settings.roles.role2 ? Math.round(basePrice * (1 + profitData.profit2Topup / 100)) :
+          userRole === global.settings.roles.role3 ? Math.round(basePrice * (1 + profitData.profit3Topup / 100)) :
+          basePrice;
+        let statusIcon = product.seller_product_status && product.buyer_product_status ? "✅" : "⛔";
+        return `${statusIcon} *${product.product_name}*
+> *Kode Produk :* ${product.buyer_sku_code}
+> *Harga ${global.settings.roles.role1} :* ${formatSaldo(harga1)}
+> *Harga ${global.settings.roles.role2} :* ${formatSaldo(harga2)}
+> *Harga ${global.settings.roles.role3} :* ${formatSaldo(harga3)}`;
+      }).join('\n\n');
+
+      return lenwy.sendMessage(m.chat, { text: header + messages, mentions: [m.sender] }, { quoted: m });
+    }
+  }
+
+  // --- Handle pencarian berdasarkan kategori Kebsos ---
+  if (uniqueCategories.includes(input)) {
+    let filteredLitensi = dataLitensi.filter(product => product.category.toLowerCase() === input);
+    if (filteredLitensi.length > 0) {
+      filteredLitensi.sort((a, b) => a.price - b.price);
+      let litensiMessages = filteredLitensi.map(product => {
+        let basePrice = product.price;
+        let harga1 = Math.round(basePrice * (1 + profitData.profit1Kebsos / 100));
+        let harga2 = Math.round(basePrice * (1 + profitData.profit2Kebsos / 100));
+        let harga3 = Math.round(basePrice * (1 + profitData.profit3Kebsos / 100));
+        let adjustedPrice =
+          userRole === global.settings.roles.role1 ? Math.round(basePrice * (1 + profitData.profit1Kebsos / 100)) :
+          userRole === global.settings.roles.role2 ? Math.round(basePrice * (1 + profitData.profit2Kebsos / 100)) :
+          userRole === global.settings.roles.role3 ? Math.round(basePrice * (1 + profitData.profit3Kebsos / 100)) :
+          basePrice;
+        return `${product.name}
+> *Kode Produk :* ${product.id}
+> *Harga ${global.settings.roles.role1}/K :* ${formatSaldo(harga1)}
+> *Harga ${global.settings.roles.role2}/K :* ${formatSaldo(harga2)}
+> *Harga ${global.settings.roles.role3}/K :* ${formatSaldo(harga3)}
+> *Min Pemesanan :* ${product.min}
+> *Max Pemesanan :* ${product.max}`;
+      }).join('\n\n');
+
+      let header = `     *LIST ${input.toUpperCase()}*\n\n`;
+      return lenwy.sendMessage(m.chat, { text: header + litensiMessages, mentions: [m.sender] }, { quoted: m });
+    } else {
+      return m.reply(`Tidak ada produk untuk kategori: ${input}`);
+    }
+  }
+
+  // --- Jika tidak ditemukan, tampilkan list kategori/brand ---
+  let teksnyee = '';
+
+  if (dataProdukDigi.length > 0 && uniqueBrands.length > 0) {
+    let categories = {};
+    dataProdukDigi.forEach(product => {
+      let brand = product.brand.toUpperCase();
+      let type = (product.type || 'UMUM').toUpperCase();
+      let category = product.category;
+      let displayName;
+
+      if (type === 'UMUM' && categoryGroup.includes(category)) {
+        displayName = `${brand} ${category}`;
+      } else if (type !== 'UMUM' && categoryGroup.includes(category)) {
+        displayName = `${brand} ${type}`;
+      } else if (type === 'UMUM') {
+        displayName = brand;
+      } else {
+        displayName = `${brand} ${type}`;
+      }
+
+      if (!categories[category]) categories[category] = new Set();
+      categories[category].add(displayName);
+    });
+
+    teksnyee += `╭─╸ *all produk topup* ⤸`;
+    Object.keys(categories).sort().forEach(category => {
+      teksnyee += `\n┃\n┃ ❏ *\`${category}\`*`;
+      Array.from(categories[category]).sort().forEach(displayName => {
+        let alias = Object.keys(aliasMap).find(key => aliasMap[key] === displayName.toLowerCase());
+        teksnyee += `\n┃  ֢ ꤠ ${displayName.toUpperCase()} ${alias ? `(${alias.toUpperCase()})` : ''}`;
+      });
+    });
+  }
+
+  if (uniqueCategories.length > 0) {
+    teksnyee += `\n╭─╸ *all produk kebsos* ⤸`;
+    uniqueCategories.forEach(kategori => {
+      let alias = Object.keys(aliasMap).find(key => aliasMap[key] === kategori);
+      teksnyee += `\n┃  ֢ ꤠ ${kategori} ${alias ? `(${alias})` : ''}`;
+    });
+  }
+
+  teksnyee += '\n╰╸\n\n> Contoh: `get ml`';
+  return m.reply(teksnyee);
+}
+break
+
+case 'get': {
+  if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`);
+
+  let responseDigi = await cekLayananDigiPrabayar();
+  let responseLitensi = await cekLayanan();
+
+  let dataProdukDigi = Array.isArray(responseDigi?.data) ? responseDigi.data : [];
+  let dataLitensi = Array.isArray(responseLitensi?.data) ? responseLitensi.data : [];
+
+  let dataProdukLitensi = JSON.parse(fs.readFileSync('./project/database/daftarCategoryLitensi.json', 'utf8'));
+  if (!getUserTopup(m.sender)) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`)
+  let userRole = await getUserRole(m.sender)
+  const aliasMap = {
+    ml: 'mobile legends',
+    ff: 'free fire',
+    pubg: 'pubg mobile',
+    mlf: 'mobile legends filipina',
+    mlb: 'mobile legends brazil',
+    mlm: 'mobile legends malaysia',
+    mlg: 'mobile legends global',
+    mlw: 'mobile legends membership',
+    tselpulsa: 'telkomsel pulsa',
+    ttview: 'tiktok view'
+  };
+
+  const categoryGroup = ['Pulsa', 'Data'];
+  let profitData = JSON.parse(fs.readFileSync('./project/database/config.json', 'utf8'));
+
+  let input = text.toLowerCase().trim();
+  input = aliasMap[input] || input || '-';
+
+  // --- Digi Produk Handler ---
+  let uniqueBrands = [];
+  if (dataProdukDigi.length > 0) {
+    uniqueBrands = [...new Set(dataProdukDigi.map(product => {
+      let brand = product.brand.toLowerCase();
+      let type = product.type?.toLowerCase() || 'umum';
+      return type !== 'umum' ? `${brand} ${type}` : brand;
+    }))];
+  }
+
+  // --- Litensi Produk Handler ---
+  let uniqueCategories = [];
+  if (dataProdukLitensi.length > 0) {
+    uniqueCategories = [...new Set(dataProdukLitensi.map(product => product.category.toLowerCase()))];
+  }
+
+  // --- Handle pencarian berdasarkan brand Digi ---
+if (uniqueBrands.some(brand => input.includes(brand))) {
+  let filteredProducts = dataProdukDigi.filter(product => {
+    let brand = product.brand.toLowerCase();
+    let type = product.type?.toLowerCase() || 'umum';
+    let fullTypeMatch = type !== 'umum' ? `${brand} ${type}` : brand;
+    return input.includes(fullTypeMatch);
+  });
+
+    if (filteredProducts.length > 0) {
+      filteredProducts.sort((a, b) => a.price - b.price);
+      let header = `  *List ${filteredProducts[0].brand}${(filteredProducts[0].type && filteredProducts[0].type.toUpperCase() !== 'UMUM') ? ' ' + filteredProducts[0].type : ''}*\n\n`;
+
+      let messages = filteredProducts.map(product => {
+        let basePrice = product.price;
+        let adjustedPrice =
+          userRole === global.settings.roles.role1 ? Math.round(basePrice * (1 + profitData.profit1Topup / 100)) :
+          userRole === global.settings.roles.role2 ? Math.round(basePrice * (1 + profitData.profit2Topup / 100)) :
+          userRole === global.settings.roles.role3 ? Math.round(basePrice * (1 + profitData.profit3Topup / 100)) :
+          basePrice;
+        let statusIcon = product.seller_product_status && product.buyer_product_status ? "✅" : "⛔";
+        return `${statusIcon} *${product.product_name}*
+> *Kode Produk :* ${product.buyer_sku_code}
+> *Harga :* ${formatSaldo(adjustedPrice)}`;
+      }).join('\n\n');
+
+      return lenwy.sendMessage(m.chat, { text: header + messages, mentions: [m.sender] }, { quoted: m });
+    }
+  }
+
+  // --- Handle pencarian berdasarkan kategori Kebsos ---
+  if (uniqueCategories.includes(input)) {
+    let filteredLitensi = dataLitensi.filter(product => product.category.toLowerCase() === input);
+    if (filteredLitensi.length > 0) {
+      filteredLitensi.sort((a, b) => a.price - b.price);
+      let litensiMessages = filteredLitensi.map(product => {
+        let basePrice = product.price;
+        let adjustedPrice =
+          userRole === global.settings.roles.role1 ? Math.round(basePrice * (1 + profitData.profit1Kebsos / 100)) :
+          userRole === global.settings.roles.role2 ? Math.round(basePrice * (1 + profitData.profit2Kebsos / 100)) :
+          userRole === global.settings.roles.role3 ? Math.round(basePrice * (1 + profitData.profit3Kebsos / 100)) :
+          basePrice;
+        return `${product.name}
+> *Kode Produk :* ${product.id}
+> *Harga/K :*${formatSaldo(adjustedPrice)}
+> *Min Pemesanan :* ${product.min}
+> *Max Pemesanan :* ${product.max}`;
+
+      }).join('\n\n');
+
+      let header = `     *LIST ${input.toUpperCase()}*\n\n`;
+      return lenwy.sendMessage(m.chat, { text: header + litensiMessages, mentions: [m.sender] }, { quoted: m });
+    } else {
+      return m.reply(`Tidak ada produk untuk kategori: ${input}`);
+    }
+  }
+
+  // --- Jika tidak ditemukan, tampilkan list kategori/brand ---
+  let teksnyee = '';
+
+  if (dataProdukDigi.length > 0 && uniqueBrands.length > 0) {
+    let categories = {};
+    dataProdukDigi.forEach(product => {
+      let brand = product.brand.toUpperCase();
+      let type = (product.type || 'UMUM').toUpperCase();
+      let category = product.category;
+      let displayName;
+
+      if (type === 'UMUM' && categoryGroup.includes(category)) {
+        displayName = `${brand} ${category}`;
+      } else if (type !== 'UMUM' && categoryGroup.includes(category)) {
+        displayName = `${brand} ${type}`;
+      } else if (type === 'UMUM') {
+        displayName = brand;
+      } else {
+        displayName = `${brand} ${type}`;
+      }
+
+      if (!categories[category]) categories[category] = new Set();
+      categories[category].add(displayName);
+    });
+
+    teksnyee += `╭─╸ *all produk topup* ⤸`;
+    Object.keys(categories).sort().forEach(category => {
+      teksnyee += `\n┃\n┃ ❏ *\`${category}\`*`;
+      Array.from(categories[category]).sort().forEach(displayName => {
+        let alias = Object.keys(aliasMap).find(key => aliasMap[key] === displayName.toLowerCase());
+        teksnyee += `\n┃  ֢ ꤠ ${displayName.toUpperCase()} ${alias ? `(${alias.toUpperCase()})` : ''}`;
+      });
+    });
+  }
+
+  if (uniqueCategories.length > 0) {
+    teksnyee += `\n╭─╸ *all produk kebsos* ⤸`;
+    uniqueCategories.forEach(kategori => {
+      let alias = Object.keys(aliasMap).find(key => aliasMap[key] === kategori);
+      teksnyee += `\n┃  ֢ ꤠ ${kategori} ${alias ? `(${alias})` : ''}`;
+    });
+  }
+
+  teksnyee += '\n╰╸\n\n> Contoh: `get ml`';
+  return m.reply(teksnyee);
+}
+break
+
+case 'upgrade': {
+  if (!isCreator) return;
+  if (!text) return m.reply(`Ada 2 cara upgrade user:
+1. ${prefix + command} (Role) lalu reply ke chat target
+2. ${prefix + command} (Role) (628***)`)
+  let teks;
+  if (!m.quoted) {
+    teks = text.replace(/[^0-9]/g, '') + '@s.whatsapp.net';
+    var cek = await lenwy.onWhatsApp(teks.split("@")[0])
+    if (cek.length < 1) return m.reply("Nomor Tersebut Tidak Terdaftar Di WhatsApp")
+  } else {
+    teks = m.quoted.sender;
+  }
+
+  let role = args[0]
+  let user = teks;
+  if (!getUserTopup(user)) return m.reply(`User tersebut belum terdaftar, silahkan ketik ${prefix}daftar terlebih dahulu`)
+
+  if (role !== global.settings.roles.role1 && role !== global.settings.roles.role2 && role !== global.settings.roles.role3 && role !== global.settings.roles.role4) {
+    return m.reply(`Role Hanya "${global.settings.roles.role1}", "${global.settings.roles.role2}", "${global.settings.roles.role3}", "${global.settings.roles.role4}"`)
+  }
+
+  if (user.startsWith("0")) {
+    return m.reply(`Nomor Harus Diawali Dengan Kode Nomor Negara (62)`)
+  }
+
+  if (role === global.settings.roles.role1) {
+    role = "1"
+  } else if (role === global.settings.roles.role2) {
+    role = "2"
+  } else if (role === global.settings.roles.role3) {
+    role = "3"
+  } else if (role === global.settings.roles.role4) {
+    role = "4"
+  }
+
+  await upgradeRole(role, user)
+  let teksnyee = `Pengguna @${user.split("@")[0]} berhasil diupgrade ke ${text}`
+  lenwy.sendMessage(m.chat, { text: teksnyee, mentions: [user] }, { quoted: m })
+}
+break
+
+case 'deposit': {
+  if (!isCreator) return
+  if (!text) return m.reply(`Ada Dua Cara Deposit\n> 1. Menggunakan Nomor\nContoh: ${prefix + command} +10000 6285261255548\n\n> 2. Menggunakan Reply\nContoh: Reply Pesan Orang Yang Akan Di Deposit Lalu Ketik ${prefix + command} +10000`)
+
+  let user;
+  let penambahansaldo;
+
+  // Memproses pengguna berdasarkan argumen atau pesan yang diterima
+  if (!m.quoted) {
+    user = args[1].replace(/[^0-9]/g, '') + '@s.whatsapp.net';
+
+    const cek = await lenwy.onWhatsApp(user.split("@")[0])
+    if (cek.length < 1) return m.reply(`Nomor Tersebut Tidak Terdaftar Di WhatsApp\n\n> Contoh: ${prefix + command} +10000 6285261255548`)
+    if (user.startsWith("0")) {
+      return m.reply(`Nomor Harus Diawali Dengan Kode Nomor Negara (62)\n\n> Contoh: ${prefix + command} +10000 6285261255548`)
+    }
+  } else {
+    user = m.quoted.sender;
+  }
+
+  if (!getUserTopup(user)) return m.reply(`User tersebut belum terdaftar, silahkan ketik ${prefix}daftar terlebih dahulu`)
+  // Mengambil dan memvalidasi jumlah saldo
+  penambahansaldo = parseFloat(args[0])
+  if (isNaN(penambahansaldo)) {
+    return m.reply(`Jumlah harus berupa angka.`)
+  }
+
+  let isDeposit = args[0].startsWith('+')
+  if (!isDeposit && !args[0].startsWith('-')) {
+    return m.reply(`Jumlah harus diawali dengan + untuk menambah atau - untuk mengurangi.`)
+  }
+
+  if (!isDeposit) {
+    penambahansaldo = -Math.abs(penambahansaldo)
+  }
+  await updateSaldo(user, penambahansaldo)
+  let sukses = `Saldo Anda @${user.split("@")[0]} Berhasil ${isDeposit ? 'Ditambah' : 'Dikurangi'} ${formatSaldo(Math.abs(penambahansaldo))}.`;
+  lenwy.sendMessage(m.chat, { text: sukses, mentions: [user] }, { quoted: m })
+}
+break
+
+case 'orderkebsos': {
+  if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`)
+  if (!text) return m.reply(`Contoh: ${prefix + command} <code> <target> <quantity>\n\n> ${prefix + command} 9 merlinus 100`)
+  
+  let statusData = await cekStatusAkunMedan()
+  if (statusData.data.balance <= 0) {
+      return m.reply(`Transaksi Mu Dibatalkan. Tag Admin\n\n> Note: Saldo ${statusData.data.balance}`)
+  }
+
+  if (!getUserTopup(m.sender)) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`)
+  let userRole = await getUserRole(m.sender)
+  let code = args[0];
+  let target = args[1];
+  let quantity = parseInt(args[2]) // Konversi ke integer
+
+  if (!code || !target || isNaN(quantity) || quantity <= 0) {
+      return m.reply(`Contoh: ${prefix + command} <code> <target> <quantity>\n\n> ${prefix + command} 9 merlinus 100`)
+  }
+
+  let result = await cekLayanan()
+  if (!result) {
+    return m.reply(`❌ Terjadi kesalahan saat memproses pesanan.`)
+  }
+
+  let rawDataProfit = fs.readFileSync('./project/database/config.json')
+  let profitData = JSON.parse(rawDataProfit)
+
+  let selectedService = result.data.find(service => service.id.toString() === code)
+  
+  if (!selectedService) {
+    return m.reply(`❌ Layanan dengan code ${code} tidak ditemukan.`)
+  }
+
+  // Ambil rate dari layanan yang dipilih dan konversi menjadi harga per 1 unit
+  let hargaPerK = parseFloat(selectedService.price) / 1000;  // Membagi rate dengan 1000 untuk harga per unit
+  console.log(selectedService.price)
+  console.log(hargaPerK)
+  // Hitung total price berdasarkan quantity
+  let basePrice = Math.round(hargaPerK * quantity)  // Menghitung total harga
+  // Jika basePrice kurang dari 1, atur menjadi 1
+  if (basePrice < 1) {
+      basePrice = 1;
+  }
+
+  // Hitung harga berdasarkan role user
+  let adjustedPrice;
+  if (userRole === global.settings.roles.role1) {
+      adjustedPrice = Math.round(basePrice * (1 + profitData.profit1Kebsos / 100));
+  } else if (userRole === global.settings.roles.role2) {
+      adjustedPrice = Math.round(basePrice * (1 + profitData.profit2Kebsos / 100));
+  } else if (userRole === global.settings.roles.role3) {
+      adjustedPrice = Math.round(basePrice * (1 + profitData.profit3Kebsos / 100));
+  } else if (userRole === global.settings.roles.role4) {
+      adjustedPrice = basePrice;
+  }
+
+  let userSaldo = await getUserSaldo(m.sender)
+  if (userSaldo < adjustedPrice) {
+      return m.reply(`❌ Saldo tidak cukup.\n> Saldo Anda: ${formatSaldo(userSaldo)}\n> Harga Item: ${formatSaldo(adjustedPrice)}`)
+  }
+
+  // Cek apakah sudah ada pemesanan pending
+  let transactions = [];
+  if (fs.existsSync('./project/database/processTopup.json')) {
+      const data = fs.readFileSync('./project/database/processTopup.json')
+      transactions = JSON.parse(data)
+  }
+
+  // Cek untuk transaksi dengan status pending
+  let pendingTransaction = transactions.find(tx => tx.id === m.sender && tx.status === "pending" && tx.dari === "medanpedia")
+  if (pendingTransaction) {
+      return m.reply(`❌ Anda sudah memiliki pemesanan pending.
+> Item: ${pendingTransaction.item}
+> Tujuan: ${pendingTransaction.tujuan}
+> Harga: - ${formatSaldo(pendingtransaction.harga)}
+
+𝗬 Proses 𝗡 Batal`)
+  }
+
+  // Buat transaksi dan simpan ke file
+  let transaction = {
+      id: m.sender,
+      name: selectedService.name,
+      item: code,
+      tujuan: target,
+      quantity: quantity,
+      status: "pending",
+      dari: "medanpedia",
+      time: time2,
+      harga: adjustedPrice
+  };
+  
+  transactions.push(transaction)
+  fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+
+  let teksnya = `‼ KONFIRMASI @${m.sender.split("@")[0]}
+> Item: ${selectedService.name}
+> Kode: ${code}
+> Quantity: ${quantity}
+> Tujuan: ${target}
+> Harga/K: - ${formatSaldo(adjustedPrice)}
+» Saldo Awal: (${formatSaldo(userSaldo)})
+
+𝗬 Proses 𝗡 Batal`;
+
+let { key } = await lenwy.sendMessage(m.chat, { text: teksnya, mentions: [m.sender] }, { quoted: m })
+
+setTimeout(async () => {
+  let transactions = []
+  if (fs.existsSync('./project/database/processTopup.json')) {
+    transactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json'))
+  }
+
+  let index = transactions.findIndex(tx => tx.id === m.sender && tx.status === "pending" && tx.dari === "medanpedia")
+  if (index !== -1) {
+    transactions.splice(index, 1)
+    fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+
+    // Hapus pesan konfirmasi
+    try {
+      await lenwy.sendMessage(m.chat, { delete: key })
+    } catch (e) {
+      console.error('Gagal menghapus pesan:', e)
+    }
+
+    // Kirim notifikasi ke user
+    lenwy.sendMessage(m.chat, { text: `❌ Pemesanan dibatalkan otomatis karena tidak ada konfirmasi dalam 1 menit.` }, { quoted: m })
+  }
+}, 1 * 60 * 1000)
+}
+break
+
+case 'order': {
+  if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`)
+  if (!text) return m.reply(`Contoh: ${prefix + command} <kode_produk> <nomor_pelanggan>\n\n> Jika game yang memiliki 2 id maka dipisah\n> ${prefix + command} ml5 12345678 1234`)
+  let statusData = await cekStatusAkunDigi()
+  if (statusData.data.deposit = 0) {
+      return m.reply(`Transaksi Mu Dibatalkan. Tag Admin\n\n> Note: ${orderResult.data.saldo}`)
+  }
+  if (!getUserTopup(m.sender)) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`)
+  let userRole = await getUserRole(m.sender)
+  let buyerSkuCode = args[0]
+  let id = args[1]
+  let serverId = args[2]
+  let customerNo = id
+  if (serverId) customerNo = id + serverId
+
+  if (!buyerSkuCode || !customerNo) {
+      return m.reply(`Contoh: ${prefix + command} <kode_produk> <nomor_pelanggan>\n\n> Jika game yang memiliki 2 id maka dipisah\n> ${prefix + command} ml5 12345678 1234`)
+  }
+
+  let result = await cekItemDigi(buyerSkuCode)
+  if (!result || !result.data) {
+      return m.reply(`❌ Terjadi kesalahan saat memproses pesanan.`)
+  }
+
+  let rawDataProfit = fs.readFileSync('./project/database/config.json')
+  let profitData = JSON.parse(rawDataProfit)
+  let userName = '-'
+  if (serverId) {
+    let data = await cekMl(id, serverId);
+    let userData = data.message;
+    let nicknameMatch = userData.match(/In-Game Nickname:\s*(\S+)/);
+    let nicknameUser = nicknameMatch ? nicknameMatch[1] : 'Tidak ditemukan';
+    userName = nicknameUser || customerNo || '-'
+  }
+  let basePrice = result.data[0].price;
+
+
+  // Hitung harga berdasarkan role user
+  let adjustedPrice;
+  
+  if (userRole === global.settings.roles.role1) {
+      adjustedPrice = Math.round(basePrice * (1 + profitData.profit1Topup / 100));
+  } else if (userRole === global.settings.roles.role2) {
+      adjustedPrice = Math.round(basePrice * (1 + profitData.profit2Topup / 100));
+  } else if (userRole === global.settings.roles.role3) {
+      adjustedPrice = Math.round(basePrice * (1 + profitData.profit3Topup / 100));
+  } else if (userRole === global.settings.roles.role4) {
+      adjustedPrice = basePrice
+  }
+
+  let userSaldo = await getUserSaldo(m.sender)
+  if (userSaldo < adjustedPrice) {
+      return m.reply(`❌ Saldo tidak cukup.\n> Saldo Anda: ${formatSaldo(userSaldo)}\n> Harga Item: ${formatSaldo(adjustedPrice)}`)
+  }
+
+  // Cek apakah sudah ada pemesanan pending
+  let transactions = []
+  if (fs.existsSync('./project/database/processTopup.json')) {
+      const data = fs.readFileSync('./project/database/processTopup.json')
+      transactions = JSON.parse(data)
+  }
+
+  // Cek untuk transaksi dengan status pending
+  let pendingTransaction = transactions.find(tx => tx.id === m.sender && tx.status === "pending" && tx.dari === "digiflazz")
+  if (pendingTransaction) {
+      return m.reply(`❌ Anda sudah memiliki pemesanan pending.
+> Item: ${pendingTransaction.item}
+> Id: ${pendingTransaction.tujuan}
+> Harga: - Rp ${pendingTransaction.harga}
+        
+𝗬 Proses 𝗡 Batal`)
+  }
+
+  // Buat transaksi dan simpan ke file
+  let transaction = {
+      id: m.sender,
+      ref_id: result.data.ref_id,
+      item: buyerSkuCode,
+      tujuan: customerNo,
+      nama: result.data[0].product_name,
+      status: "pending",
+      dari: "digiflazz",
+      time: time2,
+      harga: adjustedPrice,
+      username: userName
+  };
+  
+  transactions.push(transaction)
+  fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+
+  let teksnya = `‼ KONFIRMASI @${m.sender.split("@")[0]}
+> Nama Produk: ${result.data[0].product_name}
+> Kode Produk: ${buyerSkuCode}
+> Id: ${customerNo}
+> Nickname: ${userName}
+> Harga: - ${formatSaldo(adjustedPrice)}
+
+𝗬 Proses 𝗡 Batal`
+
+let { key } = await lenwy.sendMessage(m.chat, { text: teksnya, mentions: [m.sender] }, { quoted: m })
+
+setTimeout(async () => {
+  let transactions = []
+  if (fs.existsSync('./project/database/processTopup.json')) {
+    transactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json'))
+  }
+
+  let index = transactions.findIndex(tx => tx.id === m.sender && tx.status === "pending" && tx.dari === "digiflazz")
+  if (index !== -1) {
+    transactions.splice(index, 1)
+    fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+
+    // Hapus pesan konfirmasi
+    try {
+      await lenwy.sendMessage(m.chat, { delete: key })
+    } catch (e) {
+      console.error('Gagal menghapus pesan:', e)
+    }
+
+    // Kirim notifikasi ke user
+    lenwy.sendMessage(m.chat, { text: `❌ Pemesanan dibatalkan otomatis karena tidak ada konfirmasi dalam 1 menit.` }, { quoted: m })
+  }
+}, 1 * 60 * 1000)
+}
+break
+
+case 'y': {
+  let transactions = [];
+  if (fs.existsSync('./project/database/processTopup.json')) {
+    const data = fs.readFileSync('./project/database/processTopup.json');
+    transactions = JSON.parse(data);
+  }
+
+  let transactionIndex = transactions.findIndex(t => t.id === m.sender && t.status === "pending");
+
+  if (transactionIndex !== -1) {
+    let transaction = transactions[transactionIndex];
+    if (transaction.isQris) return
+    // Cek dari mana transaksi berasal
+    if (transaction.dari === "digiflazz") {
+      let buyerSkuCode = transaction.item; // item sebagai buyerSkuCode
+      let customerNo = transaction.tujuan; // tujuan sebagai customerNo
+      let orderResult = await orderDigi(buyerSkuCode, customerNo);
+
+      transactions[transactionIndex].status = "Processing";
+      fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2));
+      console.log(orderResult);
+
+      let refId = orderResult.data.ref_id; // ref_id yang diterima dari hasil order
+      // Fungsi untuk cek status transaksi Digiflazz
+      m.reply(`Heyy, Wait. . .`)
+
+      // Update saldo pengguna terlebih dahulu, sebelum pengecekan status
+      let updated = await updateSaldo(m.sender, -transaction.harga);
+      if (!updated) {
+        m.reply(`❌ Gagal memperbarui saldo.`);
+        return;
+      }
+      let newSaldo = await getUserSaldo(m.sender);
+
+      const checkDigiOrderStatus = async () => {
+        const orderStatus = await cekOrderanDigi(refId, buyerSkuCode, customerNo);
+        let SN = orderStatus.data.sn // SN yang diterima dari hasil order
+        console.log(orderStatus);
+
+        if (orderStatus && orderStatus.data.status === "Sukses") {
+          // Transaksi berhasil
+          clearInterval(intervalId); // Hentikan pengecekan
+
+          let teksnya = `✅ Transaksi Sukses @${m.sender.split("@")[0]}
+> Invoice: ${refId}
+> Item: ${transaction.nama}
+> Kode: ${buyerSkuCode}
+> Tujuan: ${customerNo}
+> Harga: ${formatSaldo(transaction.harga)}
+> SN: ${SN}`;
+          lenwy.sendMessage(m.chat, { text: teksnya, mentions: [m.sender] }, { quoted: m });
+
+          transactions[transactionIndex].status = "Sukses";
+          transactions.splice(transactionIndex, 1); // Hapus transaksi
+          fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2)); // Update file
+        } else if (orderStatus.data.status === "Pending") {
+          console.log("Status transaksi masih dalam proses, mencoba lagi...");
+        } else {
+          clearInterval(intervalId);
+          await updateSaldo(m.sender, transaction.harga); // Mengembalikan saldo
+          m.reply(`❌ Ada Yang Gagal. Tag Admin
+
+ Note:
+> Status: ${orderStatus ? orderStatus.data.status : "Tidak ada informasi status."}
+> Pesan: ${orderStatus.data.message}`);
+        }
+      };
+
+      const intervalId = setInterval(checkDigiOrderStatus, 7000);
+    } else if (transaction.dari === "medanpedia") {
+      let { item: code, tujuan, quantity, harga } = transaction;
+
+      let orderResult = await orderLayanan(code, tujuan, quantity);
+      console.log(orderResult);
+
+      transactions[transactionIndex].status = "Processing";
+      fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2));
+
+      // Update saldo pengguna terlebih dahulu, sebelum pengecekan status
+      let updated = await updateSaldo(m.sender, -transaction.harga);
+      if (!updated) {
+        m.reply(`❌ Gagal memperbarui saldo.`);
+        return;
+      }
+      let newSaldo = await getUserSaldo(m.sender);
+
+      let idOrderan = orderResult.data.id.toString(); // ID pesanan
+      if (orderResult.status === true && transactions[transactionIndex].status === "Processing") {
+        // Kirim pesan sementara dengan ID order
+        lenwy.sendMessage(m.chat, { text: `Processing, id order: ${orderResult.data.id}` }, { quoted: m });
+
+        const checkStatus = async () => {
+          console.log(idOrderan);
+          let currentStatus = await cekStatusOrderanKebsos(idOrderan);
+          console.log(currentStatus); // Debugging status
+
+          if (currentStatus.status === false || !currentStatus.data) {
+            clearInterval(intervalId); // Hentikan pengecekan
+            transactions.splice(transactionIndex, 1); // Hapus transaksi dari array
+            fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2)); // Update file
+            // Mengembalikan saldo jika gagal
+            await updateSaldo(m.sender, transaction.harga); // Mengembalikan saldo
+            m.reply(`❌ Transaksi Error. Tag Admin\n\n> Note: ${currentStatus.msg || "Tidak ada informasi status."}`);
+            return;
+          }
+
+          if (currentStatus.data.status === "Success") {
+            clearInterval(intervalId); // Hentikan pengecekan
+
+            let teksnya = `✅ Transaksi Sukses @${m.sender.split("@")[0]}
+> Invoice: ${idOrderan}
+> Item: ${transaction.nama}
+> Kode: ${code}
+> Tujuan: ${tujuan}
+> Quantity: ${quantity}
+> Harga: Rp ${formatSaldo(harga)}`;
+            lenwy.sendMessage(m.chat, { text: teksnya, mentions: [m.sender] }, { quoted: m });
+
+            transactions[transactionIndex].status = "Sukses";
+            transactions.splice(transactionIndex, 1);
+            fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2)); // Update file
+          } else if (currentStatus.data.status === "Partial" || currentStatus.data.status === "Processing" || currentStatus.data.status === "Pending") {
+            console.log(`Transaksi masih dalam status ${currentStatus.data.status}, akan coba lagi.`);
+          } else {
+            clearInterval(intervalId); // Hentikan pengecekan
+            transactions.splice(transactionIndex, 1); // Hapus transaksi dari array
+            fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2)); // Update file
+            // Mengembalikan saldo jika gagal
+            await updateSaldo(m.sender, transaction.harga); // Mengembalikan saldo
+            m.reply(`❌ Transaksi Gagal. Tag Admin
+              
+ Note:
+> Status: ${currentStatus.data.status || '-'}
+> Pesan: ${currentStatus.msg}`);
+          }
+        };
+
+        // Set interval untuk mengecek status setiap 30 detik
+        const intervalId = setInterval(checkStatus, 30000);
+      } else {
+        console.log(orderResult);
+        await updateSaldo(m.sender, transaction.harga); // Mengembalikan saldo
+        m.reply(`❌ Transaksi Gagal. Tag Admin
+          
+ Note:
+> ${orderResult.msg || "Tidak ada informasi status."}`);
+      }
+    }
+  }
+}
+break
+
+case 'n': {
+  let transactions = []
+  if (fs.existsSync('./project/database/processTopup.json')) {
+      const data = fs.readFileSync('./project/database/processTopup.json')
+      transactions = JSON.parse(data)
+  }
+
+  let transactionIndex = transactions.findIndex(t => t.id === m.sender && t.status === "pending")
+
+  if (transactionIndex !== -1) {
+      transactions[transactionIndex].status = "Cancelled";
+      m.reply(`❌ Transaksi dibatalkan
+> Item: ${transactions[transactionIndex].nama}
+> Kode: ${transactions[transactionIndex].item}
+> Harga: ${formatSaldo(transactions[transactionIndex].harga)}`)
+
+      transactions.splice(transactionIndex, 1)
+      fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+  }
+}
+break
+
+case 'order2':
+case 'api': {
+  if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`)
+  if (!text) return m.reply(`Contoh: ${prefix + command} <kode_produk> <nomor_pelanggan>\n\n> Jika game yang memiliki 2 id maka dipisah\n> ${prefix + command} ml5 12345678 1234`)
+  let statusData = await cekStatusAkunDigi()
+  if (statusData.data.deposit = 0) return m.reply(`Transaksi Mu Dibatalkan. Tag Admin\n\n> Note: ${orderResult.data.saldo}`)
+
+  if (!getUserTopup(m.sender)) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`)
+  let userRole = await getUserRole(m.sender)
+  let buyerSkuCode = args[0]
+  let id = args[1]
+  let serverId = args[2]
+  let customerNo = id
+  if (serverId) customerNo = id + serverId
+
+  if (!buyerSkuCode || !customerNo) {
+      return m.reply(`Contoh: ${prefix + command} <kode_produk> <nomor_pelanggan>\n\n> Jika game yang memiliki 2 id maka dipisah\n> ${prefix + command} ml5 12345678 1234`)
+  }
+
+  let result = await cekItemDigi(buyerSkuCode)
+  if (!result || !result.data) {
+      return m.reply(`❌ Terjadi kesalahan saat memproses pesanan.`)
+  }
+
+  let projectconfig = JSON.parse(fs.readFileSync('./project/database/config.json'))
+  let userName = '-'
+  if (serverId) {
+    let data = await cekMl(id, serverId);
+    let userData = data.message;
+    let nicknameMatch = userData.match(/In-Game Nickname:\s*(\S+)/);
+    let nicknameUser = nicknameMatch ? nicknameMatch[1] : 'Tidak ditemukan';
+    userName = nicknameUser || customerNo || '-'
+  }
+  let basePrice = result.data[0].price;
+
+  let adjustedPrice;
+  
+  if (userRole === global.settings.roles.role1) {
+      adjustedPrice = Math.round(basePrice * (1 + projectconfig.profit1Topup / 100));
+  } else if (userRole === global.settings.roles.role2) {
+      adjustedPrice = Math.round(basePrice * (1 + projectconfig.profit2Topup / 100));
+  } else if (userRole === global.settings.roles.role3) {
+      adjustedPrice = Math.round(basePrice * (1 + projectconfig.profit3Topup / 100));
+  } else if (userRole === global.settings.roles.role4) {
+      adjustedPrice = basePrice
+  }
+
+  let userSaldo = await getUserSaldo(m.sender)
+  if (userSaldo < adjustedPrice) return m.reply(`❌ Saldo tidak cukup.\n> Saldo Anda: ${formatSaldo(userSaldo)}\n> Harga Item: ${formatSaldo(adjustedPrice)}`)
+
+  let transactions = []
+  if (fs.existsSync('./project/database/processTopup.json')) {
+      const data = fs.readFileSync('./project/database/processTopup.json')
+      transactions = JSON.parse(data)
+  }
+
+  let pendingTransaction = transactions.find(tx => tx.id === m.sender && tx.status === "pending" && tx.dari === "digiflazz")
+  if (pendingTransaction) {
+      return m.reply(`❌ Anda sudah memiliki pemesanan pending.
+> Item: ${pendingTransaction.item}
+> Id: ${pendingTransaction.tujuan}
+> Harga: - Rp ${pendingTransaction.harga}
+        
+𝗡 Batal`)
+  }
+
+  let transaction = {
+      id: m.sender,
+      isQris: true,
+      ref_id: result.data.ref_id,
+      item: buyerSkuCode,
+      tujuan: customerNo,
+      nama: result.data[0].product_name,
+      status: "pending",
+      dari: "digiflazz",
+      time: time2,
+      harga: adjustedPrice,
+      username: userName
+  };
+
+  const data = await generateQris(adjustedPrice, projectconfig.qrisPackage, 5)
+  if (data.status !== 200) return m.reply(`Error saat generate qr\n${data.message}`)
+
+  let url1 = `https://larabert-qrgen.hf.space/v1/create-qr-code?size=500x500&style=1&color=1A1A2E&data=${encodeURIComponent(data.data.qr_string)}`
+  console.log(url1)
+  let getImage = await axios.get(url1, { responseType: "arraybuffer" })
+  let pay = Buffer.from(getImage.data, "binary")
+  let transactionId = data.data.transactionId
+  let teksnya = `‼ KONFIRMASI @${m.sender.split("@")[0]}
+> Nama Produk: ${result.data[0].product_name}
+> Kode Produk: ${buyerSkuCode}
+> Id: ${customerNo}
+> Nickname: ${userName}
+> Harga: - ${formatSaldo(adjustedPrice)}
+
+𝗡 Batal`
+  let { key } = await lenwy.sendMessage(m.chat, { image: pay, caption: teksnya, mentions: [m.sender] }, { quoted: m })
+  transactions.push(transaction)
+  fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+
+  let statusPay = false
+  let attempt = 0
+  let maxAttempts = 18
+
+  while (!statusPay) {
+    attempt++
+    await sleep(15000)
+    
+    if (attempt >= maxAttempts) {
+      statusPay = true
+      let index = transactions.findIndex(tx => tx.id === m.sender && tx.status === "pending" && tx.dari === "digiflazz")
+      transactions.splice(index, 1)
+      fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+      await lenwy.sendMessage(from, { delete: key })
+      return m.reply("❌ Pemesanan telah melewati batas waktu")
+    }
+
+    try {
+      let res = await checkQrisStatus(transactionId)
+      console.log(res.data)
+
+      if (res.status === 200 && res.data.status === "paid") {
+        m.reply(`Pembayaran terdeteksi, memproses pesanan Anda...`)
+        statusPay = true
+        await lenwy.sendMessage(from, { delete: key })
+        let orderResult = await orderDigi(buyerSkuCode, customerNo);
+        transactions[transactionIndex].status = "Processing";
+        fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2));
+        console.log(orderResult);
+        let refId = orderResult.data.ref_id
+
+        const checkDigiOrderStatus = async () => {
+          const orderStatus = await cekOrderanDigi(refId, buyerSkuCode, customerNo);
+          let SN = orderStatus.data.sn
+          console.log(orderStatus);
+
+          if (orderStatus && orderStatus.data.status === "Sukses") {
+            clearInterval(intervalId);
+
+            let teksnya = `✅ Transaksi Sukses @${m.sender.split("@")[0]}
+> Invoice: ${refId}
+> Item: ${transaction.nama}
+> Kode: ${buyerSkuCode}
+> Tujuan: ${customerNo}
+> Harga: ${formatSaldo(transaction.harga)}
+> SN: ${SN}`;
+            lenwy.sendMessage(m.chat, { text: teksnya, mentions: [m.sender] }, { quoted: m });
+
+            transactions[transactionIndex].status = "Sukses";
+            transactions.splice(transactionIndex, 1); // Hapus transaksi
+            fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2)); // Update file
+          } else if (orderStatus.data.status === "Pending") {
+            console.log("Status transaksi masih dalam proses, mencoba lagi...");
+          } else {
+            clearInterval(intervalId);
+            m.reply(`❌ Ada Yang Error. Tag Admin
+
+ Note:
+> Status: ${orderStatus ? orderStatus.data.status : "Tidak ada informasi status."}
+> Pesan: ${orderStatus.data.message}`);
+          }
+        };
+
+        const intervalId = setInterval(checkDigiOrderStatus, 7000);
+      }
+    } catch (error) {
+      await lenwy.sendMessage(from, { delete: key })
+      console.log("Error:", error)
+      statusPay = true
+      return m.reply("Ada kendala, pesanan dibatalkan\nSilahkan lakukan pembelian ulang")
+    }
+  }
+}
+break
+
+case 'saldo': {
+  if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`)
+  if (text) return
+  if (!getUserTopup(m.sender)) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`)
+  let role = getUserRole(m.sender);
+  let saldo = await getUserSaldo(m.sender);
+  let teksnye = (`[ Data Anda ]\n\n> Nama: ${pushname}\n> Role: ${role}\n> Saldo: ${formatSaldo(saldo)}`)
+  m.reply(teksnye)
+}
+break
+
+case 'listmember': {
+  try {
+    if (!isCreator) return m.reply('❌ Anda tidak memiliki akses untuk perintah ini.');
+
+    const userList = require('./project/database/dataBuyerDigi.json')
+    const filteredUsers = userList.filter(user =>
+      Array.isArray(user.id) &&
+      user.id.length === 2 &&
+      user.id.some(id => id.endsWith('@s.whatsapp.net')) &&
+      user.id.some(id => id.endsWith('@lid'))
+    );
+
+    if (filteredUsers.length === 0) {
+      return m.reply('⚠️ Tidak ada data user dengan format ID yang sesuai.');
+    }
+
+    let result = '*📋 Data Semua Member*\n\n';
+
+    for (let user of filteredUsers) {
+      const waId = user.id.find(id => id.endsWith('@s.whatsapp.net'));
+      const lidId = user.id.find(id => id.endsWith('@lid'));
+
+      const role = await getUserRole(waId);
+      const saldo = await getUserSaldo(waId);
+      const namaOrng = await lenwy.getName(waId);
+
+      result += `• ${waId.replace('@s.whatsapp.net', '')} | ${lidId}
+${namaOrng}
+Role: ${role}
+Saldo: ${formatSaldo(saldo)}\n\n`;
+    }
+
+    return m.reply(result.trim());
+  } catch (err) {
+    console.error(err);
+    return m.reply('❗ Terjadi kesalahan saat mengambil data.\n' + String(err));
+  }
+}
+break
+
+case 'profit': {
+if (!isCreator) return
+if (text) return
+let rawDataProfit = fs.readFileSync('./project/database/config.json')
+let profitData = JSON.parse(rawDataProfit)
+m.reply(`[ Persentase profit ]
+> Profit Topup
+${global.settings.roles.role1}: ${profitData.profit1Topup}
+${global.settings.roles.role2}: ${profitData.profit2Topup}
+${global.settings.roles.role3}: ${profitData.profit3Topup}
+
+> Profit Kebsos
+${global.settings.roles.role1}: ${profitData.profit1Kebsos}
+${global.settings.roles.role2}: ${profitData.profit2Kebsos}
+${global.settings.roles.role3}: ${profitData.profit3Kebsos}
+
+NOTE:
+5 = 5%
+Edit Profit? ketik ${prefix}setprofit`)
+}
+break
+
+case 'setprofit': {
+  if (!isCreator) return;
+  if (!text) return m.reply(`Contoh: ${prefix + command} topup 7 5 2
+
+Note:
+2 = 2%
+Format: ${prefix + command} jenis profit1 profit2 profit3`);
+
+  if (args[0] !== "topup" && args[0] !== "kebsos") return m.reply(`Masukkan profit apa yang mau di edit.
+> Contoh: ${prefix + command} topup 7 5 2
+
+Note:
+Hanya bisa ${prefix + command} topup atau ${prefix + command} kebsos`);
+
+  let rawData = fs.readFileSync('./project/database/config.json');
+  let profitData = JSON.parse(rawData);
+
+  if (!args[1] || !args[2] || !args[3]) {
+      return m.reply(`Semua nilai profit harus diisi.`);
+  }
+
+  if (args[0] === "topup") {
+      profitData.profit1Topup = parseFloat(args[1]);
+      profitData.profit2Topup = parseFloat(args[2]);
+      profitData.profit3Topup = parseFloat(args[3]);
+  } else if (args[0] === "kebsos") {
+      profitData.profit1Kebsos = parseFloat(args[1]);
+      profitData.profit2Kebsos = parseFloat(args[2]);
+      profitData.profit3Kebsos = parseFloat(args[3]);
+  }
+
+  try {
+      fs.writeFileSync('./project/database/config.json', JSON.stringify(profitData, null, 2));
+  } catch (err) {
+      return m.reply('❌ Gagal menyimpan perubahan.');
+  }
+
+  m.reply(`Profit ${args[0]} berhasil diperbarui:
+${global.settings.roles.role1}: ${args[1]}%
+${global.settings.roles.role2}: ${args[2]}%
+${global.settings.roles.role3}: ${args[3]}%`);
+}
+break
+
+case 'daftar': {
+  if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`);
+  if (text) return;
+
+  if (getUserTopup(m.sender)) return m.reply(`Anda sudah terdaftar...`)
+
+  const dataPath = './project/database/dataBuyerDigi.json';
+  let db = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+
+  const found = participants.find(p => p.id === m.sender);
+  console.log(found)
+  if (!found || !found.jid || !found.lid) return m.reply("Participant tidak ditemukan!");
+
+  let ids = [
+    `${found.jid}`,
+    `${found.lid}`
+  ];
+
+  db.push({
+    id: ids,
+    role: '1',
+    saldo: 0
+  });
+  m.reply(`Berhasil mendaftar dengan ID:\n${ids.join("\n")}`);
+
+  fs.writeFileSync(dataPath, JSON.stringify(db, null, 2));
+}
+break
+
+case 'cekdata': {
+  if (!isCreator) return
+  let user
+  if (!m.quoted && !budy.includes('@')) {
+    user = args[0].replace(/[^0-9]/g, '') + '@s.whatsapp.net';
+  
+    const cek = await lenwy.onWhatsApp(user.split("@")[0])
+    if (cek.length < 1) return m.reply(`Nomor Tersebut Tidak Terdaftar Di WhatsApp\n\n> Contoh: ${prefix + command} 6285261255548`)
+    if (user.startsWith("0")) {
+      return m.reply(`Nomor Harus Diawali Dengan Kode Nomor Negara (62)\n\n> Contoh: ${prefix + command} 6285261255548`)
+    }
+  } else if (!m.quoted && budy.includes('@')) {
+	user = text.split('@')[1] + '@s.whatsapp.net'
+    const cek = await lenwy.onWhatsApp(user.split("@")[0])
+    if (cek.length < 1) return m.reply(`Nomor Tersebut Tidak Terdaftar Di WhatsApp\n\n> Contoh: ${prefix + command} @6285261255548`)
+  } else if (m.quoted && !budy.includes('@')) {
+      user = m.quoted.sender
+  } else {
+      m.reply(`Hanya bisa
+1. ${prefix + command} @User
+2. ${prefix + command} 6285261255548
+3. ${prefix + command} sambil reply chat yang mau di cek data`)
+  }
+
+  let check = getUserTopup (user)
+  let rolenya = await getUserRole(user)
+  let saldonya = await getUserSaldo(user)
+  if (check === false) return m.reply(`User belum terdaftar`)
+  else if (check === true) return m.reply(`[ Data User ]
+
+> Id: ${user}
+> Role: ${rolenya}
+> Saldo: ${formatSaldo(saldonya)}`)
+}
+break
+
+case 'detailproduk': {
+  if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`)
+  if (!text) return m.reply(`*Masukkan nama item nya*`)
+  let resultdigi = await cekItemDigi(text)
+  let resultkebsos = await cekLayanan()
+  let dataMedan = resultkebsos?.data || []
+  console.log(resultdigi)
+  let selectedService = dataMedan.find(service => service.id.toString() === text)
+  console.log(selectedService)
+  let rawDataProfit = fs.readFileSync('./project/database/config.json')
+  let profitData = JSON.parse(rawDataProfit)
+  if (resultdigi) {
+      let basePrice = resultdigi.data[0].price
+      let harga1Topup = Math.round(basePrice * (1 + profitData.profit1Topup / 100));
+      let harga2Topup = Math.round(basePrice * (1 + profitData.profit2Topup / 100));
+      let harga3Topup = Math.round(basePrice * (1 + profitData.profit3Topup / 100));
+      let statusIcon = resultdigi.data[0].seller_product_status && resultdigi.data[0].buyer_product_status ? "✅" : "⛔"
+      m.reply(`───〔 *Detail Produk Topup* 〕───
+» *Nama Produk:* ${resultdigi.data[0].product_name}
+» *Kategori:* ${resultdigi.data[0].category}
+» *Brand:* ${resultdigi.data[0].brand}
+» *Stok:* ${resultdigi.data[0].stock}
+» *Harga ${global.settings.roles.role1}:* ${formatSaldo(harga1Topup)}
+» *Harga ${global.settings.roles.role2}:* ${formatSaldo(harga2Topup)}
+» *Harga ${global.settings.roles.role3}:* ${formatSaldo(harga3Topup)}
+» *Deskripsi:* ${resultdigi.data[0].desc}
+» *Status:* ${statusIcon}`)
+  }
+  if (selectedService) {
+      let basePrice = selectedService.price
+      let harga1Kebsos = Math.round(basePrice * (1 + profitData.profit1Kebsos / 100));
+      let harga2Kebsos = Math.round(basePrice * (1 + profitData.profit2Kebsos / 100));
+      let harga3Kebsos = Math.round(basePrice * (1 + profitData.profit3Kebsos / 100));
+      m.reply(`───〔 *Detail Produk Kebsos* 〕───
+» *Nama Produk:* ${selectedService.name}
+» *Kategori:* ${selectedService.category}
+» *Minimal Order:* ${selectedService.min}
+» *Maksimal Order:* ${selectedService.max}
+» *Harga ${global.settings.roles.role1}/K:* ${formatSaldo(harga1Kebsos)}
+» *Harga ${global.settings.roles.role2}/K:* ${formatSaldo(harga2Kebsos)}
+» *Harga ${global.settings.roles.role3}/K:* ${formatSaldo(harga3Kebsos)}
+» *Deskripsi:* ${selectedService.description}
+» *Rata-rata pengerjaan:* ${selectedService.average_time}`)
+  }
+}
+break
+
+case 'caratopup':
+case 'caraorder': {
+if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`)
+if (text) return
+m.reply(`   °┄─────── 𓊔 ───────┄° 
+*Cara Topup :*
+order Kode Id Server [ order ML5 12345678 1234 ]
+order2 Kode Id Server [ order2 ML5 12345678 1234 ]`)   
+}
+break
+
+
+
+
+
+
+
+
+
+
+
+case 'getcase': {
+  if (!isCreator) return m.reply(mess.owner)
+  if (!text) return m.reply(`Contoh: "getcase menu"`)
+
+  try {
+      const caseResult = getcase(text)
+      m.reply(caseResult)
+  } catch (error) {
+      m.reply(`${error.message}`)
+  }
+}
+break
+
+case 'addcase': {
+  if (!isCreator) return m.reply(mess.owner)
+  if (!q) return m.reply(`Masukan input`)
+  if (!q.includes("|||")) return m.reply(`❌ Format salah!\n\nGunakan:\n.addcase <caseTarget>|||<kodeCaseBaru>\n\nContoh:\n.addcase bot1|case 'bot2': {\n  m.reply(\`hii\`)\n}\nbreak`)
+
+  const [targetCase, newCaseCode] = q.split("|||")
+  const filePath = "./lenwy.js"
+  let fileContent = fs.readFileSync(filePath, "utf-8")
+
+  const casePattern = new RegExp(`case ['"\`]${targetCase}['"\`]:\\s*{`)
+  const match = fileContent.match(casePattern)
+  if (!match) return m.reply(`❌ Tidak ditemukan case '${targetCase}' di dalam lenwy.js.`)
+
+  const startIndex = match.index
+
+  const closingPattern = /}\s*\n\s*break/
+  const afterCase = fileContent.slice(startIndex)
+  const closeMatch = afterCase.match(closingPattern)
+
+  if (!closeMatch) return m.reply(`❌ Tidak dapat menemukan akhir blok \n\n}\nbreak\n\n untuk case '${targetCase}'. Pastikan format case-nya benar.`)
+
+  const insertPos = startIndex + closeMatch.index + closeMatch[0].length
+
+  const updatedContent = fileContent.slice(0, insertPos) + `\n\n${newCaseCode}\n` + fileContent.slice(insertPos)
+
+  fs.writeFileSync(filePath, updatedContent, "utf-8")
+
+  m.reply(`✅ Case baru berhasil ditambahkan di bawah *case '${targetCase}'!*\n\n🧩 Case yang ditambahkan:\n${newCaseCode}`)
+}
+break
+
+case 'editcase': {
+  if (!isCreator) return m.reply(mess.owner)
+  if (!text) return m.reply(`Contoh: ${prefix + command} <nama_case>|<case_baru>`)
+  
+  let [caseName, ...newContentArr] = text.split('|')
+  caseName = caseName.trim()
+  let newContent = newContentArr.join('|').trim()
+  
+  if (!caseName || !newContent) {
+      return m.reply(`Contoh:\n\n${prefix + command} hai|case 'hai':\n{m.reply('Hai juga')\n}\nbreak`)
+  }
+  
+  const fs = require('fs')
+  const filePath = './lenwy.js';
+  
+  try {
+      if (!fs.existsSync(filePath)) {
+          return m.reply(`File bot tidak ditemukan.`)
+      }
+      
+      let fileContent = fs.readFileSync(filePath, 'utf-8')
+      const regex = new RegExp(`case ['"]${caseName}['"]: {([\\s\\S]*?)}\\s*break`, 'g')
+      if (!regex.test(fileContent)) {
+          return m.reply(`Case *${caseName}* tidak ditemukan.`)
+      }
+      const updatedFileContent = fileContent.replace(regex, `${newContent}`)
+      fs.writeFileSync(filePath, updatedFileContent, 'utf-8')
+      m.reply(`Case *${caseName}* berhasil diedit.`)
+  } catch (error) {
+      console.error('Error:', error)
+      return m.reply('Terjadi kesalahan saat mengedit case. Coba lagi nanti.')
+  }
+}
+break
+
+case 'delcase': {
+if (!isCreator) return m.reply(mess.owner)
+if (!q)
+return m.reply("Masukan nama case yang akan di hapus")
+dellCase("./lenwy.js", q)
+}
+break
+
+case 'listcase':
+case 'listfitur': {
+m.reply(listCase())
+}
+break
+
+case 'totalfeature':
+case 'totalfitur': 
+case 'totalcmd': 
+case 'totalcommand': {
+m.reply(`Hallo ${pushname}
+Saat ini ${botname} memiliki total fitur ${totalfitur()}`)
+}
+break
+
+case 'cekcase': {
+if (!isCreator) return
+if (!text) return m.reply(`Contoh: ${prefix+command} caseName`)
+const caseName = text.trim()
+if (!caseName) return m.reply(`Masukkan nama case yang ingin dicek. Contoh: ${prefix+command} caseName`)
+const cekCase = async (caseName) => {
+try {
+const fileContent = await fs.promises.readFile("./lenwy.js", "utf-8")
+const caseRegex = new RegExp(`case '${caseName}'[\\s\\S]*?break`, 'g')
+const match = fileContent.match(caseRegex)
+if (!match) {
+return { found: false };
+}
+const lines = fileContent.split('\n')
+const caseLines = match[0].split('\n')
+const startLine = lines.indexOf(caseLines[0]) + 1;
+const endLine = startLine + caseLines.length - 1;
+return {
+found: true,
+startLine,
+endLine,
+content: match[0]
+};
+} catch (error) {
+return { error: `Terjadi kesalahan saat membaca file: ${error.message}` };
+}};
+const result = await cekCase(caseName)
+if (result.error) {
+m.reply(result.error)
+} else if (result.found) {
+const message = `*CASE DITEMUKAN!*
+• Nama Case: ${caseName}
+• Baris Awal: ${result.startLine}
+• Baris Akhir: ${result.endLine}
+
+Mau sekalian di ambil? Ketik getcase ${caseName}`
+m.reply(message)
+} else {
+m.reply(`Case '${caseName}' tidak ditemukan.`)
+}
+}
+break
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------
+case 'setppsewa': {
+  if (!isCreator) return m.reply(mess.owner);
+  if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`);
+  
+  const path = './storage/data/image/fotosewa'; // Menentukan path file foto
+  
+  // Cek apakah file sudah ada, jika ada maka dihapus
+  if (fs.existsSync(path)) {
+    fs.unlinkSync(path); // Menghapus file yang sudah ada
+    console.log(`File "${path}" berhasil dihapus.`);
+  }
+
+  // Mengunduh dan menyimpan gambar yang di-quote ke file baru
+  await lenwy.downloadAndSaveMediaMessage(quoted, path);
+
+  m.reply('Foto berhasil diperbarui menjadi foto sewa.');
+}
+break
+
+case 'changewdsewa': {
+if (!isCreator) return (mess.owner)
+let teksnya = text ? text : ''
+global.text_sewa = teksnya
+m.reply(mess.success)
+}
+break
+
+case 'changewdppj': {
+if (!isCreator) return (mess.owner)
+let teksnya = text ? text : ''
+global.text_ppj = teksnya
+m.reply(mess.success)
+}
+break
+
+case 'sewa': {
+ async function createImage(url) {
+ // Generating the image message content with a URL or local file path
+ const { imageMessage } = await generateWAMessageContent({
+ image: { url } // This will accept a URL or file path
+ }, {
+ upload: lenwy.waUploadToServer
+ });
+ return imageMessage; // Return the generated imageMessage
+ }
+ 
+ let tekssewa = global.text_sewa ? global.text_sewa : ` /) /) \n („• ֊ •„) \n╭───̇─∪─∪──̇──┈◯\n│❛ SEWA BOT ${botname} ˚\n│\n│1 вυℓαη : 𝖱𝗉 5.000\n│2 вυℓαη : 𝖱𝗉 10.000\n│𝟥 вυℓαη : 𝖱𝗉 15.000\n│𝟦 вυℓαη : 𝖱𝗉 18.000\n│𝟧 вυℓαη : 𝖱𝗉 21.000\n╰───────────✧✧✧`
+ let teksppj = global.text_ppj ? global.text_ppj : '\n\n ╭─────────────❍\n │ ʚ˚̣̣̣͙ɞ・𝙥𝙚𝙧𝙥𝙖𝙣𝙟𝙖𝙣𝙜・ \n │\n │1 вυℓαη : 𝖱𝗉 5.000\n │𝟤 вυℓαη : 𝖱𝗉 10.000\n │𝟥 вυℓαη : 𝖱𝗉 15.000\n │ρєямαηєη : 𝖱𝗉 60.000\n │Tidak Ada,\n │Yang Abadi Tuan\n ╰─────────────❍'
+
+ // Check if file exists and create the image accordingly
+ let imageUrl
+ if (fs.existsSync('./storage/data/image/fotosewa.jpg')) {
+ imageUrl = await createImage('./storage/data/image/fotosewa.jpg');
+ } else if (fs.existsSync('./storage/data/image/fotosewa.png')) {
+ imageUrl = await createImage('./storage/data/image/fotosewa.png');
+ } else if (fs.existsSync('./storage/data/image/fotosewa.webp')) {
+ imageUrl = await createImage('./storage/data/image/fotosewa.webp');
+ } else {
+ return m.reply(`Foto tidak tersedia, kamu harus ${prefix}setppsewa terlebih dahulu`)
+ }
+
+ const push = [{
+ body: proto.Message.InteractiveMessage.Body.fromObject({
+ text: tekssewa
+ }),
+ footer: proto.Message.InteractiveMessage.Footer.fromObject({
+ text: `Klik Admin Dibawah Ya`
+ }),
+ header: proto.Message.InteractiveMessage.Header.fromObject({
+ hasMediaAttachment: true,
+ imageMessage: imageUrl
+ }),
+ nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
+ buttons: [
+ {
+ name: "cta_url",
+ buttonParamsJson: `{"display_text":"Admin - ${global.ownername}","url":"https://api.whatsapp.com/send/?phone=${global.owner}&text=Haii+${global.ownername}%0ANak+Nyewa&type=phone_number&app_absent=0"}`
+ },
+ {
+ name: "cta_url",
+ buttonParamsJson: `{"display_text":"Developer - ${global.developername}","url":"https://api.whatsapp.com/send/?phone=${global.developer}&text=%0AHaii+${global.developername}%0AAda+Yang+Bug+Nih&type=phone_number&app_absent=0"}`
+ }
+ ]
+ })
+ }, {
+ body: proto.Message.InteractiveMessage.Body.fromObject({
+ text: teksppj
+ }),
+ footer: proto.Message.InteractiveMessage.Footer.fromObject({
+ text: `Klik Admin Dibawah Ya`
+ }),
+ header: proto.Message.InteractiveMessage.Header.fromObject({
+ hasMediaAttachment: true,
+ imageMessage: imageUrl
+ }),
+ nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
+ buttons: [
+ {
+ name: "cta_url",
+ buttonParamsJson: `{"display_text":"Admin - ${global.ownername}","url":"https://api.whatsapp.com/send/?phone=${global.owner}&text=Haii+${global.ownername}%0ANak+Perpanjang&type=phone_number&app_absent=0"}`
+ },
+ {
+ name: "cta_url",
+ buttonParamsJson: `{"display_text":"Developer - ${global.developername}","url":"https://api.whatsapp.com/send/?phone=${global.developer}&text=%0AHaii+${global.developername}%0AAda+Yang+Bug+Nih&type=phone_number&app_absent=0"}`
+ }
+ ]
+ })
+ }];
+
+ // Sending the message
+ const bot = generateWAMessageFromContent(m.chat, {
+ viewOnceMessage: {
+ message: {
+ interactiveMessage: proto.Message.InteractiveMessage.fromObject({
+ body: proto.Message.InteractiveMessage.Body.create({
+ text: 'Berikut Daftarnya',
+ }),
+ footer: proto.Message.InteractiveMessage.Footer.create({
+ text: `> ${botname}`,
+ }),
+ header: proto.Message.InteractiveMessage.Header.create({
+ hasMediaAttachment: false
+ }),
+ carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({
+ cards: push
+ })
+ })
+ }
+ }
+ }, { quoted: m });
+
+ await lenwy.relayMessage(m.chat, bot.message, {
+ messageId: bot.key.id
+ });
+}
+break
+
+case 'addsewa':
+case 'tambahsewa': {
+ if (!isCreator) return m.reply(mess.owner)
+
+ if (!text && !m.isGroup) {
+ return m.reply(`Penggunaan:\n1. ${prefix + command} [durasi] (dari dalam grup)\n2. ${prefix + command} [durasi] [link grup] (dari chat pribadi)\n\nContoh:\n${prefix + command} 30d https://chat.whatsapp.com/xxxxx`)
+ }
+
+ let sewa = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
+
+ try {
+ let duration, groupId
+
+ if (m.isGroup && !text.includes('http')) {
+ // Dari grup langsung
+ [duration] = text.split(' ')
+ if (!duration) return m.reply(`Durasi harus diisi!\nContoh: ${prefix + command} 30d`)
+ groupId = m.chat
+ } else {
+ // Dari PC dengan link
+ let [d, link] = text.split(' ')
+ if (!d || !link) return m.reply(`Durasi dan link grup harus diisi!\nContoh:\n${prefix + command} 30d https://chat.whatsapp.com/xxxxx`)
+if (link.includes('?')) link = link.split('?')[0]
+ duration = d
+
+ const coded = link.split("https://chat.whatsapp.com/")[1]
+ if (!coded) return m.reply("Link tidak valid 🤔")
+
+ try {
+ await lenwy.groupAcceptInvite(coded)
+ m.reply('Bot berhasil masuk ke grup.')
+ } catch (err) {
+ if (err.message.includes('not-authorized')) {
+ return m.reply('Gagal bergabung ke grup. Bot kemungkinan baru saja dikeluarkan.')
+ } else if (err.message.includes('gone')) {
+ return m.reply('Link grup sudah di reset.')
+ } else if (err.message.includes('conflict')) {
+ m.reply('Bot sudah berada di dalam grup.')
+ } else if (err.message.includes('already-exists')) {
+ return m.reply('Bot sudah meminta gabung ke grup.')
+ } else {
+ console.log(err)
+ return m.reply('Terjadi error yang tidak dikenali.')
+ }
+ }
+
+ groupId = await getGroupIdFromLink(link, lenwy)
+ if (!groupId) return m.reply('Gagal mendapatkan ID grup.')
+ }
+
+ if (sewa.some(entry => entry.groupId === groupId)) {
+ return m.reply(`Grup sudah ada dalam daftar sewa.`)
+ }
+
+ addSewaGroup(groupId, duration, sewa)
+ m.reply(`✅ Grup berhasil ditambahkan ke daftar sewa selama *${duration}*.`)
+ 
+ // Pesan sambutan jika dari PC
+ if (!m.isGroup) {
+ await lenwy.sendMessage(groupId, {text: `Hallo semua, saya adalah bot ${global.botname}. Grup ini telah disewa selama *${duration}*.\n\n- Admin dapat cek sisa waktu dengan ketik *${prefix}ceksewa*\n- Untuk fitur lengkap ketik *${prefix}allmenu*`})
+ }
+
+ } catch (err) {
+ console.error('Error saat addsewa:', err)
+ m.reply('❌ Gagal menambahkan sewa grup.')
+ }
+}
+break
+
+case 'delsewa':
+case 'hapussewa': {
+ if (!isCreator) return m.reply(mess.owner)
+
+ if (!text && !m.isGroup) {
+ return m.reply(`Untuk menghapus sewa grup dari chat pribadi, sertakan link grup.\nContoh:\n${prefix + command} https://chat.whatsapp.com/xxxxx`)
+ }
+
+ try {
+ let groupId
+ let link
+ if (m.isGroup) {
+ groupId = m.chat
+ } else if (text.includes('@g.us')) {
+ groupId = text
+ } else if (text.includes('https')) {
+ if (text.includes('?')) link = text.split('?')[0]
+ groupId = await getGroupIdFromLink(link, lenwy)
+ }
+
+ let sewa = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
+ const index = sewa.findIndex(entry => entry.groupId === groupId)
+
+ if (index === -1) return m.reply('Grup ini tidak ditemukan dalam daftar sewa.')
+
+ sewa.splice(index, 1)
+ fs.writeFileSync(pathsewa, JSON.stringify(sewa, null, 2))
+
+ lenwy.sendMessage(groupId, {text: `Masa sewa di group ini telah *hapus*.`})
+ m.reply('✅ Sewa grup berhasil dihapus.')
+ } catch (err) {
+ console.error('Error saat delsewa:', err)
+ m.reply('❌ Gagal menghapus sewa grup.')
+ }
+}
+break
+
+case 'checksewa':
+case 'ceksewa': {
+ if (!isAdmins && !isCreator) return m.reply(mess.admin)
+ if (!m.isGroup && !text) return m.reply(`Untuk mengecek sewa grup dari chat pribadi, sertakan link grup.\nContoh:\n${prefix + command} https://chat.whatsapp.com/xxxxx`)
+ 
+ let groupId = from
+ let link = text
+ if (!m.isGroup) {
+ if (text.includes('?')) link = text.split('?')[0]
+ groupId = await getGroupIdFromLink(link, lenwy)
+ if (!groupId) return m.reply(`Untuk mengecek sewa grup dari chat pribadi, sertakan link grup.\nContoh:\n${prefix + command} https://chat.whatsapp.com/xxxxx`)
+ }
+
+ try {
+ const currentDir = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
+
+ // Periksa apakah grup saat ini ada dalam daftar sewa
+ const entry = currentDir.find(entry => entry.groupId === groupId)
+ if (!entry) {
+ return m.reply(`Perintah ini hanya bisa dilakukan di dalam grup yang sudah di "${prefix}addsewa"`)
+ }
+
+ if (entry.isAlifetime) return m.reply(`Akan Habis Hingga Owner Pensiun.`)
+ // Hitung durasi tersisa
+ const expiry = entry.expired;
+ const remainingTime = expiry - Date.now()
+ var days = Math.floor(remainingTime / (1000 * 60 * 60 * 24))
+ var hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+ var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60))
+ const status = `${days} hari ${hours} jam ${minutes} menit`;
+ m.reply(`Akan Habis Hingga ${status}.`)
+ 
+ } catch (error) {
+ m.reply('Terjadi kesalahan: ' + error.message)
+ }
+}
+break
+
+case 'removeexpired':
+case 'cekexp':
+case 'cekexpired': {
+  if (!isCreator) return m.reply(mess.owner)
+	const fs = require('fs')
+    try {
+        const currentDir = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
+        await expiredCheck(lenwy, currentDir) // Asumsikan `conn` adalah objek koneksi bot
+        m.reply('Pengecekan masa sewa sedang dilakukan, grup yang masa sewanya telah habis akan dihapus secara otomatis.')
+    } catch (error) {
+        m.reply(error.message)
+    }
+}
+break
+
+case 'perpanjangsewa': {
+ if (!isCreator) return m.reply(mess.owner)
+ if (!text && !m.isGroup) {
+ return m.reply(`Ada 2 cara untuk melakukan ${prefix + command} ini:\n1. Di dalam grup tanpa tambahan (cukup durasi).\n2. Di private chat dengan menyertakan *durasi* + *link grup*.\n\nContoh:\n${prefix + command} 30d https://chat.whatsapp.com/xxxxx`)
+ }
+
+ await sleep(500)
+ let currentDir = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
+
+ try {
+ let groupId, duration;
+
+ if (m.isGroup && !text.includes('https://chat.whatsapp.com/')) {
+ [duration] = text.split(' ')
+ if (!duration) return m.reply(`Durasi harus diisi!\nContoh:\n${prefix + command} 30d`)
+ groupId = m.chat
+ } else {
+ let [d, link] = text.split(' ')
+ if (!d || !link) return m.reply(`Durasi dan link grup harus diisi!\nContoh:\n${prefix + command} 30d https://chat.whatsapp.com/xxxxx`)
+ duration = d
+if (link.includes('?')) link = link.split('?')[0]
+ groupId = await getGroupIdFromLink(link, lenwy)
+ if (!groupId) return m.reply('Gagal mendapatkan ID grup dari link.')
+ }
+
+ if (!checkSewaGroup(groupId, currentDir)) {
+ return m.reply('Grup ini tidak ditemukan dalam daftar sewa. Anda tidak dapat memperpanjang masa sewanya.')
+ }
+
+ const pos = currentDir.findIndex(entry => entry.groupId === groupId)
+ if (pos !== -1) {
+ const isLifetime = ['alifetime', 'permanent', 'permanen', 'perma'].includes(duration.toLowerCase())
+
+ if (isLifetime) {
+ currentDir[pos].expired = null
+ currentDir[pos].isAlifetime = true
+ // Reset flags pengingat
+ currentDir[pos].reminded1d = false
+ currentDir[pos].reminded1h = false
+ currentDir[pos].reminded1m = false
+ m.reply(`✅ Masa sewa grup${m.isGroup ? '' : ` dengan ID ${groupId}`} diperpanjang menjadi *Permanen*.`)
+ await lenwy.sendMessage(groupId, { text: `🎉 Masa sewa grup ini telah di ubah menjadi *Permanen*!` })
+ } else {
+ // Cek kalau sebelumnya lifetime, maka reset expired
+ if (currentDir[pos].expired === null || currentDir[pos].isAlifetime === true) {
+ currentDir[pos].expired = Date.now() + toMs('3s') // Atau kamu bisa langsung toMs(duration)
+ await sleep(500)
+ }
+
+ currentDir[pos].expired += toMs(duration)
+ currentDir[pos].isAlifetime = false // Reset lifetime
+
+ // Reset flags pengingat
+ currentDir[pos].reminded1d = false
+ currentDir[pos].reminded1h = false
+ currentDir[pos].reminded1m = false
+ let entry = currentDir[pos]
+ let expiry = entry.expired
+ let remainingTime = expiry - Date.now()
+ var days = Math.floor(remainingTime / (1000 * 60 * 60 * 24))
+ var hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+ var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60))
+ 
+ let status = `${days} hari ${hours} jam ${minutes} menit`;
+ await lenwy.sendMessage(groupId, { text: `⏳ Masa sewa telah diperpanjang selama *${duration}*. Sisa masa sewa saat ini adalah:\n*${status}*` })
+ m.reply(`✅ Masa sewa grup${m.isGroup ? '' : ` dengan ID ${groupId}`} berhasil diperpanjang selama *${duration}*.`)
+ }
+
+ fs.writeFileSync(pathsewa, JSON.stringify(currentDir, null, 2))
+ }
+
+ } catch (err) {
+ console.error('Error:', err)
+ m.reply('Terjadi kesalahan saat memperpanjang sewa. Pastikan format benar dan link masih aktif.')
+ }
+}
+break
+
+case 'listsewa': {
+  if (!isCreator) return m.reply(mess.owner)
+  LenwyLD()
+  try {
+      const currentDir = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
+      let ordernye = `*List Sewa*\nJumlah : ${currentDir.length}\n\n`
+      for (const entry of currentDir) {
+        await sleep(5000)
+          let idgc = entry.groupId;
+            let linkgc
+            try {
+              let response2 = await lenwy.groupInviteCode(idgc)
+              linkgc = `https://chat.whatsapp.com/${response2}`
+            } catch {
+              linkgc = '-'
+            }
+            try {
+              let metadata = await lenwy.groupMetadata(idgc)
+              const totalMembers = metadata.participants ? metadata.participants.length : 0;
+              let expirednya = `Permanent`
+              if (!entry.isAlifetime) {
+                const expiry = entry.expired;
+                const remainingTime = expiry - Date.now()
+                var days = Math.floor(remainingTime / (1000 * 60 * 60 * 24))
+                var hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+                var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60))
+                expirednya = `${days || '-'} hari ${hours || '-'} jam ${minutes || '-'} menit`
+              }
+
+              ordernye += `✅ ${metadata.subject}
+🎁 ID Group : ${entry.groupId}
+📦 Total Member : ${totalMembers || '-'} Member
+⏰ Expired : ${expirednya}
+> Link Group : ${linkgc}
+────────────────────────\n\n`
+            } catch (e) {
+              ordernye += `⛔
+🎁 Group ID: ${idgc}
+📦 Tidak bisa mengakses metadata grup, Kemungkinan bot telah keluar dari group.
+> Pesan: ${e.message}
+────────────────────────\n\n`
+            }
+      }
+      m.reply(ordernye + `> Gunakan ${prefix}delsewa (idGroup) untuk menghapus sewa jika private chat dengan bot
+> Gunakan ${prefix}delsewa untuk menghapus sewa jika berada di dalam grup`)
+  } catch (error) {
+      m.reply('Terjadi kesalahan saat membaca file: ' + error.message)
+  }
+}
+break
+
+case 'backupbot':
+case 'botbackup': {
+ if (!isAdmins && !isCreator) return m.reply(`Khusus admin dan owner`);
+
+ const selectedFiles = [
+  'library', 'project', 'Session', 'storage',
+  'author.json', 'banned.json', 'index.js',
+  'len.js', 'lenwy.js', 'package-lock.json', 'package.json', 'premium.json'
+ ];
+
+ const directoryPath = path.join("./");
+ fs.readdir(directoryPath, async (err, files) => {
+ if (err) return m.reply("Gagal membaca direktori: " + err);
+
+ const fileSampah = files.filter(item =>
+ item.match(/\.(gif|png|mp3|mp4|jpg|jpeg|webp|webm|zip|tar.gz|rar)$/)
+ );
+
+ if (fileSampah.length === 0) return m.reply(`Tidak ada file sampah ditemukan.`);
+
+ let teks = `🧹 Terdeteksi ${fileSampah.length} file sampah:\n\n`;
+ fileSampah.forEach((e, i) => teks += `${i + 1}. ${e}\n`);
+ m.reply(teks);
+ await sleep(1000);
+ m.reply("Menghapus file sampah...");
+
+ fileSampah.forEach(file => {
+ try {
+ fs.unlinkSync(path.join(directoryPath, file));
+ } catch (e) {
+ console.error(`Gagal hapus: ${file}`, e);
+ }
+ });
+
+ await sleep(1000);
+ m.reply("✅ Semua file sampah berhasil dihapus.");
+ });
+
+ await sleep(3000);
+
+ const ownerJid = `${global.owner}@s.whatsapp.net`;
+ const waktu = moment.tz('Asia/Jakarta').format('DD-MM');
+ const zipFileName = `Sc${global.ownername || 'Bot'}_${waktu}.zip`;
+
+ try {
+ // Buat zip dari file dan folder yang dipilih
+ const command = `zip -r ${zipFileName} ${selectedFiles.join(" ")}`;
+ execSync(command);
+
+ // Kirim hasil zip ke owner
+ await lenwy.sendMessage(ownerJid, {
+ document: fs.readFileSync(`./${zipFileName}`),
+ mimetype: "application/zip",
+ fileName: zipFileName,
+ }, { quoted: m });
+
+ // Hapus zip setelah dikirim
+ fs.unlink(`./${zipFileName}`, err => {
+ if (err) console.error(`❌ Gagal hapus ${zipFileName}:`, err);
+ else console.log(`✅ Backup "${zipFileName}" dikirim dan dihapus.`);
+ });
+
+ m.reply("📦 Backup berhasil dikirim ke owner.");
+ } catch (err) {
+ console.error("❌ Gagal backup:", err);
+ m.reply("❌ Terjadi kesalahan saat backup.");
+ }
+}
+break
+
+case 'autobackup': {
+  if (!isCreator) return m.reply(mess.owner)
+  if (!text) return m.reply(`*Ketik ${prefix + command} on/off*`)
+    if (q == 'on') {
+      global.autobakcup = true;
+      m.reply(mess.success)
+  } else if (q == 'off') {
+      global.autobakcup = false;
+      m.reply(mess.success)
+  } else {
+      m.reply(`*Ketik ${prefix + command} on/off*`)
+  }
+}
+break
+
+case 'getip':
+case 'cekip': {
+    if (!isCreator) return m.reply(mess.owner)
+    
+    try {
+        const res = await fetch('http://ip-api.com/json/');
+        const data = await res.json();
+
+        let ipv4 = data.query
+
+        if (ipv4) {
+            const replyMessage = `*📮INFO SERVER*\n\n*IP :* ${ipv4}\n*Country :* ${data.city}, ${data.regionName}, ${data.country}`;
+            m.reply(replyMessage)
+        } else {
+            m.reply('Gagal mengambil informasi IP IPv4. Silakan coba lagi nanti.')
+        }
+    } catch (error) {
+        console.error('Error fetching IP:', error)
+        m.reply('Gagal mengambil informasi IP. Silakan coba lagi nanti.')
+    }
+}
+break
+
+case 'setpayment': {
+  if (!isAdmins) return m.reply(mess.admin);
+  if (!text) return m.reply(`Contoh: Kirimkan foto dengan caption:\n${prefix + command} ewallet@Berikut Nomor E-Wallet nya:\nGopay: 085261255548\nDana: 085261255548`)
+  if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`);
+
+  let paymentMethod = text.split('@')[0]; // Metode pembayaran (misal: gopay)
+  let paymentData = text.split('@')[1];
+  if (!paymentData || !paymentMethod) {
+      return m.reply(`Contoh: ${prefix + command} ewallet@Berikut Nomor E-Wallet nya:\nGopay: 085261255548\nDana: 085261255548`);
+  }
+
+  let groupID = m.chat; // Menggunakan ID grup untuk penyimpanan data
+
+  // Menggabungkan groupID dan key untuk membuat ID unik untuk pembayaran
+  let paymentDataId = `${groupID.split('@')[0]}-${paymentMethod}`; // Misal: 'groupID_gopay'
+
+  // Mendownload gambar dan menyimpannya
+  let imageUrl = await lenwy.downloadAndSaveMediaMessage(quoted, `./storage/data/image/${paymentDataId}`);
+
+  // Membaca data dari database
+  let _db = readDatabasePayment();
+
+  // Pastikan _db adalah array, jika tidak, buat array kosong
+  if (!Array.isArray(_db)) {
+      _db = [];
+  }
+
+  let existingPayment = _db.find(entry => entry.id === groupID && entry.key === paymentMethod);
+  if (existingPayment) {
+      return m.reply(`Key dengan metode ${paymentMethod} sudah ada untuk grup ini.`);
+  }
+
+  // Menambahkan data pembayaran ke database
+  let obj_add = {
+      id: groupID,
+      key: paymentMethod,
+      paymentData: paymentData, // Menyimpan ID pembayaran
+      imageUrl: imageUrl
+  };
+
+  // Menambahkan data ke array _db
+  _db.push(obj_add);
+
+  // Menyimpan data ke database
+  writeDatabasePayment(_db);
+
+  return m.reply(`Pembayaran dengan metode ${paymentMethod} berhasil disimpan. Gambar pembayaran telah diterima.`);
+}
+break
+
+case 'setbuttonurl': {
+  if (!isAdmins) return
+  if (!budy.includes('@')) return m.reply("Harap kirimkan format yang benar: setbuttonurl <key>@<displayName>@<url>")
+
+  let key = text.split('@')[0];
+  let displayName = text.split('@')[1];
+  let url = text.split('@')[2];
+
+  // Membaca data dari database
+  let _db = readDatabasePayment();
+
+  // Cari data berdasarkan key dan group ID
+  let paymentData = _db.find(item => item.key === key && item.id === m.chat);
+  if (!paymentData) {
+      return m.reply(`Key "${key}" tidak ditemukan di grup ini.`);
+  }
+
+  // Membuat tombol URL
+  let button = {
+      name: "cta_url",
+      buttonParamsJson: JSON.stringify({
+          display_text: displayName, // Nama tombol
+          url: url                   // URL yang akan diarahkan ketika tombol ditekan
+      })
+  };
+
+  // Menambahkan tombol ke dalam buttonData array di bawah imageUrl
+  if (!paymentData.buttonData) {
+      paymentData.buttonData = []; // Inisialisasi jika belum ada buttonData
+  }
+
+  paymentData.buttonData.push(button);
+
+  // Menyimpan kembali data ke database
+  writeDatabasePayment(_db);
+
+  return m.reply(`Tombol URL dengan teks "${displayName}" dan URL "${url}" telah berhasil diset untuk key "${key}".`);
+}
+break
+
+case 'setbuttoncopy': {
+  if (!isAdmins) return
+  if (!budy.includes('@')) return m.reply("Harap kirimkan format yang benar: setbuttonurl <key>@<displayName>@<url>")
+
+  let key = text.split('@')[0];
+  let displayName = text.split('@')[1];
+  let nilaiCopy = text.split('@')[2];
+  // Membaca data dari database
+  let _db = readDatabasePayment();
+
+  // Cari data berdasarkan key dan group ID
+  let paymentData = _db.find(item => item.key === key && item.id === m.chat);
+  if (!paymentData) {
+      return m.reply(`Key "${key}" tidak ditemukan di grup ini.`);
+  }
+
+  // Membuat tombol salin
+  let button = {
+      name: "cta_copy",
+      buttonParamsJson: JSON.stringify({
+          display_text: displayName, // Nama tombol
+          id: nilaiCopy,             // ID yang bisa diubah sesuai kebutuhan
+          copy_code: nilaiCopy      // Teks yang disalin
+      })
+  };
+
+  // Menambahkan tombol ke dalam buttonData array di bawah imageUrl
+  if (!paymentData.buttonData) {
+      paymentData.buttonData = []; // Inisialisasi jika belum ada buttonData
+  }
+
+  paymentData.buttonData.push(button);
+
+  // Menyimpan kembali data ke database
+  writeDatabasePayment(_db);
+
+  return m.reply(`Tombol salin dengan teks "${nilaiCopy}" telah berhasil diset untuk key "${key}".`);
+}
+break
+
+case 'changewording': {
+    if (!isAdmins) return
+    if (!text) return m.reply('Contoh: changewording key@newWording');
+    
+    let [key, newWording] = text.split('@');
+    
+    if (!key || !newWording) return m.reply('Format yang benar: changewording key@newWording');
+    
+    // Membaca data dari database pembayaran
+    let _db = readDatabasePayment();
+    
+    // Mencari data pembayaran yang sesuai dengan group ID (m.chat)
+    let payments = _db.filter(item => item.id === m.chat);
+    
+    if (payments.length === 0) {
+        return m.reply("Tidak ada data pembayaran yang ditemukan di grup ini.");
+    }
+    
+    // Mencari key yang sesuai
+    let payment = payments.find(item => item.key === key);
+    
+    if (!payment) {
+        return m.reply(`Key "${key}" tidak ditemukan di grup ini.`);
+    }
+
+    // Mengupdate wording untuk key yang ditemukan
+    payment.paymentData = newWording;
+
+    // Menyimpan kembali perubahan ke database
+    writeDatabasePayment(_db);
+
+    return m.reply(`Wording untuk key "${key}" berhasil diubah.`);
+}
+break
+
+case 'delbutton': {
+    if (!isAdmins) return
+    if (!text) return m.reply('Contoh: delbutton key');
+    
+    let key = text  // Extract the key from the text
+    
+    if (!key) return m.reply('Contoh: delbutton key');
+    
+    // Membaca data dari database pembayaran
+    let _db = readDatabasePayment();
+    
+    // Mencari data pembayaran yang sesuai dengan group ID (m.chat)
+    let payments = _db.filter(item => item.id === m.chat);
+    
+    if (payments.length === 0) {
+        return m.reply("Tidak ada data pembayaran yang ditemukan di grup ini.");
+    }
+    
+    // Mencari key yang sesuai
+    let payment = payments.find(item => item.key === key);
+    
+    if (!payment) {
+        return m.reply(`Key "${key}" tidak ditemukan di grup ini.`);
+    }
+
+    // Menghapus semua buttonData untuk key yang ditemukan
+    payment.buttonData = [];  // Empty the buttonData array
+
+    // Menyimpan kembali perubahan ke database
+    writeDatabasePayment(_db);
+
+    return m.reply(`Semua tombol untuk key "${key}" berhasil dihapus.`);
+}
+break
+
+case 'pay': {
+  // Membaca data dari database pembayaran
+  let _db = readDatabasePayment();
+  
+  // Mencari data pembayaran yang sesuai dengan group ID (m.chat)
+  let payments = _db.filter(item => item.id === m.chat);
+  
+  if (payments.length === 0) {
+      return m.reply("Tidak ada data pembayaran yang ditemukan di grup ini.");
+  }
+  
+  let missingButtons = [];
+
+  for (let payment of payments) {
+      // Cek jika buttonData tidak ada untuk setiap key
+      if (!payment.buttonData || payment.buttonData.length === 0) {
+          missingButtons.push(payment.key); // Menambahkan key ke array missingButtons
+      }
+  }
+
+  // Jika ada key yang belum di setbutton, kirimkan pesan dengan list key yang hilang
+  if (missingButtons.length > 0) {
+      return m.reply(`Key "${missingButtons.join(', ')}" belum di setbuttoncopy atau setbuttonurl.`);
+  }
+  
+  // Fungsi untuk menghasilkan gambar dari file lokal
+  async function createImage(filePath) {
+      let { imageMessage } = await generateWAMessageContent({
+          image: { url: filePath }  // Menggunakan path file lokal
+      }, {
+          upload: lenwy.waUploadToServer
+      });
+      return imageMessage;
+  }
+
+  // Daftar pesan yang akan dikirim
+  let push = payments.map(async (payment) => {
+      let imageMessage = await createImage(payment.imageUrl); // Menggunakan imageUrl dari data JSON
+      
+      return {
+          body: proto.Message.InteractiveMessage.Body.fromObject({
+              text: payment.paymentData
+          }),
+          footer: proto.Message.InteractiveMessage.Footer.fromObject({
+              text: ``
+          }),
+          header: proto.Message.InteractiveMessage.Header.fromObject({
+              hasMediaAttachment: true,
+              imageMessage: imageMessage // Gunakan imageUrl yang ada di dalam data
+          }),
+          nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
+              buttons: payment.buttonData.map(button => ({
+                  name: button.name,
+                  buttonParamsJson: button.buttonParamsJson
+              }))
+          })
+      };
+  });
+
+  // Tunggu hingga semua push card selesai dibuat
+  let pushCards = await Promise.all(push);
+
+  // Mengirimkan pesan interaktif dengan tombol dan informasi pembayaran
+  let bot = generateWAMessageFromContent(m.chat, {
+      viewOnceMessage: {
+          message: {
+              interactiveMessage: proto.Message.InteractiveMessage.fromObject({
+                  body: proto.Message.InteractiveMessage.Body.create({
+                      text: 'Berikut Daftarnya',
+                  }),
+                  footer: proto.Message.InteractiveMessage.Footer.create({
+                      text: `> ${botname}`,
+                  }),
+                  header: proto.Message.InteractiveMessage.Header.create({
+                      hasMediaAttachment: false
+                  }),
+                  carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({
+                      cards: pushCards
+                  })
+              })
+          }
+      }
+  }, { quoted: m });
+
+  // Mengirimkan pesan
+  await lenwy.relayMessage(m.chat, bot.message, {
+      messageId: bot.key.id
+  });
+}
+break
+
+case 'delpayment': {
+  if (!isAdmins) return
+  let key = text; // Asumsikan key diberikan langsung setelah command delpayment
+  if (!key) return m.reply("Harap kirimkan format yang benar: delpayment <key>");
+
+  // Membaca data dari database
+  let _db = readDatabasePayment();
+
+  // Mencari data pembayaran berdasarkan key dan group ID
+  let paymentIndex = _db.findIndex(item => item.key === key && item.id === m.chat);
+
+  // Jika data tidak ditemukan, tampilkan daftar key yang tersedia untuk grup ini
+  if (paymentIndex === -1) {
+    // Mendapatkan semua key yang tersedia untuk grup ini
+    let availableKeys = _db
+      .filter(item => item.id === m.chat)
+      .map((item, index) => `${index + 1}. ${item.key}`);
+
+    // Jika tidak ada data pembayaran untuk grup ini, beri tahu pengguna
+    if (availableKeys.length === 0) {
+      return m.reply("Tidak ada data pembayaran yang tersedia di grup ini.");
+    }
+
+    // Menampilkan daftar key yang tersedia dengan format nomor urut
+    return m.reply(`Key "${key}" tidak ditemukan. Key yang tersedia:\n${availableKeys.join('\n')}`);
+  }
+
+  // Menghapus data pembayaran dari array
+  let deletedPayment = _db.splice(paymentIndex, 1)[0];
+
+  // Menghapus file gambar terkait jika ada
+  if (deletedPayment.imageUrl) {
+    const fs = require('fs');
+    fs.unlink(deletedPayment.imageUrl, (err) => {
+      if (err) console.error("Gagal menghapus file gambar:", err);
+    });
+  }
+
+  // Menyimpan data ke database
+  writeDatabasePayment(_db);
+
+  m.reply(`Data pembayaran dengan key "${key}" berhasil dihapus.`);
+}
+break
+
+case 'cekkhodam':
+case 'cekkodam': {
+if (!q) return m.reply(`*Contoh: ${prefix + command} gw*`)
+if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
+const tik = await (await fetch(`https://${global.api.ham.domain}/primbon/cekkhodam?apikey=${global.api.ham.apikey}&name=${q}`)).json()
+m.reply(tik.result.message)
+}
+break
+
+
+
+case 'brat': {
+ if (isBan) return m.reply('⚠ *Kamu Di Ban Owner*');
+ if (!text) return m.reply(`Penggunaan : ${prefix + command} <teks>`);
+ try {
+const proses = await (await fetch(`https://${global.api.maelyn.domain}/api/canvas/brat?text=${text}&isvideo=false&speed=medium`,
+  {
+    method: "GET",
+    headers: {
+      "x-maelyn-auth": global.api.maelyn.apikey
+    }
+  }
+)).json()
+ console.log(proses)
+ // Send the image buffer as a sticker
+ await lenwy.sendImageAsSticker(from, proses.result.url, m, { packname: global.packname, author: global.author });
+ } catch (e) {
+ console.log(e);
+ await m.reply(`Terjadi kesalahan saat membuat stiker`);
+ }
+}
+break
+
+case 'cekipurl': {
+if (!text) return m.reply(`Contoh: ${prefix + command} urlNya\n\n> Note: Tanpa https://`)
+if (text.startsWith('https://')) return m.reply(`Note: Tanpa https://`)
+  try {
+    const address = await dns.lookup(text);
+    m.reply(`IPv4 Address of https://${text}: ${address.address}`);
+  } catch (err) {
+    console.error('Error:', err.message);
+  }    
+}
+break
+
+case 'ttp': {
+  if (!q) return m.reply(`Gunakan dengan cara ${command} text\n\nContoh : ${command} lucu abis`)
+  if (q.length > 75) return m.reply(`Teksnya terlalu panjang`)
+  
+  //var data = await getBuffer(`https://api.xteam.xyz/attp?file&text=${encodeURIComponent(q)}`)
+  var data = await getBuffer(`https://${global.api.lolhuman.domain}/api/ttp?apikey=${global.api.lolhuman.apikey}&text=${encodeURIComponent(q)}`)
+  var rand2 = getRandom('.webp')
+  fs.writeFileSync(`./${rand2}`, data)
+    exec(`webpmux -set exif ./data.exif ./${rand2} -o ./${rand2}`, async (error) => {
+    lenwy.sendMessage(from, { sticker: fs.readFileSync(`./${rand2}`) }, { quoted: m })
+    execSync(`rm -rf ./${rand2}.png`)
+    fs.unlinkSync(`./${rand2}`)
+  })
+}
+break
+        
+case 'attp': {
+	if (!q) return m.reply(`Gunakan dengan cara ${command} text\n\nContoh : ${command} lucu abiss`)
+  if (q.length > 75) return reply(`Teksnya terlalu panjang`)
+            
+  //var data = await getBuffer(`https://api.xteam.xyz/attp?file&text=${encodeURIComponent(q)}`)
+  var data = await getBuffer(`https://${global.api.lolhuman.domain}/api/attp?apikey=${global.api.lolhuman.apikey}&text=${encodeURIComponent(q)}`)
+  var rand2 = getRandom('.webp')
+  fs.writeFileSync(`./${rand2}`, data)
+  exec(`webpmux -set exif ./data.exif ./${rand2} -o ./${rand2}`, async (error) => {
+    lenwy.sendMessage(from, { sticker: fs.readFileSync(`./${rand2}`) }, { quoted: m })
+    fs.unlinkSync(`./${rand2}`)
+})
+}
+break
+
+case 'setstick': {
+  if (!isAdmins) return m.reply(mess.admin);
+  if (!text) return m.reply(`Contoh: Reply foto/sticker dengan caption:\n${prefix + command} (Key)`)
+  if (!/image/.test(mime)) return m.reply(`Foto atau Sticker nya Mana?`);
+
+  let nameKey = text
+  let groupID = m.chat; // Menggunakan ID grup untuk penyimpanan data
+
+  // Mendownload gambar dan menyimpannya
+  let imageUrl = await lenwy.downloadAndSaveMediaMessage(quoted, `./storage/data/sticker/${nameKey + groupID}`)
+
+  // Membaca data dari database
+  let db_sticker = JSON.parse(fs.readFileSync('./storage/databaseSticker.json'))
+
+  // Pastikan _db adalah array, jika tidak, buat array kosong
+  if (!Array.isArray(db_sticker)) {
+    db_sticker = [];
+  }
+
+  let existingPayment = db_sticker.find(entry => entry.id === groupID && entry.key === nameKey);
+  if (existingPayment) {
+      return m.reply(`Sticker dengan key ${nameKey} sudah ada untuk grup ini.`);
+  }
+
+  // Menambahkan data pembayaran ke database
+  let obj_add = {
+      id: groupID,
+      key: nameKey,
+      imageUrl: imageUrl
+  };
+
+  db_sticker.push(obj_add);
+  fs.writeFileSync('./storage/databaseSticker.json', JSON.stringify(db_sticker, null, 3), 'utf-8');
+
+  return m.reply(`Sticker ${nameKey} berhasil disimpan`);
+}
+break
+
+case 'liststick': {
+  if (text) return
+  let db_sticker = JSON.parse(fs.readFileSync('./storage/databaseSticker.json'))
+  if (!isAlreadyResponStickGroup(m.chat, db_sticker)) return m.reply(`*Belum Ada Sticker Yang Terdaftar Di Grup Ini*`);
+  let sortedList = db_sticker.filter(i => i.id === m.chat).sort((a, b) => a.key.localeCompare(b.key));
+  let tek = `List Sticker Yang Terdaftar Di Group ${groupName}\n`
+  for (let i of sortedList) {
+    tek += `\n> *${i.key}*`
+  }
+  m.reply(tek)
+}
+break
+
+case 'delstick': {
+  if (!isAdmins) return m.reply(mess.admin);
+  if (!text) return m.reply(`Contoh: ${prefix + command} (key)`);
+  let db_sticker = JSON.parse(fs.readFileSync('./storage/databaseSticker.json'))
+  if (!isKeyResponStick(m.chat, text.toLowerCase(), db_sticker)) return m.reply(`*Sticker Dengan Key ${text} Tidak Ada Dalam Liststick*`);
+  await delResponStick(m.chat, text.toLowerCase(), db_sticker)
+  m.reply(`*Sukses Menghapus Sticker Dengan Key ${text}*`)
+}
+break
+
+case 'mutegc': {
+  if (!isCreator) return
+
+  let gcList;
+  try {
+    const data = fs.readFileSync('./storage/gcMuted.json', 'utf-8');
+    gcList = JSON.parse(data);
+  } catch (error) {
+    console.error('Error membaca file gcMuted.json:', error);
+    gcList = [];
+  }
+
+  let groupId;
+
+  if (m.isGroup) {
+    groupId = m.chat;
+  } else {
+    if (!text) return m.reply(`Kirim link grupnya dulu bang!\nContoh:\n${prefix + command} https://chat.whatsapp.com/xxxxx`)
+    let linknya = text
+    if (text.includes('?')) linknya = text.split('?')[0]
+    try {
+      groupId = await getGroupIdFromLink(linknya, lenwy);
+    } catch (err) {
+      console.error(err);
+      return m.reply("Gagal ambil ID grup dari link. Link mungkin tidak valid atau sudah expired.");
+    }
+  }
+
+  if (gcList.includes(groupId)) {
+    return m.reply(`Grup ${groupId} sudah dalam daftar mute.`);
+  }
+
+  gcList.push(groupId);
+  fs.writeFileSync('./storage/gcMuted.json', JSON.stringify(gcList, null, 2));
+  m.reply(`Grup ${groupId} berhasil dimute.`);
+}
+break
+
+case 'delmutegc': {
+  if (!isCreator) return
+
+  let gcList;
+  try {
+    const data = fs.readFileSync('./storage/gcMuted.json', 'utf-8');
+    gcList = JSON.parse(data);
+  } catch (error) {
+    console.error('Error membaca file gcMuted.json:', error);
+    gcList = [];
+  }
+
+  let groupId;
+
+  if (m.isGroup) {
+    groupId = m.chat;
+  } else {
+    if (!text) return m.reply(`Kirim link grupnya dulu bang!\nContoh:\n${prefix + command} https://chat.whatsapp.com/xxxxx`);
+    let linknya = text
+    if (text.includes('?')) linknya = text.split('?')[0]
+    try {
+      groupId = await getGroupIdFromLink(linknya, lenwy);
+    } catch (err) {
+      console.error(err);
+      return m.reply("Gagal mengambil ID grup dari link. Link mungkin tidak valid atau sudah kadaluarsa.");
+    }
+  }
+
+  const index = gcList.indexOf(groupId);
+  if (index === -1) {
+    return m.reply(`Grup ${groupId} tidak ditemukan dalam daftar mute.`);
+  }
+
+  gcList.splice(index, 1);
+  fs.writeFileSync('./storage/gcMuted.json', JSON.stringify(gcList, null, 2));
+  m.reply(`Grup ${groupId} berhasil dihapus dari daftar gcMuted.`);
+}
+break
+
+case 'pantun': {
+    try {
+        let response = await axios.get('https://apis.xyrezz.online-server.biz.id/api/pantun');
+        let pantunList = response.data;
+        let randomIndex = Math.floor(Math.random() * pantunList.length);
+        let randomPantun = pantunList[randomIndex];
+
+        m.reply(randomPantun.trim());
+    } catch (error) {
+        console.error(error);
+        m.reply('Terjadi kesalahan saat memuat pantun.');
+    }
+}
+break
+
+case 'bratvid': {
+if (!text) return m.reply(`text nya`)
+ try {
+ const proses = await (await fetch(`https://${global.api.maelyn.domain}/api/canvas/brat?text=${text}&isvideo=true&speed=medium`,
+  {
+    method: "GET",
+    headers: {
+      "x-maelyn-auth": global.api.maelyn.apikey
+    }
+  }
+)).json()
+ console.log(proses)
+ await lenwy.sendImageAsSticker(from, proses.result.url, m, { packname: global.packname, author: global.author })
+
+ } catch (err) {
+ console.error(err);
+ m.reply("Maaf, terjadi kesalahan saat memproses permintaan.");
+ }
+}
+break
+
+case 'txt2chibi':
+case 'text2chibi':
+case 'texttochibi':
+case 'chibi': {
+  if (!text) m.reply(`Contoh: ${prefix + command} a boy with a black jacket and blue hair`)
+  LenwyLD()
+  let res = await (await fetch(`https://${global.api.maelyn.domain}/api/txt2chibi?prompt=${text}&resolution=Square`, {
+    headers: {
+      'x-maelyn-auth': global.api.maelyn.apikey
+    }
+  })).json()
+  for (let imageUrl of res.result) {
+    await lenwy.sendMessage(m.chat, { image: { url: imageUrl }}, { quoted: m })
+  }
+}
+break
+
+case 'txt2chibi':
+case 'text2chibi':
+case 'texttochibi':
+case 'chibi': {
+  if (!text) m.reply(`Contoh: ${prefix + command} a boy with a black jacket and blue hair`)
+  LenwyLD()
+  let res = await (await fetch(`https://${global.api.maelyn.domain}/api/txt2img/minecraft?prompt=${text}&resolution=Square`, {
+    headers: {
+      'x-maelyn-auth': global.api.maelyn.apikey
+    }
+  })).json()
+  for (let imageUrl of res.result) {
+    await lenwy.sendMessage(m.chat, { image: { url: imageUrl }}, { quoted: m })
+  }
+}
+break
+
+case 'fetch': {
+if (!text) m.reply('Masukkan link nya')
+
+try {
+let res = await (await fetch(`${text}`)).json()
+console.log(res)
+m.reply(`${text}\n\n`+ JSON.stringify(res, null, 2))
+} catch (e) {
+m.reply(JSON.stringify(e, null, 2))
+m.reply(e.message)
+}
+}
+break
+
+case 'addripper': {
+  if (!isCreator) return m.reply(mess.owner)
+  if (!isBotAdmins) return m.reply(mess.botAdmin)
+    if (!text) return m.reply(`Masukkan nomor yang ingin ditambahkan.\nContoh: ${prefix + command} 628xxx`)
+
+    let nomor = text.replace(/[^0-9]/g, '')
+    var cek = await lenwy.onWhatsApp(nomor)
+    if (cek.length < 1) return m.reply("Nomor Tersebut Tidak Terdaftar Di WhatsApp")
+    const filePath = path.join(__dirname, './storage/dataRipper.json');
+
+    // Pastikan file ada
+    if (!fs.existsSync(filePath)) {
+        fs.writeFileSync(filePath, JSON.stringify([]));
+    }
+
+    let data = JSON.parse(fs.readFileSync(filePath));
+
+    if (data.includes(nomor)) {
+        return m.reply(`Nomor ${nomor} sudah terdaftar sebagai ripper.`)
+    }
+
+    data.push(nomor);
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+
+    m.reply(`Nomor ${nomor} berhasil ditambahkan ke daftar ripper.`)
+}
+break
+
+case 'delripper': {
+  if (!isCreator) return m.reply(mess.owner)
+    if (!text) return m.reply(`Masukkan nomor yang ingin dihapus.\nContoh: ${prefix + command} 628xxx`);
+
+    let nomor = text.replace(/[^0-9]/g, '');
+    const filePath = path.join(__dirname, './storage/dataRipper.json');
+
+    // Pastikan file ada
+    if (!fs.existsSync(filePath)) {
+        return m.reply('Daftar ripper masih kosong.');
+    }
+
+    let data;
+    try {
+        data = JSON.parse(fs.readFileSync(filePath));
+        if (!Array.isArray(data)) data = [];
+    } catch (e) {
+        data = [];
+    }
+
+    if (!data.includes(nomor)) {
+        return m.reply(`Nomor ${nomor} tidak ditemukan dalam daftar ripper.`);
+    }
+
+    // Hapus nomor dari array
+    data = data.filter(n => n !== nomor);
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+
+    m.reply(`Nomor ${nomor} berhasil dihapus dari daftar ripper.`);
+}
+break
+
+case 'listripper': {
+  if (!isCreator) return m.reply(mess.owner)
+
+    // Membaca data premium dari file
+    let owner;
+    try {
+        owner = JSON.parse(fs.readFileSync('./storage/dataRipper.json', 'utf8'))
+    } catch (err) {
+        console.error('Error reading premium.json:', err)
+        return m.reply('*Gagal Memuat Daftar Premium.*')
+    }
+
+    if (owner.length === 0) return m.reply('*Daftar Ripper Masih Kosong.*')
+
+    let teksooo = '\`— 𝗟𝗶𝘀𝘁 𝗥𝗶𝗽𝗽𝗲𝗿\`\n';
+    for (let i of owner) {
+        teksooo += `✉️ ${i}\n`
+    }
+    teksooo += `\nTotal: ${owner.length}`;
+
+    // Kirimkan pesan daftar premium
+    lenwy.sendMessage(from, { text: teksooo.trim() }, { quoted: m })
+}
+break
+
+case 'minta': {
+  if (!["120363344469321945@g.us","120363419539538282@g.us"].includes(from)) return
+  if (!text) return m.reply(`Contoh: minta hd`)
+  if (text.toLowerCase() === command.toLowerCase()) return m.reply(`😊`)
+  try {
+    const caseName = text.toLowerCase()
+    const caseCode = getcase(caseName)
+
+    const caseRegex = /((?:case\s+'[^']+'\s*:\s*)+)\s*\{/g
+
+    let match, found = false
+    let startIndex = -1, endIndex = -1
+    let lastAlias = null
+
+    while ((match = caseRegex.exec(caseCode)) !== null) {
+      const rawCases = match[1]
+      const aliases = [...rawCases.matchAll(/case\s+'([^']+)'/g)].map(m => m[1])
+
+      if (aliases.includes(caseName)) {
+        found = true
+        lastAlias = aliases[aliases.length - 1] // gunakan yang terakhir karena itu yang buka blok {
+        startIndex = match.index
+        break
+      }
+    }
+
+    if (!found || !lastAlias) return m.reply(`Case '${caseName}' tidak ditemukan.`)
+
+    endIndex = caseCode.indexOf('break', startIndex)
+    if (endIndex === -1) endIndex = caseCode.length
+
+    const blockCode = caseCode.slice(startIndex, endIndex + 5).trim()
+
+    const newBlock = blockCode.replace(/^((?:case\s+'[^']+'\s*:\s*)+)\s*\{/, `case '${lastAlias}': {`)
+
+    m.reply(`editcase ${lastAlias}|${newBlock}`)
+  } catch (err) {
+    m.reply(`Gagal mengambil case '${text}': ${err.message}`)
+  }
+}
+break
+
+case 'cekidch': 
+case 'inspectch': {
+ if (!text) return m.reply('📌 Kirim link channel WhatsApp-nya!');
+ if (!text.includes("https://whatsapp.com/channel/")) return m.reply('❌ Link tidak valid! Format harus: https://whatsapp.com/channel/...');
+
+ try {
+ const channelCode = text.split('https://whatsapp.com/channel/')[1];
+ const res = await lenwy.newsletterMetadata("invite", channelCode);
+
+ if (!res?.id) return reply('❌ Gagal mengambil info channel.');
+
+ const verified = res.verification === 'VERIFIED' ? '✅ Ya' : '❌ Tidak';
+ const status = res.state === 'ACTIVE' ? '🟢 Aktif' : '🔴 Tidak aktif';
+ 
+ const teks = `⬣ *INFORMASI CHANNEL*\n\n` +
+ `📌 *Nama:* ${res.name || '-'}\n` +
+ `🆔 *ID:* ${res.id}\n` +
+ `👥 *Followers:* ${res.subscribers?.toLocaleString('id-ID') || 0}\n` +
+ `📶 *Status:* ${status}\n` +
+ `☑️ *Verified:* ${verified}`;
+
+ await lenwy.sendMessage(m.chat, {
+ text: teks,
+ footer: `🔹 Gunakan tombol di bawah untuk copy ID Channel`,
+ title: `📡 Channel: ${res.name || 'Tidak diketahui'}`,
+ interactiveButtons: [
+ {
+ name: 'cta_copy',
+ buttonParamsJson: JSON.stringify({
+ display_text: '📋 Copy ID Channel',
+ id: res.id,
+ copy_code: res.id
+ })
+ }
+ ]
+ }, { quoted: m });
+
+ } catch (err) {
+ console.error(err);
+ return m.reply(`❌ *Gagal mengambil data channel:*\n${err.message || 'Tidak diketahui.'}`);
+ }
+}
+break
+
+case 'id': {
+if (from != '120363404278304048@g.us') return
+if (!text) return m.reply(`Contoh: ${prefix + command} bot/aku`)
+if (text === 'bot') {
+let lidnya = lenwy.user?.lid.replace(/:\d+@/, '@')
+let idnya = lenwy.user?.id.replace(/:\d+@/, '@')
+m.reply(`Lid: ${lidnya}
+Id: ${idnya}`)
+} else if (text === 'aku') {
+m.reply(`Id: ${m.sender}`)
+} else {
+return m.reply(`Contoh: ${prefix + command} bot/aku`)
+}
+if (m.sender === "152767909896298@lid") return
+await sleep (5000)
+await lenwy.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+}
+break
+
+
+case 'stalkroblox':
+case 'robloxstalk': {
+ if (!text) return m.reply('masukkan username roblox anda');
+ LenwyLD();
+ try {
+ const response = await (await fetch(`https://${global.api.ham.domain}/stalk/roblox?apikey=${global.api.ham.apikey}&nickname=${encodeURIComponent(text)}`)).json()
+ const data = response.result;
+ console.log(data)
+
+ const formatPesan = `*🍒 ROBLOX PROFILE 🍒*\n\n` +
+ `*PROFILE*\n` +
+ `> *Username*: @${data.userInfo.name || '-'}\n` +
+ `> *Display Name*: ${data.userInfo.displayName || '-'}\n` +
+ `> *Bio*: ${data.userInfo.description && data.userInfo.description !== '-' ? data.userInfo.description : 'No bio available'}\n\n` +
+ `*INFORMATION*\n` +
+ `> *Created*: ${new Date(data.userInfo.created).toLocaleString('en-US')}\n` +
+ `> *Verified*: ${data.userInfo.hasVerifiedBadge ? '✅' : '❌'}\n\n` +
+ `*STATISTICS*\n` +
+ `> *Friends*: ${data.userFriendCount.count.toLocaleString() || '-'}`
+
+ await lenwy.sendMessage(m.chat, { image: { url: data.userAvatar.data[0].imageUrl }, caption: formatPesan }, { quoted: m });
+ } catch (e) {
+ console.error(e);
+ m.reply('Terjadi kesalahan saat mengambil data.');
+ }
+}
+break
+
+default:
+  if (budy.startsWith("=>")) {
+    if (!isCreator) return m.reply('Only owner can use this command.');
+    try {
+      const res = util.format(await eval(`(async () => { return ${budy.slice(3)} })()`));
+      await sleep(2000)
+      await m.reply(res);
+    } catch (e) {
+      await m.reply(String(e));
+    }
+  }
+
+  if (budy.startsWith(">")) {
+    if (!isCreator) return m.reply('Only owner can use this command.');
+    let kode = budy.trim().split(/ +/)[0];
+    const inner = (kode == ">>") ? q : q;
+    try {
+      const teks = util.format(await eval(`(async () => { ${kode == ">>" ? "return " : ""} ${inner}})()`));
+      await sleep(2000)
+      await m.reply(teks);
+    } catch (e) {
+      await m.reply(String(e));
+    }
+  }
+
+  // command lookup -> copyNForward (lebih aman)
+  if (isCmd && budy) {
+    if (m.isBaileys || from.endsWith('broadcast')) return;
+
+    const text = budy.toLowerCase();
+    const msgs = global.db?.data?.database || {};
+
+    if (text in msgs) {
+      try {
+        await lenwy.copyNForward(from, msgs[text], true);
+      } catch (err) {
+        console.error('copyNForward error:', err);
+      }
+    }
+  }
+}
+} catch (err) {
+  const e = String(err);
+  console.log('[ERROR]', e);
+
+  if (e.includes('rate-overlimit')) {
+    console.warn('[WARNING] Kena rate limit WhatsApp. Tunggu sebelum coba lagi.');
+    return;
+  }
+
+  // log error besar secara aman
+  console.error('[UNHANDLED ERROR]', err);
+}
+}
+
+let file = require.resolve(__filename);
+if (process.env.NODE_ENV !== "production") {
+  fs.watchFile(file, () => {
+    fs.unwatchFile(file);
+    console.log(chalk.green(`📑 Update: ${__filename}`));
+    delete require.cache[file];
+    try {
+      require(file);
+    } catch (e) {
+      console.error('Hot-reload error:', e);
+    }
+  });
+}

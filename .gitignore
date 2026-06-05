@@ -1,0 +1,15 @@
+*
+!.gitignore
+!library/
+!library/**
+!project/
+!project/**
+!storage/
+!storage/**
+!author.json
+!banned.json
+!index.js
+!len.js
+!lenwy.js
+!package.json
+!premium.json
