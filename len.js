@@ -73,7 +73,9 @@ global.settings = {
     role1: "Bronze",
     role2: "Silver",
     role3: "Gold",
-    role4: "Owner"
+    role4: "Owner",
+    pricesrole2: 50000,
+    pricesrole3: 100000,
   }
 }
 

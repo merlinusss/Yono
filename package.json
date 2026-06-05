@@ -30,7 +30,6 @@
     "got": "^11.8.3",
     "human-readable": "^0.2.1",
     "hxz-api": "^1.0.1",
-    "javascript-obfuscator": "^4.0.0",
     "jimp": "latest",
     "jsdom": "^22.1.0",
     "lodash": "^4.17.21",

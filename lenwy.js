@@ -19,7 +19,6 @@ const { JSDOM } = require('jsdom')
 const { color, bgcolor } = require('./library/color')
 const { uploader60Minute, uploaderLebih, up } = require('./library/uploader')
 const { fromBuffer } = require('file-type')
-const jsobfus = require('javascript-obfuscator')
 const cheerio = require('cheerio')
 const ytdl = require("ytdl-core")
 const speed = require('performance-now')
@@ -32,8 +31,6 @@ const { isKeyResponStick, getDataResponStick, isAlreadyResponStickGroup, delResp
 const { addSewaGroup, getSewaExpired, getSewaPosition, checkSewaGroup, getAllPremiumUser } = require('./library/sewa')
 const { number, command } = require('yargs')
 const { error } = require('console')
-const pathsewa = './storage/sewa.json';
-const { cekStatusAkunMedan, cekLayanan, orderLayanan, cekStatusOrderanKebsos } = require('./project/litensi')
 const { cekStatusAkunDigi, cekLayananDigiPrabayar, isiSaldoDigi, orderDigi, cekItemDigi, cekOrderanDigi } = require('./project/digiflazz')
 const { generateQris, checkQrisStatus, formatSaldo } = require('./project/paymentGateway.js')
 const { webpToMp4, imageToWebp, videoToWebp, writeExifImg, writeExifVid } = require('./library/exif')
@@ -41,6 +38,7 @@ const { igdl } = require('btch-downloader')
 const { cekMl } = require('./library/mlRegi.js')
 const dns = require('dns').promises
 
+const pathsewa = './storage/sewa.json';
 global.db.data = JSON.parse(fs.readFileSync('./storage/database.json'))
 if (global.db.data) global.db.data = {
 users: {},
@@ -799,130 +797,6 @@ if ('contextInfo' in message) generate.message[type2].contextInfo = message?.con
 return await lenwy.relayMessage(chatId, generate.message, { messageId: generate.key.id })
 }
 
-async function obfus(query) {
-return new Promise((resolve, reject) => {
-try {
-const obfuscationResult = jsobfus.obfuscate(query,
-{
-compact: false,
-controlFlowFlattening: true,
-controlFlowFlatteningThreshold: 1,
-numbersToExpressions: true,
-simplify: true, 
-stringArrayShuffle: true,
-splitStrings: true,
-stringArrayThreshold: 1
-}
-)
-const result = {
-status: 200,
-author: `${global.ownername}`,
-result: obfuscationResult.getObfuscatedCode()
-}
-resolve(result)
-} catch (e) {
-reject(e)
-}
-})
-}
-
-async function aigpt(prompt) {
-  try {
-   const response = await axios.get("https://tools.revesery.com/ai/ai.php?query=" + prompt, {
-     headers: {
-      'Accept': '*/*',
-      'Content-Type': 'application/json',
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.9999.999 Safari/537.36'
-      }
-    })
-    const res = response.data
-    const evaled = res.result
-    /*
-if (typeof evaled !== 'string') evaled = require('util').inspect(evaled)
-m.reply(evaled)
-*/
-  } catch (error) {
-  console.error(error)
-  }
-}
-
-async function ttslide(text) {
-    let response = await axios.get(`https://dlpanda.com/id?url=${text}&token=G7eRpMaa`)
-    const html = response.data
-    const $ = cheerio.load(html)
-    let asd = []
-    let imgSrc = []
-    let creator = 'Jikarinka'
-    $('div.col-md-12 > img').each((index,
-        element) => {
-        imgSrc.push($(element).attr('src'))
-    })
-    asd.push({
-        creator,
-        imgSrc
-    })
-    let fix = imgSrc.map((e,
-        i) => {
-        return {
-            img: e,
-            creator: creator[i]
-        }
-    })
-    for (let i of asd) {
-        return i
-    }
-}
-
-async function cai(query) {
-        let token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkVqYmxXUlVCWERJX0dDOTJCa2N1YyJ9.eyJnaXZlbl9uYW1lIjoiUkNTIiwiZmFtaWx5X25hbWUiOiJYWiIsIm5pY2tuYW1lIjoicmNzeHo2NDkiLCJuYW1lIjoiUkNTIFhaIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0lYbGpRdW11SWlQTjdwLUoxUk1HNjZ0ODZzTzJhMG9DcW93RTlZVDFzaj1zOTYtYyIsImxvY2FsZSI6ImlkIiwidXBkYXRlZF9hdCI6IjIwMjMtMTEtMDVUMTQ6NTM6NDkuNjM0WiIsImVtYWlsIjoicmNzeHo2NDlAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImlzcyI6Imh0dHBzOi8vY2hhcmFjdGVyLWFpLnVzLmF1dGgwLmNvbS8iLCJhdWQiOiJkeUQzZ0UyODFNcWdJU0c3RnVJWFloTDJXRWtucVp6diIsImlhdCI6MTY5OTE5NjAzNCwiZXhwIjoxNzAyNzk2MDM0LCJzdWIiOiJnb29nbGUtb2F1dGgyfDExMDY5MjA2MTkzMTI0MTU4NTgwNSIsInNpZCI6IjVhaklfSlRJeFBZWGpzU0piWmdzRnQ4MXhaTHRhRERyIiwibm9uY2UiOiJUQzE0V2xvMVNGSmlkVU5FWVVSbFJXb3dTV3RJU25acVRtVTRVR3hoUldReU0xQm5Rbk0yYjAwNWJ3PT0ifQ.jduu283Aycw7GwUL270EkwoF71bINRrLnFzVJGpoG9uOO4A-jxtZ07XRZIr_t4lT_gt2N19BWXg7SGxRR_coFbCJLfyUHLzxx6ZaDGMqUnCPhJ6WXBHABsTsqnlQIJs1sQPJyLKw01-FU5FoB8atW3OIyjt0nJayJtMSm4NzKkGR2gBWZSNR3FIqX7r4NY_wUSc-1Za50FaMiLg3XdGkfE59wxs_NdlxxdPVVG4G4uKBWQCIy6ofRDnnb22Wfw1knt8yXMjGfq8RtSsAkGMmjp_KVICSRDCqy0cCOtUdmih5LCRyEQagIRBl90SP753C7ehiue_ucidCYh9XrxP7HQ";
-    return new Promise(async (resolve, reject) => {
-    try {
-        LenwyLD()
-  await sleep(200)
-        const request = await axios({
-            method: "POST",
-            url: "https://beta.character.ai/chat/streaming/",
-            body: JSON.stringify(query),
-            headers: {
-            "authorization": "Token " + token,
-            "Content-Type": "application/json",
-            "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36",
-            client: "Token " + token
-            }
-            })
-
-        if (request.status() === 200) {
-            const response = await JSON.parse(request)
-            const replies = response.replies;
-
-            const messages = []
-
-            for (let i = 0; i < replies.length; i++) {
-                lenwy.sendMessage(i, {text: `${text}`}, {quoted:m})
-            }
-            resolve(i)
-            }
-        } catch (error) {
-      reject(error)
-    }
-})
-}
-
-function setReminder(time, reminder, sender) {
-    let reminderTime = time * 60000;
-
-    let reminderDate = new Date(Date.now() + reminderTime)
-
-    reminders[sender] = {
-        time: reminderTime,
-        message: reminder,
-        reminderDate: reminderDate
-    };
-
-    setTimeout(() => {
-        delete reminders[sender]
-    }, reminderTime)
-}
 
 async function tiktoks(query) {
   return new Promise(async (resolve, reject) => {
@@ -1471,8 +1345,8 @@ async function revokeGc(m) {
   if (!isAdmins) return m.reply(mess.admin)
   if (!isBotAdmins) return m.reply(mess.botAdmin)
       
-      if (!global.db.data.chats[m.chat]) {
-        global.db.data.chats[m.chat] = {};
+    if (!global.db.data.chats[m.chat]) {
+      global.db.data.chats[m.chat] = {};
     }
     await lenwy.groupRevokeInvite(from)
     await new Promise(resolve => setTimeout(resolve, 2000))
@@ -1487,162 +1361,13 @@ async function catatLinkGc(m) {
   if (!isAdmins) return m.reply(mess.admin)
   if (!isBotAdmins) return m.reply(mess.botAdmin)
       
-      if (!global.db.data.chats[m.chat]) {
-        global.db.data.chats[m.chat] = {};
+    if (!global.db.data.chats[m.chat]) {
+      global.db.data.chats[m.chat] = {};
     }
     let newLink = await lenwy.groupInviteCode(from)
     global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
     saveDatabase()
 }
-
-async function upgradeRole(role, user) {
-  let userTopup = {
-    id: [user],
-    role: role,
-    saldo: 0
-  };
-  let data = [];
-
-  try {
-    const fileData = fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8');
-    if (fileData.trim()) {
-      data = JSON.parse(fileData);
-    }
-  } catch (err) {
-    console.log('Error saat membaca atau parsing file:', err.message);
-  }
-
-  const existingUserIndex = data.findIndex(item => {
-    if (Array.isArray(item.id)) {
-      return (
-        item.id.length >= 2 &&
-        item.id[0].endsWith('@s.whatsapp.net') &&
-        item.id[1].endsWith('@lid') &&
-        item.id.includes(user)
-      );
-    } else {
-      return item.id === user;
-    }
-  });
-
-  if (existingUserIndex !== -1) {
-    const existingSaldo = data[existingUserIndex].saldo;
-    data[existingUserIndex].role = role;
-    data[existingUserIndex].saldo = existingSaldo;
-  } else {
-    data.push(userTopup);
-  }
-
-  fs.writeFileSync('./project/database/dataBuyerDigi.json', JSON.stringify(data, null, 2));
-}
-
-async function updateSaldo(user, saldo) {
-  let data = [];
-  try {
-    const fileData = fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8');
-    if (fileData.trim()) {
-      data = JSON.parse(fileData);
-    }
-  } catch (err) {
-    console.log('Error saat membaca atau parsing file:', err.message);
-  }
-
-  const existingUserIndex = data.findIndex(item => {
-    if (Array.isArray(item.id)) {
-      return (
-        item.id.length >= 2 &&
-        item.id[0].endsWith('@s.whatsapp.net') &&
-        item.id[1].endsWith('@lid') &&
-        item.id.includes(user)
-      );
-    } else {
-      return item.id === user;
-    }
-  });
-
-  if (existingUserIndex !== -1) {
-    if (data[existingUserIndex].saldo === null || isNaN(data[existingUserIndex].saldo)) {
-      data[existingUserIndex].saldo = 0;
-    } else {
-      data[existingUserIndex].saldo = parseFloat(data[existingUserIndex].saldo);
-    }
-
-    data[existingUserIndex].saldo += saldo;
-
-    fs.writeFileSync('./project/database/dataBuyerDigi.json', JSON.stringify(data, null, 2));
-    return true; // Berhasil
-  } else {
-    return false;
-  }
-}
-
-function getUserRole(userId) {
-  let buyers = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'));
-
-  let userData = buyers.find(u => {
-    if (Array.isArray(u.id)) {
-      if (
-        u.id.length >= 2 &&
-        u.id[0].endsWith('@s.whatsapp.net') &&
-        u.id[1].endsWith('@lid')
-      ) {
-        return u.id.includes(userId);
-      }
-    }
-    return false;
-  });
-
-  if (!userData) return null
-
-  let rolenya = null;
-  if (userData.role === "1") rolenya = global.settings.roles.role1;
-  else if (userData.role === "2") rolenya = global.settings.roles.role2;
-  else if (userData.role === "3") rolenya = global.settings.roles.role3;
-  else if (userData.role === "4") rolenya = global.settings.roles.role4;
-
-  return rolenya;
-}
-
-async function getUserSaldo(userId) {
-  let userstopup = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'));
-
-  let usertopup = userstopup.find(u => {
-    if (Array.isArray(u.id)) {
-      if (u.id.length >= 2 && 
-          u.id[0].endsWith('@s.whatsapp.net') && 
-          u.id[1].endsWith('@lid')) {
-        return u.id.includes(userId);
-      }
-      return false
-    } else {
-      return false;
-    }
-  });
-  return usertopup && usertopup.saldo != null
-    ? Number(usertopup.saldo)
-    : 0
-}
-
-function getUserTopup(userId) {
-  let userstopup = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'));
-
-  let usertopup = userstopup.find(u => {
-    if (Array.isArray(u.id)) {
-      if (u.id.length >= 2 && 
-          u.id[0].endsWith('@s.whatsapp.net') && 
-          u.id[1].endsWith('@lid')) {
-        return u.id.includes(userId);
-      }
-      return false
-    } else {
-      return false;
-    }
-  });
-
-  return Boolean(usertopup);
-}
-
-
 
 
 if (m.msg?.contextInfo?.mentionedJid?.some(jid => global.owner.includes(jid.replace(/@s\.whatsapp\.net$/, '')))) {
@@ -1650,74 +1375,10 @@ if (m.msg?.contextInfo?.mentionedJid?.some(jid => global.owner.includes(jid.repl
   return m.reply(mess.tagOwner);
 }
 
-
-
-const totalfitur = () =>{
-var mytext = fs.readFileSync("./lenwy.js").toString()
-var numUpper = (mytext.match(/case '/g) || []).length
-return numUpper
-}  
-
-const listCase = () => {
-const code = fs.readFileSync("./lenwy.js", "utf8")
-var regex = /case\s+'([^']+)':/g;
-var matches = []
-var match;
-while ((match = regex.exec(code))) {
-matches.push(match[1])
-}
-let teks = `*Total Case*: ${matches.length} \n\n` 
-matches.forEach(function (x) {
-   teks += "  ◦  " + x + "\n"
-})
-return teks
-}
-
-const getcase = (cases) => {
-  const fileContent = fs.readFileSync("./lenwy.js").toString()
-  let validasii = fileContent.split(`case '${cases}'`)
-  const caseSplit = validasii? validasii : fileContent.split(`case '${cases}'`)
-  
-  if (caseSplit.length < 2) {
-      throw new Error(`Case '${cases}' tidak ditemukan.`)
-  }
-
-  const caseContent = caseSplit[1].split("break")[0]
-  
-  return "case " + `'${cases}'` + caseContent + "break";
-}
-
-
-async function dellCase(filePath, q) {
-  fs.readFile(filePath, "utf8", (err, data) => {
-    if (err) {
-      console.error("Kesalahan untuk menambahkan case:", err)
-      return
-    }
-
-    const regex = new RegExp(`case\\s*['"]${q}['"]\\s*:.*?break?`, "gs")
-    const modifiedData = data.replace(regex, "")
-    if (modifiedData === data) {
-      console.log(`Case '${q}' tidak ditemukan.`)
-    } else {
-      fs.writeFile(filePath, modifiedData, "utf8", (err) => {
-        if (err) {
-            m.reply(`Case ${q} Tidak Ada`)
-          console.error("Terjadi kesalahan saat menulis file:", err)
-          return
-        }
-    m.reply(`Mas, Done. Coba Cek`)
-        console.log(`Teks dari case '${q}' telah dihapus dari file.`)
-      })
-    }
-  })
-}
-
 const gameState = {
   angkaAcak: null,
   jumlahTebakan: 0
 };
-
 
 if (!lenwy.public) {
   let IS_BOT = [lenwy.user.id, lenwy.user.lid].includes(m.sender.replace(/[^0-9]/g, ''))
@@ -1725,7 +1386,6 @@ if (!lenwy.public) {
 }
 
 switch (command) {
-
 
 case 'menu': 
 case 'mainmenu': {
@@ -1773,8 +1433,7 @@ let anu = ` ❛❛ Hai, I'm ${global.botname} 👋 ❛❛
    ││ ♡゙ Antimenu ( Menu Anti )
    ╰╌╌╌╌╌╌╌╌╌𖧷⃝⃝⃝⏤͟͟͞͞ 
 
-⚠️ *Kalo Ada Error Bisa Chat Owner Ya*
-`
+⚠️ *Kalo Ada Error Bisa Chat Owner Ya*`
 m.reply(anu)
 }
 break
@@ -7726,19 +7385,12 @@ break
 case 'cekstatusakun': {
   if (!isCreator) return
 
-  let statusDataMedan = await cekStatusAkunMedan()
   let statusDataDigi = await cekStatusAkunDigi()
-
-  let dataMedan = statusDataMedan?.data || {}
   let dataDigi = statusDataDigi?.data || {}
 
   let mesnya = ` [ Status Akun ]
-Nama Lengkap Kebsos: ${dataMedan.full_name || '-'}
-Username Kebsos: ${dataMedan.username || '-'}
-Saldo Kebsos: ${formatSaldo(dataMedan.balance) || '-'}
 
-Saldo Topup: ${formatSaldo(dataDigi.deposit) || '-'}
-`
+Saldo Topup: ${formatSaldo(dataDigi.deposit) || '-'}`
   m.reply(mesnya)
 }
 break
@@ -7746,7 +7398,6 @@ break
 case 'addgctopup': {
   if (!isCreator) return
   const gcnya = m.chat; // Mendapatkan ID grup
-
   let gcList;
   try {
     const data = fs.readFileSync('./project/database/gcTopup.json', 'utf-8');
@@ -7755,13 +7406,10 @@ case 'addgctopup': {
     console.error('Error membaca file gcTopup.json:', error);
     gcList = []; // Inisialisasi dengan array kosong jika terjadi kesalahan
   }
-
   if (gcList.includes(gcnya)) {
     return m.reply(`Grup dengan ID "${gcnya}" sudah ada dalam daftar.`);
   }
-
   gcList.push(gcnya);
-
   fs.writeFileSync('./project/database/gcTopup.json', JSON.stringify(gcList, null, 2));
   console.log(`ID grup "${gcnya}" berhasil ditambahkan ke gcTopup.json`);
   m.reply(`ID grup "${gcnya}" berhasil ditambahkan ke daftar gcTopup.`);
@@ -7771,7 +7419,6 @@ break
 case 'delgctopup': {
   if (!isCreator) return
   const gcnya = m.chat; // Mendapatkan ID grup
-
   let gcList;
   try {
     const data = fs.readFileSync('./project/database/gcTopup.json', 'utf-8');
@@ -7780,166 +7427,14 @@ case 'delgctopup': {
     console.error('Error membaca file gcTopup.json:', error);
     gcList = []; // Inisialisasi dengan array kosong jika terjadi kesalahan
   }
-
   const index = gcList.indexOf(gcnya);
   if (index === -1) {
     return m.reply(`Grup dengan ID "${gcnya}" tidak ditemukan dalam daftar.`);
   }
-
   gcList.splice(index, 1);
-
   fs.writeFileSync('./project/database/gcTopup.json', JSON.stringify(gcList, null, 2));
   console.log(`ID grup "${gcnya}" berhasil dihapus dari gcTopup.json`);
   m.reply(`ID grup "${gcnya}" berhasil dihapus dari daftar gcTopup.`);
-}
-break
-
-case 'listlayanankebsos': {
-  if (!isCreator) return
-  if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`)
-
-  const layananData = await cekLayanan()
-  if (layananData.data) {
-    let categories = []
-    
-    layananData.data.forEach(service => {
-      if (!categories.includes(service.category)) {
-        categories.push(service.category)
-      }
-    })
-
-    categories.sort()
-
-    let replyMessage = `╭─ ─ ─ LIST KEBSOS OTOMATIS\n`
-
-    categories.forEach((category) => {
-      replyMessage += `│ ── .✦ ${category}\n`
-    })
-
-    replyMessage += `╰╌╌╌╌╌╌╌╌╌╌╌╌`
-
-    m.reply(replyMessage)
-  } else {
-    m.reply('Gagal mendapatkan daftar layanan.')
-  }
-}
-break
-
-case 'addkebsos': {
-  if (!isCreator) return;
-
-  let daftarProduk;
-  try {
-    const data = fs.readFileSync('./project/database/daftarCategoryLitensi.json');
-    daftarProduk = JSON.parse(data);
-  } catch (error) {
-    console.error('Error membaca file JSON:', error);
-    return m.reply('Gagal membaca daftar produk.');
-  }
-
-  const layananData = await cekLayanan();
-
-  if (!layananData || layananData.length === 0) {
-    return m.reply('Gagal mendapatkan data layanan.');
-  }
-
-  let dataProdukLitensi = layananData.data; // Ambil data produk dari layanan
-
-  if (!Array.isArray(dataProdukLitensi) || dataProdukLitensi.length === 0) {
-    return m.reply('Data produk tidak ditemukan.');
-  }
-
-  const inputKategori = text.trim().toLowerCase(); // Misalnya "Instagram Followers"
-  console.log(`Input kategori: ${inputKategori}`); // Debug log
-
-  const produkDitemukan = dataProdukLitensi.filter(product => 
-    product.category && product.category.toLowerCase() === inputKategori
-  );
-
-  if (produkDitemukan.length === 0) {
-    return m.reply(`Kategori "${inputKategori}" tidak ditemukan.`);
-  }
-
-  let produkBaruDitambahkan = [];
-  let produkGagalDitambahkan = [];
-
-  for (const produk of produkDitemukan) {
-    if (!produk.name) {
-      console.warn(`Produk tanpa nama ditemukan: ${JSON.stringify(produk)}`);
-      continue; // Lewatkan produk yang tidak memiliki nama
-    }
-
-    const kategoriAda = daftarProduk.some(item => 
-      item.category && item.category.toLowerCase() === produk.category.toLowerCase()
-    );
-
-    if (kategoriAda) {
-      produkGagalDitambahkan.push(produk.category);
-    } else {
-      const produkBaru = {
-        category: produk.category
-      };
-
-      daftarProduk.push(produkBaru);
-      produkBaruDitambahkan.push(produkBaru.category); // Menyimpan kategori yang ditambahkan
-    }
-  }
-
-  fs.writeFileSync('./project/database/daftarCategoryLitensi.json', JSON.stringify(daftarProduk, null, 2));
-
-  if (produkBaruDitambahkan.length > 0) {
-    m.reply(`Kategori baru berhasil ditambahkan: ${text}.`);
-  } else if (produkGagalDitambahkan.length > 0) {
-    m.reply(`Gagal menambahkan kategori: ${text} sudah ada di file JSON.`);
-  }
-}
-break
-
-case 'delkebsos': {
-  if (!isCreator) return;
-
-  let daftarProduk;
-  try {
-    const data = fs.readFileSync('./project/database/daftarCategoryLitensi.json', 'utf-8');
-    daftarProduk = JSON.parse(data);
-  } catch (error) {
-    console.error('Error membaca file JSON:', error);
-    return m.reply('Gagal membaca daftar produk.');
-  }
-
-  const inputKategori = text.trim().toLowerCase(); // Misalnya "Instagram Followers"
-
-  const produkSebelum = daftarProduk.length; // Menghitung jumlah produk sebelum penghapusan
-  daftarProduk = daftarProduk.filter(product => product.category.toLowerCase() !== inputKategori);
-
-  const produkSetelah = daftarProduk.length; // Menghitung jumlah produk setelah penghapusan
-  const jumlahDihapus = produkSebelum - produkSetelah;
-
-  fs.writeFileSync('./project/database/daftarCategoryLitensi.json', JSON.stringify(daftarProduk, null, 2))
-
-  if (jumlahDihapus > 0) {
-    m.reply(`Berhasil menghapus ${jumlahDihapus} produk dengan kategori "${inputKategori}".`);
-  } else {
-    m.reply(`Tidak ada produk dengan kategori "${inputKategori}" yang ditemukan.`);
-  }
-}
-break
-
-case 'cekorderankebsos': {
-  if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`)
-  let idorderan = text;
-  if (!idorderan) {
-      return m.reply(`Contoh: ${prefix + command} idorderan`)
-  }
-
-let layananData = await cekStatusOrderanKebsos(idorderan)
-console.log(layananData)
-let teksnyee = `┌─ ❀*̥ 
-┆ Status: ${layananData.data.status}
-┆ Dimulai: ${layananData.data.start_count}
-┆ Sisa: ${layananData.data.remains}
-└───❀*̥˚──────────❀*̥˚┘`
-lenwy.sendMessage(m.chat, { text: teksnyee }, { quoted: m })
 }
 break
 
@@ -7947,170 +7442,18 @@ case 'daftarharga': {
   if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`);
 
   let responseDigi = await cekLayananDigiPrabayar();
-  let responseLitensi = await cekLayanan();
-
   let dataProdukDigi = Array.isArray(responseDigi?.data) ? responseDigi.data : [];
-  let dataLitensi = Array.isArray(responseLitensi?.data) ? responseLitensi.data : [];
 
-  let dataProdukLitensi = JSON.parse(fs.readFileSync('./project/database/daftarCategoryLitensi.json', 'utf8'));
-  if (!getUserTopup(m.sender)) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`)
-  let userRole = await getUserRole(m.sender)
-  const aliasMap = {
-    ml: 'mobile legends',
-    ff: 'free fire',
-    pubg: 'pubg mobile',
-    mlf: 'mobile legends filipina',
-    mlb: 'mobile legends brazil',
-    mlm: 'mobile legends malaysia',
-    mlg: 'mobile legends global',
-    mlw: 'mobile legends membership',
-    tseldata: 'telkomsel data',
-    ttview: 'tiktok view'
-  };
-
-  const categoryGroup = ['Pulsa', 'Data'];
-  let profitData = JSON.parse(fs.readFileSync('./project/database/config.json', 'utf8'));
-
-  let input = text.toLowerCase().trim();
-  input = aliasMap[input] || input || '-';
-
-  let uniqueBrands = [];
-  if (dataProdukDigi.length > 0) {
-    uniqueBrands = [...new Set(dataProdukDigi.map(product => {
-      let brand = product.brand.toLowerCase();
-      let type = product.type?.toLowerCase() || 'umum';
-      return type !== 'umum' ? `${brand} ${type}` : brand;
-    }))];
-  }
-
-  let uniqueCategories = [];
-  if (dataProdukLitensi.length > 0) {
-    uniqueCategories = [...new Set(dataProdukLitensi.map(product => product.category.toLowerCase()))];
-  }
-
-if (uniqueBrands.some(brand => input.includes(brand))) {
-  let filteredProducts = dataProdukDigi.filter(product => {
-    let brand = product.brand.toLowerCase();
-    let type = product.type?.toLowerCase() || 'umum';
-    let fullTypeMatch = type !== 'umum' ? `${brand} ${type}` : brand;
-    return input.includes(fullTypeMatch);
+  const users = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'));
+  const userData = users.find(item => {
+    if (Array.isArray(item.id)) return item.id.includes(m.sender);
+    return item.id === m.sender;
   });
 
-    if (filteredProducts.length > 0) {
-      filteredProducts.sort((a, b) => a.price - b.price);
-      let header = `  *List ${filteredProducts[0].brand}${(filteredProducts[0].type && filteredProducts[0].type.toUpperCase() !== 'UMUM') ? ' ' + filteredProducts[0].type : ''}*\n\n`;
+  if (!userData) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`);
 
-      let messages = filteredProducts.map(product => {
-        let basePrice = product.price;
-        let harga1 = Math.round(basePrice * (1 + profitData.profit1Topup / 100));
-        let harga2 = Math.round(basePrice * (1 + profitData.profit2Topup / 100));
-        let harga3 = Math.round(basePrice * (1 + profitData.profit3Topup / 100));
-        let adjustedPrice =
-          userRole === global.settings.roles.role1 ? Math.round(basePrice * (1 + profitData.profit1Topup / 100)) :
-          userRole === global.settings.roles.role2 ? Math.round(basePrice * (1 + profitData.profit2Topup / 100)) :
-          userRole === global.settings.roles.role3 ? Math.round(basePrice * (1 + profitData.profit3Topup / 100)) :
-          basePrice;
-        let statusIcon = product.seller_product_status && product.buyer_product_status ? "✅" : "⛔";
-        return `${statusIcon} *${product.product_name}*
-> *Kode Produk :* ${product.buyer_sku_code}
-> *Harga ${global.settings.roles.role1} :* ${formatSaldo(harga1)}
-> *Harga ${global.settings.roles.role2} :* ${formatSaldo(harga2)}
-> *Harga ${global.settings.roles.role3} :* ${formatSaldo(harga3)}`;
-      }).join('\n\n');
+  const userRole = String(userData.role || "1");
 
-      return lenwy.sendMessage(m.chat, { text: header + messages, mentions: [m.sender] }, { quoted: m });
-    }
-  }
-
-  if (uniqueCategories.includes(input)) {
-    let filteredLitensi = dataLitensi.filter(product => product.category.toLowerCase() === input);
-    if (filteredLitensi.length > 0) {
-      filteredLitensi.sort((a, b) => a.price - b.price);
-      let litensiMessages = filteredLitensi.map(product => {
-        let basePrice = product.price;
-        let harga1 = Math.round(basePrice * (1 + profitData.profit1Kebsos / 100));
-        let harga2 = Math.round(basePrice * (1 + profitData.profit2Kebsos / 100));
-        let harga3 = Math.round(basePrice * (1 + profitData.profit3Kebsos / 100));
-        let adjustedPrice =
-          userRole === global.settings.roles.role1 ? Math.round(basePrice * (1 + profitData.profit1Kebsos / 100)) :
-          userRole === global.settings.roles.role2 ? Math.round(basePrice * (1 + profitData.profit2Kebsos / 100)) :
-          userRole === global.settings.roles.role3 ? Math.round(basePrice * (1 + profitData.profit3Kebsos / 100)) :
-          basePrice;
-        return `${product.name}
-> *Kode Produk :* ${product.id}
-> *Harga ${global.settings.roles.role1}/K :* ${formatSaldo(harga1)}
-> *Harga ${global.settings.roles.role2}/K :* ${formatSaldo(harga2)}
-> *Harga ${global.settings.roles.role3}/K :* ${formatSaldo(harga3)}
-> *Min Pemesanan :* ${product.min}
-> *Max Pemesanan :* ${product.max}`;
-      }).join('\n\n');
-
-      let header = `     *LIST ${input.toUpperCase()}*\n\n`;
-      return lenwy.sendMessage(m.chat, { text: header + litensiMessages, mentions: [m.sender] }, { quoted: m });
-    } else {
-      return m.reply(`Tidak ada produk untuk kategori: ${input}`);
-    }
-  }
-
-  let teksnyee = '';
-
-  if (dataProdukDigi.length > 0 && uniqueBrands.length > 0) {
-    let categories = {};
-    dataProdukDigi.forEach(product => {
-      let brand = product.brand.toUpperCase();
-      let type = (product.type || 'UMUM').toUpperCase();
-      let category = product.category;
-      let displayName;
-
-      if (type === 'UMUM' && categoryGroup.includes(category)) {
-        displayName = `${brand} ${category}`;
-      } else if (type !== 'UMUM' && categoryGroup.includes(category)) {
-        displayName = `${brand} ${type}`;
-      } else if (type === 'UMUM') {
-        displayName = brand;
-      } else {
-        displayName = `${brand} ${type}`;
-      }
-
-      if (!categories[category]) categories[category] = new Set();
-      categories[category].add(displayName);
-    });
-
-    teksnyee += `╭─╸ *all produk topup* ⤸`;
-    Object.keys(categories).sort().forEach(category => {
-      teksnyee += `\n┃\n┃ ❏ *\`${category}\`*`;
-      Array.from(categories[category]).sort().forEach(displayName => {
-        let alias = Object.keys(aliasMap).find(key => aliasMap[key] === displayName.toLowerCase());
-        teksnyee += `\n┃  ֢ ꤠ ${displayName.toUpperCase()} ${alias ? `(${alias.toUpperCase()})` : ''}`;
-      });
-    });
-  }
-
-  if (uniqueCategories.length > 0) {
-    teksnyee += `\n╭─╸ *all produk kebsos* ⤸`;
-    uniqueCategories.forEach(kategori => {
-      let alias = Object.keys(aliasMap).find(key => aliasMap[key] === kategori);
-      teksnyee += `\n┃  ֢ ꤠ ${kategori} ${alias ? `(${alias})` : ''}`;
-    });
-  }
-
-  teksnyee += '\n╰╸\n\n> Contoh: `get ml`';
-  return m.reply(teksnyee);
-}
-break
-
-case 'get': {
-  if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`);
-
-  let responseDigi = await cekLayananDigiPrabayar();
-  let responseLitensi = await cekLayanan();
-
-  let dataProdukDigi = Array.isArray(responseDigi?.data) ? responseDigi.data : [];
-  let dataLitensi = Array.isArray(responseLitensi?.data) ? responseLitensi.data : [];
-
-  let dataProdukLitensi = JSON.parse(fs.readFileSync('./project/database/daftarCategoryLitensi.json', 'utf8'));
-  if (!getUserTopup(m.sender)) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`)
-  let userRole = await getUserRole(m.sender)
   const aliasMap = {
     ml: 'mobile legends',
     ff: 'free fire',
@@ -8139,63 +7482,40 @@ case 'get': {
     }))];
   }
 
-  let uniqueCategories = [];
-  if (dataProdukLitensi.length > 0) {
-    uniqueCategories = [...new Set(dataProdukLitensi.map(product => product.category.toLowerCase()))];
-  }
-
-if (uniqueBrands.some(brand => input.includes(brand))) {
-  let filteredProducts = dataProdukDigi.filter(product => {
-    let brand = product.brand.toLowerCase();
-    let type = product.type?.toLowerCase() || 'umum';
-    let fullTypeMatch = type !== 'umum' ? `${brand} ${type}` : brand;
-    return input.includes(fullTypeMatch);
-  });
+  if (uniqueBrands.some(brand => input.includes(brand))) {
+    let filteredProducts = dataProdukDigi.filter(product => {
+      let brand = product.brand.toLowerCase();
+      let type = product.type?.toLowerCase() || 'umum';
+      let fullTypeMatch = type !== 'umum' ? `${brand} ${type}` : brand;
+      return input.includes(fullTypeMatch);
+    });
 
     if (filteredProducts.length > 0) {
       filteredProducts.sort((a, b) => a.price - b.price);
-      let header = `  *List ${filteredProducts[0].brand}${(filteredProducts[0].type && filteredProducts[0].type.toUpperCase() !== 'UMUM') ? ' ' + filteredProducts[0].type : ''}*\n\n`;
+
+      let header = `*List ${filteredProducts[0].brand}${(filteredProducts[0].type && filteredProducts[0].type.toUpperCase() !== 'UMUM') ? ' ' + filteredProducts[0].type : ''}*\n\n`;
 
       let messages = filteredProducts.map(product => {
-        let basePrice = product.price;
+        let basePrice = Number(product.price || 0);
+        let harga1 = Math.round(basePrice * (1 + profitData.profit1Topup / 100));
+        let harga2 = Math.round(basePrice * (1 + profitData.profit2Topup / 100));
+        let harga3 = Math.round(basePrice * (1 + profitData.profit3Topup / 100));
         let adjustedPrice =
-          userRole === global.settings.roles.role1 ? Math.round(basePrice * (1 + profitData.profit1Topup / 100)) :
-          userRole === global.settings.roles.role2 ? Math.round(basePrice * (1 + profitData.profit2Topup / 100)) :
-          userRole === global.settings.roles.role3 ? Math.round(basePrice * (1 + profitData.profit3Topup / 100)) :
+          userRole === "1" ? Math.round(basePrice * (1 + profitData.profit1Topup / 100)) :
+          userRole === "2" ? Math.round(basePrice * (1 + profitData.profit2Topup / 100)) :
+          userRole === "3" ? Math.round(basePrice * (1 + profitData.profit3Topup / 100)) :
           basePrice;
+
         let statusIcon = product.seller_product_status && product.buyer_product_status ? "✅" : "⛔";
+
         return `${statusIcon} *${product.product_name}*
-> *Kode Produk :* ${product.buyer_sku_code}
-> *Harga :* ${formatSaldo(adjustedPrice)}`;
+> *Kode Produk:* ${product.buyer_sku_code}
+> *Harga ${global.settings.roles.role1} :* ${formatSaldo(harga1)}
+> *Harga ${global.settings.roles.role2} :* ${formatSaldo(harga2)}
+> *Harga ${global.settings.roles.role3} :* ${formatSaldo(harga3)}`;
       }).join('\n\n');
 
       return lenwy.sendMessage(m.chat, { text: header + messages, mentions: [m.sender] }, { quoted: m });
-    }
-  }
-
-  if (uniqueCategories.includes(input)) {
-    let filteredLitensi = dataLitensi.filter(product => product.category.toLowerCase() === input);
-    if (filteredLitensi.length > 0) {
-      filteredLitensi.sort((a, b) => a.price - b.price);
-      let litensiMessages = filteredLitensi.map(product => {
-        let basePrice = product.price;
-        let adjustedPrice =
-          userRole === global.settings.roles.role1 ? Math.round(basePrice * (1 + profitData.profit1Kebsos / 100)) :
-          userRole === global.settings.roles.role2 ? Math.round(basePrice * (1 + profitData.profit2Kebsos / 100)) :
-          userRole === global.settings.roles.role3 ? Math.round(basePrice * (1 + profitData.profit3Kebsos / 100)) :
-          basePrice;
-        return `${product.name}
-> *Kode Produk :* ${product.id}
-> *Harga/K :*${formatSaldo(adjustedPrice)}
-> *Min Pemesanan :* ${product.min}
-> *Max Pemesanan :* ${product.max}`;
-
-      }).join('\n\n');
-
-      let header = `     *LIST ${input.toUpperCase()}*\n\n`;
-      return lenwy.sendMessage(m.chat, { text: header + litensiMessages, mentions: [m.sender] }, { quoted: m });
-    } else {
-      return m.reply(`Tidak ada produk untuk kategori: ${input}`);
     }
   }
 
@@ -8203,6 +7523,7 @@ if (uniqueBrands.some(brand => input.includes(brand))) {
 
   if (dataProdukDigi.length > 0 && uniqueBrands.length > 0) {
     let categories = {};
+
     dataProdukDigi.forEach(product => {
       let brand = product.brand.toUpperCase();
       let type = (product.type || 'UMUM').toUpperCase();
@@ -8233,11 +7554,119 @@ if (uniqueBrands.some(brand => input.includes(brand))) {
     });
   }
 
-  if (uniqueCategories.length > 0) {
-    teksnyee += `\n╭─╸ *all produk kebsos* ⤸`;
-    uniqueCategories.forEach(kategori => {
-      let alias = Object.keys(aliasMap).find(key => aliasMap[key] === kategori);
-      teksnyee += `\n┃  ֢ ꤠ ${kategori} ${alias ? `(${alias})` : ''}`;
+  teksnyee += '\n╰╸\n\n> Contoh: `get ml`';
+  return m.reply(teksnyee);
+}
+break
+
+case 'get': {
+  if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`);
+
+  let responseDigi = await cekLayananDigiPrabayar();
+  let dataProdukDigi = Array.isArray(responseDigi?.data) ? responseDigi.data : [];
+
+  const users = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'));
+  const userData = users.find(item => {
+    if (Array.isArray(item.id)) return item.id.includes(m.sender);
+    return item.id === m.sender;
+  });
+
+  if (!userData) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`);
+
+  const userRole = String(userData.role || "1");
+
+  const aliasMap = {
+    ml: 'mobile legends',
+    ff: 'free fire',
+    pubg: 'pubg mobile',
+    mlf: 'mobile legends filipina',
+    mlb: 'mobile legends brazil',
+    mlm: 'mobile legends malaysia',
+    mlg: 'mobile legends global',
+    mlw: 'mobile legends membership',
+    tselpulsa: 'telkomsel pulsa',
+    ttview: 'tiktok view'
+  };
+
+  const categoryGroup = ['Pulsa', 'Data'];
+  let profitData = JSON.parse(fs.readFileSync('./project/database/config.json', 'utf8'));
+
+  let input = text.toLowerCase().trim();
+  input = aliasMap[input] || input || '-';
+
+  let uniqueBrands = [];
+  if (dataProdukDigi.length > 0) {
+    uniqueBrands = [...new Set(dataProdukDigi.map(product => {
+      let brand = product.brand.toLowerCase();
+      let type = product.type?.toLowerCase() || 'umum';
+      return type !== 'umum' ? `${brand} ${type}` : brand;
+    }))];
+  }
+
+  if (uniqueBrands.some(brand => input.includes(brand))) {
+    let filteredProducts = dataProdukDigi.filter(product => {
+      let brand = product.brand.toLowerCase();
+      let type = product.type?.toLowerCase() || 'umum';
+      let fullTypeMatch = type !== 'umum' ? `${brand} ${type}` : brand;
+      return input.includes(fullTypeMatch);
+    });
+
+    if (filteredProducts.length > 0) {
+      filteredProducts.sort((a, b) => a.price - b.price);
+
+      let header = `*List ${filteredProducts[0].brand}${(filteredProducts[0].type && filteredProducts[0].type.toUpperCase() !== 'UMUM') ? ' ' + filteredProducts[0].type : ''}*\n\n`;
+
+      let messages = filteredProducts.map(product => {
+        let basePrice = Number(product.price || 0);
+        let adjustedPrice =
+          userRole === "1" ? Math.round(basePrice * (1 + profitData.profit1Topup / 100)) :
+          userRole === "2" ? Math.round(basePrice * (1 + profitData.profit2Topup / 100)) :
+          userRole === "3" ? Math.round(basePrice * (1 + profitData.profit3Topup / 100)) :
+          basePrice;
+
+        let statusIcon = product.seller_product_status && product.buyer_product_status ? "✅" : "⛔";
+
+        return `${statusIcon} *${product.product_name}*
+> *Kode Produk:* ${product.buyer_sku_code}
+> *Harga:* ${formatSaldo(adjustedPrice)}`;
+      }).join('\n\n');
+
+      return lenwy.sendMessage(m.chat, { text: header + messages, mentions: [m.sender] }, { quoted: m });
+    }
+  }
+
+  let teksnyee = '';
+
+  if (dataProdukDigi.length > 0 && uniqueBrands.length > 0) {
+    let categories = {};
+
+    dataProdukDigi.forEach(product => {
+      let brand = product.brand.toUpperCase();
+      let type = (product.type || 'UMUM').toUpperCase();
+      let category = product.category;
+      let displayName;
+
+      if (type === 'UMUM' && categoryGroup.includes(category)) {
+        displayName = `${brand} ${category}`;
+      } else if (type !== 'UMUM' && categoryGroup.includes(category)) {
+        displayName = `${brand} ${type}`;
+      } else if (type === 'UMUM') {
+        displayName = brand;
+      } else {
+        displayName = `${brand} ${type}`;
+      }
+
+      if (!categories[category]) categories[category] = new Set();
+      categories[category].add(displayName);
+    });
+
+    teksnyee += `╭─╸ *all produk topup* ⤸`;
+    Object.keys(categories).sort().forEach(category => {
+      teksnyee += `\n┃\n┃ ❏ *\`${category}\`*`;
+      Array.from(categories[category]).sort().forEach(displayName => {
+        let alias = Object.keys(aliasMap).find(key => aliasMap[key] === displayName.toLowerCase());
+        teksnyee += `\n┃  ֢ ꤠ ${displayName.toUpperCase()} ${alias ? `(${alias.toUpperCase()})` : ''}`;
+      });
     });
   }
 
@@ -8247,664 +7676,868 @@ if (uniqueBrands.some(brand => input.includes(brand))) {
 break
 
 case 'upgrade': {
-  if (!isCreator) return;
   if (!text) return m.reply(`Ada 2 cara upgrade user:
-1. ${prefix + command} (Role) lalu reply ke chat target
-2. ${prefix + command} (Role) (628***)`)
-  let teks;
-  if (!m.quoted) {
-    teks = text.replace(/[^0-9]/g, '') + '@s.whatsapp.net';
-    var cek = await lenwy.onWhatsApp(teks.split("@")[0])
-    if (cek.length < 1) return m.reply("Nomor Tersebut Tidak Terdaftar Di WhatsApp")
+
+*Creator / Owner*
+1. ${prefix + command} (${global.settings.roles.role2}/${global.settings.roles.role3}) lalu reply ke chat target
+2. ${prefix + command} (${global.settings.roles.role2}/${global.settings.roles.role3}) 62852xxxx
+
+*User biasa via QRIS*
+1. ${prefix + command} ${global.settings.roles.role2}
+2. ${prefix + command} ${global.settings.roles.role3}
+
+Harga:
+- ${global.settings.roles.role2}: ${formatSaldo(global.settings.roles.pricesrole2)}
+- ${global.settings.roles.role3}: ${formatSaldo(global.settings.roles.pricesrole3)}`)
+
+  const users = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'))
+  const config = JSON.parse(fs.readFileSync('./project/database/config.json', 'utf8'))
+
+  let roleInput = args[0]
+  if (!roleInput) return m.reply(`Contoh:
+${prefix + command} ${global.settings.roles.role2}
+${prefix + command} ${global.settings.roles.role3}`);
+
+  let roleBaru
+  let hargaUpgrade = 0
+  let namaRole = ''
+
+  if (roleInput.toLowerCase() === global.settings.roles.role2.toLowerCase()) {
+    roleBaru = "2"
+    namaRole = global.settings.roles.role2
+    hargaUpgrade = Number(global.settings.roles.pricesrole2 || 0)
+  } else if (roleInput.toLowerCase() === global.settings.roles.role3.toLowerCase()) {
+    roleBaru = "3"
+    namaRole = global.settings.roles.role3
+    hargaUpgrade = Number(global.settings.roles.pricesrole3 || 0)
   } else {
-    teks = m.quoted.sender;
+    return m.reply(`Role hanya bisa:
+- ${global.settings.roles.role2}
+- ${global.settings.roles.role3}`)
   }
 
-  let role = args[0]
-  let user = teks;
-  if (!getUserTopup(user)) return m.reply(`User tersebut belum terdaftar, silahkan ketik ${prefix}daftar terlebih dahulu`)
+  if (isCreator) {
+    let target
+    if (!m.quoted) {
+      if (!args[1]) return m.reply(`Masukkan nomor target.
 
-  if (role !== global.settings.roles.role1 && role !== global.settings.roles.role2 && role !== global.settings.roles.role3 && role !== global.settings.roles.role4) {
-    return m.reply(`Role Hanya "${global.settings.roles.role1}", "${global.settings.roles.role2}", "${global.settings.roles.role3}", "${global.settings.roles.role4}"`)
+Contoh:
+${prefix + command} ${namaRole} 6285261255548`);
+      target = args[1].replace(/[^0-9]/g, '') + '@s.whatsapp.net'
+      const cek = await lenwy.onWhatsApp(target.split("@")[0])
+      if (cek.length < 1) return m.reply(`Nomor tersebut tidak terdaftar di WhatsApp`)
+      if (args[1].startsWith("0")) return m.reply(`Nomor harus diawali dengan kode negara (62)`)
+    } else {
+      target = m.quoted.sender
+    }
+
+    const userIndex = users.findIndex(item => {
+      if (Array.isArray(item.id)) return item.id.includes(target)
+      return item.id === target
+    })
+
+    if (userIndex === -1) return m.reply(`User tersebut belum terdaftar, silakan ketik ${prefix}daftar terlebih dahulu`)
+    if (String(users[userIndex].role) === roleBaru) return m.reply(`User @${target.split("@")[0]} sudah berada di role ${namaRole}`)
+
+    users[userIndex].role = roleBaru
+    fs.writeFileSync('./project/database/dataBuyerDigi.json', JSON.stringify(users, null, 2))
+
+    return lenwy.sendMessage(m.chat, {
+      text: `✅ Pengguna @${target.split("@")[0]} berhasil diupgrade ke ${namaRole}`,
+      mentions: [target]
+    }, { quoted: m })
   }
 
-  if (user.startsWith("0")) {
-    return m.reply(`Nomor Harus Diawali Dengan Kode Nomor Negara (62)`)
+  const userIndex = users.findIndex(item => {
+    if (Array.isArray(item.id)) return item.id.includes(m.sender)
+    return item.id === m.sender
+  })
+
+  if (userIndex === -1) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`)
+  const roleSekarang = String(users[userIndex].role || "1")
+  if (roleSekarang === roleBaru) return m.reply(`Role kamu sudah ${namaRole}`)
+
+  let transactions = []
+  if (fs.existsSync('./project/database/processTopup.json')) {
+    transactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
   }
 
-  if (role === global.settings.roles.role1) {
-    role = "1"
-  } else if (role === global.settings.roles.role2) {
-    role = "2"
-  } else if (role === global.settings.roles.role3) {
-    role = "3"
-  } else if (role === global.settings.roles.role4) {
-    role = "4"
+  const pendingTransaction = transactions.find(tx =>
+    tx.id === m.sender &&
+    tx.status === 'pending'
+  )
+
+  if (pendingTransaction) return m.reply(`❌ Kamu masih punya transaksi pending.
+> Jenis: ${pendingTransaction.dari}
+> Harga: ${formatSaldo(pendingTransaction.harga)}
+
+Ketik N untuk membatalkan transaksi sebelumnya.`)
+
+  const qris = await generateQris(hargaUpgrade, config.qrisPackage, 5)
+  if (qris.status !== 200) return m.reply(`Error saat generate QRIS\n${qris.message}`)
+
+  const transactionId = qris.data.transactionId
+  const qrString = qris.data.qr_string
+  const qrUrl = `https://larabert-qrgen.hf.space/v1/create-qr-code?size=500x500&style=1&color=1A1A2E&data=${encodeURIComponent(qrString)}`
+  const getImage = await axios.get(qrUrl, { responseType: 'arraybuffer' })
+  const qrBuffer = Buffer.from(getImage.data, 'binary')
+
+  const upgradeData = {
+    id: m.sender,
+    item: `upgrade-${namaRole.toLowerCase()}`,
+    tujuan: m.sender.split('@')[0],
+    nama: `UPGRADE ${namaRole.toUpperCase()}`,
+    status: 'pending',
+    dari: 'upgrade',
+    time: time2,
+    harga: hargaUpgrade,
+    roleTujuan: roleBaru,
+    roleName: namaRole,
+    transactionId: transactionId,
+    username: pushname || '-'
   }
 
-  await upgradeRole(role, user)
-  let teksnyee = `Pengguna @${user.split("@")[0]} berhasil diupgrade ke ${text}`
-  lenwy.sendMessage(m.chat, { text: teksnyee, mentions: [user] }, { quoted: m })
+  transactions.push(upgradeData)
+  fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+
+  const caption = `*UPGRADE ${namaRole.toUpperCase()}*
+> User: @${m.sender.split('@')[0]}
+> Upgrade ke: ${namaRole}
+> Harga: ${formatSaldo(hargaUpgrade)}
+> Status: Menunggu pembayaran
+
+Scan QR di atas untuk melakukan pembayaran.
+Ketik N untuk membatalkan.`
+
+  let { key } = await lenwy.sendMessage(
+    m.chat,
+    { image: qrBuffer, caption, mentions: [m.sender] },
+    { quoted: m }
+  )
+
+  let paid = false
+  let attempt = 0
+  const maxAttempts = 18
+
+  while (!paid) {
+    attempt++
+    await sleep(15000)
+    let latestTransactions = []
+    if (fs.existsSync('./project/database/processTopup.json')) {
+      latestTransactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
+    }
+    const upgradeIndex = latestTransactions.findIndex(tx =>
+      tx.id === m.sender &&
+      tx.status === 'pending' &&
+      tx.dari === 'upgrade'
+    )
+    if (upgradeIndex === -1) {
+      paid = true
+      break
+    }
+    if (attempt >= maxAttempts) {
+      latestTransactions.splice(upgradeIndex, 1)
+      fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(latestTransactions, null, 2))
+      try {
+        await lenwy.sendMessage(m.chat, { delete: key })
+      } catch {}
+      return m.reply(`❌ Upgrade dibatalkan karena melewati batas waktu pembayaran.`)
+    }
+
+    try {
+      const res = await checkQrisStatus(transactionId)
+      if (res.status === 200 && res.data.status === 'paid') {
+        paid = true
+        try {
+          await lenwy.sendMessage(m.chat, { delete: key })
+        } catch {}
+
+        let finalTransactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
+        const finalUpgradeIndex = finalTransactions.findIndex(tx =>
+          tx.id === m.sender &&
+          tx.status === 'pending' &&
+          tx.dari === 'upgrade'
+        )
+
+        if (finalUpgradeIndex === -1) return m.reply(`❌ Data upgrade tidak ditemukan atau sudah dibatalkan.`)
+        finalTransactions[finalUpgradeIndex].status = 'paid'
+        fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(finalTransactions, null, 2))
+        let latestUsers = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'))
+        const latestUserIndex = latestUsers.findIndex(item => {
+          if (Array.isArray(item.id)) return item.id.includes(m.sender)
+          return item.id === m.sender
+        })
+
+        if (latestUserIndex === -1) return m.reply(`User tidak ditemukan di database saat update role.`)
+        latestUsers[latestUserIndex].role = roleBaru
+        fs.writeFileSync('./project/database/dataBuyerDigi.json', JSON.stringify(latestUsers, null, 2))
+        let cleanTransactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
+        const cleanIndex = cleanTransactions.findIndex(tx =>
+          tx.id === m.sender &&
+          tx.dari === 'upgrade'
+        )
+        if (cleanIndex !== -1) {
+          cleanTransactions.splice(cleanIndex, 1)
+          fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(cleanTransactions, null, 2))
+        }
+        return lenwy.sendMessage(m.chat, {
+          text: `✅ Upgrade berhasil
+> User: @${m.sender.split('@')[0]}
+> Role baru: ${namaRole}`,
+          mentions: [m.sender]
+        }, { quoted: m })
+      }
+    } catch (err) {
+      console.log('Error check QRIS upgrade:', err)
+    }
+  }
 }
 break
 
 case 'deposit': {
-  if (!isCreator) return
-  if (!text) return m.reply(`Ada Dua Cara Deposit\n> 1. Menggunakan Nomor\nContoh: ${prefix + command} +10000 6285261255548\n\n> 2. Menggunakan Reply\nContoh: Reply Pesan Orang Yang Akan Di Deposit Lalu Ketik ${prefix + command} +10000`)
+  if (!text) {
+    return m.reply(`Ada 2 cara deposit
 
-  let user;
-  let penambahansaldo;
+*Owner*
+> 1. Menggunakan Nomor
+Contoh: ${prefix + command} +10000 6285261255548
 
-  if (!m.quoted) {
-    user = args[1].replace(/[^0-9]/g, '') + '@s.whatsapp.net';
+> 2. Menggunakan Reply
+Contoh: Reply pesan user lalu ketik ${prefix + command} +10000
 
-    const cek = await lenwy.onWhatsApp(user.split("@")[0])
-    if (cek.length < 1) return m.reply(`Nomor Tersebut Tidak Terdaftar Di WhatsApp\n\n> Contoh: ${prefix + command} +10000 6285261255548`)
-    if (user.startsWith("0")) {
-      return m.reply(`Nomor Harus Diawali Dengan Kode Nomor Negara (62)\n\n> Contoh: ${prefix + command} +10000 6285261255548`)
+*User deposit via QRIS*
+Contoh: ${prefix + command} 10000`)
+  }
+
+  const users = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'))
+  const config = JSON.parse(fs.readFileSync('./project/database/config.json', 'utf8'))
+
+  if (isCreator) {
+    let user
+    let nominalRaw = args[0]
+
+    if (!nominalRaw) {
+      return m.reply(`Contoh:
+${prefix + command} +10000 6285261255548
+atau reply chat user lalu ketik
+${prefix + command} +10000`)
     }
-  } else {
-    user = m.quoted.sender;
+
+    if (!m.quoted) {
+      if (!args[1]) return m.reply(`Masukkan nomor target.\n\nContoh: ${prefix + command} +10000 6285261255548`);
+      user = args[1].replace(/[^0-9]/g, '') + '@s.whatsapp.net'
+      const cek = await lenwy.onWhatsApp(user.split('@')[0])
+      if (cek.length < 1) return m.reply(`Nomor tersebut tidak terdaftar di WhatsApp\n\n> Contoh: ${prefix + command} +10000 6285261255548`);
+      if (args[1].startsWith('0')) return m.reply(`Nomor harus diawali dengan kode negara (62)\n\n> Contoh: ${prefix + command} +10000 6285261255548`);
+    } else {
+      user = m.quoted.sender
+    }
+
+    const userIndex = users.findIndex(u => u.id === user)
+    if (userIndex === -1) return m.reply(`User tersebut belum terdaftar, silakan ketik ${prefix}daftar terlebih dahulu`);
+
+    if (!nominalRaw.startsWith('+') && !nominalRaw.startsWith('-')) return m.reply(`Jumlah harus diawali dengan + untuk menambah atau - untuk mengurangi.`);
+
+    let nominal = parseFloat(nominalRaw)
+    if (isNaN(nominal)) return m.reply(`Jumlah harus berupa angka.`);
+
+    const saldoLama = Number(users[userIndex].saldo || 0)
+    const saldoBaru = saldoLama + nominal
+
+    if (saldoBaru < 0) return m.reply(`Saldo user tidak cukup untuk dikurangi.`);
+
+    users[userIndex].saldo = saldoBaru
+    fs.writeFileSync('./project/database/dataBuyerDigi.json', JSON.stringify(users, null, 2))
+
+    const sukses = `Saldo @${user.split("@")[0]} berhasil ${nominal > 0 ? 'ditambah' : 'dikurangi'} ${formatSaldo(Math.abs(nominal))}.
+Saldo sekarang: ${formatSaldo(users[userIndex].saldo)}`
+    return lenwy.sendMessage(m.chat, { text: sukses, mentions: [user] }, { quoted: m })
   }
 
-  if (!getUserTopup(user)) return m.reply(`User tersebut belum terdaftar, silahkan ketik ${prefix}daftar terlebih dahulu`)
-  penambahansaldo = parseFloat(args[0])
-  if (isNaN(penambahansaldo)) {
-    return m.reply(`Jumlah harus berupa angka.`)
-  }
+  const nominal = parseFloat(args[0])
+  if (isNaN(nominal) || nominal <= 0) return m.reply(`Masukkan nominal deposit yang valid.\n\nContoh: ${prefix + command} 10000`)
 
-  let isDeposit = args[0].startsWith('+')
-  if (!isDeposit && !args[0].startsWith('-')) {
-    return m.reply(`Jumlah harus diawali dengan + untuk menambah atau - untuk mengurangi.`)
-  }
+  const userIndex = users.findIndex(u => u.id === m.sender)
+  if (userIndex === -1) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`)
 
-  if (!isDeposit) {
-    penambahansaldo = -Math.abs(penambahansaldo)
-  }
-  await updateSaldo(user, penambahansaldo)
-  let sukses = `Saldo Anda @${user.split("@")[0]} Berhasil ${isDeposit ? 'Ditambah' : 'Dikurangi'} ${formatSaldo(Math.abs(penambahansaldo))}.`;
-  lenwy.sendMessage(m.chat, { text: sukses, mentions: [user] }, { quoted: m })
-}
-break
-
-case 'orderkebsos': {
-  if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`)
-  if (!text) return m.reply(`Contoh: ${prefix + command} <code> <target> <quantity>\n\n> ${prefix + command} 9 merlinus 100`)
-  
-  let statusData = await cekStatusAkunMedan()
-  if (statusData.data.balance <= 0) {
-      return m.reply(`Transaksi Mu Dibatalkan. Tag Admin\n\n> Note: Saldo ${statusData.data.balance}`)
-  }
-
-  if (!getUserTopup(m.sender)) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`)
-  let userRole = await getUserRole(m.sender)
-  let code = args[0];
-  let target = args[1];
-  let quantity = parseInt(args[2]) // Konversi ke integer
-
-  if (!code || !target || isNaN(quantity) || quantity <= 0) {
-      return m.reply(`Contoh: ${prefix + command} <code> <target> <quantity>\n\n> ${prefix + command} 9 merlinus 100`)
-  }
-
-  let result = await cekLayanan()
-  if (!result) {
-    return m.reply(`❌ Terjadi kesalahan saat memproses pesanan.`)
-  }
-
-  let rawDataProfit = fs.readFileSync('./project/database/config.json')
-  let profitData = JSON.parse(rawDataProfit)
-
-  let selectedService = result.data.find(service => service.id.toString() === code)
-  
-  if (!selectedService) {
-    return m.reply(`❌ Layanan dengan code ${code} tidak ditemukan.`)
-  }
-
-  let hargaPerK = parseFloat(selectedService.price) / 1000;  // Membagi rate dengan 1000 untuk harga per unit
-  console.log(selectedService.price)
-  console.log(hargaPerK)
-  let basePrice = Math.round(hargaPerK * quantity)  // Menghitung total harga
-  if (basePrice < 1) {
-      basePrice = 1;
-  }
-
-  let adjustedPrice;
-  if (userRole === global.settings.roles.role1) {
-      adjustedPrice = Math.round(basePrice * (1 + profitData.profit1Kebsos / 100));
-  } else if (userRole === global.settings.roles.role2) {
-      adjustedPrice = Math.round(basePrice * (1 + profitData.profit2Kebsos / 100));
-  } else if (userRole === global.settings.roles.role3) {
-      adjustedPrice = Math.round(basePrice * (1 + profitData.profit3Kebsos / 100));
-  } else if (userRole === global.settings.roles.role4) {
-      adjustedPrice = basePrice;
-  }
-
-  let userSaldo = await getUserSaldo(m.sender)
-  if (userSaldo < adjustedPrice) {
-      return m.reply(`❌ Saldo tidak cukup.\n> Saldo Anda: ${formatSaldo(userSaldo)}\n> Harga Item: ${formatSaldo(adjustedPrice)}`)
-  }
-
-  let transactions = [];
-  if (fs.existsSync('./project/database/processTopup.json')) {
-      const data = fs.readFileSync('./project/database/processTopup.json')
-      transactions = JSON.parse(data)
-  }
-
-  let pendingTransaction = transactions.find(tx => tx.id === m.sender && tx.status === "pending" && tx.dari === "medanpedia")
-  if (pendingTransaction) {
-      return m.reply(`❌ Anda sudah memiliki pemesanan pending.
-> Item: ${pendingTransaction.item}
-> Tujuan: ${pendingTransaction.tujuan}
-> Harga: - ${formatSaldo(pendingtransaction.harga)}
-
-𝗬 Proses 𝗡 Batal`)
-  }
-
-  let transaction = {
-      id: m.sender,
-      name: selectedService.name,
-      item: code,
-      tujuan: target,
-      quantity: quantity,
-      status: "pending",
-      dari: "medanpedia",
-      time: time2,
-      harga: adjustedPrice
-  };
-  
-  transactions.push(transaction)
-  fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
-
-  let teksnya = `‼ KONFIRMASI @${m.sender.split("@")[0]}
-> Item: ${selectedService.name}
-> Kode: ${code}
-> Quantity: ${quantity}
-> Tujuan: ${target}
-> Harga/K: - ${formatSaldo(adjustedPrice)}
-» Saldo Awal: (${formatSaldo(userSaldo)})
-
-𝗬 Proses 𝗡 Batal`;
-
-let { key } = await lenwy.sendMessage(m.chat, { text: teksnya, mentions: [m.sender] }, { quoted: m })
-
-setTimeout(async () => {
   let transactions = []
   if (fs.existsSync('./project/database/processTopup.json')) {
-    transactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json'))
+    transactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
   }
 
-  let index = transactions.findIndex(tx => tx.id === m.sender && tx.status === "pending" && tx.dari === "medanpedia")
-  if (index !== -1) {
-    transactions.splice(index, 1)
-    fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+  const pendingTransaction = transactions.find(tx =>
+    tx.id === m.sender &&
+    tx.status === 'pending'
+  )
 
-    try {
-      await lenwy.sendMessage(m.chat, { delete: key })
-    } catch (e) {
-      console.error('Gagal menghapus pesan:', e)
+  if (pendingTransaction) {
+    if (pendingTransaction.dari === 'deposit') {
+      return m.reply(`❌ Anda masih memiliki deposit pending.
+> Nominal: ${formatSaldo(pendingTransaction.harga)}
+
+Ketik N untuk membatalkan.`)
     }
 
-    lenwy.sendMessage(m.chat, { text: `❌ Pemesanan dibatalkan otomatis karena tidak ada konfirmasi dalam 1 menit.` }, { quoted: m })
+    return m.reply(`❌ Anda masih memiliki transaksi pending.
+> Item: ${pendingTransaction.item}
+> Tujuan: ${pendingTransaction.tujuan}
+> Harga: ${formatSaldo(pendingTransaction.harga)}
+
+Ketik N untuk membatalkan transaksi sebelumnya.`)
   }
-}, 1 * 60 * 1000)
+
+  const qris = await generateQris(nominal, config.qrisPackage, 5)
+  if (qris.status !== 200) return m.reply(`Error saat generate QRIS\n${qris.message}`)
+
+  const transactionId = qris.data.transactionId
+  const qrString = qris.data.qr_string
+  const qrUrl = `https://larabert-qrgen.hf.space/v1/create-qr-code?size=500x500&style=1&color=1A1A2E&data=${encodeURIComponent(qrString)}`
+  const getImage = await axios.get(qrUrl, { responseType: 'arraybuffer' })
+  const qrBuffer = Buffer.from(getImage.data, 'binary')
+
+  const depositData = {
+    id: m.sender,
+    item: 'deposit',
+    tujuan: m.sender.split('@')[0],
+    nama: 'DEPOSIT QRIS',
+    status: 'pending',
+    dari: 'deposit',
+    time: time2,
+    harga: nominal,
+    transactionId: transactionId,
+    username: pushname || '-'
+  }
+
+  transactions.push(depositData)
+  fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+
+  const caption = `*DEPOSIT QRIS*
+> User: @${m.sender.split('@')[0]}
+> Nominal: ${formatSaldo(nominal)}
+> Status: Menunggu pembayaran
+
+Scan QR di atas untuk melakukan pembayaran.
+Ketik N untuk membatalkan.`
+
+  let { key } = await lenwy.sendMessage(
+    m.chat,
+    { image: qrBuffer, caption, mentions: [m.sender] },
+    { quoted: m }
+  )
+
+  let paid = false
+  let attempt = 0
+  const maxAttempts = 18
+
+  while (!paid) {
+    attempt++
+    await sleep(15000)
+
+    let latestTransactions = []
+    if (fs.existsSync('./project/database/processTopup.json')) {
+      latestTransactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
+    }
+
+    const depositIndex = latestTransactions.findIndex(tx =>
+      tx.id === m.sender &&
+      tx.status === 'pending' &&
+      tx.dari === 'deposit'
+    )
+
+    if (depositIndex === -1) {
+      paid = true
+      break
+    }
+
+    if (attempt >= maxAttempts) {
+      latestTransactions.splice(depositIndex, 1)
+      fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(latestTransactions, null, 2))
+      try {
+        await lenwy.sendMessage(m.chat, { delete: key })
+      } catch {}
+      return m.reply(`❌ Deposit dibatalkan karena melewati batas waktu pembayaran.`)
+    }
+
+    try {
+      const res = await checkQrisStatus(transactionId)
+
+      if (res.status === 200 && res.data.status === 'paid') {
+        paid = true
+
+        try {
+          await lenwy.sendMessage(m.chat, { delete: key })
+        } catch {}
+
+        let finalTransactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
+        const finalDepositIndex = finalTransactions.findIndex(tx =>
+          tx.id === m.sender &&
+          tx.status === 'pending' &&
+          tx.dari === 'deposit'
+        )
+
+        if (finalDepositIndex === -1) return m.reply(`❌ Data deposit tidak ditemukan atau sudah dibatalkan.`)
+
+        finalTransactions[finalDepositIndex].status = 'paid'
+        fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(finalTransactions, null, 2))
+
+        let latestUsers = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'))
+        const latestUserIndex = latestUsers.findIndex(u => u.id === m.sender)
+
+        if (latestUserIndex === -1) return m.reply(`User tidak ditemukan di database saat update saldo.`)
+
+        latestUsers[latestUserIndex].saldo = Number(latestUsers[latestUserIndex].saldo || 0) + nominal
+        fs.writeFileSync('./project/database/dataBuyerDigi.json', JSON.stringify(latestUsers, null, 2))
+
+        let cleanTransactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
+        const cleanIndex = cleanTransactions.findIndex(tx =>
+          tx.id === m.sender &&
+          tx.dari === 'deposit'
+        )
+
+        if (cleanIndex !== -1) {
+          cleanTransactions.splice(cleanIndex, 1)
+          fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(cleanTransactions, null, 2))
+        }
+
+        return lenwy.sendMessage(m.chat, {
+          text: `✅ Deposit berhasil
+> User: @${m.sender.split('@')[0]}
+> Nominal: ${formatSaldo(nominal)}
+> Saldo sekarang: ${formatSaldo(latestUsers[latestUserIndex].saldo)}`,
+          mentions: [m.sender]
+        }, { quoted: m })
+      }
+    } catch (err) {
+      console.log('Error check QRIS:', err)
+    }
+  }
 }
 break
 
 case 'order': {
-  if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`)
-  if (!text) return m.reply(`Contoh: ${prefix + command} <kode_produk> <nomor_pelanggan>\n\n> Jika game yang memiliki 2 id maka dipisah\n> ${prefix + command} ml5 12345678 1234`)
-  let statusData = await cekStatusAkunDigi()
-  if (statusData.data.deposit = 0) {
-      return m.reply(`Transaksi Mu Dibatalkan. Tag Admin\n\n> Note: ${orderResult.data.saldo}`)
-  }
-  if (!getUserTopup(m.sender)) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`)
-  let userRole = await getUserRole(m.sender)
-  let buyerSkuCode = args[0]
-  let id = args[1]
-  let serverId = args[2]
+  if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`);
+  if (!text) return m.reply(`Contoh: ${prefix + command} <kode_produk> <nomor_pelanggan>\n\n> Jika game yang memiliki 2 id maka dipisah\n> ${prefix + command} ml5 12345678 1234`);
+
+  const statusData = await cekStatusAkunDigi()
+  if (!statusData?.data || statusData.data.deposit === 0) return m.reply(`Transaksi dibatalkan. Tag Admin\n\n> Note: Saldo deposit kosong / tidak tersedia`);
+
+  const users = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'))
+  const dataUser = users.find(user => user.id === m.sender)
+  if (!dataUser) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`);
+
+  const buyerSkuCode = args[0]?.toLowerCase()
+  const id = args[1]
+  const serverId = args[2]
   let customerNo = id
   if (serverId) customerNo = id + serverId
 
-  if (!buyerSkuCode || !customerNo) {
-      return m.reply(`Contoh: ${prefix + command} <kode_produk> <nomor_pelanggan>\n\n> Jika game yang memiliki 2 id maka dipisah\n> ${prefix + command} ml5 12345678 1234`)
-  }
+  if (!buyerSkuCode || !customerNo) return m.reply(`Contoh: ${prefix + command} <kode_produk> <nomor_pelanggan>\n\n> Jika game yang memiliki 2 id maka dipisah\n> ${prefix + command} ml5 12345678 1234`);
 
-  let result = await cekItemDigi(buyerSkuCode)
-  if (!result || !result.data) {
-      return m.reply(`❌ Terjadi kesalahan saat memproses pesanan.`)
-  }
+  const result = await cekItemDigi(buyerSkuCode)
+  if (!result || !result.data || !result.data[0]) return m.reply(`❌ Produk tidak ditemukan atau terjadi kesalahan.`);
 
-  let rawDataProfit = fs.readFileSync('./project/database/config.json')
-  let profitData = JSON.parse(rawDataProfit)
+  const projectconfig = JSON.parse(fs.readFileSync('./project/database/config.json', 'utf8'))
+
   let userName = '-'
   if (serverId) {
-    let data = await cekMl(id, serverId);
-    let userData = data.message;
-    let nicknameMatch = userData.match(/In-Game Nickname:\s*(\S+)/);
-    let nicknameUser = nicknameMatch ? nicknameMatch[1] : 'Tidak ditemukan';
+    let data = await cekMl(id, serverId)
+    let userData = data?.message || ''
+    let nicknameMatch = userData.match(/In-Game Nickname:\s*(.+)/)
+    let nicknameUser = nicknameMatch ? nicknameMatch[1].trim() : 'Tidak ditemukan'
     userName = nicknameUser || customerNo || '-'
   }
-  let basePrice = result.data[0].price;
 
+  const basePrice = Number(result.data[0].price)
+  let adjustedPrice = basePrice
 
-  let adjustedPrice;
-  
-  if (userRole === global.settings.roles.role1) {
-      adjustedPrice = Math.round(basePrice * (1 + profitData.profit1Topup / 100));
-  } else if (userRole === global.settings.roles.role2) {
-      adjustedPrice = Math.round(basePrice * (1 + profitData.profit2Topup / 100));
-  } else if (userRole === global.settings.roles.role3) {
-      adjustedPrice = Math.round(basePrice * (1 + profitData.profit3Topup / 100));
-  } else if (userRole === global.settings.roles.role4) {
-      adjustedPrice = basePrice
-  }
-
-  let userSaldo = await getUserSaldo(m.sender)
-  if (userSaldo < adjustedPrice) {
-      return m.reply(`❌ Saldo tidak cukup.\n> Saldo Anda: ${formatSaldo(userSaldo)}\n> Harga Item: ${formatSaldo(adjustedPrice)}`)
+  if (dataUser.role === global.settings.roles.role1) {
+    adjustedPrice = Math.round(basePrice * (1 + projectconfig.profit1Topup / 100))
+  } else if (dataUser.role === global.settings.roles.role2) {
+    adjustedPrice = Math.round(basePrice * (1 + projectconfig.profit2Topup / 100))
+  } else if (dataUser.role === global.settings.roles.role3) {
+    adjustedPrice = Math.round(basePrice * (1 + projectconfig.profit3Topup / 100))
+  } else if (dataUser.role === global.settings.roles.role4) {
+    adjustedPrice = basePrice
   }
 
   let transactions = []
   if (fs.existsSync('./project/database/processTopup.json')) {
-      const data = fs.readFileSync('./project/database/processTopup.json')
-      transactions = JSON.parse(data)
+    transactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
   }
 
-  let pendingTransaction = transactions.find(tx => tx.id === m.sender && tx.status === "pending" && tx.dari === "digiflazz")
+  const pendingTransaction = transactions.find(tx =>
+    tx.id === m.sender &&
+    tx.status === 'pending' &&
+    tx.dari === 'digiflazz'
+  )
+
   if (pendingTransaction) {
-      return m.reply(`❌ Anda sudah memiliki pemesanan pending.
+    return m.reply(`❌ Anda sudah memiliki pemesanan pending.
 > Item: ${pendingTransaction.item}
 > Id: ${pendingTransaction.tujuan}
-> Harga: - Rp ${pendingTransaction.harga}
-        
-𝗬 Proses 𝗡 Batal`)
+> Harga: ${formatSaldo(pendingTransaction.harga)}
+
+Y = Proses saldo
+N = Batal
+QRIS = Bayar pakai QRIS`)
   }
 
-  let transaction = {
-      id: m.sender,
-      ref_id: result.data.ref_id,
-      item: buyerSkuCode,
-      tujuan: customerNo,
-      nama: result.data[0].product_name,
-      status: "pending",
-      dari: "digiflazz",
-      time: time2,
-      harga: adjustedPrice,
-      username: userName
-  };
-  
+  const transaction = {
+    id: m.sender,
+    ref_id: result.data.ref_id || null,
+    item: buyerSkuCode,
+    tujuan: customerNo,
+    nama: result.data[0].product_name,
+    status: 'pending',
+    dari: 'digiflazz',
+    time: time2,
+    harga: adjustedPrice,
+    username: userName
+  }
+
   transactions.push(transaction)
   fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
 
-  let teksnya = `‼ KONFIRMASI @${m.sender.split("@")[0]}
-> Nama Produk: ${result.data[0].product_name}
+  const teksnya = `‼ KONFIRMASI @${m.sender.split("@")[0]}
+> Nama Produk: ${transaction.nama}
 > Kode Produk: ${buyerSkuCode}
 > Id: ${customerNo}
 > Nickname: ${userName}
-> Harga: - ${formatSaldo(adjustedPrice)}
+> Harga: ${formatSaldo(adjustedPrice)}
+> Saldo Anda: ${formatSaldo(dataUser.saldo)}
 
-𝗬 Proses 𝗡 Batal`
+Y = Proses saldo
+N = Batal
+QRIS = Bayar pakai QRIS`
 
-let { key } = await lenwy.sendMessage(m.chat, { text: teksnya, mentions: [m.sender] }, { quoted: m })
+  let { key } = await lenwy.sendMessage(
+    m.chat,
+    { text: teksnya, mentions: [m.sender] },
+    { quoted: m }
+  )
 
-setTimeout(async () => {
-  let transactions = []
-  if (fs.existsSync('./project/database/processTopup.json')) {
-    transactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json'))
-  }
-
-  let index = transactions.findIndex(tx => tx.id === m.sender && tx.status === "pending" && tx.dari === "digiflazz")
-  if (index !== -1) {
-    transactions.splice(index, 1)
-    fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
-
-    try {
-      await lenwy.sendMessage(m.chat, { delete: key })
-    } catch (e) {
-      console.error('Gagal menghapus pesan:', e)
+  setTimeout(async () => {
+    let transactions = []
+    if (fs.existsSync('./project/database/processTopup.json')) {
+      transactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
     }
 
-    lenwy.sendMessage(m.chat, { text: `❌ Pemesanan dibatalkan otomatis karena tidak ada konfirmasi dalam 1 menit.` }, { quoted: m })
-  }
-}, 1 * 60 * 1000)
+    const index = transactions.findIndex(tx =>
+      tx.id === m.sender &&
+      tx.status === 'pending' &&
+      tx.dari === 'digiflazz'
+    )
+
+    if (index !== -1) {
+      transactions.splice(index, 1)
+      fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+
+      try {
+        await lenwy.sendMessage(m.chat, { delete: key })
+      } catch (e) {
+        console.error('Gagal menghapus pesan:', e)
+      }
+
+      await lenwy.sendMessage(
+        m.chat,
+        { text: `❌ Pemesanan dibatalkan otomatis karena tidak ada konfirmasi dalam 1 menit.` },
+        { quoted: m }
+      )
+    }
+  }, 60 * 1000)
 }
 break
 
 case 'y': {
-  let transactions = [];
+  let transactions = []
   if (fs.existsSync('./project/database/processTopup.json')) {
-    const data = fs.readFileSync('./project/database/processTopup.json');
-    transactions = JSON.parse(data);
+    transactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
   }
 
-  let transactionIndex = transactions.findIndex(t => t.id === m.sender && t.status === "pending");
+  const transactionIndex = transactions.findIndex(t =>
+    t.id === m.sender &&
+    t.status === 'pending' &&
+    t.dari === 'digiflazz'
+  )
 
-  if (transactionIndex !== -1) {
-    let transaction = transactions[transactionIndex];
-    if (transaction.isQris) return
-    if (transaction.dari === "digiflazz") {
-      let buyerSkuCode = transaction.item; // item sebagai buyerSkuCode
-      let customerNo = transaction.tujuan; // tujuan sebagai customerNo
-      let orderResult = await orderDigi(buyerSkuCode, customerNo);
+  if (transactionIndex === -1) return
 
-      transactions[transactionIndex].status = "Processing";
-      fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2));
-      console.log(orderResult);
+  const transaction = transactions[transactionIndex]
+  if (transaction.isQris) return
 
-      let refId = orderResult.data.ref_id; // ref_id yang diterima dari hasil order
-      m.reply(`Heyy, Wait. . .`)
+  const users = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'))
+  const userIndex = users.findIndex(u => u.id === m.sender)
+  if (userIndex === -1) return m.reply(`User tidak ditemukan di database`)
 
-      let updated = await updateSaldo(m.sender, -transaction.harga);
-      if (!updated) {
-        m.reply(`❌ Gagal memperbarui saldo.`);
-        return;
-      }
-      let newSaldo = await getUserSaldo(m.sender);
+  if (users[userIndex].saldo < transaction.harga) {
+    return m.reply(`❌ Saldo tidak cukup.\n> Saldo Anda: ${formatSaldo(users[userIndex].saldo)}\n> Harga Item: ${formatSaldo(transaction.harga)}`)
+  }
 
-      const checkDigiOrderStatus = async () => {
-        const orderStatus = await cekOrderanDigi(refId, buyerSkuCode, customerNo);
-        let SN = orderStatus.data.sn // SN yang diterima dari hasil order
-        console.log(orderStatus);
+  const buyerSkuCode = transaction.item
+  const customerNo = transaction.tujuan
 
-        if (orderStatus && orderStatus.data.status === "Sukses") {
-          clearInterval(intervalId); // Hentikan pengecekan
+  transactions[transactionIndex].status = 'Processing'
+  fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
 
-          let teksnya = `✅ Transaksi Sukses @${m.sender.split("@")[0]}
+  users[userIndex].saldo -= transaction.harga
+  fs.writeFileSync('./project/database/dataBuyerDigi.json', JSON.stringify(users, null, 2))
+
+  const orderResult = await orderDigi(buyerSkuCode, customerNo)
+  if (!orderResult?.data?.ref_id) {
+    users[userIndex].saldo += transaction.harga
+    fs.writeFileSync('./project/database/dataBuyerDigi.json', JSON.stringify(users, null, 2))
+
+    transactions.splice(transactionIndex, 1)
+    fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+
+    return m.reply(`❌ Gagal membuat pesanan ke server.`)
+  }
+
+  const refId = orderResult.data.ref_id
+  m.reply(`Memproses pesanan anda.`)
+
+  const checkDigiOrderStatus = async () => {
+    const orderStatus = await cekOrderanDigi(refId, buyerSkuCode, customerNo)
+    const SN = orderStatus?.data?.sn || '-'
+
+    if (orderStatus?.data?.status === 'Sukses') {
+      clearInterval(intervalId)
+
+      let teksnya = `✅ Transaksi Sukses @${m.sender.split("@")[0]}
 > Invoice: ${refId}
 > Item: ${transaction.nama}
 > Kode: ${buyerSkuCode}
 > Tujuan: ${customerNo}
 > Harga: ${formatSaldo(transaction.harga)}
-> SN: ${SN}`;
-          lenwy.sendMessage(m.chat, { text: teksnya, mentions: [m.sender] }, { quoted: m });
+> SN: ${SN}`
 
-          transactions[transactionIndex].status = "Sukses";
-          transactions.splice(transactionIndex, 1); // Hapus transaksi
-          fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2)); // Update file
-        } else if (orderStatus.data.status === "Pending") {
-          console.log("Status transaksi masih dalam proses, mencoba lagi...");
-        } else {
-          clearInterval(intervalId);
-          await updateSaldo(m.sender, transaction.harga); // Mengembalikan saldo
-          m.reply(`❌ Ada Yang Gagal. Tag Admin
+      await lenwy.sendMessage(m.chat, { text: teksnya, mentions: [m.sender] }, { quoted: m })
 
- Note:
-> Status: ${orderStatus ? orderStatus.data.status : "Tidak ada informasi status."}
-> Pesan: ${orderStatus.data.message}`);
-        }
-      };
-
-      const intervalId = setInterval(checkDigiOrderStatus, 7000);
-    } else if (transaction.dari === "medanpedia") {
-      let { item: code, tujuan, quantity, harga } = transaction;
-
-      let orderResult = await orderLayanan(code, tujuan, quantity);
-      console.log(orderResult);
-
-      transactions[transactionIndex].status = "Processing";
-      fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2));
-
-      let updated = await updateSaldo(m.sender, -transaction.harga);
-      if (!updated) {
-        m.reply(`❌ Gagal memperbarui saldo.`);
-        return;
+      let latestTransactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
+      const idx = latestTransactions.findIndex(t => t.id === m.sender && t.status === 'Processing' && t.dari === 'digiflazz')
+      if (idx !== -1) {
+        latestTransactions.splice(idx, 1)
+        fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(latestTransactions, null, 2))
       }
-      let newSaldo = await getUserSaldo(m.sender);
+    } else if (orderStatus?.data?.status === 'Pending') {
+      console.log('Status transaksi masih pending...')
+    } else {
+      clearInterval(intervalId)
 
-      let idOrderan = orderResult.data.id.toString(); // ID pesanan
-      if (orderResult.status === true && transactions[transactionIndex].status === "Processing") {
-        lenwy.sendMessage(m.chat, { text: `Processing, id order: ${orderResult.data.id}` }, { quoted: m });
-
-        const checkStatus = async () => {
-          console.log(idOrderan);
-          let currentStatus = await cekStatusOrderanKebsos(idOrderan);
-          console.log(currentStatus); // Debugging status
-
-          if (currentStatus.status === false || !currentStatus.data) {
-            clearInterval(intervalId); // Hentikan pengecekan
-            transactions.splice(transactionIndex, 1); // Hapus transaksi dari array
-            fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2)); // Update file
-            await updateSaldo(m.sender, transaction.harga); // Mengembalikan saldo
-            m.reply(`❌ Transaksi Error. Tag Admin\n\n> Note: ${currentStatus.msg || "Tidak ada informasi status."}`);
-            return;
-          }
-
-          if (currentStatus.data.status === "Success") {
-            clearInterval(intervalId); // Hentikan pengecekan
-
-            let teksnya = `✅ Transaksi Sukses @${m.sender.split("@")[0]}
-> Invoice: ${idOrderan}
-> Item: ${transaction.nama}
-> Kode: ${code}
-> Tujuan: ${tujuan}
-> Quantity: ${quantity}
-> Harga: Rp ${formatSaldo(harga)}`;
-            lenwy.sendMessage(m.chat, { text: teksnya, mentions: [m.sender] }, { quoted: m });
-
-            transactions[transactionIndex].status = "Sukses";
-            transactions.splice(transactionIndex, 1);
-            fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2)); // Update file
-          } else if (currentStatus.data.status === "Partial" || currentStatus.data.status === "Processing" || currentStatus.data.status === "Pending") {
-            console.log(`Transaksi masih dalam status ${currentStatus.data.status}, akan coba lagi.`);
-          } else {
-            clearInterval(intervalId); // Hentikan pengecekan
-            transactions.splice(transactionIndex, 1); // Hapus transaksi dari array
-            fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2)); // Update file
-            await updateSaldo(m.sender, transaction.harga); // Mengembalikan saldo
-            m.reply(`❌ Transaksi Gagal. Tag Admin
-              
- Note:
-> Status: ${currentStatus.data.status || '-'}
-> Pesan: ${currentStatus.msg}`);
-          }
-        };
-
-        const intervalId = setInterval(checkStatus, 30000);
-      } else {
-        console.log(orderResult);
-        await updateSaldo(m.sender, transaction.harga); // Mengembalikan saldo
-        m.reply(`❌ Transaksi Gagal. Tag Admin
-          
- Note:
-> ${orderResult.msg || "Tidak ada informasi status."}`);
+      let latestUsers = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'))
+      const latestUserIndex = latestUsers.findIndex(u => u.id === m.sender)
+      if (latestUserIndex !== -1) {
+        latestUsers[latestUserIndex].saldo += transaction.harga
+        fs.writeFileSync('./project/database/dataBuyerDigi.json', JSON.stringify(latestUsers, null, 2))
       }
+
+      let latestTransactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
+      const idx = latestTransactions.findIndex(t => t.id === m.sender && t.dari === 'digiflazz')
+      if (idx !== -1) {
+        latestTransactions.splice(idx, 1)
+        fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(latestTransactions, null, 2))
+      }
+
+      m.reply(`❌ Ada yang gagal. Tag Admin
+
+> Status: ${orderStatus?.data?.status || '-'}
+> Pesan: ${orderStatus?.data?.message || 'Tidak ada informasi.'}`)
     }
   }
+
+  const intervalId = setInterval(checkDigiOrderStatus, 7000)
 }
 break
 
 case 'n': {
   let transactions = []
   if (fs.existsSync('./project/database/processTopup.json')) {
-      const data = fs.readFileSync('./project/database/processTopup.json')
-      transactions = JSON.parse(data)
+    transactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
   }
 
-  let transactionIndex = transactions.findIndex(t => t.id === m.sender && t.status === "pending")
+  const transactionIndex = transactions.findIndex(tx =>
+    tx.id === m.sender &&
+    tx.status === 'pending'
+  )
 
-  if (transactionIndex !== -1) {
-      transactions[transactionIndex].status = "Cancelled";
-      m.reply(`❌ Transaksi dibatalkan
-> Item: ${transactions[transactionIndex].nama}
-> Kode: ${transactions[transactionIndex].item}
-> Harga: ${formatSaldo(transactions[transactionIndex].harga)}`)
+  if (transactionIndex === -1) return m.reply('❌ Tidak ada transaksi pending.')
 
-      transactions.splice(transactionIndex, 1)
-      fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+  const trx = transactions[transactionIndex]
+  transactions.splice(transactionIndex, 1)
+  fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+
+  if (trx.dari === 'deposit') {
+    return m.reply(`❌ Deposit dibatalkan
+> Nominal: ${formatSaldo(trx.harga)}`)
   }
+
+  if (trx.dari === 'upgrade') {
+    return m.reply(`❌ Upgrade dibatalkan
+> Upgrade ke: ${trx.roleName}
+> Harga: ${formatSaldo(trx.harga)}`)
+  }
+
+  return m.reply(`❌ Transaksi dibatalkan
+> Item: ${trx.nama}
+> Kode: ${trx.item}
+> Harga: ${formatSaldo(trx.harga)}`)
 }
 break
 
-case 'order2':
-case 'api': {
-  if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`)
-  if (!text) return m.reply(`Contoh: ${prefix + command} <kode_produk> <nomor_pelanggan>\n\n> Jika game yang memiliki 2 id maka dipisah\n> ${prefix + command} ml5 12345678 1234`)
-  let statusData = await cekStatusAkunDigi()
-  if (statusData.data.deposit = 0) return m.reply(`Transaksi Mu Dibatalkan. Tag Admin\n\n> Note: ${orderResult.data.saldo}`)
-
-  if (!getUserTopup(m.sender)) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`)
-  let userRole = await getUserRole(m.sender)
-  let buyerSkuCode = args[0]
-  let id = args[1]
-  let serverId = args[2]
-  let customerNo = id
-  if (serverId) customerNo = id + serverId
-
-  if (!buyerSkuCode || !customerNo) {
-      return m.reply(`Contoh: ${prefix + command} <kode_produk> <nomor_pelanggan>\n\n> Jika game yang memiliki 2 id maka dipisah\n> ${prefix + command} ml5 12345678 1234`)
-  }
-
-  let result = await cekItemDigi(buyerSkuCode)
-  if (!result || !result.data) {
-      return m.reply(`❌ Terjadi kesalahan saat memproses pesanan.`)
-  }
-
-  let projectconfig = JSON.parse(fs.readFileSync('./project/database/config.json'))
-  let userName = '-'
-  if (serverId) {
-    let data = await cekMl(id, serverId);
-    let userData = data.message;
-    let nicknameMatch = userData.match(/In-Game Nickname:\s*(\S+)/);
-    let nicknameUser = nicknameMatch ? nicknameMatch[1] : 'Tidak ditemukan';
-    userName = nicknameUser || customerNo || '-'
-  }
-  let basePrice = result.data[0].price;
-
-  let adjustedPrice;
-  
-  if (userRole === global.settings.roles.role1) {
-      adjustedPrice = Math.round(basePrice * (1 + projectconfig.profit1Topup / 100));
-  } else if (userRole === global.settings.roles.role2) {
-      adjustedPrice = Math.round(basePrice * (1 + projectconfig.profit2Topup / 100));
-  } else if (userRole === global.settings.roles.role3) {
-      adjustedPrice = Math.round(basePrice * (1 + projectconfig.profit3Topup / 100));
-  } else if (userRole === global.settings.roles.role4) {
-      adjustedPrice = basePrice
-  }
-
-  let userSaldo = await getUserSaldo(m.sender)
-  if (userSaldo < adjustedPrice) return m.reply(`❌ Saldo tidak cukup.\n> Saldo Anda: ${formatSaldo(userSaldo)}\n> Harga Item: ${formatSaldo(adjustedPrice)}`)
-
+case 'qris': {
   let transactions = []
   if (fs.existsSync('./project/database/processTopup.json')) {
-      const data = fs.readFileSync('./project/database/processTopup.json')
-      transactions = JSON.parse(data)
+    transactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
   }
 
-  let pendingTransaction = transactions.find(tx => tx.id === m.sender && tx.status === "pending" && tx.dari === "digiflazz")
-  if (pendingTransaction) {
-      return m.reply(`❌ Anda sudah memiliki pemesanan pending.
-> Item: ${pendingTransaction.item}
-> Id: ${pendingTransaction.tujuan}
-> Harga: - Rp ${pendingTransaction.harga}
-        
-𝗡 Batal`)
-  }
+  const transactionIndex = transactions.findIndex(t =>
+    t.id === m.sender &&
+    t.status === 'pending' &&
+    t.dari === 'digiflazz'
+  )
 
-  let transaction = {
-      id: m.sender,
-      isQris: true,
-      ref_id: result.data.ref_id,
-      item: buyerSkuCode,
-      tujuan: customerNo,
-      nama: result.data[0].product_name,
-      status: "pending",
-      dari: "digiflazz",
-      time: time2,
-      harga: adjustedPrice,
-      username: userName
-  };
+  if (transactionIndex === -1) return
 
-  const data = await generateQris(adjustedPrice, projectconfig.qrisPackage, 5)
-  if (data.status !== 200) return m.reply(`Error saat generate qr\n${data.message}`)
+  const transaction = transactions[transactionIndex]
+  const projectconfig = JSON.parse(fs.readFileSync('./project/database/config.json', 'utf8'))
 
-  let url1 = `https://larabert-qrgen.hf.space/v1/create-qr-code?size=500x500&style=1&color=1A1A2E&data=${encodeURIComponent(data.data.qr_string)}`
-  console.log(url1)
-  let getImage = await axios.get(url1, { responseType: "arraybuffer" })
-  let pay = Buffer.from(getImage.data, "binary")
-  let transactionId = data.data.transactionId
-  let teksnya = `‼ KONFIRMASI @${m.sender.split("@")[0]}
-> Nama Produk: ${result.data[0].product_name}
-> Kode Produk: ${buyerSkuCode}
-> Id: ${customerNo}
-> Nickname: ${userName}
-> Harga: - ${formatSaldo(adjustedPrice)}
+  const data = await generateQris(transaction.harga, projectconfig.qrisPackage, 5)
+  if (data.status !== 200) return m.reply(`Error saat generate QR\n${data.message}`)
 
-𝗡 Batal`
-  let { key } = await lenwy.sendMessage(m.chat, { image: pay, caption: teksnya, mentions: [m.sender] }, { quoted: m })
-  transactions.push(transaction)
+  const url1 = `https://larabert-qrgen.hf.space/v1/create-qr-code?size=500x500&style=1&color=1A1A2E&data=${encodeURIComponent(data.data.qr_string)}`
+  const getImage = await axios.get(url1, { responseType: 'arraybuffer' })
+  const pay = Buffer.from(getImage.data, 'binary')
+  const transactionId = data.data.transactionId
+
+  transactions[transactionIndex].isQris = true
+  transactions[transactionIndex].qrisTransactionId = transactionId
   fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+
+  const teksnya = `‼ KONFIRMASI QRIS @${m.sender.split("@")[0]}
+> Nama Produk: ${transaction.nama}
+> Kode Produk: ${transaction.item}
+> Id: ${transaction.tujuan}
+> Nickname: ${transaction.username}
+> Harga: ${formatSaldo(transaction.harga)}
+
+Ketik N untuk batal`
+
+  let { key } = await lenwy.sendMessage(
+    m.chat,
+    { image: pay, caption: teksnya, mentions: [m.sender] },
+    { quoted: m }
+  )
 
   let statusPay = false
   let attempt = 0
-  let maxAttempts = 18
+  const maxAttempts = 18
 
   while (!statusPay) {
     attempt++
     await sleep(15000)
-    
-    if (attempt >= maxAttempts) {
+
+    let latestTransactions = []
+    if (fs.existsSync('./project/database/processTopup.json')) {
+      latestTransactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
+    }
+
+    const latestIndex = latestTransactions.findIndex(t =>
+      t.id === m.sender &&
+      t.status === 'pending' &&
+      t.dari === 'digiflazz'
+    )
+
+    if (latestIndex === -1) {
       statusPay = true
-      let index = transactions.findIndex(tx => tx.id === m.sender && tx.status === "pending" && tx.dari === "digiflazz")
-      transactions.splice(index, 1)
-      fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+      break
+    }
+
+    if (attempt >= maxAttempts) {
+      latestTransactions.splice(latestIndex, 1)
+      fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(latestTransactions, null, 2))
       await lenwy.sendMessage(from, { delete: key })
-      return m.reply("❌ Pemesanan telah melewati batas waktu")
+      return m.reply('❌ Pemesanan telah melewati batas waktu')
     }
 
     try {
       let res = await checkQrisStatus(transactionId)
-      console.log(res.data)
 
-      if (res.status === 200 && res.data.status === "paid") {
-        m.reply(`Pembayaran terdeteksi, memproses pesanan Anda...`)
+      if (res.status === 200 && res.data.status === 'paid') {
         statusPay = true
         await lenwy.sendMessage(from, { delete: key })
-        let orderResult = await orderDigi(buyerSkuCode, customerNo);
-        transactions[transactionIndex].status = "Processing";
-        fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2));
-        console.log(orderResult);
-        let refId = orderResult.data.ref_id
+        m.reply(`Pembayaran terdeteksi, memproses pesanan Anda...`)
+
+        latestTransactions[latestIndex].status = 'Processing'
+        fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(latestTransactions, null, 2))
+
+        const orderResult = await orderDigi(transaction.item, transaction.tujuan)
+        if (!orderResult?.data?.ref_id) {
+          latestTransactions.splice(latestIndex, 1)
+          fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(latestTransactions, null, 2))
+          return m.reply(`❌ Gagal membuat pesanan setelah pembayaran masuk. Tag Admin`)
+        }
+
+        const refId = orderResult.data.ref_id
 
         const checkDigiOrderStatus = async () => {
-          const orderStatus = await cekOrderanDigi(refId, buyerSkuCode, customerNo);
-          let SN = orderStatus.data.sn
-          console.log(orderStatus);
+          const orderStatus = await cekOrderanDigi(refId, transaction.item, transaction.tujuan)
+          const SN = orderStatus?.data?.sn || '-'
 
-          if (orderStatus && orderStatus.data.status === "Sukses") {
-            clearInterval(intervalId);
+          if (orderStatus?.data?.status === 'Sukses') {
+            clearInterval(intervalId)
 
             let teksnya = `✅ Transaksi Sukses @${m.sender.split("@")[0]}
 > Invoice: ${refId}
 > Item: ${transaction.nama}
-> Kode: ${buyerSkuCode}
-> Tujuan: ${customerNo}
+> Kode: ${transaction.item}
+> Tujuan: ${transaction.tujuan}
 > Harga: ${formatSaldo(transaction.harga)}
-> SN: ${SN}`;
-            lenwy.sendMessage(m.chat, { text: teksnya, mentions: [m.sender] }, { quoted: m });
+> SN: ${SN}`
 
-            transactions[transactionIndex].status = "Sukses";
-            transactions.splice(transactionIndex, 1); // Hapus transaksi
-            fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2)); // Update file
-          } else if (orderStatus.data.status === "Pending") {
-            console.log("Status transaksi masih dalam proses, mencoba lagi...");
+            await lenwy.sendMessage(m.chat, { text: teksnya, mentions: [m.sender] }, { quoted: m })
+
+            let finalTransactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
+            const finalIndex = finalTransactions.findIndex(t => t.id === m.sender && t.dari === 'digiflazz')
+            if (finalIndex !== -1) {
+              finalTransactions.splice(finalIndex, 1)
+              fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(finalTransactions, null, 2))
+            }
+          } else if (orderStatus?.data?.status === 'Pending') {
+            console.log('Status transaksi masih dalam proses, mencoba lagi...')
           } else {
-            clearInterval(intervalId);
-            m.reply(`❌ Ada Yang Error. Tag Admin
+            clearInterval(intervalId)
 
- Note:
-> Status: ${orderStatus ? orderStatus.data.status : "Tidak ada informasi status."}
-> Pesan: ${orderStatus.data.message}`);
+            let finalTransactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
+            const finalIndex = finalTransactions.findIndex(t => t.id === m.sender && t.dari === 'digiflazz')
+            if (finalIndex !== -1) {
+              finalTransactions.splice(finalIndex, 1)
+              fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(finalTransactions, null, 2))
+            }
+
+            m.reply(`❌ Ada yang error. Tag Admin
+
+> Status: ${orderStatus?.data?.status || '-'}
+> Pesan: ${orderStatus?.data?.message || 'Tidak ada informasi.'}`)
           }
-        };
+        }
 
-        const intervalId = setInterval(checkDigiOrderStatus, 7000);
+        const intervalId = setInterval(checkDigiOrderStatus, 7000)
       }
     } catch (error) {
-      await lenwy.sendMessage(from, { delete: key })
-      console.log("Error:", error)
+      console.log('Error:', error)
       statusPay = true
-      return m.reply("Ada kendala, pesanan dibatalkan\nSilahkan lakukan pembelian ulang")
+
+      let latestTransactions2 = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
+      const idx = latestTransactions2.findIndex(t => t.id === m.sender && t.status === 'pending' && t.dari === 'digiflazz')
+      if (idx !== -1) {
+        latestTransactions2.splice(idx, 1)
+        fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(latestTransactions2, null, 2))
+      }
+
+      try {
+        await lenwy.sendMessage(from, { delete: key })
+      } catch {}
+      return m.reply('Ada kendala, pesanan dibatalkan\nSilakan lakukan pembelian ulang')
     }
   }
 }
@@ -8913,46 +8546,37 @@ break
 case 'saldo': {
   if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`)
   if (text) return
-  if (!getUserTopup(m.sender)) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`)
-  let role = getUserRole(m.sender);
-  let saldo = await getUserSaldo(m.sender);
-  let teksnye = (`[ Data Anda ]\n\n> Nama: ${pushname}\n> Role: ${role}\n> Saldo: ${formatSaldo(saldo)}`)
-  m.reply(teksnye)
+  let filePathdataBuyer = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'));
+  let dataUser = filePathdataBuyer.find(obj => obj.id === m.sender);
+  if (!getdataUser) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`)
+
+  m.reply(`[ Data Anda ]
+
+> Nama: ${pushname}
+> Role: ${getdataUser.role}
+> Saldo: ${formatSaldo(getdataUser.saldo)}`)
 }
 break
 
 case 'listmember': {
   try {
     if (!isCreator) return m.reply('❌ Anda tidak memiliki akses untuk perintah ini.');
-
-    const userList = require('./project/database/dataBuyerDigi.json')
+    const userList = require('./project/database/dataBuyerDigi.json');
     const filteredUsers = userList.filter(user =>
-      Array.isArray(user.id) &&
-      user.id.length === 2 &&
-      user.id.some(id => id.endsWith('@s.whatsapp.net')) &&
-      user.id.some(id => id.endsWith('@lid'))
+      typeof user.id === 'string' &&
+      user.id.endsWith('@s.whatsapp.net')
     );
-
-    if (filteredUsers.length === 0) {
-      return m.reply('⚠️ Tidak ada data user dengan format ID yang sesuai.');
-    }
-
+    if (filteredUsers.length === 0) return m.reply('⚠️ Tidak ada data member yang sesuai.');
     let result = '*📋 Data Semua Member*\n\n';
-
-    for (let user of filteredUsers) {
-      const waId = user.id.find(id => id.endsWith('@s.whatsapp.net'));
-      const lidId = user.id.find(id => id.endsWith('@lid'));
-
-      const role = await getUserRole(waId);
-      const saldo = await getUserSaldo(waId);
+    for (const user of filteredUsers) {
+      const waId = user.id;
+      const role = user.role;
+      const saldo = user.saldo;
       const namaOrng = await lenwy.getName(waId);
-
-      result += `• ${waId.replace('@s.whatsapp.net', '')} | ${lidId}
-${namaOrng}
+      result += `• ${waId.replace('@s.whatsapp.net', '')} | ${namaOrng}
 Role: ${role}
 Saldo: ${formatSaldo(saldo)}\n\n`;
     }
-
     return m.reply(result.trim());
   } catch (err) {
     console.error(err);
@@ -8962,11 +8586,11 @@ Saldo: ${formatSaldo(saldo)}\n\n`;
 break
 
 case 'profit': {
-if (!isCreator) return
-if (text) return
-let rawDataProfit = fs.readFileSync('./project/database/config.json')
-let profitData = JSON.parse(rawDataProfit)
-m.reply(`[ Persentase profit ]
+  if (!isCreator) return
+  if (text) return
+  let rawDataProfit = fs.readFileSync('./project/database/config.json')
+  let profitData = JSON.parse(rawDataProfit)
+  m.reply(`[ Persentase profit ]
 > Profit Topup
 ${global.settings.roles.role1}: ${profitData.profit1Topup}
 ${global.settings.roles.role2}: ${profitData.profit2Topup}
@@ -8996,28 +8620,24 @@ Format: ${prefix + command} jenis profit1 profit2 profit3`);
 
 Note:
 Hanya bisa ${prefix + command} topup atau ${prefix + command} kebsos`);
-
   let rawData = fs.readFileSync('./project/database/config.json');
   let profitData = JSON.parse(rawData);
-
-  if (!args[1] || !args[2] || !args[3]) {
-      return m.reply(`Semua nilai profit harus diisi.`);
-  }
+  if (!args[1] || !args[2] || !args[3]) return m.reply(`Semua nilai profit harus diisi.`);
 
   if (args[0] === "topup") {
-      profitData.profit1Topup = parseFloat(args[1]);
-      profitData.profit2Topup = parseFloat(args[2]);
-      profitData.profit3Topup = parseFloat(args[3]);
+    profitData.profit1Topup = parseFloat(args[1]);
+    profitData.profit2Topup = parseFloat(args[2]);
+    profitData.profit3Topup = parseFloat(args[3]);
   } else if (args[0] === "kebsos") {
-      profitData.profit1Kebsos = parseFloat(args[1]);
-      profitData.profit2Kebsos = parseFloat(args[2]);
-      profitData.profit3Kebsos = parseFloat(args[3]);
+    profitData.profit1Kebsos = parseFloat(args[1]);
+    profitData.profit2Kebsos = parseFloat(args[2]);
+    profitData.profit3Kebsos = parseFloat(args[3]);
   }
 
   try {
-      fs.writeFileSync('./project/database/config.json', JSON.stringify(profitData, null, 2));
+    fs.writeFileSync('./project/database/config.json', JSON.stringify(profitData, null, 2));
   } catch (err) {
-      return m.reply('❌ Gagal menyimpan perubahan.');
+    return m.reply('❌ Gagal menyimpan perubahan.');
   }
 
   m.reply(`Profit ${args[0]} berhasil diperbarui:
@@ -9030,29 +8650,17 @@ break
 case 'daftar': {
   if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`);
   if (text) return;
+  let filePathdataBuyer = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'));
+  let dataUser = filePathdataBuyer.find(obj => obj.id === m.sender);
+  if (!dataUser) return m.reply(`Anda sudah terdaftar...`)
 
-  if (getUserTopup(m.sender)) return m.reply(`Anda sudah terdaftar...`)
-
-  const dataPath = './project/database/dataBuyerDigi.json';
-  let db = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
-
-  const found = participants.find(p => p.id === m.sender);
-  console.log(found)
-  if (!found || !found.jid || !found.lid) return m.reply("Participant tidak ditemukan!");
-
-  let ids = [
-    `${found.jid}`,
-    `${found.lid}`
-  ];
-
-  db.push({
-    id: ids,
+  filePathdataBuyer.push({
+    id: m.sender,
     role: '1',
     saldo: 0
   });
-  m.reply(`Berhasil mendaftar dengan ID:\n${ids.join("\n")}`);
-
-  fs.writeFileSync(dataPath, JSON.stringify(db, null, 2));
+  m.reply(`Berhasil mendaftar dengan ID:\n${m.sender}`);
+  fs.writeFileSync('./project/database/dataBuyerDigi.json', JSON.stringify(filePathdataBuyer, null, 2));
 }
 break
 
@@ -9061,34 +8669,30 @@ case 'cekdata': {
   let user
   if (!m.quoted && !budy.includes('@')) {
     user = args[0].replace(/[^0-9]/g, '') + '@s.whatsapp.net';
-  
     const cek = await lenwy.onWhatsApp(user.split("@")[0])
+
     if (cek.length < 1) return m.reply(`Nomor Tersebut Tidak Terdaftar Di WhatsApp\n\n> Contoh: ${prefix + command} 6285261255548`)
-    if (user.startsWith("0")) {
-      return m.reply(`Nomor Harus Diawali Dengan Kode Nomor Negara (62)\n\n> Contoh: ${prefix + command} 6285261255548`)
-    }
+    if (user.startsWith("0")) return m.reply(`Nomor Harus Diawali Dengan Kode Nomor Negara (62)\n\n> Contoh: ${prefix + command} 6285261255548`)
   } else if (!m.quoted && budy.includes('@')) {
-  user = text.split('@')[1] + '@s.whatsapp.net'
+    user = text.split('@')[1] + '@s.whatsapp.net'
     const cek = await lenwy.onWhatsApp(user.split("@")[0])
     if (cek.length < 1) return m.reply(`Nomor Tersebut Tidak Terdaftar Di WhatsApp\n\n> Contoh: ${prefix + command} @6285261255548`)
   } else if (m.quoted && !budy.includes('@')) {
-      user = m.quoted.sender
+    user = m.quoted.sender
   } else {
-      m.reply(`Hanya bisa
+    return m.reply(`Hanya bisa
 1. ${prefix + command} @User
 2. ${prefix + command} 6285261255548
 3. ${prefix + command} sambil reply chat yang mau di cek data`)
   }
-
-  let check = getUserTopup (user)
-  let rolenya = await getUserRole(user)
-  let saldonya = await getUserSaldo(user)
-  if (check === false) return m.reply(`User belum terdaftar`)
-  else if (check === true) return m.reply(`[ Data User ]
+  let filePathdataBuyer = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'));
+  let dataUser = filePathdataBuyer.find(obj => obj.id === user);
+  if (!dataUser) return m.reply(`User belum terdaftar`)
+  m.reply(`[ Data User ]
 
 > Id: ${user}
-> Role: ${rolenya}
-> Saldo: ${formatSaldo(saldonya)}`)
+> Role: ${dataUser.role}
+> Saldo: ${formatSaldo(dataUser.saldo)}`)
 }
 break
 
@@ -9165,10 +8769,18 @@ case 'getcase': {
   if (!text) return m.reply(`Contoh: "getcase menu"`)
 
   try {
-      const caseResult = getcase(text)
-      m.reply(caseResult)
+    const fileContent = fs.readFileSync("./lenwy.js").toString()
+    let validasii = fileContent.split(`case '${text}'`)
+    const caseSplit = validasii? validasii : fileContent.split(`case '${text}'`)
+    
+    if (caseSplit.length < 2) {
+        throw new Error(`Case '${text}' tidak ditemukan.`)
+    }
+
+    const caseContent = caseSplit[1].split("break")[0]
+    m.reply("case " + `'${text}'` + caseContent + "break")
   } catch (error) {
-      m.reply(`${error.message}`)
+    m.reply(`${error.message}`)
   }
 }
 break
@@ -9207,34 +8819,22 @@ break
 case 'editcase': {
   if (!isCreator) return m.reply(mess.owner)
   if (!text) return m.reply(`Contoh: ${prefix + command} <nama_case>|<case_baru>`)
-  
   let [caseName, ...newContentArr] = text.split('|')
   caseName = caseName.trim()
   let newContent = newContentArr.join('|').trim()
-  
-  if (!caseName || !newContent) {
-      return m.reply(`Contoh:\n\n${prefix + command} hai|case 'hai':\n{m.reply('Hai juga')\n}\nbreak`)
-  }
-  
-  const fs = require('fs')
+  if (!caseName || !newContent) return m.reply(`Contoh:\n\n${prefix + command} hai|case 'hai':\n{m.reply('Hai juga')\n}\nbreak`)
   const filePath = './lenwy.js';
-  
   try {
-      if (!fs.existsSync(filePath)) {
-          return m.reply(`File bot tidak ditemukan.`)
-      }
-      
+      if (!fs.existsSync(filePath)) return m.reply(`File bot tidak ditemukan.`)
       let fileContent = fs.readFileSync(filePath, 'utf-8')
       const regex = new RegExp(`case ['"]${caseName}['"]: {([\\s\\S]*?)}\\s*break`, 'g')
-      if (!regex.test(fileContent)) {
-          return m.reply(`Case *${caseName}* tidak ditemukan.`)
-      }
+      if (!regex.test(fileContent)) return m.reply(`Case *${caseName}* tidak ditemukan.`)
       const updatedFileContent = fileContent.replace(regex, `${newContent}`)
       fs.writeFileSync(filePath, updatedFileContent, 'utf-8')
       m.reply(`Case *${caseName}* berhasil diedit.`)
   } catch (error) {
       console.error('Error:', error)
-      return m.reply('Terjadi kesalahan saat mengedit case. Coba lagi nanti.')
+      m.reply('Terjadi kesalahan saat mengedit case. Coba lagi nanti.')
   }
 }
 break
@@ -9243,13 +8843,42 @@ case 'delcase': {
 if (!isCreator) return m.reply(mess.owner)
 if (!q)
 return m.reply("Masukan nama case yang akan di hapus")
-dellCase("./lenwy.js", q)
+let filePath = "./lenwy.js"
+fs.readFile(filePath, "utf8", (err, data) => {
+    if (err) console.error("Kesalahan untuk menambahkan case:", err)
+
+    const regex = new RegExp(`case\\s*['"]${q}['"]\\s*:.*?break?`, "gs")
+    const modifiedData = data.replace(regex, "")
+    if (modifiedData === data) {
+      console.log(`Case '${q}' tidak ditemukan.`)
+    } else {
+      fs.writeFile(filePath, modifiedData, "utf8", (err) => {
+      if (err) {
+        m.reply(`Case ${q} Tidak Ada`)
+        console.error("Terjadi kesalahan saat menulis file:", err)
+      }
+      m.reply(`Mas, Done. Coba Cek`)
+      console.log(`Teks dari case '${q}' telah dihapus dari file.`)
+    })
+  }
+})
 }
 break
 
 case 'listcase':
 case 'listfitur': {
-m.reply(listCase())
+  const code = fs.readFileSync("./lenwy.js", "utf8")
+  var regex = /case\s+'([^']+)':/g;
+  var matches = []
+  var match;
+  while ((match = regex.exec(code))) {
+  matches.push(match[1])
+  }
+  let teks = `*Total Case*: ${matches.length} \n\n` 
+  matches.forEach(function (x) {
+    teks += "  ◦  " + x + "\n"
+  })
+m.reply(teks)
 }
 break
 
@@ -9257,8 +8886,10 @@ case 'totalfeature':
 case 'totalfitur': 
 case 'totalcmd': 
 case 'totalcommand': {
-m.reply(`Hallo ${pushname}
-Saat ini ${botname} memiliki total fitur ${totalfitur()}`)
+  var mytext = fs.readFileSync("./lenwy.js").toString()
+  var numUpper = (mytext.match(/case '/g) || []).length
+  m.reply(`Hallo ${pushname}
+Saat ini ${botname} memiliki total fitur ${numUpper}`)
 }
 break
 
