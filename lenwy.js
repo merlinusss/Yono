@@ -8085,7 +8085,7 @@ case 'getcase': {
   try {
     const fileContent = fs.readFileSync("./lenwy.js").toString()
     let validasii = fileContent.split(`case '${text}'`)
-    const caseSplit = validasii? validasii : fileContent.split(`case '${text}'`)
+    const caseSplit = validasii ? validasii : fileContent.split(`case '${text}'`)
     
     if (caseSplit.length < 2) {
         throw new Error(`Case '${text}' tidak ditemukan.`)
@@ -8515,37 +8515,30 @@ break
 
 case 'checksewa':
 case 'ceksewa': {
- if (!isAdmins && !isCreator) return m.reply(mess.admin)
- if (!m.isGroup && !text) return m.reply(`Untuk mengecek sewa grup dari chat pribadi, sertakan link grup.\nContoh:\n${prefix + command} https://chat.whatsapp.com/xxxxx`)
- 
- let groupId = from
- let link = text
- if (!m.isGroup) {
- if (text.includes('?')) link = text.split('?')[0]
- groupId = await getGroupIdFromLink(link, lenwy)
- if (!groupId) return m.reply(`Untuk mengecek sewa grup dari chat pribadi, sertakan link grup.\nContoh:\n${prefix + command} https://chat.whatsapp.com/xxxxx`)
- }
-
- try {
- const currentDir = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
-
- const entry = currentDir.find(entry => entry.groupId === groupId)
- if (!entry) {
- return m.reply(`Perintah ini hanya bisa dilakukan di dalam grup yang sudah di "${prefix}addsewa"`)
- }
-
- if (entry.isAlifetime) return m.reply(`Akan Habis Hingga Owner Pensiun.`)
- const expiry = entry.expired;
- const remainingTime = expiry - Date.now()
- var days = Math.floor(remainingTime / (1000 * 60 * 60 * 24))
- var hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
- var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60))
- const status = `${days} hari ${hours} jam ${minutes} menit`;
- m.reply(`Akan Habis Hingga ${status}.`)
- 
- } catch (error) {
- m.reply('Terjadi kesalahan: ' + error.message)
- }
+  if (!isAdmins || !isCreator) return m.reply(mess.admin)
+  if (!m.isGroup && !text) return m.reply(`Untuk mengecek sewa grup dari chat pribadi, sertakan link grup.\nContoh:\n${prefix + command} https://chat.whatsapp.com/xxxxx`)
+  let groupId = from
+  let link = text
+  if (!m.isGroup) {
+    if (text.includes('?')) link = text.split('?')[0]
+    groupId = await getGroupIdFromLink(link, lenwy)
+    if (!groupId) return m.reply(`Untuk mengecek sewa grup dari chat pribadi, sertakan link grup.\nContoh:\n${prefix + command} https://chat.whatsapp.com/xxxxx`)
+  }
+  try {
+    const currentDir = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
+    const entry = currentDir.find(entry => entry.groupId === groupId)
+    if (!entry) return m.reply(`Perintah ini hanya bisa dilakukan di dalam grup yang sudah di "${prefix}addsewa"`)
+    if (entry.isAlifetime) return m.reply(`Akan Habis Hingga Owner Pensiun.`)
+    const expiry = entry.expired;
+    const remainingTime = expiry - Date.now()
+    var days = Math.floor(remainingTime / (1000 * 60 * 60 * 24))
+    var hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+    var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60))
+    const status = `${days} hari ${hours} jam ${minutes} menit`;
+    m.reply(`Akan Habis Hingga ${status}.`)
+  } catch (error) {
+    m.reply('Terjadi kesalahan: ' + error.message)
+  }
 }
 break
 
@@ -8553,14 +8546,13 @@ case 'removeexpired':
 case 'cekexp':
 case 'cekexpired': {
   if (!isCreator) return m.reply(mess.owner)
-  const fs = require('fs')
-    try {
-        const currentDir = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
-        await expiredCheck(lenwy, currentDir) // Asumsikan `conn` adalah objek koneksi bot
-        m.reply('Pengecekan masa sewa sedang dilakukan, grup yang masa sewanya telah habis akan dihapus secara otomatis.')
-    } catch (error) {
-        m.reply(error.message)
-    }
+  try {
+    const currentDir = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
+    await expiredCheck(lenwy, currentDir) // Asumsikan `conn` adalah objek koneksi bot
+    m.reply('Pengecekan masa sewa sedang dilakukan, grup yang masa sewanya telah habis akan dihapus secara otomatis.')
+  } catch (error) {
+    m.reply(error.message)
+  }
 }
 break
 
@@ -9456,18 +9448,21 @@ case 'minta': {
   if (text.toLowerCase() === command.toLowerCase()) return m.reply(`😊`)
   try {
     const caseName = text.toLowerCase()
-    const caseCode = getcase(caseName)
-
+    const fileContent = fs.readFileSync("./lenwy.js").toString()
+    let validasii = fileContent.split(`case '${caseName}'`)
+    const caseSplit = validasii? validasii : fileContent.split(`case '${caseName}'`)
+    if (caseSplit.length < 2) {
+      throw new Error(`Case '${caseName}' tidak ditemukan.`)
+    }
+    const caseContent = caseSplit[1].split("break")[0]
+    const caseCode = "case " + `'${caseName}'` + caseContent + "break";
     const caseRegex = /((?:case\s+'[^']+'\s*:\s*)+)\s*\{/g
-
     let match, found = false
     let startIndex = -1, endIndex = -1
     let lastAlias = null
-
     while ((match = caseRegex.exec(caseCode)) !== null) {
       const rawCases = match[1]
       const aliases = [...rawCases.matchAll(/case\s+'([^']+)'/g)].map(m => m[1])
-
       if (aliases.includes(caseName)) {
         found = true
         lastAlias = aliases[aliases.length - 1] // gunakan yang terakhir karena itu yang buka blok {
@@ -9477,14 +9472,10 @@ case 'minta': {
     }
 
     if (!found || !lastAlias) return m.reply(`Case '${caseName}' tidak ditemukan.`)
-
     endIndex = caseCode.indexOf('break', startIndex)
     if (endIndex === -1) endIndex = caseCode.length
-
     const blockCode = caseCode.slice(startIndex, endIndex + 5).trim()
-
     const newBlock = blockCode.replace(/^((?:case\s+'[^']+'\s*:\s*)+)\s*\{/, `case '${lastAlias}': {`)
-
     m.reply(`editcase ${lastAlias}|${newBlock}`)
   } catch (err) {
     m.reply(`Gagal mengambil case '${text}': ${err.message}`)
