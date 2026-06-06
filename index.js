@@ -264,144 +264,109 @@ async function connectToWhatsApp() {
     await handleMlbbAutoDetect(m, lenwy);
   })
 
-  lenwy.ev.on('group-participants.update', async (anu) => {
-    try {
-      let databasegc = JSON.parse(fs.readFileSync('./storage/databaseGroup.json', 'utf8'))
-      let settextwel = databasegc[anu.id]?.text_welcome
-      let settextleft = databasegc[anu.id]?.text_left
-      let metadata = await lenwy.groupMetadata(anu.id);
-      let groupName = metadata?.subject || '-'
-      let participants = anu?.participants || {}
-      for (let num of participants) {
-        const num = anu.participants?.[0]
-        const tag = num ? [num] : []
-        const getProfilePicture = async (jid) => {
-          try {
-            return await lenwy.profilePictureUrl(jid, 'image');
-          } catch (error) {
-            return "https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg"; // URL default
-          }
-        };
-        let ppuser = await getProfilePicture(num, 'image');
-        let ppgroup = await getProfilePicture(anu.id, 'image');
-        let thumbnailUrl = ppuser ? (ppuser !== 'https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg' ? ppuser : ppgroup) : 'https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg';
+lenwy.ev.on('group-participants.update', async (anu) => {
+  try {
+    const databasegc = JSON.parse(fs.readFileSync('./storage/databaseGroup.json', 'utf8'))
+    const metadata = await lenwy.groupMetadata(anu.id)
+    const groupName = metadata?.subject || '-'
+    const participants = anu?.participants || []
+    const botNumber = await lenwy.decodeJid(lenwy.user.id)
 
-        let ppgede = false
-
-        let isWelcomeEnabled = global.db.data.chats[anu.id]?.wlcm;
-        let isLeftEnabled = global.db.data.chats[anu.id]?.left;
-
-        let usertag = `@${num.split("@")[0]}`
-
-        if (settextwel.includes('@groupname')) {
-          settextwel = settextwel.replace('@groupname', groupName)
-        }
-        if (settextwel.includes('@usertag')) {
-          settextwel = settextwel.replace('@usertag', usertag)
-        }
-        if (settextwel.includes('@jam')) {
-          settextwel = settextwel.replace('@jam', jamnya)
-        }
-        if (settextwel.includes('@menit')) {
-          settextwel = settextwel.replace('@menit', menitnya)
-        }
-        if (settextwel.includes('@detik')) {
-          settextwel = settextwel.replace('@detik', detiknya)
-        }
-        if (settextwel.includes('@hari')) {
-          settextwel = settextwel.replace('@hari', harinya)
-        }
-        if (settextwel.includes('@tanggal')) {
-          settextwel = settextwel.replace('@tanggal', tanggalnya)
-        }
-        if (settextwel.includes('@bulan')) {
-          settextwel = settextwel.replace('@bulan', bulannya)
-        }
-        if (settextwel.includes('@tahun')) {
-          settextwel = settextwel.replace('@tahun', tahunnya)
-        }
-        if (settextwel.includes('@namabulan')) {
-          settextwel = settextwel.replace('@namabulan', namabulannya)
-        }
-
-        if (!settextwel) {
-          settextwel = `*Halo @${num.split("@")[0]}*\n📣 *Selamat Datang Di Group :* ${metadata.subject}`
-        }
-
-        if (isWelcomeEnabled && anu.action === 'add') {
-          await lenwy.sendMessage(anu.id, { text: settextwel, contextInfo: { mentionedJid: [...tag] } })
-        }
-
-        if (anu.action === 'add') {
-          // Cek apakah nomor yang masuk termasuk ripper
-          const fileRipper = path.join(__dirname, './storage/dataRipper.json');
-          let ripperList = [];
-          const botNumber = await lenwy.decodeJid(lenwy.user.id);
-          const groupMetadata = await lenwy.groupMetadata(anu.id);
-          const groupParticipants = groupMetadata?.participants;
-          const isBotAdmins = groupParticipants?.some(p => p.id === botNumber && p.admin !== null);
-
-          if (fs.existsSync(fileRipper)) {
-            try {
-              ripperList = JSON.parse(fs.readFileSync(fileRipper));
-              if (!Array.isArray(ripperList)) ripperList = [];
-            } catch (e) {
-              ripperList = [];
-            }
-          }
-
-          if (ripperList.includes(num.replace(/[^0-9]/g, ''))) {
-            if (!isBotAdmins) return lenwy.sendTextWithMentions(anu.id, `Gagal mengeluarkan @${num.split('@')[0]} karena bot bukan admin!`);
-            await sleep(500); // tunggu welcome message selesai
-            console.log(`✅ Ripper ${num} otomatis di-kick dari ${groupName}`)
-            await lenwy.sendTextWithMentions(anu.id, `Halo @${num.split('@')[0]}, ${global.botname} akan mengeluarkan anda karena anda tercatat sebagai Ripper!`)
-            await lenwy.groupParticipantsUpdate(anu.id, [num], 'remove');
-          }
-        }
-
-        if (settextleft.includes('@groupname')) {
-          settextleft = settextleft.replace('@groupname', groupName)
-        }
-        if (settextleft.includes('@usertag')) {
-          settextleft = settextleft.replace('@usertag', usertag)
-        }
-        if (settextleft.includes('@jam')) {
-          settextleft = settextleft.replace('@jam', jamnya)
-        }
-        if (settextleft.includes('@menit')) {
-          settextleft = settextleft.replace('@menit', menitnya)
-        }
-        if (settextleft.includes('@detik')) {
-          settextleft = settextleft.replace('@detik', detiknya)
-        }
-        if (settextleft.includes('@hari')) {
-          settextleft = settextleft.replace('@hari', harinya)
-        }
-        if (settextleft.includes('@tanggal')) {
-          settextleft = settextleft.replace('@tanggal', tanggalnya)
-        }
-        if (settextleft.includes('@bulan')) {
-          settextleft = settextleft.replace('@bulan', bulannya)
-        }
-        if (settextleft.includes('@tahun')) {
-          settextleft = settextleft.replace('@tahun', tahunnya)
-        }
-        if (settextleft.includes('@namabulan')) {
-          settextleft = settextleft.replace('@namabulan', namabulannya)
-        }
-
-        if (!settextleft) {
-          settextleft = `✉️ *Sampai Jumpa, @${num.split("@")[0]} Telah Meninggalkan Group*`
-        }
-
-        if (isLeftEnabled && anu.action === 'remove') {
-          await lenwy.sendMessage(anu.id, { text: settextleft, contextInfo: { mentionedJid: [...tag] } })
-        }
+    const getProfilePicture = async (jid) => {
+      try {
+        return await lenwy.profilePictureUrl(jid, 'image')
+      } catch {
+        return 'https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg'
       }
-    } catch (err) {
-      console.log(err);
     }
-  })
+
+    const replaceTemplate = (text, usertag) => {
+      const replacements = {
+        '@groupname': groupName,
+        '@usertag': usertag,
+        '@jam': jamnya,
+        '@menit': menitnya,
+        '@detik': detiknya,
+        '@hari': harinya,
+        '@tanggal': tanggalnya,
+        '@bulan': bulannya,
+        '@tahun': tahunnya,
+        '@namabulan': namabulannya
+      }
+
+      let result = text || ''
+      for (const [key, value] of Object.entries(replacements)) {
+        result = result.replaceAll(key, value)
+      }
+      return result
+    }
+
+    let ripperList = []
+    const fileRipper = path.join(__dirname, './storage/dataRipper.json')
+    if (fs.existsSync(fileRipper)) {
+      try {
+        ripperList = JSON.parse(fs.readFileSync(fileRipper, 'utf8'))
+        if (!Array.isArray(ripperList)) ripperList = []
+      } catch {
+        ripperList = []
+      }
+    }
+
+    const isWelcomeEnabled = global.db.data.chats[anu.id]?.wlcm
+    const isLeftEnabled = global.db.data.chats[anu.id]?.left
+    const isBotAdmins = metadata?.participants?.some(p => p.id === botNumber && p.admin !== null)
+
+    for (const user of participants) {
+      const tag = [user]
+      const usertag = `@${user.split('@')[0]}`
+
+      const ppuser = await getProfilePicture(user)
+      const ppgroup = await getProfilePicture(anu.id)
+      const thumbnailUrl = ppuser && ppuser !== 'https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg'
+        ? ppuser
+        : ppgroup || 'https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg'
+
+      let settextwel = replaceTemplate(databasegc[anu.id]?.text_welcome || '', usertag)
+      let settextleft = replaceTemplate(databasegc[anu.id]?.text_left || '', usertag)
+
+      if (!settextwel) {
+        settextwel = `*Halo ${usertag}*\n📣 *Selamat Datang Di Group :* ${groupName}`
+      }
+
+      if (!settextleft) {
+        settextleft = `✉️ *Sampai Jumpa, ${usertag} Telah Meninggalkan Group*`
+      }
+
+      if (isWelcomeEnabled && anu.action === 'add') {
+        await lenwy.sendMessage(anu.id, {
+          text: settextwel,
+          contextInfo: { mentionedJid: tag }
+        })
+      }
+
+      if (anu.action === 'add' && ripperList.includes(user.replace(/[^0-9]/g, ''))) {
+        if (!isBotAdmins) {
+          await lenwy.sendTextWithMentions(anu.id, `Gagal mengeluarkan ${usertag} karena bot bukan admin!`)
+          continue
+        }
+
+        await sleep(500)
+        console.log(`✅ Ripper ${user} otomatis di-kick dari ${groupName}`)
+        await lenwy.sendTextWithMentions(anu.id, `Halo ${usertag}, ${global.botname} akan mengeluarkan anda karena anda tercatat sebagai Ripper!`)
+        await lenwy.groupParticipantsUpdate(anu.id, [user], 'remove')
+      }
+
+      if (isLeftEnabled && anu.action === 'remove') {
+        await lenwy.sendMessage(anu.id, {
+          text: settextleft,
+          contextInfo: { mentionedJid: tag }
+        })
+      }
+    }
+  } catch (err) {
+    console.log(err)
+  }
+})
 
   async function compressSc(sourceDir, outputZip, selectedFiles = [
     'library', 'project', 'Session', 'storage',

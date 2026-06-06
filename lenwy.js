@@ -15,6 +15,7 @@ const fsx = require('fs-extra')
 const crypto = require('crypto')
 const ffmpeg = require('fluent-ffmpeg')
 const moment = require('moment-timezone')
+const cron = require('node-cron')
 const { JSDOM } = require('jsdom')
 const { color, bgcolor } = require('./library/color')
 const { uploader60Minute, uploaderLebih, up } = require('./library/uploader')
@@ -175,14 +176,6 @@ const botNumber = rawIds.map(v => {
 }).filter(Boolean)
 const isBot = botNumber.includes(m.sender.replace(/[^0-9]/g, ''))
 
-const gcMutedPath = path.resolve(__dirname, './storage/gcMuted.json')
-const gcMuted = JSON.parse(fs.readFileSync(gcMutedPath))
-const isGcMuted = [...gcMuted].includes(m.chat)
-
-const gcTopupPath = path.resolve(__dirname, './project/database/gcTopup.json')
-const gcTopup = JSON.parse(fs.readFileSync(gcTopupPath))
-const isGcTopup = [...gcTopup].includes(m.chat)
-
 const creatorFilePathh = path.resolve(__dirname, './author.json')
 const creatorNumbers = JSON.parse(fs.readFileSync(creatorFilePathh))
 
@@ -193,17 +186,25 @@ const allPremium = [botNumber, ...creatorNumbers, ...premiumNumbers]
 const bannedFilePathh = path.resolve(__dirname, './banned.json')
 const bannedNumbers = JSON.parse(fs.readFileSync(bannedFilePathh))
 
-const sender = m.isGroup ? (m.key.participant ? m.key.participant : m.participant) : m.key.remoteJid
+const gcMutedPath = path.resolve(__dirname, './storage/gcMuted.json')
+const gcMuted = JSON.parse(fs.readFileSync(gcMutedPath))
+const isGcMuted = [...gcMuted].includes(m.chat)
+
+const gcTopupPath = path.resolve(__dirname, './project/database/gcTopup.json')
+const gcTopup = JSON.parse(fs.readFileSync(gcTopupPath))
+const isGcTopup = [...gcTopup].includes(m.chat)
+
+const sender = m.isGroup ? (m.key.participant ? m.key.participant : m.sender) : m.sender
 const groupMetadata = m.isGroup ? await lenwy.groupMetadata(m.chat).catch(e => {}) : ''
 const groupName = m.isGroup ? await groupMetadata?.subject : ''
 const participants = m.isGroup ? await groupMetadata?.participants : []
 const groupAdmins = m.isGroup ? await getGroupAdmins(participants) : []
 
-const rawJid = m.isGroup ? m.key?.participantPn : m.key?.senderPn;
-const senderNumber = (rawJid || m.sender || '').replace(/[^0-9]/g, '');
+const senderNumber = (m.sender || sender || '').replace(/[^0-9]/g, '');
 const isCreator = creatorNumbers.includes(senderNumber);
 const isPrem = allPremium.includes(senderNumber);
 const isBan = bannedNumbers.includes(senderNumber);
+const isReseller = resellerNumbers.includes(senderNumber);
 
 const isBotAdmins = m.isGroup ? [lenwy.user.id, lenwy.user.lid].some(j => groupAdmins.includes(j?.replace(/:\d+@/, '@'))) : false
 const isAdmins = m.isGroup ? groupAdmins.includes(m.sender) : false
@@ -233,78 +234,70 @@ const hariini2 = moment.tz('Asia/Jakarta').format('DD MMMM YYYY')
 const hariini3 = moment.tz('Asia/Jakarta').format('dddd')
 const hariini4 = moment.tz('Asia/Jakarta').format('DD-MMMM-YYYY')
 const waktubackup = moment.tz('Asia/Jakarta').format('DDMMMM')
-        const wib = moment.tz('Asia/Jakarta').format('HH : mm : ss')
-        const wit = moment.tz('Asia/Jayapura').format('HH : mm : ss')
-        const wita = moment.tz('Asia/Makassar').format('HH : mm : ss')
+const wib = moment.tz('Asia/Jakarta').format('HH : mm : ss')
+const wit = moment.tz('Asia/Jayapura').format('HH : mm : ss')
+const wita = moment.tz('Asia/Makassar').format('HH : mm : ss')
+const time2 = moment().tz('Asia/Jakarta').format('HH:mm:ss')
 
-        const time2 = moment().tz('Asia/Jakarta').format('HH:mm:ss')
-        if(time2 < "23:59:00"){
-        var ucapanWaktu = `${global.emoji} Selamat Malam`
-        }
-        if(time2 < "19:00:00"){
-        var ucapanWaktu = `${global.emoji} Selamat Petang`
-        }
-        if(time2 < "18:00:00"){
-        var ucapanWaktu = `${global.emoji} Selamat Sore`
-        }
-        if(time2 < "15:00:00"){
-        var ucapanWaktu = `${global.emoji} Selamat Siang`
-        }
-        if(time2 < "10:00:00"){
-        var ucapanWaktu = `${global.emoji} Selamat Pagi`
-        }
-        if(time2 < "05:00:00"){
-        var ucapanWaktu = `${global.emoji} Selamat Subuh`
-        }
-        if(time2 < "03:00:00"){
-        var ucapanWaktu = `${global.emoji} Selamat Tengah Malam`
-        }
-        
+let ucapanWaktu = `${global.emoji} Selamat Malam`
 
-const cap = 'LEN'
+if (time2 < "03:00:00") {
+  ucapanWaktu = `${global.emoji} Selamat Tengah Malam`
+} else if (time2 < "05:00:00") {
+  ucapanWaktu = `${global.emoji} Selamat Subuh`
+} else if (time2 < "10:00:00") {
+  ucapanWaktu = `${global.emoji} Selamat Pagi`
+} else if (time2 < "15:00:00") {
+  ucapanWaktu = `${global.emoji} Selamat Siang`
+} else if (time2 < "18:00:00") {
+  ucapanWaktu = `${global.emoji} Selamat Sore`
+} else if (time2 < "19:00:00") {
+  ucapanWaktu = `${global.emoji} Selamat Petang`
+}
+
+let pplu
 try {
-pplu = await lenwy.profilePictureUrl(anu.id, 'image')
+  pplu = await lenwy.profilePictureUrl(anu.id, 'image')
 } catch {
-pplu = 'https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg'
+  pplu = 'https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg'
 }
 const len = {
-            key: {
-                participant: `0@s.whatsapp.net`,
-                ...(m.chat ? {
-                    remoteJid: `status@broadcast`
-                } : {})
-            },
-            message: {
-                "contactMessage": {
-                    'displayName': `${pushname}`,
-                    'vcard': `BEGIN:VCARD\nVERSION:3.0\nN:XL;Lenwy,;;;\nFN: Lenwy V2.0\nitem1.TEL;waid=${m.sender.split("@")[0]}:+${m.sender.split("@")[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD`,
-                    'jpegThumbnail': pplu,
-                    thumbnail: pplu,
-                    sendEphemeral: true
-                }   
-            }
-        }
-
-const len2 = {
-    key: {
-        fromMe: false,
-        participant: `0@s.whatsapp.net`,
-        ...(m.chat ? {
-            remoteJid: "status@broadcast"
-        } : {})
-    },
-    message: {
-        "extendedTextMessage": {
-            "text": ucapanWaktu,
-            "title": ``,
-            "thumbnailUrl": pplu
-        }
-    }
+  key: {
+    participant: `0@s.whatsapp.net`,
+    ...(m.chat ? {
+        remoteJid: `status@broadcast`
+    } : {})
+  },
+  message: {
+    "contactMessage": {
+      'displayName': `${pushname}`,
+      'vcard': `BEGIN:VCARD\nVERSION:3.0\nN:XL;Lenwy,;;;\nFN: Lenwy V2.0\nitem1.TEL;waid=${m.sender.split("@")[0]}:+${m.sender.split("@")[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD`,
+      'jpegThumbnail': pplu,
+      thumbnail: pplu,
+      sendEphemeral: true
+    }   
+  }
 }
 
+const len2 = {
+  key: {
+    fromMe: false,
+    participant: `0@s.whatsapp.net`,
+    ...(m.chat ? {
+      remoteJid: "status@broadcast"
+    } : {})
+  },
+  message: {
+    "extendedTextMessage": {
+      "text": ucapanWaktu,
+      "title": ``,
+      "thumbnailUrl": pplu
+    }
+  }
+}
 
 const onlygc = () => {
-lenwy.sendMessage(m.chat, {
+  lenwy.sendMessage(m.chat, {
     text: `${global.emoji} *Bot Hanya Bisa Digunakan Didalam Grup*`,
     contextInfo: {
       externalAdReply: {
@@ -317,23 +310,10 @@ lenwy.sendMessage(m.chat, {
         renderLargerThumbnail: false
       }
     }
-   })
-   } 
-
-async function cekCasee(caseName) {
-  try {
-    const fileContent = await fs.promises.readFile("./lenwy.js", "utf-8");
-    const caseRegex = new RegExp(`case '${caseName}'[\\s\\S]*?break`, 'g');
-    const match = fileContent.match(caseRegex);
-    return match ? true : false;
-  } catch (error) {
-    console.error("Error reading file:", error);
-    return false;
-  }
+  })
 }
     
 const toxicWords = /(ewe|bangsad|mmk|koncol|puki|kojtol|kintil|momok|nigga|ajg|ewean|yatim|anjing|kontol|memek|bangsat|babi|goblok|goblog|kntl|pepek|ppk|ngentod|ngentd|ngntd|kentod|kntd|bgst|anjg|anj|fuck|hitam|ireng|jawir|gay|asw|ktl|ngentot|ngewe|bokep|bkp)/i;
-
 try {
   if (m.isGroup) {    
     if (!global.datagc[m.chat]) {
@@ -416,7 +396,6 @@ try {
         antibot: false,
         linkgc: ``
     };
-
     let setting = global.db.data.settings[botNumber]
     if (typeof setting !== 'object') global.db.data.settings[botNumber] = {};
     if (setting) {
@@ -428,133 +407,30 @@ try {
         autobio: false,
         autoread: false
     };
-
 } catch (err) {
     console.error(err)
 }
 
-let cron = require('node-cron')
-        cron.schedule('02 12 * * *', () => {
-            let user = Object.keys(global.db.data.users)
-            let limitUser = isPrem ? global.limitawal.premium : global.limitawal.free
-            for (let jid of user) global.db.data.users[jid].limit = limitUser
-            console.log('Reseted Limit')
-        }, {
-            scheduled: true,
-            timezone: "Asia/Jakarta"
-        })
+cron.schedule('02 12 * * *', () => {
+  let user = Object.keys(global.db.data.users)
+  let limitUser = isPrem ? global.limitawal.premium : global.limitawal.free
+  for (let jid of user) global.db.data.users[jid].limit = limitUser
+  console.log('Reseted Limit')
+}, {
+  scheduled: true,
+  timezone: "Asia/Jakarta"
+})     
 
-function cwr(tMatch, tWr, wrReq) {
-    let tLose = tMatch * (100 - tWr) / 100;
-    let seratusPersen = tLose * (100 / (100 - wrReq))
-    let final = seratusPersen - tMatch;
-    return Math.round(final)
-  }                
-        
-function generateRandomPassword() {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#%^&*'
-  const length = 10;
-  let password = '';
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length)
-    password += characters[randomIndex]
-  }
-  return password;
-}
-async function jarak(dari, ke) {
-    let html = (await axios(`https://www.google.com/search?q=${encodeURIComponent('jarak ' + dari + ' ke ' + ke)}&hl=id`)).data
-    let $ = cheerio.load(html), obj = {}
-    let img = html.split("var s=\'")?.[1]?.split("\'")?.[0]
-    obj.img = /^data:.*?\/.*?;base64,/i.test(img) ? Buffer.from(img.split`,` [1], 'base64') : ''
-    obj.desc = $('div.BNeawe.deIvCb.AP7Wnd').text()?.trim()
-    return obj
-}
-
-function pinterest(querry){
-    return new Promise(async(resolve,reject) => {
-         axios.get('https://id.pinterest.com/search/pins/?autologin=true&q=' + querry, {
-            headers: {
-            "cookie" : "_auth=1; _b=\"AVna7S1p7l1C5I9u0+nR3YzijpvXOPc6d09SyCzO+DcwpersQH36SmGiYfymBKhZcGg=\"; _pinterest_sess=TWc9PSZHamJOZ0JobUFiSEpSN3Z4a2NsMk9wZ3gxL1NSc2k2NkFLaUw5bVY5cXR5alZHR0gxY2h2MVZDZlNQalNpUUJFRVR5L3NlYy9JZkthekp3bHo5bXFuaFZzVHJFMnkrR3lTbm56U3YvQXBBTW96VUgzVUhuK1Z4VURGKzczUi9hNHdDeTJ5Y2pBTmxhc2owZ2hkSGlDemtUSnYvVXh5dDNkaDN3TjZCTk8ycTdHRHVsOFg2b2NQWCtpOWxqeDNjNkk3cS85MkhhSklSb0hwTnZvZVFyZmJEUllwbG9UVnpCYVNTRzZxOXNJcmduOVc4aURtM3NtRFo3STlmWjJvSjlWTU5ITzg0VUg1NGhOTEZzME9SNFNhVWJRWjRJK3pGMFA4Q3UvcHBnWHdaYXZpa2FUNkx6Z3RNQjEzTFJEOHZoaHRvazc1c1UrYlRuUmdKcDg3ZEY4cjNtZlBLRTRBZjNYK0lPTXZJTzQ5dU8ybDdVS015bWJKT0tjTWYyRlBzclpiamdsNmtpeUZnRjlwVGJXUmdOMXdTUkFHRWloVjBMR0JlTE5YcmhxVHdoNzFHbDZ0YmFHZ1VLQXU1QnpkM1FqUTNMTnhYb3VKeDVGbnhNSkdkNXFSMXQybjRGL3pyZXRLR0ZTc0xHZ0JvbTJCNnAzQzE0cW1WTndIK0trY05HV1gxS09NRktadnFCSDR2YzBoWmRiUGZiWXFQNjcwWmZhaDZQRm1UbzNxc21pV1p5WDlabm1UWGQzanc1SGlrZXB1bDVDWXQvUis3elN2SVFDbm1DSVE5Z0d4YW1sa2hsSkZJb1h0MTFpck5BdDR0d0lZOW1Pa2RDVzNySWpXWmUwOUFhQmFSVUpaOFQ3WlhOQldNMkExeDIvMjZHeXdnNjdMYWdiQUhUSEFBUlhUVTdBMThRRmh1ekJMYWZ2YTJkNlg0cmFCdnU2WEpwcXlPOVZYcGNhNkZDd051S3lGZmo0eHV0ZE42NW8xRm5aRWpoQnNKNnNlSGFad1MzOHNkdWtER0xQTFN5Z3lmRERsZnZWWE5CZEJneVRlMDd2VmNPMjloK0g5eCswZUVJTS9CRkFweHc5RUh6K1JocGN6clc1JmZtL3JhRE1sc0NMTFlpMVErRGtPcllvTGdldz0=; _ir=0"
-        }
-            }).then(({ data }) => {
-        const $ = cheerio.load(data)
-        const result = []
-        const hasil = []
-         $('div > a').get().map(b => {
-        const link = $(b).find('img').attr('src')
-            result.push(link)
-        })
-        result.forEach(v => {
-         if(v == undefined) return
-         hasil.push(v.replace(/230/g,'730'))
-            })
-            hasil.shift()
-        resolve(hasil)
-        })
-    })
-}
-
-function sort(property, ascending = true) {
-  if (property) return (...args) => args[ascending & 1][property] - args[!ascending & 1][property]
-  else return (...args) => args[ascending & 1] - args[!ascending & 1]
-}
-
-function toNumber(property, _default = 0) {
-  if (property) return (a, i, b) => {
-    return {...b[i], [property]: a[property] === undefined ? _default : a[property]}
-  }
-  else return a => a === undefined ? _default : a
-}
-
-function enumGetKey(a) {
-  return a.jid
-}
-
-function pickRandom(list) {
-return list[Math.floor(Math.random() * list.length)]
-}
-
-if (m.message) {
 if (global.db.data.settings[botNumber].autoread) {
-lenwy.readMessages([m.key])
-}
-}
-
-const downloadMp3 = async (Link) => {
-try {
-await ytdl.getInfo(Link)
-let mp3File = getRandom('.mp3')
-console.log(color('Download Audio With ytdl-core'))
-ytdl(Link, { filter: 'audioonly' })
-.pipe(fs.createWriteStream(mp3File))
-.on('finish', async () => {
-await lenwy.sendMessage(from, { audio: fs.readFileSync(mp3File), mimetype: 'audio/mp4' }, { quoted: m })
-fs.unlinkSync(mp3File)
-})
-} catch (err) {
-m.reply(`${err}`)
-}
+  if (m.message) {
+    lenwy.readMessages([m.key])
+  }
 }
 
 function parseMention(text = '') {
 return [...text.matchAll(/@([0-9]{5,16}|0)/g)].map(v => v[1] + '@s.whatsapp.net')
 }
 
-const downloadMp4 = async (Link) => {
-try {
-await ytdl.getInfo(Link)
-let mp4File = getRandom('.mp4')
-console.log(color('Download Video With ytdl-core'))
-let nana = ytdl(Link)
-.pipe(fs.createWriteStream(mp4File))
-.on('finish', async () => {
-await lenwy.sendMessage(from, { video: fs.readFileSync(mp4File), gifPlayback: false }, { quoted: m })
-fs.unlinkSync(`./${mp4File}`)
-})
-} catch (err) {
-m.reply(`${err}`)
-}
-}
 
 async function LenwyLD() {
   await sleep(100) // Jeda waktu (0.75 detik) antara reaksi
@@ -601,11 +477,9 @@ if (m.isGroup && isAlreadyResponList(m.chat, body?.toLowerCase(), db_respon_list
 
 if (m.isGroup && isKeyResponStick(m.chat, body.toLowerCase(), JSON.parse(fs.readFileSync('./storage/databaseSticker.json')))) {
   if (!isAdmins) return;
-  
   var getRespon = getDataResponStick(m.chat, body.toLowerCase(), JSON.parse(fs.readFileSync('./storage/databaseSticker.json')));
   let buffer = fs.readFileSync(getRespon.imageUrl);
-
-  if (await isWebPAnimated(buffer)) {
+  if (getRespon.isAnimated) {
       await lenwy.sendMessage(from, { sticker: buffer }, { quoted: m.quoted ? m.quoted.fakeObj : m })
   } else {
       await lenwy.sendMessage(from, { sticker: buffer }, { quoted: m.quoted ? m.quoted.fakeObj : m })
@@ -616,7 +490,8 @@ if (db.data.chats[m.chat].antispam) {
   if (m.isGroup && m.message && antispam.isFiltered(from)) {
   console.log(`[SPAM]`, color(moment(m.messageTimestamp * 100).format('DD/MM/YYYY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(m.pushName))
   return await lenwy.sendMessage(m.chat, { delete: m.key })
-  }}   
+  }
+}   
 
 
 
@@ -781,236 +656,60 @@ type: 'append'
 lenwy.ev.emit('messages.upsert', msg)
 }
 
-if (budy.startsWith('©️')) {
-try {
-return m.reply(JSON.stringify(eval(`${args.join(' ')}`),null,'\t'))
-} catch (e) {
-m.reply(e)
-}
-}
-
-async function sendGeekzMessage(chatId, message, options = {}){
-let generate = await generateWAMessage(chatId, message, options)
-let type2 = getContentType(generate.message)
-if ('contextInfo' in options) generate.message[type2].contextInfo = options?.contextInfo
-if ('contextInfo' in message) generate.message[type2].contextInfo = message?.contextInfo
-return await lenwy.relayMessage(chatId, generate.message, { messageId: generate.key.id })
-}
-
-
-async function tiktoks(query) {
-  return new Promise(async (resolve, reject) => {
-    try {
-        LenwyLD()
-  await sleep(200)
-      const response = await axios({
-        method: 'POST',
-        url: 'https://tikwm.com/api/feed/search',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Cookie': 'current_language=en',
-          'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36'
-        },
-        data: {
-          keywords: query,
-          count: 50,
-          cursor: 0,
-          HD: 1
-        }
-      })
-      const videos = response.data.data.videos;
-      if (videos.length === 0) {
-        reject("*Tidak Ada Video Yang Ditemukan* 😥")
-      } else {
-        const gywee = Math.floor(Math.random() * videos.length)
-        const videorndm = videos[gywee] 
-
-        const result = {
-          title: videorndm.title,
-          cover: videorndm.cover,
-          origin_cover: videorndm.origin_cover,
-          no_watermark: videorndm.play,
-          watermark: videorndm.wmplay,
-          music: videorndm.music
-        };
-        resolve(result)
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-async function tiktok2(query) {
-  return new Promise(async (resolve, reject) => {
-    try {
-        LenwyLD()
-  await sleep(200)
-    const encodedParams = new URLSearchParams()
-encodedParams.set('url', query)
-encodedParams.set('hd', '1')
-
-      const response = await axios({
-        method: 'POST',
-        url: 'https://tikwm.com/api/',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Cookie': 'current_language=en',
-          'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36'
-        },
-        data: encodedParams
-      })
-      const videos = response.data.data;
-        const result = {
-          title: videos.title,
-          cover: videos.cover,
-          origin_cover: videos.origin_cover,
-          no_watermark: videos.play,
-          watermark: videos.wmplay,
-          music: videos.music
-        };
-        resolve(result)
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-const clean = (data) => {
-  let regex = /(<([^>]+)>)/gi;
-  data = data.replace(/(<br?\s?\/>)/gi, " \n")
-  return data.replace(regex, "")
-};
-
-async function shortener(url) {
-  return url;
-}
-
-async function tiktok11(query) {
-  let response = await axios("https://lovetik.com/api/ajax/search", {
-    method: "POST",
-    data: new URLSearchParams(Object.entries({ query })),
-  })
-
-  result = {};
-
-  result.creator = "YNTKTS";
-  result.title = clean(response.data.desc)
-  result.author = clean(response.data.author)
-  result.nowm = await shortener(
-    (response.data.links[0].a || "").replace("https", "http")
-  )
-  result.watermark = await shortener(
-    (response.data.links[1].a || "").replace("https", "http")
-  )
-  result.audio = await shortener(
-    (response.data.links[2].a || "").replace("https", "http")
-  )
-  result.thumbnail = await shortener(response.data.cover)
-  return result;
-}
-
-async function filterValidImages(images, limit) {
-  const validImages = []
-  for (const image of images) {
-    if (await isImageURL(image)) {
-      validImages.push(image)
-      if (validImages.length >= limit) {
-        break // Hentikan jika sudah mencapai jumlah gambar yang diminta
-      }
-    }
-  }
-  return validImages;
-}
-
-async function isImageURL(url) {
-  try {
-    const res = await fetch(url, { method: 'HEAD' })
-    const contentType = res.headers.get('content-type')
-    return contentType && contentType.startsWith('image') // Memeriksa apakah tipe file adalah gambar
-  } catch (error) {
-    return false; // Jika terjadi kesalahan dalam memeriksa URL, mengembalikan false
+const quizMap = {
+  kuismath: {
+    data: kuismath,
+    title: 'Kuis Matematika',
+    replay: 'Math Mode'
+  },
+  tebakgambar: {
+    data: tebakgambar,
+    title: 'Tebak Gambar',
+    replay: 'Tebak Gambar'
+  },
+  tebakkata: {
+    data: tebakkata,
+    title: 'Tebak Kata',
+    replay: 'Tebak Kata'
+  },
+  caklontong: {
+    data: caklontong,
+    title: 'Tebak Lontong',
+    replay: 'Tebak Lontong',
+    extraDelete: () => delete caklontong_desk[room]
+  },
+  tebakkalimat: {
+    data: tebakkalimat,
+    title: 'Tebak Kalimat',
+    replay: 'Tebak Kalimat'
+  },
+  tebaklirik: {
+    data: tebaklirik,
+    title: 'Tebak Lirik',
+    replay: 'Tebak Lirik'
+  },
+  tebaktebakan: {
+    data: tebaktebakan,
+    title: 'Tebak Tebakan',
+    replay: 'Tebak Tebakan'
   }
 }
 
-var createSerial = (size) => {
-return crypto.randomBytes(size).toString('hex').slice(0, size)
-}
-if (kuismath.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
-kuis = true;
-jawaban = kuismath[m.sender.split('@')[0]]
-if (budy.toLowerCase() == jawaban) {
-await m.reply(`${global.emoji} *Kuis Matematika*\n\n🎁 *Jawaban Benar*\n\n📣 *Ingin Bermain Lagi? Silakan Ketik Math Mode*`)
-delete kuismath[m.sender.split('@')[0]]
-} else {
-m.reply('❌ *Jawaban Salah!*')
-}
-}
+for (const { data, title, replay, extraDelete } of Object.values(quizMap)) {
+  if (!isCmd || !data[m.chat]) continue
+  kuis = true
+  jawaban = data[m.chat]
+  if (body.toLowerCase() === jawaban) {
+    await m.reply(`${global.emoji} *${title}*
 
-if (tebakgambar.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
-kuis = true;
-jawaban = tebakgambar[m.sender.split('@')[0]]
-if (budy.toLowerCase() == jawaban) {
-m.reply(`${global.emoji} *Tebak Gambar*\n\n🎁 *Jawaban Benar*\n\n📣 *Ingin Bermain Lagi? Silakan Ketik Tebak Gambar*`)
-delete tebakgambar[m.sender.split('@')[0]]
-} else {
-m.reply('❌ *Jawaban Salah!*')
-}
-}
-
-if (tebakkata.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
-kuis = true
-jawaban = tebakkata[m.sender.split('@')[0]]
-if (budy.toLowerCase() == jawaban) {
-lenwy.sendMessage(m.chat, { text: `${global.emoji} *Tebak Kata*\n\n🎁 *Jawaban Benar*\n\n📣 *Ingin Bermain Lagi? Silahkan Ketik Tebak Kata*`}, {quoted:m}) 
-delete tebakkata[m.sender.split('@')[0]]
-} else m.reply('❌ *Jawaban Salah!*')
-}
-
-if (caklontong.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
-kuis = true;
-jawaban = caklontong[m.sender.split('@')[0]]
-deskripsi = caklontong_desk[m.sender.split('@')[0]]
-if (budy.toLowerCase() == jawaban) {
-m.reply(`${global.emoji} *Tebak Lontong*\n\n🎁 *Jawaban Benar*\n\n📣 *Ingin Bermain Lagi? Silakan Ketik Tebak Lontong*`)
-delete caklontong[m.sender.split('@')[0]]
-delete caklontong_desk[m.sender.split('@')[0]]
-} else {
-m.reply('❌ *Jawaban Salah!*')
-}
-}
-
-if (tebakkalimat.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
-kuis = true;
-jawaban = tebakkalimat[m.sender.split('@')[0]]
-if (budy.toLowerCase() == jawaban) {
-m.reply(`${global.emoji} *Tebak Kalimat*\n\n🎁 *Jawaban Benar*\n\n📣 *Ingin Bermain Lagi? Silakan Ketik Tebak Kalimat*`)
-delete tebakkalimat[m.sender.split('@')[0]]
-} else {
-m.reply('❌ *Jawaban Salah!*')
-}
-}
-
-if (tebaklirik.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
-kuis = true;
-jawaban = tebaklirik[m.sender.split('@')[0]]
-if (budy.toLowerCase() == jawaban) {
-m.reply(`${global.emoji} *Tebak Lirik*\n\n🎁 *Jawaban Benar*\n\n📣 *Ingin Bermain Lagi? Silakan Ketik Tebak Lirik*`)
-delete tebaklirik[m.sender.split('@')[0]]
-} else {
-m.reply('❌ *Jawaban Salah!*')
-}
-}
-
-if (tebaktebakan.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
-kuis = true;
-jawaban = tebaktebakan[m.sender.split('@')[0]]
-if (budy.toLowerCase() == jawaban) {
-m.reply(`${global.emoji} *Tebak Tebakan*\n\n🎁 *Jawaban Benar*\n\n📣 *Ingin Bermain Lagi? Silakan Ketik Tebak Tebakan*`)
-delete tebaktebakan[m.sender.split('@')[0]]
-} else {
-m.reply('❌ *Jawaban Salah!*')
-}
+🎁 *Jawaban Benar*
+📣 *Ingin Bermain Lagi? Silakan Ketik ${replay}*`)
+    delete data[m.chat]
+    if (extraDelete) extraDelete()
+  } else {
+    await m.reply('❌ *Jawaban Salah!*')
+  }
+  return
 }
 
 this.game = this.game ? this.game : {}
@@ -1075,7 +774,6 @@ if (isTie || isWin) {
 delete this.game[room.id]
 }
 }
-
 this.suit = this.suit ? this.suit : {}
 let roof = Object.values(this.suit).find(roof => roof.id && roof.status && [roof.p, roof.p2].includes(m.sender))
 if (roof) {
@@ -1146,6 +844,7 @@ lenwy.sendText(roof.asal, `_*Hasil Suit*_${tie ? '\nSERI' : ''}
 delete this.suit[roof.id]
 }
 }
+
 let mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
 for (let jid of mentionUser) {
   let user = global.db.data.users[jid]
@@ -1161,11 +860,11 @@ for (let jid of mentionUser) {
 🕒 *Selama : ${clockString(new Date - afkTime)}*
 `.trim())
 }
-
 if (global.db.data.users[m.sender].afkTime > -1) {
   let user = global.db.data.users[m.sender]
-  m.reply(`
-*${pushname} Kembali Dari Afk*\n⚠️ ${'*Dengan Alasan :* ' + (user.afkReason ? user.afkReason : 'Tidak Ada')}\n🕒 *Selama : ${clockString(new Date - user.afkTime)}*
+  m.reply(`*${pushname} Kembali Dari Afk*
+⚠️ ${'*Dengan Alasan :* ' + (user.afkReason ? user.afkReason : 'Tidak Ada')}
+🕒 *Selama : ${clockString(new Date - user.afkTime)}*
 `.trim())
   user.afkTime = -1
   user.afkReason = ''
@@ -1173,7 +872,6 @@ if (global.db.data.users[m.sender].afkTime > -1) {
 
 async function limit50(m) {
   const user = global.db.data.users[m.sender]
-
   if (isPrem(m.sender)) {
     m.reply('🎉 *Akun Premium Kamu Aktif* Limit tidak berkurang.')
     return true; // Mengembalikan true untuk menunjukkan bahwa limit tidak perlu dikurangi
@@ -1188,10 +886,8 @@ async function limit50(m) {
     }
   }
 }
-
 async function limit25(m) {
   const user = global.db.data.users[m.sender]
-
   if (isPrem(m.sender)) {
     m.reply('🎉 *Akun Premium Kamu Aktif* Limit tidak berkurang.')
     return true; // Mengembalikan true untuk menunjukkan bahwa limit tidak perlu dikurangi
@@ -1206,168 +902,7 @@ async function limit25(m) {
     }
   }
 }
-function saveDatabase() {
-  fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
-}
 
-async function updateWelcomeStatus(m, status) {
-  if (!m.isGroup) return m.reply(mess.group)
-  if (!isAdmins) return m.reply(mess.admin)
-
-  if (!global.db.data.chats[m.chat]) global.db.data.chats[m.chat] = {};
-
-  const currentWelcmStatus = global.db.data.chats[m.chat].wlcm;
-
-  if (status === "on") {
-      if (currentWelcmStatus) return m.reply('Fitur Welcome sudah aktif di grup ini.')
-
-      global.db.data.chats[m.chat].wlcm = true;
-      saveDatabase() // Simpan perubahan ke file
-
-      var groupMetadata = await lenwy.groupMetadata(m.chat)
-      var members = groupMetadata['participants']
-      var mems = []
-      members.map(adm => {
-          mems.push(adm.id.replace('c.us', 's.whatsapp.net'))
-      })
-      lenwy.sendMessage(m.chat, { text: `Fitur Welcome Diaktifkan Di Grup Ini`}, { quoted: m })
-  } else if (status === "off") {
-      if (!currentWelcmStatus) return m.reply('Fitur Welcome sudah nonaktif di grup ini.')
-
-      global.db.data.chats[m.chat].wlcm = false;
-      saveDatabase() // Simpan perubahan ke file
-      m.reply('Fitur Welcome berhasil dinonaktifkan.')
-
-  } else {
-      m.reply('Ketik on untuk mengaktifkan atau off untuk menonaktifkan fitur welcome.')
-  }
-}
-
-async function updateLeftStatus(m, status) {
-  if (!m.isGroup) return m.reply(mess.group)
-  if (!isAdmins) return m.reply(mess.admin)
-
-  if (!global.db.data.chats[m.chat]) global.db.data.chats[m.chat] = {};
-
-  const currentWelcmStatus = global.db.data.chats[m.chat].left;
-
-  if (status === "on") {
-      if (currentWelcmStatus) return m.reply('Fitur Left sudah aktif di grup ini.')
-
-      global.db.data.chats[m.chat].left = true;
-      saveDatabase() // Simpan perubahan ke file
-
-      var groupMetadata = await lenwy.groupMetadata(m.chat)
-      var members = groupMetadata['participants']
-      var mems = []
-      members.map(adm => {
-          mems.push(adm.id.replace('c.us', 's.whatsapp.net'))
-      })
-      lenwy.sendMessage(m.chat, { text: `Fitur Left Diaktifkan Di Grup Ini`}, { quoted: m })
-  } else if (status === "off") {
-      if (!currentWelcmStatus) return m.reply('Fitur Left sudah nonaktif di grup ini.')
-
-      global.db.data.chats[m.chat].left = false;
-      saveDatabase() // Simpan perubahan ke file
-      m.reply('Fitur Left berhasil dinonaktifkan.')
-
-  } else {
-      m.reply('Ketik on untuk mengaktifkan atau off untuk menonaktifkan fitur left.')
-  }
-}
-
-async function updateTextWelcome(m, message) {
-  if (!m.isGroup) return m.reply(mess.group)
-  if (!isAdmins) return m.reply(mess.admin)
-    let textnya = `${message}`
-    global.datagc[m.chat].text_welcome = textnya;
-    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
-}
-
-async function updateTextLeft(m, message) {
-  if (!m.isGroup) return m.reply(mess.group)
-  if (!isAdmins) return m.reply(mess.admin)
-    let textnya = `${message}`
-    global.datagc[m.chat].text_left = textnya;
-    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
-}
-
-async function updateTextOpen(m, message) {
-  if (!m.isGroup) return m.reply(mess.group)
-  if (!isAdmins) return m.reply(mess.admin)
-    let textnya = `${message}`
-    global.datagc[m.chat].text_open = textnya;
-    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
-}
-
-async function updateTextClose(m, message) {
-  if (!m.isGroup) return m.reply(mess.group)
-  if (!isAdmins) return m.reply(mess.admin)
-    let textnya = `${message}`
-    global.datagc[m.chat].text_close = textnya;
-    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
-}
-
-async function updateTextDone(m, message) {
-  if (!m.isGroup) return m.reply(mess.group)
-  if (!isAdmins) return m.reply(mess.admin)
-    let textnya = `${message}`
-    global.datagc[m.chat].text_done = textnya;
-    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
-}
-
-async function updateTextProses(m, message) {
-  if (!m.isGroup) return m.reply(mess.group)
-  if (!isAdmins) return m.reply(mess.admin)
-    let textnya = `${message}`
-    global.datagc[m.chat].text_proses = textnya;
-    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
-}
-
-async function updateTextList(m, message) {
-  if (!m.isGroup) return m.reply(mess.group)
-  if (!isAdmins) return m.reply(mess.admin)
-    let textnya = `${message}`
-    global.datagc[m.chat].text_list = textnya;
-    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
-}
-
-async function updateTextListSimbol(m, message) {
-  if (!m.isGroup) return m.reply(mess.group)
-  if (!isAdmins) return m.reply(mess.admin)
-    let textnya = `${message}`
-    global.datagc[m.chat].text_list_simbol = textnya;
-    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
-}
-
-async function revokeGc(m) {
-  if (!m.isGroup) return m.reply(mess.group)
-  if (!isAdmins) return m.reply(mess.admin)
-  if (!isBotAdmins) return m.reply(mess.botAdmin)
-      
-    if (!global.db.data.chats[m.chat]) {
-      global.db.data.chats[m.chat] = {};
-    }
-    await lenwy.groupRevokeInvite(from)
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    let newLink = await lenwy.groupInviteCode(from)
-    global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
-    saveDatabase()
-    return newLink
-}
-
-async function catatLinkGc(m) {
-  if (!m.isGroup) return m.reply(mess.group)
-  if (!isAdmins) return m.reply(mess.admin)
-  if (!isBotAdmins) return m.reply(mess.botAdmin)
-      
-    if (!global.db.data.chats[m.chat]) {
-      global.db.data.chats[m.chat] = {};
-    }
-    let newLink = await lenwy.groupInviteCode(from)
-    global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
-    saveDatabase()
-}
 
 
 if (m.msg?.contextInfo?.mentionedJid?.some(jid => global.owner.includes(jid.replace(/@s\.whatsapp\.net$/, '')))) {
@@ -2516,8 +2051,9 @@ case 'setlist': {
   if (!m.isGroup) return m.reply(mess.group)
   if (!isAdmins) return m.reply(mess.admin)
   let teks = text || ''
-  await updateTextList(m, teks);
+  global.datagc[m.chat].text_list = teks;
   m.reply(mess.success);
+  fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2));
 }
 break
 
@@ -2525,8 +2061,9 @@ case 'setsimbol': {
   if (!m.isGroup) return m.reply(mess.group);
   if (!isAdmins) return m.reply(mess.admin);
   let teks_simbol = text || ''
-  await updateTextListSimbol(m, teks_simbol)
+  global.datagc[m.chat].text_list_simbol = teks_simbol;
   m.reply(mess.success)
+  fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
 }
 break
 
@@ -4109,14 +3646,16 @@ case 'resetlinkgc': {
   if (!isAdmins) return m.reply(mess.admin)
   if (!m.isGroup) return m.reply(mess.group)
   if (!isBotAdmins) return m.reply(mess.botAdmin)
-
   try {
-      let newLink = await revokeGc(m)
-      m.reply(`*Link Grup Berhasil Di Reset*\n\n*Menjadi:* https://chat.whatsapp.com/${newLink}`)
-      
+    await lenwy.groupRevokeInvite(from)
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    let newLink = await lenwy.groupInviteCode(from)
+    m.reply(`*Link Grup Berhasil Di Reset*\n\n*Menjadi:* https://chat.whatsapp.com/${newLink}`)
+    global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
+    fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2));
   } catch (err) {
-      console.error('Error saat mereset link grup:', err)
-      m.reply('Terjadi kesalahan saat mereset link grup.')
+    console.error('Error saat mereset link grup:', err)
+    m.reply('Terjadi kesalahan saat mereset link grup.')
   }
 }
 break
@@ -4559,8 +4098,9 @@ case 'setopen': {
 if (!m.isGroup) return m.reply(mess.group)
 if (!isAdmins) return m.reply(mess.admin)
 let teks = text ? text : ''
-await updateTextOpen(m, teks)
+global.datagc[m.chat].text_open = teks;
 m.reply(mess.success)
+fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2));
 }
 break
 
@@ -4568,8 +4108,9 @@ case 'setclose': {
 if (!m.isGroup) return m.reply(mess.group)
 if (!isAdmins) return m.reply(mess.admin)
 let teks = text ? text : ''
-await updateTextClose(m, teks)
+global.datagc[m.chat].text_close = teks;
 m.reply(mess.success)
+fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2));
 }
 break
 
@@ -5023,17 +4564,19 @@ case 'antilink': {
   if (!m.isGroup) return m.reply(mess.group);
   if (!isAdmins && !isCreator) return m.reply(mess.admin);
   if (!isBotAdmins) return m.reply(mess.botAdmin);
+  let newLink = await lenwy.groupInviteCode(from);
   if (q === 'on') {
-      await catatLinkGc(m);
+      global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
       global.db.data.chats[m.chat].antilink = true;
       m.reply(`*Berhasil Mengaktifkan ${command}*`);
   } else if (q === 'off') {
-      await catatLinkGc(m);
+      global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
       global.db.data.chats[m.chat].antilink = false;
       m.reply(`*Menonaktifkan ${command}*`);
   } else {
       m.reply(`*Ketik ${prefix + command} on/off*`);
   }
+  fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
 }
 break
 
@@ -5041,17 +4584,19 @@ case 'antilink2': {
   if (!m.isGroup) return m.reply(mess.group);
   if (!isAdmins && !isCreator) return m.reply(mess.admin);
   if (!isBotAdmins) return m.reply(mess.botAdmin);
+  let newLink = await lenwy.groupInviteCode(from)
   if (q === 'on') {
-      await catatLinkGc(m);
+      global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
       global.db.data.chats[m.chat].antilink2 = true;
       m.reply(`*Berhasil Mengaktifkan ${command}*`);
   } else if (q === 'off') {
-      await catatLinkGc(m);
+      global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
       global.db.data.chats[m.chat].antilink2 = false;
       m.reply(`*Menonaktifkan ${command}*`);
   } else {
       m.reply(`*Ketik ${prefix + command} on/off*`);
   }
+  fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
 }
 break
 
@@ -5107,18 +4652,20 @@ case 'antilinkgc1': {
   if (!m.isGroup) return m.reply(mess.group);
   if (!isAdmins && !isCreator) return m.reply(mess.admin);
   if (!isBotAdmins) return m.reply(mess.botAdmin);
+  let newLink = await lenwy.groupInviteCode(from)
   if (q === 'on') {
-      await catatLinkGc(m);
+      global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
       global.db.data.chats[m.chat].antilinkgc = true;
       m.reply(`*Berhasil Mengaktifkan ${command}*
 🎁 *Ketik Antilinkgc2 Untuk Mengaktifkan Autokick*`);
   } else if (q === 'off') {
-      await catatLinkGc(m);
+      global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
       global.db.data.chats[m.chat].antilinkgc = false;
       m.reply(`*Menonaktifkan ${command}*`);
   } else {
       m.reply(`*Ketik ${prefix + command} on/off*`);
   }
+  fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
 }
 break
 
@@ -5126,17 +4673,19 @@ case 'antilinkgc2': {
   if (!m.isGroup) return m.reply(mess.group);
   if (!isAdmins && !isCreator) return m.reply(mess.admin);
   if (!isBotAdmins) return m.reply(mess.botAdmin);
+  let newLink = await lenwy.groupInviteCode(from)
   if (q === 'on') {
-      await catatLinkGc(m);
+      global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
       db.data.chats[m.chat].antilinkgc2 = true;
       m.reply(`*Berhasil Mengaktifkan ${command}*`);
   } else if (q === 'off') {
-      await catatLinkGc(m);
+      global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
       db.data.chats[m.chat].antilinkgc2 = false;
       m.reply(`*Menonaktifkan ${command}*`);
   } else {
       m.reply(`*Ketik ${prefix + command} on/off*`);
   }
+  fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
 }
 break
 
@@ -6209,19 +5758,6 @@ m.reply(`📑 *Berhasil Mengatur Reminder Untuk ${args[0]} ${args[1]} Ke Depan*`
 }
 break
 
-case 'jarak': {
-if (!text) return m.reply(`*Contoh: ${prefix + command} Jakarta|Bandung*`)
-if (text.length > 80) return m.reply(`*Maksimal 80 Karakter*`)    
-LenwyLD()
-await sleep(200)
-let [from, to] = text.split(/[^\w\s]/g)
-if (!(from && to)) return m.reply (`*Contoh: ${prefix + command} Jakarta|Bandung*`) 
-let data = await jarak(from, to)
-if (data.img) return lenwy.sendMessage(m.chat, { image: data.img, caption: data.desc }, { quoted: m })
-else m.reply(data.desc)
-}
-break
-
 case 'couple': {
 LenwyLD()
 await sleep(200)
@@ -6288,8 +5824,10 @@ const tWr = parseFloat(cwl[1])
 const wrReq = parseFloat(cwl[2])          
 if (isNaN(tMatch) || isNaN(tWr) || isNaN(wrReq)) {
 return m.reply('⚠️ *Pastikan Semuanya Berupa Angka*')
-}          
-const resultNum = cwr(tMatch, tWr, wrReq)
+}
+let tLose = tMatch * (100 - tWr) / 100;
+let seratusPersen = tLose * (100 / (100 - wrReq))
+let final = seratusPersen - tMatch;
 const tekl = `*Winrate Calculator Mobile Legend*
 
 📑 *Data Yang Diberikan*
@@ -6298,13 +5836,13 @@ const tekl = `*Winrate Calculator Mobile Legend*
  *⨠ Target Winrate : ${wrReq}%*
 
 🎁 *Hasil :*
-*Butuh ${resultNum} Pertandingan Tanpa Kalah Untuk Mencapai ${wrReq}% Winrate*`;
+*Butuh ${Math.round(final)} Pertandingan Tanpa Kalah Untuk Mencapai ${wrReq}% Winrate*`;
 m.reply(tekl)
 }
 break
 
 case 'afk': {
-if (!isAdmins) return
+if (!isAdmins) return m.reply (mess.admin)
 if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
 if (text.length > 100) return m.reply(`*Maksimal 100 Karakter*`)    
 let user = global.db.data.users[m.sender]
@@ -6389,20 +5927,24 @@ break
 
 case 'kuismath':
 case 'math': {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
- if (kuismath.hasOwnProperty(m.sender.split('@')[0])) m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan!*')
- let { genMath, modes } = require('./library/math')
- if (!text) m.reply `Mode: ${Object.keys(modes).join(' | ')}\nContoh penggunaan: ${prefix}math medium`
- let result = await genMath(text.toLowerCase())
- lenwy.sendText(from, `*Berapa Hasil Dari : ${result.soal.toLowerCase()}*?\n\n🕒 *Waktu : ${(result.waktu / 1000).toFixed(2)} detik*`, m).then(() => {
- kuismath[m.sender.split('@')[0]] = result.jawaban
- })
- await sleep(result.waktu)
- if (kuismath.hasOwnProperty(m.sender.split('@')[0])) {
- console.log("Jawaban: " + result.jawaban)
- m.reply("🕒 *Waktu Habis*\n🎁 *Jawaban :* " + kuismath[m.sender.split('@')[0]])
- delete kuismath[m.sender.split('@')[0]]
- }
+  if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+  if (kuismath.hasOwnProperty(m.sender.split('@')[0])) m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan!*')
+  if (!text) return m.reply(`Mode: ${Object.keys(modes).join(' | ')}
+Contoh penggunaan: ${prefix}math medium`);
+  let { genMath, modes } = require('./library/math')
+  let result = await genMath(text.toLowerCase())
+  await lenwy.sendText(from,
+    `*Berapa Hasil Dari : ${result.soal.toLowerCase()}*?
+🕒 *Waktu : ${(result.waktu / 1000).toFixed(2)} detik*`,
+  m).then(() => {
+    kuismath[m.sender.split('@')[0]] = result.jawaban
+  })
+  await sleep(result.waktu)
+  if (kuismath.hasOwnProperty(m.sender.split('@')[0])) {
+    console.log("Jawaban: " + result.jawaban)
+    m.reply("🕒 *Waktu Habis*\n🎁 *Jawaban :* " + kuismath[m.sender.split('@')[0]])
+    delete kuismath[m.sender.split('@')[0]]
+  }
 }
 break
 
@@ -6512,85 +6054,53 @@ case 'setdone': {
 if (!m.isGroup) return m.reply(mess.group)
 if (!isAdmins) return m.reply(mess.admin)
 let teks = text ? text : ''
-await updateTextDone(m, teks)
+global.datagc[m.chat].text_done = teks;
 m.reply(mess.success)
+fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
 }
 break
 
 case 'done': {
-if (!m.isGroup) return
-if (!isAdmins) return
-if (!m.quoted) return m.reply('⚠️ *Reply Pesan Si Pemesan*')
-const quotedSender = m.quoted.sender;
-const quotedSenderTag = `@${quotedSender.split("@")[0]}`; // Format tag pengirim yang dibalas
-const yangmemesan = quotedSenderTag;
-const query = q ? `*${q}*` : ''
-let teks = `         ∧    ∧ ‎
+  if (!m.isGroup || !isAdmins) return
+  if (!m.quoted) return m.reply('⚠️ *Reply Pesan Si Pemesan*')
+  const quotedSender = m.quoted.sender
+  const query = q ? `*${q}*` : ''
+  const usertag = `@${m.sender.split('@')[0]}`
+  const tagReply = `@${quotedSender.split('@')[0]}`
+  const teksDefault = `         ∧    ∧ ‎
  ☆ (๑╹ꇴ╹๑)  ☆
 ‎───〇─〇──ೇ .꒰ !! ꒱ 
 ╭┄꯭───ׂ──────꒰🫧꒱─────ׂ┄꯭───ׂ╮
-│ ᥡᥱᥡᥡᥡ ⍴ᥱsᥲᥒᥲᥒ ${yangmemesan}
+│ ᥡᥱᥡᥡᥡ ⍴ᥱsᥲᥒᥲᥒ @tagreply
 │ 𝗍ᥱᥣᥲһ sᥙᥴᥴsᥱs
 │ sіᥣᥲkᥲᥒ ძі ᥴᥱk ȷᥲᥒgᥲᥒ ᥣᥙ⍴ᥲ ss ᥡᥲᥕᥕ 
 │(●'▽'●)ゝ
 │
-│ 𝝑𝝔 𝘱𝘦𝘴𝘢𝘯𝘢𝘯  : ${query}
-│ 𝝑𝝔 𝘵𝘢𝘯𝘨𝘨𝘢𝘭    : *${hariini}*
-│ 𝝑𝝔 𝘸𝘢𝘬𝘵𝘶       : *${time}*
+│ 𝝑𝝔 𝘱𝘦𝘴𝘢𝘯𝘢𝘯  : @pesanan
+│ 𝝑𝝔 𝘵𝘢𝘯𝘨𝘨𝘢𝘭    : *@hari, @tanggal @namabulan @tahun*
+│ 𝝑𝝔 𝘸𝘢𝘬𝘵𝘶      : *@jam:@menit:@detik WIB*
 │ 𝝑𝝔 𝘴𝘦𝘵𝘢𝘵𝘶𝘴    : *Succes*
-╰──ׂ┄꯭───ׂ┄꯭──────ׂ┄꯭───────╯`;
+╰──ׂ┄꯭───ׂ┄꯭──────ׂ┄꯭───────╯`
 
-let settextdone = global.datagc[from].text_done
-let usertag = `@${m.sender.split("@")[0]}`
-
-if (settextdone.includes('@tagreply')) {
-  if (m.quoted) {
-    let userreply = `@${m.quoted.sender.split("@")[0]}`
-    settextdone = settextdone.replace('@tagreply', userreply)
-  } else {
-    return m.reply(`Anda menggunakan @tagreply, anda harus mereply pesan seseorang untuk mengetag nya`)
+  let settextdone = global.datagc[from]?.text_done || teksDefault
+  const replacers = {
+    '@tagreply': tagReply,
+    '@pesanan': query,
+    '@groupname': groupName,
+    '@tagdiri': usertag,
+    '@jam': jamnya,
+    '@menit': menitnya,
+    '@detik': detiknya,
+    '@hari': harinya,
+    '@tanggal': tanggalnya,
+    '@bulan': bulannya,
+    '@tahun': tahunnya,
+    '@namabulan': namabulannya
   }
-}
-
-if (settextdone.includes('@pesanan')) {
-  settextdone = settextdone.replace('@pesanan', query)
-} 
-if (settextdone.includes('@groupname')) {
-  settextdone = settextdone.replace('@groupname', groupName)
-} 
-if (settextdone.includes('@tagdiri')) {
-  settextdone = settextdone.replace('@tagdiri', usertag)
-}
-if (settextdone.includes('@jam')) {
-  settextdone = settextdone.replace('@jam', jamnya)
-}
-if (settextdone.includes('@menit')) {
-  settextdone = settextdone.replace('@menit', menitnya)
-}
-if (settextdone.includes('@detik')) {
-  settextdone = settextdone.replace('@detik', detiknya)
-}
-if (settextdone.includes('@hari')) {
-  settextdone = settextdone.replace('@hari', harinya)
-}
-if (settextdone.includes('@tanggal')) {
-  settextdone = settextdone.replace('@tanggal', tanggalnya)
-}
-if (settextdone.includes('@bulan')) {
-  settextdone = settextdone.replace('@bulan', bulannya)
-}
-if (settextdone.includes('@tahun')) {
-  settextdone = settextdone.replace('@tahun', tahunnya)
-}
-if (settextdone.includes('@namabulan')) {
-  settextdone = settextdone.replace('@namabulan', namabulannya)
-}
-
-if (!settextdone) {
-  settextdone = teks
-}
-
-lenwy.sendMessage(m.chat, { text: settextdone, mentions: [quotedSender] }, { quoted: m })
+  for (const [key, value] of Object.entries(replacers)) {
+    settextdone = settextdone.replaceAll(key, value)
+  }
+  await lenwy.sendMessage(m.chat, { text: settextdone, mentions: [quotedSender] }, { quoted: m })
 }
 break
 
@@ -6598,83 +6108,55 @@ case 'setproses': {
 if (!m.isGroup) return m.reply(mess.group)
 if (!isAdmins) return m.reply(mess.admin)
 let teks = text ? text : ''
-await updateTextProses(m, teks)
+global.datagc[m.chat].text_proses = teks;
 m.reply(mess.success)
+fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
 }
 break
 
 case 'proses': {
-if (!m.isGroup) return
-if (!isAdmins) return
-if (!m.quoted) return m.reply('⚠️ *Reply Pesan Si Pemesan*')
-const quotedSender = m.quoted.sender;
-const quotedSenderTag = `@${quotedSender.split("@")[0]}`; // Format tag pengirim yang dibalas
-const yangmemesan = quotedSenderTag;
-const query = q ? `*${q}*` : ''
-let teks = `         ∧    ∧ ‎
+  if (!m.isGroup || !isAdmins) return
+  if (!m.quoted) return m.reply('⚠️ *Reply Pesan Si Pemesan*')
+  const quotedSender = m.quoted.sender
+  const query = q ? `*${q}*` : ''
+  const usertag = `@${m.sender.split('@')[0]}`
+  const tagReply = `@${quotedSender.split('@')[0]}`
+  const teksDefault = `         ∧    ∧ ‎
  ☆ (๑╹ꇴ╹๑)  ☆
 ‎───〇─〇──ೇ .꒰ !! ꒱ 
 ╭┄꯭───ׂ──────꒰🫧꒱─────ׂ┄꯭───ׂ╮
-│ ⍴ᥱsᥲᥒᥲᥒ ${yangmemesan}
+│ ⍴ᥱsᥲᥒᥲᥒ @tagreply
 │ sᥱძᥲᥒg ძі ⍴r᥆sᥱs
 │ m᥆һ᥆ᥒ ᥙᥒ𝗍ᥙk mᥱᥒᥙᥒggᥙ (๑'ᴗ')ゞ
 │
-│ 𝝑𝝔 𝘱𝘦𝘴𝘢𝘯𝘢𝘯  : ${query}
-│ 𝝑𝝔 𝘵𝘢𝘯𝘨𝘨𝘢𝘭    : *${hariini}*
-│ 𝝑𝝔 𝘸𝘢𝘬𝘁𝘂       : *${time}*
-│ 𝝑𝝔 𝘴𝘦𝘁𝘢𝘁𝘶𝘀    : *Proses*
-╰──ׂ┄꯭───ׂ┄꯭──────ׂ┄꯭───────╯`;
-let settextproses = global.datagc[from].text_proses
-let usertag = `@${m.sender.split("@")[0]}`
+│ 𝝑𝝔 𝘱𝘦𝘴𝘢𝘯𝘢𝘯  : @pesanan
+│ 𝝑𝝔 𝘵𝘢𝘯𝘨𝘨𝘢𝘭    : *@hari, @tanggal @namabulan @tahun*
+│ 𝝑𝝔 𝘸𝘢𝘬𝘵𝘶      : *@jam:@menit:@detik WIB*
+│ 𝝑𝝔 𝘴𝘦𝘵𝘢𝘵𝘶𝘴    : *Proses*
+╰──ׂ┄꯭───ׂ┄꯭──────ׂ┄꯭───────╯`
 
-if (settextproses.includes('@tagreply')) {
-  if (m.quoted) {
-    let userreply = `@${m.quoted.sender.split("@")[0]}`
-    settextproses = settextproses.replace('@tagreply', userreply)
-  } else {
-    return m.reply(`Anda menggunakan @tagreply, anda harus mereply pesan seseorang untuk mengetag nya`)
+  let settextproses = global.datagc[from]?.text_proses || teksDefault
+
+  const replacers = {
+    '@tagreply': tagReply,
+    '@pesanan': query,
+    '@groupname': groupName,
+    '@tagdiri': usertag,
+    '@jam': jamnya,
+    '@menit': menitnya,
+    '@detik': detiknya,
+    '@hari': harinya,
+    '@tanggal': tanggalnya,
+    '@bulan': bulannya,
+    '@tahun': tahunnya,
+    '@namabulan': namabulannya
   }
-}
 
-if (settextproses.includes('@pesanan')) {
-  settextproses = settextproses.replace('@pesanan', query)
-} 
-if (settextproses.includes('@groupname')) {
-  settextproses = settextproses.replace('@groupname', groupName)
-} 
-if (settextproses.includes('@tagdiri')) {
-  settextproses = settextproses.replace('@tagdiri', usertag)
-}
-if (settextproses.includes('@jam')) {
-  settextproses = settextproses.replace('@jam', jamnya)
-}
-if (settextproses.includes('@menit')) {
-  settextproses = settextproses.replace('@menit', menitnya)
-}
-if (settextproses.includes('@detik')) {
-  settextproses = settextproses.replace('@detik', detiknya)
-}
-if (settextproses.includes('@hari')) {
-  settextproses = settextproses.replace('@hari', harinya)
-}
-if (settextproses.includes('@tanggal')) {
-  settextproses = settextproses.replace('@tanggal', tanggalnya)
-}
-if (settextproses.includes('@bulan')) {
-  settextproses = settextproses.replace('@bulan', bulannya)
-}
-if (settextproses.includes('@tahun')) {
-  settextproses = settextproses.replace('@tahun', tahunnya)
-}
-if (settextproses.includes('@namabulan')) {
-  settextproses = settextproses.replace('@namabulan', namabulannya)
-}
+  for (const [key, value] of Object.entries(replacers)) {
+    settextproses = settextproses.replaceAll(key, value)
+  }
 
-if (!settextproses) {
-  settextproses = teks
-}
-
-lenwy.sendMessage(m.chat, { text: settextproses, mentions: [quotedSender] }, { quoted: m })
+  await lenwy.sendMessage(from, { text: settextproses, mentions: [quotedSender, m.sender] }, { quoted: m })
 }
 break
 
@@ -7159,34 +6641,105 @@ m.reply(mess.error)
 break
 
 case 'welcome': {
-if (!isAdmins) return
-let args = m.text.split(' ').slice(1)
-if (args.length < 1) return m.reply('Ketik on untuk mengaktifkan\nKetik off untuk menonaktifkan')
-await updateWelcomeStatus(m, args[0])
+  if (!isAdmins) return m.reply(mess.admin)
+  if (!global.db.data.chats[m.chat]) global.db.data.chats[m.chat] = {}
+  if (!global.datagc[m.chat]) global.datagc[m.chat] = {}
+  if (!text) {
+    return m.reply(`*Pengaturan fitur ${command}*
+
+Ketik:
+- *${prefix + command} on* untuk mengaktifkan
+- *${prefix + command} off* untuk menonaktifkan
+- *${prefix + command} edit teksnya* untuk mengubah teks welcome
+
+*Placeholder yang bisa dipakai:*
+- @groupname = nama grup
+- @usertag = tag user yang masuk
+- @jam = jam sekarang
+- @menit = menit sekarang
+- @detik = detik sekarang
+- @hari = nama hari
+- @tanggal = tanggal
+- @bulan = angka bulan
+- @tahun = tahun
+- @namabulan = nama bulan
+
+*Contoh:*
+${prefix + command} edit Halo @usertag, selamat datang di @groupname
+Masuk pada @hari, @tanggal @namabulan @tahun jam @jam:@menit`)
+  }
+  if (args[0] === 'on') {
+    global.db.data.chats[m.chat].wlcm = true
+    fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
+    return m.reply('Fitur Welcome berhasil diaktifkan.')
+  }
+  if (args[0] === 'off') {
+    global.db.data.chats[m.chat].wlcm = false
+    fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
+    return m.reply('Fitur Welcome berhasil dinonaktifkan.')
+  }
+  if (args[0] === 'edit') {
+    const teksnye = args.slice(1).join(' ').trim()
+    if (!teksnye) {
+      return m.reply(`Masukkan teks welcome.\n\nContoh:\n${prefix + command} edit Halo @usertag, selamat datang di @groupname`)
+    }
+    global.datagc[m.chat].text_welcome = teksnye
+    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
+    return m.reply(`Teks ${command} berhasil diubah`)
+  }
+  return m.reply(`Pilihan tidak valid.\nGunakan: on, off, atau edit`)
 }
 break
 
 case 'left': {
-if (!isAdmins) return
-let args = m.text.split(' ').slice(1)
-if (args.length < 1) return m.reply('Ketik on untuk mengaktifkan\nKetik off untuk menonaktifkan')
-await updateLeftStatus(m, args[0])
-}
-break
+  if (!isAdmins) return m.reply(mess.admin)
+  if (!global.db.data.chats[m.chat]) global.db.data.chats[m.chat] = {}
+  if (!global.datagc[m.chat]) global.datagc[m.chat] = {}
+  if (!text) {
+    return m.reply(`*Pengaturan fitur ${command}*
 
-case 'setwelcome': {
-if (!isAdmins) return
-let teksnye = text ? text : ""
-await updateTextWelcome(m, teksnye)
-m.reply(mess.success)
-}
-break
+Ketik:
+- *${prefix + command} on* untuk mengaktifkan
+- *${prefix + command} off* untuk menonaktifkan
+- *${prefix + command} edit teksnya* untuk mengubah teks left
 
-case 'setleft': {
-if (!isAdmins) return
-let teksnye = text ? text : ""
-await updateTextLeft(m, teksnye)
-m.reply(mess.success)
+*Placeholder yang bisa dipakai:*
+- @groupname = nama grup
+- @usertag = tag user yang keluar
+- @jam = jam sekarang
+- @menit = menit sekarang
+- @detik = detik sekarang
+- @hari = nama hari
+- @tanggal = tanggal
+- @bulan = angka bulan
+- @tahun = tahun
+- @namabulan = nama bulan
+
+*Contoh:*
+${prefix + command} edit Sampai jumpa @usertag dari grup @groupname
+Keluar pada @hari, @tanggal @namabulan @tahun jam @jam:@menit`)
+  }
+
+  if (args[0] === 'on') {
+    global.db.data.chats[m.chat].left = true
+    fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
+    return m.reply('Fitur Left berhasil diaktifkan.')
+  }
+  if (args[0] === 'off') {
+    global.db.data.chats[m.chat].left = false
+    fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
+    return m.reply('Fitur Left berhasil dinonaktifkan.')
+  }
+  if (args[0] === 'edit') {
+    const teksnye = args.slice(1).join(' ').trim()
+    if (!teksnye) {
+      return m.reply(`Masukkan teks left.\n\nContoh:\n${prefix + command} edit Sampai jumpa @usertag di @groupname`)
+    }
+    global.datagc[m.chat].text_left = teksnye
+    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
+    return m.reply(`Teks ${command} berhasil diubah`)
+  }
+  return m.reply(`Pilihan tidak valid.\nGunakan: on, off, atau edit`)
 }
 break
 
@@ -7202,17 +6755,17 @@ break
 case 'tagsubject':
 case 'faketag': {
 if (!m.isGroup) return m.reply(mess.group)
-if (!isAdmins) return
+if (!isAdmins) return m.reply(mess.admin)
 if (!q) return m.reply(`Teks Nya Mana Kak?`)
 lenwy.sendMessage(m.chat, {
-    text: "@"+m.chat,
-    contextInfo: {
-        mentionedJid: participants.map(a => a.id),
-        groupMentions: [{
-            groupJid: m.chat,
-            groupSubject: q
-        }]
-    }
+  text: "@"+m.chat,
+  contextInfo: {
+    mentionedJid: participants.map(a => a.id),
+    groupMentions: [{
+        groupJid: m.chat,
+        groupSubject: q
+    }]
+   }
 })
 }
 break
@@ -9850,30 +9403,25 @@ case 'setstick': {
 
   let nameKey = text
   let groupID = m.chat; // Menggunakan ID grup untuk penyimpanan data
-
   let imageUrl = await lenwy.downloadAndSaveMediaMessage(quoted, `./storage/data/sticker/${nameKey + groupID}`)
-
   let db_sticker = JSON.parse(fs.readFileSync('./storage/databaseSticker.json'))
 
   if (!Array.isArray(db_sticker)) {
     db_sticker = [];
   }
-
   let existingPayment = db_sticker.find(entry => entry.id === groupID && entry.key === nameKey);
   if (existingPayment) {
       return m.reply(`Sticker dengan key ${nameKey} sudah ada untuk grup ini.`);
   }
-
   let obj_add = {
-      id: groupID,
-      key: nameKey,
-      imageUrl: imageUrl
+    id: groupID,
+    key: nameKey,
+    imageUrl: imageUrl
   };
 
   db_sticker.push(obj_add);
   fs.writeFileSync('./storage/databaseSticker.json', JSON.stringify(db_sticker, null, 3), 'utf-8');
-
-  return m.reply(`Sticker ${nameKey} berhasil disimpan`);
+  m.reply(`Sticker ${nameKey} berhasil disimpan`);
 }
 break
 
