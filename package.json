@@ -15,7 +15,7 @@
     "@mrnima/facebook-downloader": "^1.0.0",
     "awesome-phonenumber": "^5.9.0",
     "axios": "^1.4.0",
-    "baileys": "^6.7.18",
+    "baileys": "npm:@lynnidoffc/baileys@^3.1.9",
     "btch-downloader": "^2.3.2",
     "canvas": "^2.11.2",
     "cfonts": "^2.9.0",

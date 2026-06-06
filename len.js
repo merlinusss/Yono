@@ -62,12 +62,6 @@ global.mess = {
     link: '⚠️ *Itu Bukan Link Yang Benar*',
 }
 
-
-global.limitawal = {
-    premium: 100000 ,
-    free: 50
-}
-
 global.settings = {
   roles: {
     role1: "Bronze",

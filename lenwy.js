@@ -84,76 +84,19 @@ var body = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == '
 var budy = (typeof m.text == 'string' ? m.text : '')
 const premiumFilePath = path.join("./premium.json")
 const dbFilePath = path.join(__dirname, './storage/database.json')
-
-
 const rawBody = body || "";
-
 const prefix = /^[°zZ#$@+,.?=''():√%!¢£¥€π¤ΠΦ&><™©®Δ^βα¦|/\\©^]/.test(rawBody)
   ? rawBody.match(/^[°zZ#$@+,.?=''():√%!¢£¥€π¤ΠΦ&><™©®Δ^βα¦|/\\©^]/gi)[0]
   : '';
 
 const content = rawBody.slice(prefix.length).trim() || ""; 
-
 const parts = content.split(/ +/);
 const commandRaw = parts[0] || "";
 const args = parts.slice(1);
-
 const command = commandRaw.toLowerCase();
 const commandPrivate = commandRaw.toLowerCase();
-
-
 const isCmd = body?.startsWith(prefix)
 const cmd = prefix + command
-
-
-
-
-
-
-
-function readDatabase() {
-    try {
-        const data = fs.readFileSync(dbFilePath, 'utf8')
-        return JSON.parse(data)
-    } catch (err) {
-        console.error('Error reading database:', err)
-        return { users: {} };
-    }
-}
-
-function writeDatabase(data) {
-    try {
-        fs.writeFileSync(dbFilePath, JSON.stringify(data, null, 2))
-    } catch (err) {
-        console.error('Error writing database:', err)
-    }
-}
-
-function updateUserLimits(numbers, limit) {
-    const data = readDatabase()
-
-    numbers.forEach(number => {
-        const userKey = `${number}@s.whatsapp.net`;
-        if (data.users[userKey]) {
-            data.users[userKey].limit = limit;
-        } else {
-            data.users[userKey] = {
-                limit: limit,
-                level: 0,
-                autolevelup: true,
-            };
-        }
-    })
-    writeDatabase(data)
-    console.log(`Updated limits to ${limit} for numbers: ${numbers.join(', ')}`)
-}
-
-function getUserLimit(sender) {
-    const data = readDatabase()
-    const userKey = `${sender}`;
-    return isPremiumUser(sender) ? Infinity : (data.users[userKey] ? data.users[userKey].limit : 50)
-}
-
 
 const full_args = body?.replace(command, '').slice(1).trim()
 const spychat = body?.replace().slice().trim()
@@ -204,7 +147,6 @@ const senderNumber = (m.sender || sender || '').replace(/[^0-9]/g, '');
 const isCreator = creatorNumbers.includes(senderNumber);
 const isPrem = allPremium.includes(senderNumber);
 const isBan = bannedNumbers.includes(senderNumber);
-const isReseller = resellerNumbers.includes(senderNumber);
 
 const isBotAdmins = m.isGroup ? [lenwy.user.id, lenwy.user.lid].some(j => groupAdmins.includes(j?.replace(/:\d+@/, '@'))) : false
 const isAdmins = m.isGroup ? groupAdmins.includes(m.sender) : false
@@ -228,7 +170,6 @@ const jamnya = moment.tz('Asia/Jakarta').format('HH')
 const menitnya = moment.tz('Asia/Jakarta').format('mm')
 const detiknya = moment.tz('Asia/Jakarta').format('ss')
 
-
 const hariini = moment.tz('Asia/Jakarta').format('dddd, DD MMMM YYYY')
 const hariini2 = moment.tz('Asia/Jakarta').format('DD MMMM YYYY')
 const hariini3 = moment.tz('Asia/Jakarta').format('dddd')
@@ -240,7 +181,6 @@ const wita = moment.tz('Asia/Makassar').format('HH : mm : ss')
 const time2 = moment().tz('Asia/Jakarta').format('HH:mm:ss')
 
 let ucapanWaktu = `${global.emoji} Selamat Malam`
-
 if (time2 < "03:00:00") {
   ucapanWaktu = `${global.emoji} Selamat Tengah Malam`
 } else if (time2 < "05:00:00") {
@@ -253,64 +193,6 @@ if (time2 < "03:00:00") {
   ucapanWaktu = `${global.emoji} Selamat Sore`
 } else if (time2 < "19:00:00") {
   ucapanWaktu = `${global.emoji} Selamat Petang`
-}
-
-let pplu
-try {
-  pplu = await lenwy.profilePictureUrl(anu.id, 'image')
-} catch {
-  pplu = 'https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg'
-}
-const len = {
-  key: {
-    participant: `0@s.whatsapp.net`,
-    ...(m.chat ? {
-        remoteJid: `status@broadcast`
-    } : {})
-  },
-  message: {
-    "contactMessage": {
-      'displayName': `${pushname}`,
-      'vcard': `BEGIN:VCARD\nVERSION:3.0\nN:XL;Lenwy,;;;\nFN: Lenwy V2.0\nitem1.TEL;waid=${m.sender.split("@")[0]}:+${m.sender.split("@")[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD`,
-      'jpegThumbnail': pplu,
-      thumbnail: pplu,
-      sendEphemeral: true
-    }   
-  }
-}
-
-const len2 = {
-  key: {
-    fromMe: false,
-    participant: `0@s.whatsapp.net`,
-    ...(m.chat ? {
-      remoteJid: "status@broadcast"
-    } : {})
-  },
-  message: {
-    "extendedTextMessage": {
-      "text": ucapanWaktu,
-      "title": ``,
-      "thumbnailUrl": pplu
-    }
-  }
-}
-
-const onlygc = () => {
-  lenwy.sendMessage(m.chat, {
-    text: `${global.emoji} *Bot Hanya Bisa Digunakan Didalam Grup*`,
-    contextInfo: {
-      externalAdReply: {
-        showAdAttribution: false,
-        title: `${ucapanWaktu}`,
-        body: `${botname}`,
-        thumbnailUrl: "https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg",
-        sourceUrl: "",
-        mediaType: 1,
-        renderLargerThumbnail: false
-      }
-    }
-  })
 }
     
 const toxicWords = /(ewe|bangsad|mmk|koncol|puki|kojtol|kintil|momok|nigga|ajg|ewean|yatim|anjing|kontol|memek|bangsat|babi|goblok|goblog|kntl|pepek|ppk|ngentod|ngentd|ngntd|kentod|kntd|bgst|anjg|anj|fuck|hitam|ireng|jawir|gay|asw|ktl|ngentot|ngewe|bokep|bkp)/i;
@@ -338,19 +220,16 @@ try {
 
 try {
     let isNumber = x => typeof x === 'number' && !isNaN(x)
-    let limitUser = global.limitawal.free;
     let user = global.db.data.users[m.sender]
     if (typeof user !== 'object') global.db.data.users[m.sender] = {};
     if (user) {
         if (!isNumber(user.afkTime)) user.afkTime = -1;
         if (!('afkReason' in user)) user.afkReason = '';
-        if (!isNumber(user.limit)) user.limit = limitUser;
         if (!isNumber(user.level)) user.level = 0;
         if (!('autolevelup' in user)) user.autolevelup = true;
     } else global.db.data.users[m.sender] = {
         afkTime: -1,
         afkReason: '',
-        limit: limitUser,
         level: 0,
         autolevelup: true
     };
@@ -411,30 +290,19 @@ try {
     console.error(err)
 }
 
-cron.schedule('02 12 * * *', () => {
-  let user = Object.keys(global.db.data.users)
-  let limitUser = isPrem ? global.limitawal.premium : global.limitawal.free
-  for (let jid of user) global.db.data.users[jid].limit = limitUser
-  console.log('Reseted Limit')
-}, {
-  scheduled: true,
-  timezone: "Asia/Jakarta"
-})     
+function parseMention(text = '') {
+return [...text.matchAll(/@([0-9]{5,16}|0)/g)].map(v => v[1] + '@s.whatsapp.net')
+}
+
+async function LenwyLD() {
+  await sleep(100)
+  await lenwy.sendMessage(from, { react: { text: '🕒', key: m.key } })
+}
 
 if (global.db.data.settings[botNumber].autoread) {
   if (m.message) {
     lenwy.readMessages([m.key])
   }
-}
-
-function parseMention(text = '') {
-return [...text.matchAll(/@([0-9]{5,16}|0)/g)].map(v => v[1] + '@s.whatsapp.net')
-}
-
-
-async function LenwyLD() {
-  await sleep(100) // Jeda waktu (0.75 detik) antara reaksi
-  await lenwy.sendMessage(from, { react: { text: '🕒', key: m.key } })
 }
 
 if (isCmd) {
@@ -474,7 +342,6 @@ if (m.isGroup && isAlreadyResponList(m.chat, body?.toLowerCase(), db_respon_list
     }
   }
 }
-
 if (m.isGroup && isKeyResponStick(m.chat, body.toLowerCase(), JSON.parse(fs.readFileSync('./storage/databaseSticker.json')))) {
   if (!isAdmins) return;
   var getRespon = getDataResponStick(m.chat, body.toLowerCase(), JSON.parse(fs.readFileSync('./storage/databaseSticker.json')));
@@ -491,10 +358,7 @@ if (db.data.chats[m.chat].antispam) {
   console.log(`[SPAM]`, color(moment(m.messageTimestamp * 100).format('DD/MM/YYYY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(m.pushName))
   return await lenwy.sendMessage(m.chat, { delete: m.key })
   }
-}   
-
-
-
+}
 
 if (db.data.chats[m.chat].antitoxic1) {
   const isToxic = toxicWords.exec(m.text)
@@ -870,41 +734,6 @@ if (global.db.data.users[m.sender].afkTime > -1) {
   user.afkReason = ''
 }
 
-async function limit50(m) {
-  const user = global.db.data.users[m.sender]
-  if (isPrem(m.sender)) {
-    m.reply('🎉 *Akun Premium Kamu Aktif* Limit tidak berkurang.')
-    return true; // Mengembalikan true untuk menunjukkan bahwa limit tidak perlu dikurangi
-  } else {
-    if (user.limit < 50) {
-      m.reply('⚠️ *Limit Kamu Habis*')
-      return false; // Mengembalikan false jika limit habis
-    } else {
-      user.limit -= 50;
-      m.reply('50 Limit Digunakan')
-      return true; // Mengembalikan true jika limit berhasil dikurangi
-    }
-  }
-}
-async function limit25(m) {
-  const user = global.db.data.users[m.sender]
-  if (isPrem(m.sender)) {
-    m.reply('🎉 *Akun Premium Kamu Aktif* Limit tidak berkurang.')
-    return true; // Mengembalikan true untuk menunjukkan bahwa limit tidak perlu dikurangi
-  } else {
-    if (user.limit < 25) {
-      m.reply('⚠️ *Limit Kamu Habis*')
-      return false; // Mengembalikan false jika limit habis
-    } else {
-      user.limit -= 25;
-      m.reply('25 Limit Digunakan')
-      return true; // Mengembalikan true jika limit berhasil dikurangi
-    }
-  }
-}
-
-
-
 if (m.msg?.contextInfo?.mentionedJid?.some(jid => global.owner.includes(jid.replace(/@s\.whatsapp\.net$/, '')))) {
   if (fromMe) return
   return m.reply(mess.tagOwner);
@@ -1036,8 +865,6 @@ let anu = `               /)  /)
    ││ ♡゙ Ban
    ││ ♡゙ Delban
    ││ ♡゙ Listban
-   ││ ♡゙ Resetlimit
-   ││ ♡゙ Addlimit
    ││ ♡゙ Setppbot
    ││ ♡゙ Setppbotpanjang
    ││ ♡゙ Join
@@ -1427,8 +1254,6 @@ case 'menuowner': {
    ││ ♡゙ Ban
    ││ ♡゙ Delban
    ││ ♡゙ Listban
-   ││ ♡゙ Resetlimit
-   ││ ♡゙ Addlimit
    ││ ♡゙ Setppbot
    ││ ♡゙ Setppbotpanjang
    ││ ♡゙ Join
@@ -2628,28 +2453,19 @@ for (let x of anu) {
 }
 break
 
-  case 'public': {
+case 'public': {
   if (!isCreator) return m.reply(mess.owner) 
   lenwy.public = true
   m.reply('Sukses Change To Public')
-  }
-  break
+}
+break
   
-  case 'self': {
+case 'self': {
   if (!isCreator) return m.reply(mess.owner) 
   lenwy.public = false
   m.reply('Sukses Change To Self')
-  }
-  break
-  
-  case 'enc': {
-  if (!isCreator) return m.reply(mess.owner)
-  if (!q) return m.reply(`Contoh ${prefix+command} const hai = 'Aku Merlinus'`)
-  let res = await (await fetch (`https://endpoint.web.id/tools/encrypt?key=315602&query=${q}`)).json()
-  m.reply(res.result)
-  }
-  break
-
+}
+break
 
 case 'addallprem': {
   if (!isCreator) return m.reply(mess.owner)
@@ -2709,7 +2525,6 @@ case 'addallprem': {
   }
 }
 break
-
 
 case 'delallprem': {
     if (!isCreator) return m.reply(mess.owner)
@@ -2773,12 +2588,15 @@ case 'delallprem': {
 }
 break
 
-
 case 'addprem': {
   if (!isCreator) return m.reply(mess.owner)
   if (!args[0]) return m.reply('*Mana Nomornya?*')
 
-  let numbers = text.split('|')[0].split(/\s+/).map(number => number.replace(/[^0-9]/g, ''))
+  let numbers = text
+    .split('|')[0]
+    .split(/\s+/)
+    .map(number => number.replace(/[^0-9]/g, ''))
+    .filter(Boolean)
 
   if (numbers.length === 0) return m.reply('*Tidak Ada Nomor Yang Diberikan.*')
 
@@ -2786,8 +2604,6 @@ case 'addprem': {
   let validNumbers = []
 
   for (let number of numbers) {
-    if (number.length === 0) continue;
-
     let ceknye = await lenwy.onWhatsApp(number + '@s.whatsapp.net')
     if (ceknye.length === 0) {
       invalidNumbers.push(number)
@@ -2798,18 +2614,10 @@ case 'addprem': {
 
   if (validNumbers.length > 0) {
     let owner = JSON.parse(fs.readFileSync('./premium.json', 'utf8'))
-    owner = Array.from(new Set([...owner, ...validNumbers])) // Menghindari duplikasi
+    owner = [...new Set([...owner, ...validNumbers])]
     fs.writeFileSync('./premium.json', JSON.stringify(owner, null, 2))
 
-    let user = global.db.data.users;
-    validNumbers.forEach(number => {
-      if (!user[number]) {
-        user[number] = {}; // Pastikan data pengguna ada
-      }
-      user[number].limit = Infinity; // Set limit ke Infinity
-    })
-
-    m.reply(`Nomor ${validNumbers.join(', ')} Ditambahkan Kedalam Daftar Premium dan Limitnya Diatur ke Infinity.`)
+    m.reply(`Nomor ${validNumbers.join(', ')} ditambahkan ke daftar premium.`)
   }
 
   if (invalidNumbers.length > 0) {
@@ -3154,55 +2962,11 @@ break
 
 
 
-  case 'owner':
-  case 'creator': 
-  case 'developer': {
+case 'owner':
+case 'creator': 
+case 'developer': {
   if (text) return
   await lenwy.sendContact(m.chat, author.map( i => i.split("@")[0]), m.quoted ? m.quoted.fakeObj : m)
-  }
-  break
-  
-  case 'limit': {
-  if (text) return
-  m.reply('Sisa Limit Kamu : ' + (db.data.users[m.sender].limit))
-  }
-  break
-  
-  case 'resetlimit': {
-  if (!isCreator) return m.reply(mess.owner)
-  let list = Object.entries(global.db.data.users)
-    let lim = !args || !args[0] ? 50 : isNumber(args[0]) ? parseInt(args[0]) : 50
-    lim = Math.max(1, lim)
-    list.map(([user, data], i) => (Number(data.limit = lim)))
-      lenwy.sendMessage(m.chat, {text: `Limit Direset ${lim} / User`}, { quoted: m })
-      }
-  break
-  
-  case 'addlimit': {
-  if (!isCreator) return m.reply(mess.owner)
-  if (!text) return m.reply('Masukkan Jumlah Limit Yang Akan Diberi')
-      let who
-      if (m.isGroup) who = m.mentionedJid[0]
-      else who = m.chat
-      if (!who) m.reply('Tag Orangnya')
-      let txt = text.replace('@' + who.split`@`[0], '').trim()
-      if (isNaN(txt)) m.reply('Hanya Angka')
-      let poin = parseInt(txt)
-      let limit = poin
-      if (limit < 1) m.reply( 'Minimal 1')
-      let user = global.db.data.users
-      user[who].limit += poin
-      if (limit > 9999999) return m.reply('Kebanyakan')
-      if (txt.toLowerCase() === 'infinity') {
-        limit = Infinity;
-      } if (!user[who]) {
-      user[who] = {}; // Pastikan data pengguna ada
-  }
-  user[who].limit = limit; // Set limit ke Infinity atau jumlah yang ditentukan
-let limitText = limit === Infinity ? 'Infinity' : `+${limit}`;
-lenwy.sendMessage(m.chat, {
-  text: `🎁 *Selamat @${who.split`@`[0]}. Kamu Mendapatkan ${limitText} Limit!*`
-}, { quoted: m })
 }
 break
 
@@ -3552,13 +3316,10 @@ case 'img2txt':
 if (!/image/.test(mime)) return m.reply(`Gambarnya Mana?`)
 if (/image/.test(mime)) {
 LenwyLD()
-await sleep(200)
 let mee = await lenwy.downloadAndSaveMediaMessage(quoted)
 let mem = await uploader60Minute(mee)
-let len = await (await fetch(`https://itzpire.com/tools/img2text?url=${mem}`)).json()
-  LenwyLD()
-  await sleep(200)
-let result = len.result
+let res = await (await fetch(`https://itzpire.com/tools/img2text?url=${mem}`)).json()
+let result = res.result
 lenwy.sendMessage(m.chat,{image:{url: mem}, caption:`${result}`},{quoted: m})
 }
 break
