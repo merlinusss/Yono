@@ -12,12 +12,10 @@
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@hapi/boom": "^10.0.1",
-    "@mrnima/facebook-downloader": "^1.0.0",
     "awesome-phonenumber": "^5.9.0",
     "axios": "^1.4.0",
     "baileys": "npm:@lynnidoffc/baileys@^3.1.9",
     "btch-downloader": "^2.3.2",
-    "canvas": "^2.11.2",
     "cfonts": "^2.9.0",
     "chalk": "^4.1.2",
     "cheerio": "^1.0.0-rc.12",

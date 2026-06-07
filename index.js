@@ -14,6 +14,8 @@ const { Boom } = require('@hapi/boom')
 const moment = require('moment-timezone')
 const PhoneNumber = require('awesome-phonenumber')
 const figlet = require("figlet")
+const cron = require('node-cron');
+const os = require('os');
 const { exec, spawn, execSync } = require("child_process")
 const { imageToWebp, videoToWebp, writeExifImg, writeExifVid } = require('./library/exif')
 const { smsg, isUrl, generateMessageTag, getBuffer, getSizeMedia, fetchJson, await, sleep } = require('./library/myfunc')
@@ -91,23 +93,29 @@ if (global.db) setInterval(async () => {
 }, 30 * 1000)
 
 
-console.log(color(figlet.textSync(`${global.botname}`, {
-  font: 'DOS Rebel',
+const logo = figlet.textSync(global.botname, {
+  font: 'Slant',
   horizontalLayout: 'default',
-  vertivalLayout: 'default',
+  verticalLayout: 'default',
   width: 100,
-  whitespaceBreak: false
-}), 'blue'))
+  whitespaceBreak: true
+});
 
-console.log(chalk.white.bold(`${chalk.green.bold(`Halo own ${global.ownername}`)}         
-- - - - - - - - - - - - - - - - - - - -
-${chalk.green.bold("Good Luck")}\n`));
+const totalRAM = Math.round(os.totalmem() / 1024 / 1024);
+const freeRAM = Math.round(os.freemem() / 1024 / 1024);
+const usedRAM = totalRAM - freeRAM;
+const border = chalk.cyan('======================================================');
 
+console.log(chalk.cyanBright.bold(logo));
+console.log(border);
+console.log(`  ${chalk.magenta('❯')} ${chalk.white.bold('Developer')}  : ${chalk.greenBright(global.ownername)}`);
+console.log(`  ${chalk.magenta('❯')} ${chalk.white.bold('Status')}     : ${chalk.greenBright.bold('Online & Ready 🚀')}`);
+console.log(`  ${chalk.magenta('❯')} ${chalk.white.bold('System')}     : ${chalk.yellowBright(`${os.platform()} ${os.arch()}`)}`);
+console.log(`  ${chalk.magenta('❯')} ${chalk.white.bold('Memory')}     : ${chalk.yellowBright(`${usedRAM} MB / ${totalRAM} MB`)}`);
+console.log(border);
+console.log(chalk.gray.italic('  "Good luck, have fun coding!"\n'));
 
-
-
-// FOKUS DIBAWAH INI AJA BANG
-
+// Konek ke wa
 async function connectToWhatsApp() {
   const { state, saveCreds } = await useMultiFileAuthState(global.sessionName)
   const { version, isLatest } = await fetchLatestBaileysVersion()
@@ -150,7 +158,6 @@ async function connectToWhatsApp() {
       if (!mek.message) return
       mek.message = (Object.keys(mek.message)[0] === 'ephemeralMessage') ? mek.message.ephemeralMessage.message : mek.message
       if (mek.key && mek.key.remoteJid === 'status@broadcast') return
-      if (!lenwy.public && !mek.key.fromMe && chatUpdate.type === 'notify') return
       if (mek.key.id.startsWith('BAE5') && mek.key.id.length === 16) return
       m = smsg(lenwy, mek, store)
       require("./lenwy")(lenwy, m, chatUpdate, store)
@@ -281,17 +288,17 @@ lenwy.ev.on('group-participants.update', async (anu) => {
     }
 
     const replaceTemplate = (text, usertag) => {
-      const replacements = {
-        '@groupname': groupName,
-        '@usertag': usertag,
-        '@jam': jamnya,
-        '@menit': menitnya,
-        '@detik': detiknya,
-        '@hari': harinya,
-        '@tanggal': tanggalnya,
-        '@bulan': bulannya,
-        '@tahun': tahunnya,
-        '@namabulan': namabulannya
+      const replacements = {  
+        '{GROUPNAME}': groupName,
+        '{USERTAG}': usertag,
+        '{JAM}': jamnya,
+        '{MENIT}': menitnya,
+        '{DETIK}': detiknya,
+        '{HARI}': harinya,
+        '{TANGGAL}': tanggalnya,
+        '{BULAN}': bulannya,
+        '{TAHUN}': tahunnya,
+        '{NAMABULAN}': namabulannya
       }
 
       let result = text || ''
@@ -445,13 +452,15 @@ lenwy.ev.on('group-participants.update', async (anu) => {
     }
   }
 
-  // Setiap 2 jam jalankan backup
-  startBackupProcess()
-  setInterval(startBackupProcess, 2 * 60 * 60 * 1000);
+  cron.schedule('0 */4 * * *', () => {
+    console.log('Memulai proses backup...');
+    startBackupProcess();
+  });
 
-  setInterval(async () => {
+  cron.schedule('*/10 * * * *', async () => {
     let ripperList = [];
-    let pathRipper = path.join(__dirname, './storage/dataRipper.json')
+    let pathRipper = path.join(__dirname, './storage/dataRipper.json');
+    
     if (fs.existsSync(pathRipper)) {
       try {
         ripperList = JSON.parse(fs.readFileSync(pathRipper));
@@ -460,132 +469,141 @@ lenwy.ev.on('group-participants.update', async (anu) => {
         ripperList = [];
       }
     }
-    if (ripperList.length === 0) return
-    let botNumber = await lenwy.decodeJid(lenwy.user.id);
-    let groupList = await lenwy.groupFetchAllParticipating();
+    if (ripperList.length === 0) return;
+    try {
+        let botNumber = await lenwy.decodeJid(lenwy.user.id);
+        let groupList = await lenwy.groupFetchAllParticipating();
 
-    for (let groupId in groupList) {
+        for (let groupId in groupList) {
+          try {
+            let metadata = await lenwy.groupMetadata(groupId);
+            let participants = metadata.participants || [];
+            let isBotAdmin = participants.some(p => p.id === botNumber && p.admin !== null);
+            let ripperMembers = participants
+              .filter(member => ripperList.includes(member.id.replace(/[^0-9]/g, '')))
+              .map(member => member.id);
+            if (ripperMembers.length > 0) {
+              let mentionsText = ripperMembers.map(id => `@${id.split('@')[0]}`).join(', ');
+              if (!isBotAdmin) {
+                await lenwy.sendTextWithMentions(groupId, `Gagal mengeluarkan ${mentionsText} karena bot bukan admin!`);
+                continue; 
+              }
+              await lenwy.sendTextWithMentions(groupId, `${mentionsText}, anda terdeteksi sebagai *Ripper*. Bot akan mengeluarkan anda!`);
+              await lenwy.groupParticipantsUpdate(groupId, ripperMembers, 'remove');
+              console.log(`✅ Ripper ${ripperMembers.join(', ')} dikeluarkan dari ${metadata.subject}`);
+            }
+          } catch (err) {
+            console.error(`❌ Gagal memproses grup ${groupId}:`, err);
+          }
+        }
+    } catch (error) {
+        console.error(`❌ Terjadi kesalahan saat mengambil data bot/grup:`, error);
+    }
+  });
+
+
+let isCheckingSewa = false; 
+const expiredCheck = async (lenwy) => {
+  if (isCheckingSewa) return; 
+  isCheckingSewa = true;
+
+  try {
+    let pathsewa = './storage/sewa.json';
+    let sewa = [];
+    if (fs.existsSync(pathsewa)) {
+        let rawData = fs.readFileSync(pathsewa, 'utf8');
+        try {
+            sewa = JSON.parse(rawData);
+            if (!Array.isArray(sewa)) sewa = [];
+        } catch (e) {
+            console.error('File sewa.json kosong/corrupt, fallback ke array kosong.');
+            sewa = [];
+        }
+    }
+    let authorrr = [];
+    try {
+        authorrr = JSON.parse(fs.readFileSync('./author.json'));
+    } catch(e) {
+        authorrr = []; 
+    }
+    let getGroups = {};
+    try {
+        getGroups = await lenwy.groupFetchAllParticipating();
+    } catch (err) {
+        console.error('Gagal fetch data grup di awal:', err.message);
+        isCheckingSewa = false;
+        return; 
+    }
+    const groupIds = Object.values(getGroups).map(v => v.id);
+    let dataChanged = false;
+    for (let index = sewa.length - 1; index >= 0; index--) {
+      const item = sewa[index];
+
       try {
-        let metadata = await lenwy.groupMetadata(groupId);
-        let participants = metadata.participants || [];
-        let isBotAdmin = participants.some(p => p.id === botNumber && p.admin !== null);
+        if (item.isAlifetime) continue;
+        if (item.expired - Date.now() <= toMs('1d') && !item.reminded1d) {
+          await lenwy.sendMessage(item.groupId, { text: `Sisa masa sewa di group ini adalah *1 hari* lagi, jika ingin perpanjang masa sewa silahkan chat admin.` });
+          if (authorrr.length > 0) await lenwy.sendContact(item.groupId, authorrr.map(i => i.split("@")[0]));
+          item.reminded1d = true;
+          dataChanged = true;
+        }
 
-        // Cari semua ripper yang ada di grup ini
-        let ripperMembers = participants
-          .filter(member => ripperList.includes(member.id.replace(/[^0-9]/g, '')))
-          .map(member => member.id);
+        if (Date.now() >= item.expired) {
+          console.log(`Sewa expired: ${item.groupId}`);
+          sewa.splice(index, 1);
+          dataChanged = true;
+          if (!groupIds.includes(item.groupId)) {
+            console.warn(`Bot bukan anggota grup ${item.groupId}, hapus data aman.`);
+            continue;
+          }
+          let metadata;
+          try {
+            metadata = await lenwy.groupMetadata(item.groupId);
+          } catch (err) {
+            console.warn(`Gagal ambil metadata ${item.groupId}, lanjut ke grup berikutnya.`);
+            continue; 
+          }
+          let linkgc;
+          try {
+            let invite = await lenwy.groupInviteCode(item.groupId);
+            linkgc = `https://chat.whatsapp.com/${invite}`;
+          } catch (err) {
+            linkgc = '-';
+          }
 
-        if (ripperMembers.length > 0) {
-          // Mention semua sebelum kick
-          let mentionsText = ripperMembers.map(id => `@${id.split('@')[0]}`).join(', ');
-          if (!isBotAdmin) return lenwy.sendTextWithMentions(groupId, `Gagal mengeluarkan ${mentionsText} karena bot bukan admin!`);
-          await lenwy.sendTextWithMentions(groupId, `${mentionsText}, anda terdeteksi sebagai *Ripper*. Bot akan mengeluarkan anda!`);
-
-          // Kick semua sekaligus
-          await lenwy.groupParticipantsUpdate(groupId, ripperMembers, 'remove');
-          console.log(`✅ Ripper ${ripperMembers.join(', ')} dikeluarkan dari ${metadata.subject}`);
+          const teks = `Masa sewa di grup ini sudah habis, bot akan keluar otomatis.\nJika ingin sewa lagi silahkan chat ke https://wa.me/${global.owner}`;
+          await lenwy.sendMessage(item.groupId, { text: teks });
+          if (authorrr.length > 0) await lenwy.sendContact(item.groupId, authorrr.map(i => i.split("@")[0]));
+          await lenwy.sendMessage(`${global.owner}@s.whatsapp.net`, { text: `Masa sewa di grup *${metadata.subject}* sudah habis.\n\n> ID GROUP : ${item.groupId}\n> NAMA GROUP : ${metadata.subject || ''}\n> LINK GROUP : ${linkgc}` });
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          
+          try {
+            await lenwy.groupLeave(item.groupId);
+          } catch (error) {
+            console.error(`Gagal keluar dari grup ${item.groupId}: ${error.message}`);
+          }
         }
       } catch (err) {
-        console.error(`❌ Gagal memproses grup ${groupId}:`, err);
-      }
-    }
-
-  }, 5 * 60 * 1000)
-
-
-  const expiredCheck = async (lenwy) => {
-    try {
-      let pathsewa = './storage/sewa.json';
-      let rawData = fs.readFileSync(pathsewa, 'utf8');
-      let sewa = JSON.parse(rawData);
-      if (!Array.isArray(sewa)) {
-        sewa = [];
-        fs.writeFileSync(pathsewa, JSON.stringify(sewa, null, 2), 'utf8');
-      }
-      let authorrr = JSON.parse(fs.readFileSync('./author.json'));
-
-      for (let index = sewa.length - 1; index >= 0; index--) {
-        const item = sewa[index];
-
-        try {
-          if (item.isAlifetime) continue;
-
-          // Reminder 1d
-          if (item.expired - Date.now() <= toMs('1d') && !item.reminded1d) {
-            await lenwy.sendMessage(item.groupId, { text: `Sisa masa sewa di group ini adalah *1 hari* lagi, jika ingin perpanjang masa sewa silahkan chat admin berikut.` });
-            await lenwy.sendContact(item.groupId, authorrr.map(i => i.split("@")[0]));
-            item.reminded1d = true;
-          }
-
-          // Cek expired
-          if (Date.now() >= item.expired) {
-            console.log(`Sewa expired: ${item.id}`);
-
-            // Hapus dari list
-            sewa.splice(index, 1);
-
-            const getGroups = await lenwy.groupFetchAllParticipating();
-            const groupIds = Object.values(getGroups).map(v => v.id);
-
-            if (!groupIds.includes(item.groupId)) {
-              console.warn(`Bot bukan anggota grup ${item.groupId}, hapus data.`);
-              continue;
-            }
-
-            let metadata;
-            try {
-              metadata = await lenwy.groupMetadata(item.groupId);
-            } catch (err) {
-              if (err.message.includes("forbidden")) {
-                console.warn(`GroupMetadata forbidden, hapus data.`);
-                continue;
-              } else {
-                throw err;
-              }
-            }
-
-            let linkgc;
-            try {
-              let invite = await lenwy.groupInviteCode(item.groupId);
-              linkgc = `https://chat.whatsapp.com/${invite}`;
-            } catch (err) {
-              console.warn(`Gagal ambil link grup: ${err.message}`);
-              linkgc = '-';
-            }
-
-            const teks = `Masa sewa di grup ini sudah habis, bot akan keluar otomatis.\nJika ingin sewa lagi silahkan chat ke https://wa.me/${global.owner}`;
-            await lenwy.sendMessage(item.groupId, { text: teks });
-            await lenwy.sendContact(item.groupId, authorrr.map(i => i.split("@")[0]));
-            await lenwy.sendMessage(`${global.owner}@s.whatsapp.net`, {
-              text: `Masa sewa di grup *${metadata.subject}* sudah habis.\n\n> ID GROUP : ${item.groupId}\n> NAMA GROUP : ${metadata.subject || ''}\n> LINK GROUP : ${linkgc}`
-            });
-
-            await sleep(2000);
-            try {
-              await lenwy.groupLeave(item.groupId);
-            } catch (error) {
-              console.error(`Gagal keluar dari grup ${item.groupId}: ${error.message}`);
-            }
-          }
-        } catch (err) {
-          // Tangkap error per-item
-          console.error(`Gagal proses sewa untuk grup ${item.groupId}: ${err}`);
-          if (err.message.includes("forbidden") || err.message.includes("item-not-found")) {
-            console.warn(`Grup ${item.groupId} tidak ditemukan, hapus entri dari sewa`);
-            sewa.splice(index, 1);
-          }
-          continue;
+        console.error(`Gagal proses sewa grup ${item.groupId}:`, err.message);
+        if (err.message?.includes("forbidden") || err.message?.includes("item-not-found") || String(err).includes("404")) {
+          sewa.splice(index, 1);
+          dataChanged = true;
         }
       }
-      fs.writeFileSync(pathsewa, JSON.stringify(sewa, null, 2), 'utf8');
-    } catch (error) {
-      console.log(error)
-      console.error('Terjadi kesalahan saat memeriksa entri kedaluwarsa:', error.message);
     }
-  };
-  setInterval(() => {
-    expiredCheck(lenwy);
-  }, 10000)
+    if (dataChanged) {
+        fs.writeFileSync(pathsewa, JSON.stringify(sewa, null, 2), 'utf8');
+    }
+  } catch (error) {
+    console.error('Terjadi kesalahan utama di expiredCheck:', error.message);
+  } finally {
+    isCheckingSewa = false; 
+  }
+};
+
+cron.schedule('* * * * *', () => {
+  expiredCheck(lenwy);
+});
 
   lenwy.ev.on('messages.upsert', async ({ messages, type }) => {
     if (type !== 'notify') return
@@ -641,8 +659,6 @@ lenwy.ev.on('group-participants.update', async (anu) => {
     if (Array.isArray(kon) && kon.length > 0) {
       let contacts = [];
       let displayName = ''; // Nama tampilan untuk kontak
-
-      // Proses nomor pertama
       const firstNumber = kon[0];
       const firstContact = {
         displayName: await lenwy.getName(firstNumber + '@s.whatsapp.net'),
@@ -650,8 +666,6 @@ lenwy.ev.on('group-participants.update', async (anu) => {
       };
       contacts.push(firstContact);
       displayName = 'Kontak Utama';
-
-      // Kirim pesan kontak
       await lenwy.sendMessage(jid, { contacts: { displayName: `${contacts.length} Kontak`, contacts: contacts }, ...opts }, { quoted });
     } else {
       console.log('Array kon kosong atau bukan array.');
@@ -835,8 +849,6 @@ lenwy.ev.on('group-participants.update', async (anu) => {
   // Ending
 
 
-  //Kalau Mau Self Lu Buat Jadi false
-  lenwy.public = true
   lenwy.ev.on('creds.update', saveCreds)
   lenwy.serializeM = (m) => smsg(lenwy, m, store)
   lenwy.ev.on("connection.update", async (update) => {
@@ -869,8 +881,10 @@ lenwy.ev.on('group-participants.update', async (anu) => {
         console.log(`Unknown DisconnectReason: ${reason}|${connection}`);
         connectToWhatsApp();
       }
-    } else if (connection === "open") {
-      console.log(`${global.botname} Activated`)
+    } else if (connection === "open") {      
+      console.log(chalk.greenBright('╭──────────────────────────────────────────────────╮'));
+      console.log(chalk.greenBright('│') + chalk.white.bold('       BOT BERHASIL TERHUBUNG KE WHATSAPP!        ') + chalk.greenBright('│'));
+      console.log(chalk.greenBright('╰──────────────────────────────────────────────────╯'));
     }
   });
 
