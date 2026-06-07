@@ -17,7 +17,7 @@ async function webpToMp4(webpBuffer) {
   fs.writeFileSync(inputPath, webpBuffer)
 
   await new Promise((resolve, reject) => {
-    ffmpeg(inputPath)
+    ff(inputPath)
       .outputOptions([
         '-movflags', 'faststart',
         '-pix_fmt', 'yuv420p',
