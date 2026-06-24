@@ -120,7 +120,7 @@ async function connectToWhatsApp() {
   const { state, saveCreds } = await useMultiFileAuthState(global.sessionName)
   const { version, isLatest } = await fetchLatestBaileysVersion()
   const lenwy = makeWASocket({
-    version: [2, 3000, 1035682492],
+    version: [2, 3000, 1041493446],
     logger: pino({ level: 'silent' }),
     printQRInTerminal: !global.usePairingCode,
     browser: ['Linux', 'Chromium', '122.0.6261.111'],
@@ -187,13 +187,13 @@ async function connectToWhatsApp() {
     if (type !== 'notify') return
 
     for (const msg of messages) {
-      if (!msg.message) continue // Ganti return ➜ continue
+      if (!msg.message) continue
 
       let from = msg.key.remoteJid
       let isGroup = from.endsWith('@g.us')
       let isMe = msg.key.fromMe
 
-      if (isGroup || isMe) continue // Ganti return ➜ continue
+      if (isGroup || isMe) continue
 
       let rawText = msg.message.extendedTextMessage?.text || ''
 
@@ -232,24 +232,17 @@ async function connectToWhatsApp() {
 
   async function handleMlbbAutoDetect(m, client) {
     const msgText = m.body || m.message?.conversation || '';
-
-    const match = msgText.match(/^(\d{6,12})\s*(?:\(?(\d{3,5})\)?)$/); // cocokkan format ID MLBB
-    if (!match) return; // bukan ID MLBB, abaikan
-
+    const match = msgText.match(/^(\d{6,12})\s*(?:\(?(\d{3,5})\)?)$/);
+    if (!match) return;
     const userId = match[1];
     const zoneId = match[2];
     const url = `https://deoberon-api.vercel.app/stalk/mlbb?apikey=merl&userId=${userId}&zoneId=${zoneId}`;
-
     try {
       const response = await fetch(url);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
       const data = await response.json();
       if (!data.status) return m.reply('❌ User tidak ditemukan atau gagal mengambil data.');
-
       const flag = data.country_flag || 'Tidak diketahui';
-
-      // Kirim reaksi jika memungkinkan
       if (m.key && m.key.id) {
         await client.sendMessage(m.chat, {
           react: {
@@ -258,7 +251,6 @@ async function connectToWhatsApp() {
           }
         });
       }
-
     } catch (err) {
       console.error('Error MLBB AutoDetect:', err);
       m.reply(`❌ Terjadi kesalahan saat mengambil data.`);
@@ -520,27 +512,21 @@ const expiredCheck = async (lenwy) => {
             sewa = [];
         }
     }
+
     let authorrr = [];
     try {
         authorrr = JSON.parse(fs.readFileSync('./author.json'));
     } catch(e) {
         authorrr = []; 
     }
-    let getGroups = {};
-    try {
-        getGroups = await lenwy.groupFetchAllParticipating();
-    } catch (err) {
-        console.error('Gagal fetch data grup di awal:', err.message);
-        isCheckingSewa = false;
-        return; 
-    }
-    const groupIds = Object.values(getGroups).map(v => v.id);
+
     let dataChanged = false;
     for (let index = sewa.length - 1; index >= 0; index--) {
       const item = sewa[index];
 
       try {
         if (item.isAlifetime) continue;
+
         if (item.expired - Date.now() <= toMs('1d') && !item.reminded1d) {
           await lenwy.sendMessage(item.groupId, { text: `Sisa masa sewa di group ini adalah *1 hari* lagi, jika ingin perpanjang masa sewa silahkan chat admin.` });
           if (authorrr.length > 0) await lenwy.sendContact(item.groupId, authorrr.map(i => i.split("@")[0]));
@@ -550,19 +536,17 @@ const expiredCheck = async (lenwy) => {
 
         if (Date.now() >= item.expired) {
           console.log(`Sewa expired: ${item.groupId}`);
-          sewa.splice(index, 1);
-          dataChanged = true;
-          if (!groupIds.includes(item.groupId)) {
-            console.warn(`Bot bukan anggota grup ${item.groupId}, hapus data aman.`);
-            continue;
-          }
+          
           let metadata;
           try {
             metadata = await lenwy.groupMetadata(item.groupId);
           } catch (err) {
-            console.warn(`Gagal ambil metadata ${item.groupId}, lanjut ke grup berikutnya.`);
+            console.warn(`Gagal ambil metadata/bot sudah bukan anggota di ${item.groupId}, menghapus data.`);
+            sewa.splice(index, 1);
+            dataChanged = true;
             continue; 
           }
+
           let linkgc;
           try {
             let invite = await lenwy.groupInviteCode(item.groupId);
@@ -574,7 +558,9 @@ const expiredCheck = async (lenwy) => {
           const teks = `Masa sewa di grup ini sudah habis, bot akan keluar otomatis.\nJika ingin sewa lagi silahkan chat ke https://wa.me/${global.owner}`;
           await lenwy.sendMessage(item.groupId, { text: teks });
           if (authorrr.length > 0) await lenwy.sendContact(item.groupId, authorrr.map(i => i.split("@")[0]));
+          
           await lenwy.sendMessage(`${global.owner}@s.whatsapp.net`, { text: `Masa sewa di grup *${metadata.subject}* sudah habis.\n\n> ID GROUP : ${item.groupId}\n> NAMA GROUP : ${metadata.subject || ''}\n> LINK GROUP : ${linkgc}` });
+          
           await new Promise(resolve => setTimeout(resolve, 2000));
           
           try {
@@ -582,6 +568,9 @@ const expiredCheck = async (lenwy) => {
           } catch (error) {
             console.error(`Gagal keluar dari grup ${item.groupId}: ${error.message}`);
           }
+
+          sewa.splice(index, 1);
+          dataChanged = true;
         }
       } catch (err) {
         console.error(`Gagal proses sewa grup ${item.groupId}:`, err.message);
@@ -591,6 +580,7 @@ const expiredCheck = async (lenwy) => {
         }
       }
     }
+    
     if (dataChanged) {
         fs.writeFileSync(pathsewa, JSON.stringify(sewa, null, 2), 'utf8');
     }
@@ -604,31 +594,6 @@ const expiredCheck = async (lenwy) => {
 cron.schedule('* * * * *', () => {
   expiredCheck(lenwy);
 });
-
-  lenwy.ev.on('messages.upsert', async ({ messages, type }) => {
-    if (type !== 'notify') return
-
-    for (const msg of messages) {
-      if (!msg.message) continue // Ganti return ➜ continue
-
-      let from = msg.key.remoteJid
-      let isGroup = from.endsWith('@g.us')
-      let isMe = msg.key.fromMe
-
-      if (isGroup || isMe) continue // Ganti return ➜ continue
-
-      let rawText = msg.message.extendedTextMessage?.text || ''
-
-      if (rawText.toLowerCase().includes('sayangg.. ada yang error nih! di bagian')) {
-        try {
-          await lenwy.updateBlockStatus(from, 'block')
-          console.log(`🔒 Auto-blokir spam dari ${from}`)
-        } catch (err) {
-          console.error(`❌ Gagal blokir ${from}:`, err)
-        }
-      }
-    }
-  })
 
   lenwy.ev.on('contacts.update', update => {
     for (let contact of update) {

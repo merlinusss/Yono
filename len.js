@@ -30,12 +30,12 @@ global.productkeydigi = 'MERLINUS123456789012345678901234567890'
 global.usernamedigi = 'gegutaoQeXxo'
 global.api = {
   maelyn: {
- domain: "api.maelyn.eu",
- apikey: "sk_ms_2b6fea0fdb04f51f71b69a74ecdf336917a38fb830889a30"
- },
-  ham: {
-    domain: "api.hamsoffc.my.id",
-    apikey: "31050602"
+    domain: "api.maelyn.eu",
+    apikey: "sk_ms_2b6fea0fdb04f51f71b69a74ecdf336917a38fb830889a30"
+  },
+  web1: {
+    domain: "merlapi.xyz",
+    apikey: "merlapi-29eb4c46157a6002"
   },
   lolhuman: {
     domain: "api.lolhuman.xyz",

@@ -99,9 +99,7 @@ var budy = (typeof m.text == 'string' ? m.text : '')
 const premiumFilePath = path.join("./premium.json")
 const dbFilePath = path.join(__dirname, './storage/database.json')
 const rawBody = body || "";
-const prefix = /^[°zZ#$@+,.?=''():√%!¢£¥€π¤ΠΦ&><™©®Δ^βα¦|/\\©^]/.test(rawBody)
-  ? rawBody.match(/^[°zZ#$@+,.?=''():√%!¢£¥€π¤ΠΦ&><™©®Δ^βα¦|/\\©^]/gi)[0]
-  : '';
+const prefix = /^[°zZ#$@+,.?=''():√%!¢£¥€π¤ΠΦ&><™©®Δ^βα¦|/\\©^]/.test(rawBody) ? rawBody.match(/^[°zZ#$@+,.?=''():√%!¢£¥€π¤ΠΦ&><™©®Δ^βα¦|/\\©^]/gi)[0]: '';
 
 const content = rawBody.slice(prefix.length).trim() || ""; 
 const parts = content.split(/ +/);
@@ -210,11 +208,9 @@ if (time2 < "03:00:00") {
 }
     
 const toxicWords = /(ewe|bangsad|mmk|koncol|puki|kojtol|kintil|momok|nigga|ajg|ewean|yatim|anjing|kontol|memek|bangsat|babi|goblok|goblog|kntl|pepek|ppk|ngentod|ngentd|ngntd|kentod|kntd|bgst|anjg|anj|fuck|hitam|ireng|jawir|gay|asw|ktl|ngentot|ngewe|bokep|bkp)/i;
-
 function parseMention(text = '') {
 return [...text.matchAll(/@([0-9]{5,16}|0)/g)].map(v => v[1] + '@s.whatsapp.net')
 }
-
 async function LenwyLD() {
   await sleep(100)
   await lenwy.sendMessage(from, { react: { text: '🕒', key: m.key } })
@@ -223,7 +219,6 @@ async function LenwyLD() {
 try {
     if (m.isGroup) {
         const isNew = !global.datagc[m.chat]
-
         global.datagc[m.chat] ??= {
             text_welcome: "",
             text_left: "",
@@ -236,7 +231,6 @@ try {
             waktu_Open: "",
             waktu_Close: ""
         }
-
         if (isNew) {
             fs.writeFileSync(dbgcFilePath, JSON.stringify(global.datagc, null, 2), "utf-8")
         }
@@ -260,15 +254,15 @@ try {
         chats.left ??= true
         chats.antitoxic1 ??= false
         chats.antitoxic2 ??= false
-        chats.antilink ??= false
+        chats.antilink1 ??= false
         chats.antilink2 ??= false
-        chats.antich ??= false
+        chats.antich1 ??= false
         chats.antich2 ??= false
         chats.antilinkyt ??= false
         chats.antilinktt ??= false
         chats.antivirtex ??= true
         chats.antipanel ??= false
-        chats.antilinkgc ??= false
+        chats.antilinkgc1 ??= false
         chats.antilinkgc2 ??= false
         chats.antiwame ??= false
         chats.antibot ??= false
@@ -311,6 +305,7 @@ if (global.db.data.settings[botNumber].autoread) {
   }
 }
 
+// ========== RESPONSE LIST FITUR ========== //
 if (m.isGroup && isAlreadyResponList(m.chat, String(body || '').toLowerCase(), db_respon_list)) {
   var get_data_respon = getDataResponList(m.chat, String(body || '').toLowerCase(), db_respon_list)
   if (get_data_respon.isImage === false) {
@@ -332,121 +327,53 @@ if (m.isGroup && isKeyResponStick(m.chat, String(body || '').toLowerCase(), JSON
   await lenwy.sendMessage(from, { sticker: buffer }, { quoted: m.quoted ? m.quoted.fakeObj : m })
 }
 
-if (m.isGroup && db.data.chats[m.chat].antitoxic1) {
-  const isToxic = toxicWords.exec(m.text)
-  if (!m.key.fromMe && !isCreator && !isAdmins) {
-    if (isToxic) {
-      lenwy.sendMessage(m.chat, { delete: m.key })
-    }
+
+// ========== ANTI FITUR ========== //
+const chat = db.data.chats[m.chat] || {};
+const isNormalMember = !m.key.fromMe && !isCreator && !isAdmins;
+const isThisGcLink = chat.linkgc ? new RegExp(chat.linkgc, 'i').test(text) : false;
+const punish = async (replyMsg, shouldKick = false) => {
+  if (replyMsg) m.reply(replyMsg);
+  lenwy.sendMessage(m.chat, { delete: m.key });
+  if (shouldKick) {
+    await sleep(1500);
+    await lenwy.groupParticipantsUpdate(m.chat, [m.sender], 'remove');
+  }
+};
+if (chat.antibot && /^(3EB0|B1E|BAE)/.test(m.id)) {
+  m.reply(`*Bot Lain Terdeteksi*\n\n*Bot Akan Di Keluarkan, Karena Admin Mengaktifkan Anti Bot*`);
+  return lenwy.sendMessage(m.chat, { delete: m.key });
+}
+if (isNormalMember) {
+  if (m.mtype === 'groupStatusMentionMessage') {
+    if (chat.antisw2) return punish(`*Anti Status Mention (SW) 2 Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus Dan Anda Akan Di Keluarkan*`, true);
+    if (chat.antisw1) return punish(`*Anti Status Mention (SW) Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`, false);
+  }
+  if (toxicWords.exec(m.text || budy)) {
+    if (chat.antitoxic2) return punish(null, true);
+    if (chat.antitoxic1) return punish(null, false);
+  }
+  if (!isThisGcLink && text.includes('chat.whatsapp.com')) {
+    if (chat.antilinkgc2) return punish(`*Anti Link Gc2 Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus Dan Anda Akan Di Keluarkan*`, true);
+    if (chat.antilinkgc1) return punish(`*Anti Link Gc Sedang Aktif*\n⚠️ *Pesan Anda Akan Dihapus*`, false);
+  }
+  if (!isThisGcLink && text.includes('http')) {
+    if (chat.antilink2) return punish(`*Anti Link2 Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus Dan Anda Akan Di Keluarkan*`, true);
+    if (chat.antilink1) return punish(`*Anti Link Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`, false);
+  }
+  if (chat.antiwame && text.includes('wa.me')) {
+    return punish(`*Anti Wame Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`);
+  }
+  if (chat.antipanel && /p(a)?nel/i.test(text)) {
+    return punish(`*Anti Promosi Panel Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`);
+  }
+  if (chat.antitiktok && text.includes('vt.tiktok.com')) { 
+    return punish(`*Anti Link Tiktok Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`);
+  }
+  if (chat.antiyoutube && text.includes('youtube.')) { 
+    return punish(`*Anti Link Youtube Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`);
   }
 }
-
-if (m.isGroup && db.data.chats[m.chat].antitoxic2) {
-  const isToxic = toxicWords.exec(m.text)
-  if (!m.key.fromMe && !isCreator && !isAdmins) {
-    if (isToxic) {
-      lenwy.sendMessage(m.chat, { delete: m.key })
-      await sleep(1500)
-      await lenwy.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
-    }
-  }
-}
-
-if (m.isGroup && db.data.chats[m.chat].antilinkgc) {
-  let storedLink = db.data.chats[m.chat].linkgc;
-  let isLinkThisGc = new RegExp(storedLink, 'i') 
-  let isgclink = isLinkThisGc.test(m.text) 
-  if (!m.key.fromMe && !isCreator && !isAdmins && !isgclink) {
-    if (budy.match(`chat.whatsapp.com`)) {
-      m.reply(`*Anti Link Gc Sedang Aktif*\n⚠️ *Pesan Anda Akan Dihapus*`)
-      lenwy.sendMessage(m.chat, { delete: m.key }) 
-    }
-  }
-}
-
-if (m.isGroup && db.data.chats[m.chat].antilinkgc2) {
-  let storedLink = db.data.chats[m.chat].linkgc;
-  let isLinkThisGc = new RegExp(storedLink, 'i') 
-  let isgclink = isLinkThisGc.test(m.text) 
-  if (!m.key.fromMe && !isCreator && !isAdmins && !isgclink) {
-    if (budy.match(`chat.whatsapp.com`)) {
-      m.reply(`*Anti Link Gc2 Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus Dan Anda Akan Di Keluarkan*`)
-      lenwy.sendMessage(m.chat, { delete: m.key })
-      await sleep(1500)
-      await lenwy.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
-    }
-  }
-}
-
-if (m.isGroup && db.data.chats[m.chat].antiwame) {
-  if (!m.key.fromMe && !isCreator && !isAdmins) {
-    if (budy.includes('https://wa.me') || budy.includes('wa.me') || budy.includes('Https://wa.me') || budy.includes('Wa.me') ) {
-      m.reply(`*Anti Wame Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`)
-      lenwy.sendMessage(m.chat, { delete: m.key })
-    }
-  }
-}
-
-if (m.isGroup && db.data.chats[m.chat].antilink) {
-  let storedLink = db.data.chats[m.chat].linkgc;
-  let isLinkThisGc = new RegExp(storedLink, 'i') 
-  let isgclink = isLinkThisGc.test(m.text) 
-  if (!m.key.fromMe && !isCreator && !isAdmins && !isgclink) {
-    if (budy.includes('https:') || budy.includes('http')) {
-      m.reply(`*Anti Link Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`)
-      lenwy.sendMessage(m.chat, { delete: m.key })
-    }
-  }
-}
-
-if (m.isGroup && db.data.chats[m.chat].antilink2) {
-  let storedLink = db.data.chats[m.chat].linkgc;
-  let isLinkThisGc = new RegExp(storedLink, 'i') 
-  let isgclink = isLinkThisGc.test(m.text) 
-  if (!m.key.fromMe && !isCreator && !isAdmins && !isgclink) {
-    if (budy.includes('https:') || budy.includes('http')) {
-      m.reply(`*Anti Link2 Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus Dan Anda Akan Di Keluarkan*`)
-      lenwy.sendMessage(m.chat, { delete: m.key })
-      await sleep(1500)
-      await lenwy.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
-    }
-  }
-}
-
-if (m.isGroup && db.data.chats[m.chat].antipanel) {
-  if (!m.key.fromMe && !isCreator && !isAdmins) {
-    if (budy.includes('PANEL') || budy.includes('Panel') || budy.includes('panel') || budy.includes('pnel')) {
-      m.reply(`*Anti Promosi Panel Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`)
-      lenwy.sendMessage(m.chat, { delete: m.key })
-    }
-  }
-}
-
-if (m.isGroup && db.data.chats[m.chat].antitiktok) {
-  if (!m.key.fromMe && !isCreator && !isAdmins) {
-    if (budy.match(`https://vt.tiktok.com`)) {
-      m.reply(`*Anti Link Tiktok Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`)
-      lenwy.sendMessage(m.chat, { delete: m.key })
-    }
-  }
-}
-
-if (m.isGroup && db.data.chats[m.chat].antiyoutube) {
-  if (!m.key.fromMe && !isCreator && !isAdmins) {
-    if (budy.match(`https://youtube`)) {
-      m.reply(`*Anti Link Youtube Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`)
-      lenwy.sendMessage(m.chat, { delete: m.key })
-    }
-  }
-}
-
-if (m.isGroup && db.data.chats[m.chat].antibot) {
-  if (m.id.startsWith('3EB0') || m.id.startsWith('B1E') || m.id.startsWith('BAE')) {
-    m.reply(`*Bot Lain Terdeteksi*\n\n*Bot Akan Di Keluarkan, Karena Admin Mengaktifkan Anti Bot*`)
-    lenwy.sendMessage(m.chat, { delete: m.key })
-  }
-}
-
 
 let list = []
 for (let i of owner) {
@@ -3068,7 +2995,6 @@ await lenwy.sendMessage(m.chat, { image: { url: proses.result.url }, caption: '�
 }
 break
 
-  
 case 'qc': {
     if (!q) return m.reply(`*Contoh :* Qc white Lenwy\n🎁 *Kode Warna:* Qckode`)
     if (q.length > 400) return m.reply('*Maksimal 400 Karakter*')
@@ -4166,224 +4092,48 @@ break
 
 
 
-case 'antich': {
+case 'antich1':
+case 'antich2':
+case 'antiwame':
+case 'antilink1':
+case 'antilink2':
+case 'antipl':
+case 'antitoxic1':
+case 'antitoxic2':
+case 'antilinkgc1':
+case 'antilinkgc2':
+case 'antilinktt':
+case 'antilinkyt':
+case 'antibot':
+case 'antisw1':
+case 'antisw2': {
   if (!m.isGroup) return m.reply(mess.group);
   if (!isAdmins && !isCreator) return m.reply(mess.admin);
   if (!isBotAdmins) return m.reply(mess.botAdmin);
+  let dbKey = command;
+  if (command === 'antipl') dbKey = 'antipanel';
+  if (command === 'antilinktt') dbKey = 'antitiktok';
+  if (command === 'antilinkyt') dbKey = 'antiyoutube';
   if (q === 'on') {
-      global.db.data.chats[m.chat].antich = true;
+      global.db.data.chats[m.chat][dbKey] = true;
+      if (['antilink1', 'antilink2', 'antilinkgc1', 'antilinkgc2'].includes(command)) {
+          let newLink = await lenwy.groupInviteCode(m.chat);
+          global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
+          fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2));
+      }
+      if (command.endsWith('1')) {
+          let cmd2 = command.replace('1', '2');
+          let displayCmd = cmd2.charAt(0).toUpperCase() + cmd2.slice(1);
+          return m.reply(`*Berhasil Mengaktifkan ${command}*\n🎁 *Ketik ${displayCmd} Untuk Mengaktifkan Autokick*`);
+      }
       m.reply(`*Berhasil Mengaktifkan ${command}*`);
   } else if (q === 'off') {
-      global.db.data.chats[m.chat].antich = false;
-      m.reply(`*Menonaktifkan ${command}*`);
-  } else {
-      m.reply(`*Ketik ${prefix + command} on/off*`);
-  }
-}
-break
-
-case 'antich2': {
-  if (!m.isGroup) return m.reply(mess.group);
-  if (!isAdmins && !isCreator) return m.reply(mess.admin);
-  if (!isBotAdmins) return m.reply(mess.botAdmin);
-  if (q === 'on') {
-      global.db.data.chats[m.chat].antich2 = true;
-      m.reply(`*Berhasil Mengaktifkan ${command}*`);
-  } else if (q === 'off') {
-      global.db.data.chats[m.chat].antich2 = false;
-      m.reply(`*Menonaktifkan ${command}*`);
-  } else {
-      m.reply(`*Ketik ${prefix + command} on/off*`);
-  }
-}
-break
-
-case 'antiwame': {
-  if (!m.isGroup) return m.reply(mess.group);
-  if (!isAdmins && !isCreator) return m.reply(mess.admin);
-  if (!isBotAdmins) return m.reply(mess.botAdmin);
-  if (q === 'on') {
-      global.db.data.chats[m.chat].antiwame = true;
-      m.reply(`*Berhasil Mengaktifkan ${command}*`);
-  } else if (q === 'off') {
-      global.db.data.chats[m.chat].antiwame = false;
-      m.reply(`*Menonaktifkan ${command}*`);
-  } else {
-      m.reply(`*Ketik ${prefix + command} on/off*`);
-  }
-}
-break
-
-case 'antilink': {
-  if (!m.isGroup) return m.reply(mess.group);
-  if (!isAdmins && !isCreator) return m.reply(mess.admin);
-  if (!isBotAdmins) return m.reply(mess.botAdmin);
-  let newLink = await lenwy.groupInviteCode(from);
-  if (q === 'on') {
-      global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
-      global.db.data.chats[m.chat].antilink = true;
-      m.reply(`*Berhasil Mengaktifkan ${command}*`);
-  } else if (q === 'off') {
-      global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
-      global.db.data.chats[m.chat].antilink = false;
-      m.reply(`*Menonaktifkan ${command}*`);
-  } else {
-      m.reply(`*Ketik ${prefix + command} on/off*`);
-  }
-  fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
-}
-break
-
-case 'antilink2': {
-  if (!m.isGroup) return m.reply(mess.group);
-  if (!isAdmins && !isCreator) return m.reply(mess.admin);
-  if (!isBotAdmins) return m.reply(mess.botAdmin);
-  let newLink = await lenwy.groupInviteCode(from)
-  if (q === 'on') {
-      global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
-      global.db.data.chats[m.chat].antilink2 = true;
-      m.reply(`*Berhasil Mengaktifkan ${command}*`);
-  } else if (q === 'off') {
-      global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
-      global.db.data.chats[m.chat].antilink2 = false;
-      m.reply(`*Menonaktifkan ${command}*`);
-  } else {
-      m.reply(`*Ketik ${prefix + command} on/off*`);
-  }
-  fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
-}
-break
-
-case 'antipl': {
-  if (!m.isGroup) return m.reply(mess.group);
-  if (!isAdmins && !isCreator) return m.reply(mess.admin);
-  if (!isBotAdmins) return m.reply(mess.botAdmin);
-  if (q === 'on') {
-      global.db.data.chats[m.chat].antipanel = true;
-      m.reply(`*Berhasil Mengaktifkan ${command}*`);
-  } else if (q === 'off') {
-      global.db.data.chats[m.chat].antipanel = false;
-      m.reply(`*Menonaktifkan ${command}*`);
-  } else {
-      m.reply(`*Ketik ${prefix + command} on/off*`);
-  }
-}
-break
-
-case 'antitoxic1': {
-  if (!m.isGroup) return m.reply(mess.group);
-  if (!isAdmins && !isCreator) return m.reply(mess.admin);
-  if (!isBotAdmins) return m.reply(mess.botAdmin);
-  if (q === 'on') {
-      db.data.chats[m.chat].antitoxic1 = true;
-      m.reply(`*Berhasil Mengaktifkan ${command}*`);
-  } else if (q === 'off') {
-      db.data.chats[m.chat].antitoxic1 = false;
-      m.reply(`*Menonaktifkan ${command}*`);
-  } else {
-      m.reply(`*Ketik ${prefix + command} on/off*`);
-  }
-}
-break
-
-case 'antitoxic2': {
-  if (!m.isGroup) return m.reply(mess.group);
-  if (!isAdmins && !isCreator) return m.reply(mess.admin);
-  if (!isBotAdmins) return m.reply(mess.botAdmin);
-  if (q === 'on') {
-      db.data.chats[m.chat].antitoxic2 = true;
-      m.reply(`*Berhasil Mengaktifkan ${command}*`);
-  } else if (q === 'off') {
-      db.data.chats[m.chat].antitoxic2 = false;
-      m.reply(`*Menonaktifkan ${command}*`);
-  } else {
-      m.reply(`*Ketik ${prefix + command} on/off*`);
-  }
-}
-break
-
-case 'antilinkgc1': {
-  if (!m.isGroup) return m.reply(mess.group);
-  if (!isAdmins && !isCreator) return m.reply(mess.admin);
-  if (!isBotAdmins) return m.reply(mess.botAdmin);
-  let newLink = await lenwy.groupInviteCode(from)
-  if (q === 'on') {
-      global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
-      global.db.data.chats[m.chat].antilinkgc = true;
-      m.reply(`*Berhasil Mengaktifkan ${command}*
-🎁 *Ketik Antilinkgc2 Untuk Mengaktifkan Autokick*`);
-  } else if (q === 'off') {
-      global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
-      global.db.data.chats[m.chat].antilinkgc = false;
-      m.reply(`*Menonaktifkan ${command}*`);
-  } else {
-      m.reply(`*Ketik ${prefix + command} on/off*`);
-  }
-  fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
-}
-break
-
-case 'antilinkgc2': {
-  if (!m.isGroup) return m.reply(mess.group);
-  if (!isAdmins && !isCreator) return m.reply(mess.admin);
-  if (!isBotAdmins) return m.reply(mess.botAdmin);
-  let newLink = await lenwy.groupInviteCode(from)
-  if (q === 'on') {
-      global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
-      db.data.chats[m.chat].antilinkgc2 = true;
-      m.reply(`*Berhasil Mengaktifkan ${command}*`);
-  } else if (q === 'off') {
-      global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
-      db.data.chats[m.chat].antilinkgc2 = false;
-      m.reply(`*Menonaktifkan ${command}*`);
-  } else {
-      m.reply(`*Ketik ${prefix + command} on/off*`);
-  }
-  fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
-}
-break
-
-case 'antilinktt': {
-  if (!m.isGroup) return m.reply(mess.group);
-  if (!isAdmins && !isCreator) return m.reply(mess.admin);
-  if (!isBotAdmins) return m.reply(mess.botAdmin);
-  if (q === 'on') {
-      global.db.data.chats[m.chat].antitiktok = true;
-      m.reply(`*Berhasil Mengaktifkan ${command}*`);
-  } else if (q === 'off') {
-      global.db.data.chats[m.chat].antitiktok = false;
-      m.reply(`*Menonaktifkan ${command}*`);
-  } else {
-      m.reply(`*Ketik ${prefix + command} on/off*`);
-  }
-}
-break
-
-case 'antilinkyt': {
-  if (!m.isGroup) return m.reply(mess.group);
-  if (!isAdmins && !isCreator) return m.reply(mess.admin);
-  if (!isBotAdmins) return m.reply(mess.botAdmin);
-  if (q === 'on') {
-      global.db.data.chats[m.chat].antiyoutube = true;
-      m.reply(`*Berhasil Mengaktifkan ${command}*`);
-  } else if (q === 'off') {
-      global.db.data.chats[m.chat].antiyoutube = false;
-      m.reply(`*Menonaktifkan ${command}*`);
-  } else {
-      m.reply(`*Ketik ${prefix + command} on/off*`);
-  }
-}
-break
-
-case 'antibot': {
-  if (!m.isGroup) return m.reply(mess.group);
-  if (!isAdmins && !isCreator) return m.reply(mess.admin);
-  if (!isBotAdmins) return m.reply(mess.botAdmin);
-  if (q === 'on') {
-      db.data.chats[m.chat].antibot = true;
-      m.reply(`*Berhasil Mengaktifkan ${command}*`);
-  } else if (q === 'off') {
-      db.data.chats[m.chat].antibot = false;
+      global.db.data.chats[m.chat][dbKey] = false;
+      if (['antilink1', 'antilink2', 'antilinkgc1', 'antilinkgc2'].includes(command)) {
+          let newLink = await lenwy.groupInviteCode(m.chat);
+          global.db.data.chats[m.chat].linkgc = `https://chat.whatsapp.com/${newLink}`;
+          fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2));
+      }
       m.reply(`*Menonaktifkan ${command}*`);
   } else {
       m.reply(`*Ketik ${prefix + command} on/off*`);
@@ -5664,7 +5414,7 @@ break
 
 case 'del':
 case 'delete': {
- if (!isPrem && !isAdmins) return m.reply(mess.admin)
+ if (!isAdmins) return m.reply(mess.admin)
  if (!isBotAdmins) return m.reply(mess.botAdmin)
  if (!m.quoted) return m.reply("*Balas Pesan Yang Ingin Dihapus Oleh Bot*")
  let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, "") + "@s.whatsapp.net";
@@ -8419,13 +8169,13 @@ case 'hapussewa': {
 
  try {
  let groupId
- let link
+ let link = text
  if (m.isGroup) {
  groupId = m.chat
  } else if (text.includes('@g.us')) {
  groupId = text
  } else if (text.includes('https')) {
- if (text.includes('?')) link = text.split('?')[0]
+ if (text.includes('?')) link = text.split('?')[0];
  groupId = await getGroupIdFromLink(link, lenwy)
  }
 
