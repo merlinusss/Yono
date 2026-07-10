@@ -79,34 +79,21 @@ function shuffleString(str) {
   
   async function simpanKeFileJSON() {
     const filePath = path.join(__dirname, pathDigi);
-    const batasWaktuMs = 35 * 60 * 1000;
+    const batasWaktuMs = 40 * 60 * 1000;
     try {
-        let butuhUpdate = false;
-        if (fs.existsSync(filePath)) {
-            const stats = fs.statSync(filePath);
-            const umurFileMs = Date.now() - stats.mtimeMs;
-            if (umurFileMs >= batasWaktuMs) {
-                butuhUpdate = true;
-            } else {
-                const sisaMenit = Math.ceil((batasWaktuMs - umurFileMs) / 60000);
-            }
-        } else {
-       		butuhUpdate = true;
-        }
-        if (butuhUpdate) {
-        	const result = await cekLayananDigiflazz();
+        if (!fs.existsSync(filePath) || (Date.now() - fs.statSync(filePath).mtimeMs > batasWaktuMs)) {
+            console.log(`Fetching data digiflazz`);
+            const result = await cekLayananDigiflazz();
             if (result) {
                 fs.writeFileSync(filePath, JSON.stringify(result, null, 2), 'utf-8');
                 const time1 = moment.tz('Asia/Jakarta').format('HH:mm:ss');
                 console.log(`[Digiflazz] File berhasil diperbarui pada ${time1}!`);
             }
         }
-        
     } catch (err) {
         console.error('Gagal mengecek atau memperbarui data:', err);
     }
   }
-
   setInterval(simpanKeFileJSON, 60 * 1000);
   
   async function cekLayananDigiPrabayar() {

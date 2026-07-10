@@ -24,10 +24,10 @@ global.autobackup = true
 global.usePairingCode = false // isi false = QR Code & isi true = Code Pairing
 
 
-global.licenseKeycash = 'cashify_a0743f9527e1374a70dc1ed98a688e13fb45b743170a9d90335e52f933c87d1a'
-global.idQris = '4b82c6ed-3fa8-4e3f-96ee-ca5e71c406e8'
-global.productkeydigi = 'MERLINUS123456789012345678901234567890'
-global.usernamedigi = 'gegutaoQeXxo'
+global.licenseKeycash = ''
+global.idQris = ''
+global.productkeydigi = ''
+global.usernamedigi = ''
 global.api = {
   maelyn: {
     domain: "api.maelyn.eu",
