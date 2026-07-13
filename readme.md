@@ -59,20 +59,21 @@ Ikuti langkah-langkah di bawah ini untuk menjalankan Yono Bot di komputermu:
    git clone [https://github.com/username-kamu/yono-bot.git](https://github.com/username-kamu/yono-bot.git)
    cd yono-bot
 
-    Install Modul / Dependencies
-    Bash
-
+2. **Install Modul**
+   ```bash
     npm install
 
-    Mulai Bot
-    Bash
+3. **Start the bot**
+   ```bash
 
     npm start
     # atau
     node index.js
 
-    Scan QR Code
-    Buka WhatsApp di HP kamu, masuk ke Perangkat Taut, dan scan QR Code yang muncul di terminal.
+4. **Pairing**
+   ```bash
+    
+    Buka WhatsApp di HP kamu, masuk ke Perangkat Taut, dan scan QR Code / masukkan nomor hp kamu yang muncul di terminal.
 
 🌊 Deployment (VPS / Panel)
 
@@ -80,7 +81,7 @@ Yono Bot sangat dioptimalkan untuk berjalan di atas server berbasis Arch/Ubuntu 
 
 Jika kamu menggunakan Pterodactyl Panel atau Docker:
 
-    Gunakan image Docker berbasis node:18-alpine agar resource lebih hemat.
+    Gunakan image Docker berbasis node:20 agar resource lebih hemat.
 
     Pastikan alokasi storage memadai, terutama saat menggunakan fitur downloader media.
 
@@ -88,5 +89,5 @@ Jika kamu menggunakan Pterodactyl Panel atau Docker:
 
 📝 Lisensi & Kredit
 
-Proyek ini dikembangkan oleh Farhan Gunawan.
+Proyek ini dikembangkan oleh Merlinus Store.
 Terima kasih kepada seluruh kontributor open-source dan penyedia library Baileys (whiskeysockets).
