@@ -57,7 +57,7 @@ Ikuti langkah-langkah di bawah ini untuk menjalankan Yono Bot di komputermu:
 1. **Clone Repositori**
    ```bash
    git clone https://github.com/merlinusss/Yono.git
-   cd yono-bot
+   cd yono
 
 2. **Install Modul**
    ```bash
