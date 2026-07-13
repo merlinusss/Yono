@@ -60,6 +60,7 @@ let caklontong_desk = db.data.game.lontong_desk = []
 let tebakkalimat = db.data.game.kalimat = []
 let tebaklirik = db.data.game.lirik = []
 let tebaktebakan = db.data.game.tebakan = []
+let tebakangka = db.data.game.tebakangka = {}
 let db_respon_list = JSON.parse(fs.readFileSync('./storage/list-message.json'))
 let reminders = {};
 
@@ -184,7 +185,7 @@ const detiknya = moment.tz('Asia/Jakarta').format('ss')
 
 const hariini = moment.tz('Asia/Jakarta').format('dddd, DD MMMM YYYY')
 const hariini2 = moment.tz('Asia/Jakarta').format('DD MMMM YYYY')
-const hariini3 = moment.tz('Asia/Jakarta').format('dddd')
+const hariini3 = moment.tz('Asia/Jakarta').format('DD MM YYYY')
 const hariini4 = moment.tz('Asia/Jakarta').format('DD-MMMM-YYYY')
 const waktubackup = moment.tz('Asia/Jakarta').format('DDMMMM')
 const wib = moment.tz('Asia/Jakarta').format('HH : mm : ss')
@@ -251,21 +252,19 @@ try {
         chats.onlyAdmin ??= false
         chats.wlcm ??= true
         chats.left ??= true
-        chats.antitoxic1 ??= false
-        chats.antitoxic2 ??= false
+        chats.linkgc ??= ''
+        //antimenu
+        chats.antilinktt ??= false
+        chats.antilinkyt ??= false
+        chats.antiwame ??= false
         chats.antilink1 ??= false
         chats.antilink2 ??= false
-        chats.antich1 ??= false
-        chats.antich2 ??= false
-        chats.antilinkyt ??= false
-        chats.antilinktt ??= false
-        chats.antivirtex ??= true
-        chats.antipanel ??= false
+        chats.antitoxic1 ??= false
+        chats.antitoxic2 ??= false
         chats.antilinkgc1 ??= false
         chats.antilinkgc2 ??= false
-        chats.antiwame ??= false
-        chats.antibot ??= false
-        chats.linkgc ??= ''
+        chats.antisw1 ??= false
+        chats.antisw2 ??= false
     }
 
     if (!isNumber(user.level)) user.level = 0
@@ -342,38 +341,31 @@ const punish = async (replyMsg, shouldKick = false) => {
     await lenwy.groupParticipantsUpdate(m.chat, [m.sender], 'remove');
   }
 };
-if (chat.antibot && /^(3EB0|B1E|BAE)/.test(m.id)) {
-  m.reply(`*Bot Lain Terdeteksi*\n\n*Bot Akan Di Keluarkan, Karena Admin Mengaktifkan Anti Bot*`);
-  return lenwy.sendMessage(m.chat, { delete: m.key });
-}
 if (isNormalMember) {
-  if (m.mtype === 'groupStatusMentionMessage') {
-    if (chat.antisw2) return punish(`*Anti Status Mention (SW) 2 Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus Dan Anda Akan Di Keluarkan*`, true);
-    if (chat.antisw1) return punish(`*Anti Status Mention (SW) Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`, false);
+  if (chat.antilinktt && text.includes('vt.tiktok.com')) { 
+    return punish(`*Anti link TikTok sedang aktif*\n⛔ *Pesan kamu akan dihapus*`);
   }
-  if (toxicWords.exec(m.text || budy)) {
-    if (chat.antitoxic2) return punish(null, true);
-    if (chat.antitoxic1) return punish(null, false);
-  }
-  if (!isThisGcLink && text.includes('chat.whatsapp.com')) {
-    if (chat.antilinkgc2) return punish(`*Anti Link Gc2 Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus Dan Anda Akan Di Keluarkan*`, true);
-    if (chat.antilinkgc1) return punish(`*Anti Link Gc Sedang Aktif*\n⚠️ *Pesan Anda Akan Dihapus*`, false);
-  }
-  if (!isThisGcLink && text.includes('http')) {
-    if (chat.antilink2) return punish(`*Anti Link2 Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus Dan Anda Akan Di Keluarkan*`, true);
-    if (chat.antilink1) return punish(`*Anti Link Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`, false);
+  if (chat.antilinkyt && text.includes('youtube.')) { 
+    return punish(`*Anti link YouTube sedang aktif*\n⛔ *Pesan kamu akan dihapus*`);
   }
   if (chat.antiwame && text.includes('wa.me')) {
-    return punish(`*Anti Wame Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`);
+    return punish(`*Anti wa.me sedang aktif*\n⛔ *Pesan kamu akan dihapus*`);
   }
-  if (chat.antipanel && /p(a)?nel/i.test(text)) {
-    return punish(`*Anti Promosi Panel Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`);
+  if (!isThisGcLink && text.includes('http')) {
+    if (chat.antilink1) return punish(`*Anti link sedang aktif*\n⛔ *Pesan kamu akan dihapus*`, false);
+    if (chat.antilink2) return punish(`*Anti link sedang aktif*\n⛔ *Pesan kamu akan dihapus dan kamu akan dikeluarkan*`, true);
   }
-  if (chat.antitiktok && text.includes('vt.tiktok.com')) { 
-    return punish(`*Anti Link Tiktok Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`);
+  if (toxicWords.exec(m.text || budy)) {
+    if (chat.antitoxic1) return punish(null, false);
+    if (chat.antitoxic2) return punish(null, true);
   }
-  if (chat.antiyoutube && text.includes('youtube.')) { 
-    return punish(`*Anti Link Youtube Sedang Aktif*\n⚠️ *Pesan Anda Akan Di Hapus*`);
+  if (!isThisGcLink && text.includes('chat.whatsapp.com')) {
+    if (chat.antilinkgc1) return punish(`*Anti link grup sedang aktif*\n⛔ *Pesan kamu akan dihapus*`, false);
+    if (chat.antilinkgc2) return punish(`*Anti link grup sedang aktif*\n⛔ *Pesan kamu akan dihapus dan kamu akan dikeluarkan*`, true);
+  }
+  if (m.mtype === 'groupStatusMentionMessage') {
+    if (chat.antisw1) return punish(`*Anti status mention sedang aktif*\n⛔ *Pesan kamu akan dihapus*`, false);
+    if (chat.antisw2) return punish(`*Anti status mention sedang aktif*\n⛔ *Pesan kamu akan dihapus dan kamu akan dikeluarkan*`, true);
   }
 }
 
@@ -452,18 +444,39 @@ const quizMap = {
     data: tebaktebakan,
     title: 'Tebak Tebakan',
     replay: 'Tebak Tebakan'
+  },
+  tebakangka: {
+    data: tebakangka,
+    title: 'Tebak Angka',
+    replay: 'tebak angka',
+    isNumberGame: true
   }
 }
 
-for (const { data, title, replay, extraDelete } of Object.values(quizMap)) {
+for (const { data, title, replay, extraDelete, isNumberGame } of Object.values(quizMap)) {
   if (!isCmd || !data[m.chat]) continue
   kuis = true
+  
+  if (isNumberGame) {
+    let userTebak = parseInt(body);
+    let jawabanBenar = parseInt(data[m.chat]); 
+    
+    if (!isNaN(userTebak)) {
+      if (userTebak === jawabanBenar) {
+        await m.reply(`${global.emoji} *${title}*\n\n🎁 *Jawaban Benar*\n📣 *Ingin Bermain Lagi? Silakan Ketik ${prefix + replay}*`);
+        delete data[m.chat]; 
+      } else {
+        let clue = userTebak > jawabanBenar ? 'Angka terlalu besar 📉' : 'Angka terlalu kecil 📈';
+        await m.reply(`❌ *Salah!*\n\n${clue}`);
+      }
+      return;
+    }
+    continue;
+  }
+
   jawaban = data[m.chat]
   if (body.toLowerCase() === jawaban) {
-    await m.reply(`${global.emoji} *${title}*
-
-🎁 *Jawaban Benar*
-📣 *Ingin Bermain Lagi? Silakan Ketik ${replay}*`)
+    await m.reply(`${global.emoji} *${title}*\n\n🎁 *Jawaban Benar*\n📣 *Ingin Bermain Lagi? Silakan Ketik ${prefix + replay}*`)
     delete data[m.chat]
     if (extraDelete) extraDelete()
   } else {
@@ -471,138 +484,221 @@ for (const { data, title, replay, extraDelete } of Object.values(quizMap)) {
   }
   return
 }
+this.game = this.game || {};
+let room = Object.values(this.game).find(
+  (room) =>
+    room.id &&
+    room.game &&
+    room.state &&
+    room.id.startsWith('tictactoe') &&
+    [room.game.playerX, room.game.playerO].includes(m.sender) &&
+    room.state === 'PLAYING'
+);
 
-this.game = this.game ? this.game : {}
-let room = Object.values(this.game).find(room => room.id && room.game && room.state && room.id.startsWith('tictactoe') && [room.game.playerX, room.game.playerO].includes(m.sender) && room.state == 'PLAYING')
 if (room) {
-let ok
-let isWin = !1
-let isTie = !1
-let isSurrender = !1
-if (!/^([1-9]|(me)?nyerah|surr?ender|off|skip)$/i.test(m.text)) return
-isSurrender = !/^[1-9]$/.test(m.text)
-if (m.sender !== room.game.currentTurn) { // nek wayahku
-if (!isSurrender) return !0
-}
-if (!isSurrender && 1 > (ok = room.game.turn(m.sender === room.game.playerO, parseInt(m.text) - 1))) {
-m.reply({
-'-3': 'Game telah berakhir',
-'-2': 'Invalid',
-'-1': 'Posisi Invalid',
-0: 'Posisi Invalid',
-}[ok])
-return !0
-}
-if (m.sender === room.game.winner) isWin = true
-else if (room.game.board === 511) isTie = true
-let arr = room.game.render().map(v => {
-return {
-X: '❌',
-O: '⭕',
-1: '1️⃣',
-2: '2️⃣',
-3: '3️⃣',
-4: '4️⃣',
-5: '5️⃣',
-6: '6️⃣',
-7: '7️⃣',
-8: '8️⃣',
-9: '9️⃣',
-}[v]
-})
-if (isSurrender) {
-room.game._currentTurn = m.sender === room.game.playerX
-isWin = true
-}
-let winner = isSurrender ? room.game.currentTurn : room.game.winner
-let str = `Room ID: ${room.id}
+  let ok;
+  let isWin = false;
+  let isTie = false;
+  let isSurrender = false;
+
+  if (!/^([1-9]|(me)?nyerah|surr?ender|off|skip)$/i.test(m.text)) return;
+  isSurrender = !/^[1-9]$/.test(m.text);
+
+  if (m.sender !== room.game.currentTurn) {
+    if (!isSurrender) return true;
+  }
+
+  if (
+    !isSurrender &&
+    1 > (ok = room.game.turn(m.sender === room.game.playerO, parseInt(m.text) - 1))
+  ) {
+    m.reply({
+      '-3': 'Game telah berakhir',
+      '-2': 'Invalid',
+      '-1': 'Posisi Invalid',
+      0: 'Posisi Invalid',
+    }[ok]);
+    return true;
+  }
+
+  if (m.sender === room.game.winner) isWin = true;
+  else if (room.game.board === 511) isTie = true;
+
+  let arr = room.game.render().map((v) => {
+    return {
+      X: '❌',
+      O: '⭕',
+      1: '1️⃣',
+      2: '2️⃣',
+      3: '3️⃣',
+      4: '4️⃣',
+      5: '5️⃣',
+      6: '6️⃣',
+      7: '7️⃣',
+      8: '8️⃣',
+      9: '9️⃣',
+    }[v];
+  });
+
+  if (isSurrender) {
+    room.game._currentTurn = m.sender === room.game.playerX;
+    isWin = true;
+  }
+
+  let winner = isSurrender ? room.game.currentTurn : room.game.winner;
+  let str = `Room ID: ${room.id}
 
 ${arr.slice(0, 3).join('')}
 ${arr.slice(3, 6).join('')}
 ${arr.slice(6).join('')}
 
-${isWin ? `@${winner.split('@')[0]} Menang!` : isTie ? `Game berakhir` : `Giliran ${['❌', '⭕'][1 * room.game._currentTurn]} (@${room.game.currentTurn.split('@')[0]})`}
+${
+  isWin
+    ? `@${winner.split('@')[0]} Menang!`
+    : isTie
+    ? `Game berakhir`
+    : `Giliran ${['❌', '⭕'][1 * room.game._currentTurn]} (@${
+        room.game.currentTurn.split('@')[0]
+      })`
+}
 ❌: @${room.game.playerX.split('@')[0]}
 ⭕: @${room.game.playerO.split('@')[0]}
 
-Ketik *nyerah* untuk menyerah dan mengakui kekalahan`
-if ((room.game._currentTurn ^ isSurrender ? room.x : room.o) !== from)
-room[room.game._currentTurn ^ isSurrender ? 'x' : 'o'] = from
-if (room.x !== room.o) await lenwy.sendText(room.x, str, m, { mentions: parseMention(str) } )
-await lenwy.sendText(room.o, str, m, { mentions: parseMention(str) } )
-if (isTie || isWin) {
-delete this.game[room.id]
-}
-}
-this.suit = this.suit ? this.suit : {}
-let roof = Object.values(this.suit).find(roof => roof.id && roof.status && [roof.p, roof.p2].includes(m.sender))
-if (roof) {
-let win = ''
-let tie = false
-if (m.sender == roof.p2 && /^(acc(ept)?|terima|gas|oke?|tolak|gamau|nanti|ga(k.)?bisa|y)/i.test(m.text) && m.isGroup && roof.status == 'wait') {
-if (/^(tolak|gamau|nanti|n|ga(k.)?bisa)/i.test(m.text)) {
-lenwy.sendTextWithMentions(from, `@${roof.p2.split`@`[0]} menolak suit, suit dibatalkan`, m)
-delete this.suit[roof.id]
-return !0
-}
-roof.status = 'play'
-roof.asal = from
-clearTimeout(roof.waktu)
-lenwy.sendText(from, `Suit telah dikirimkan ke chat
+Ketik *nyerah* untuk menyerah dan mengakui kekalahan`;
 
-@${roof.p.split`@`[0]} dan 
-@${roof.p2.split`@`[0]}
+  if ((room.game._currentTurn ^ isSurrender ? room.x : room.o) !== from)
+    room[room.game._currentTurn ^ isSurrender ? 'x' : 'o'] = from;
+
+  if (room.x !== room.o)
+    await lenwy.sendText(room.x, str, m, { mentions: parseMention(str) });
+  await lenwy.sendText(room.o, str, m, { mentions: parseMention(str) });
+
+  if (isTie || isWin) {
+    delete this.game[room.id];
+  }
+}
+
+this.suit = this.suit || {};
+let roof = Object.values(this.suit).find(
+  (roof) => roof.id && roof.status && [roof.p, roof.p2].includes(m.sender)
+);
+
+if (roof) {
+  let win = '';
+  let tie = false;
+
+  if (
+    m.sender == roof.p2 &&
+    /^(acc(ept)?|terima|gas|oke?|tolak|gamau|nanti|ga(k.)?bisa|y)/i.test(m.text) &&
+    m.isGroup &&
+    roof.status == 'wait'
+  ) {
+    if (/^(tolak|gamau|nanti|n|ga(k.)?bisa)/i.test(m.text)) {
+      lenwy.sendTextWithMentions(
+        from,
+        `@${roof.p2.split(`@`)[0]} menolak suit, suit dibatalkan`,
+        m
+      );
+      delete this.suit[roof.id];
+      return true;
+    }
+
+    roof.status = 'play';
+    roof.asal = from;
+    clearTimeout(roof.waktu);
+
+    lenwy.sendText(
+      from,
+      `Suit telah dikirimkan ke chat
+
+@${roof.p.split(`@`)[0]} dan 
+@${roof.p2.split(`@`)[0]}
 
 Silahkan pilih suit di chat masing"
-klik https://wa.me/${botNumber.split`@`[0]}`, m, { mentions: [roof.p, roof.p2] })
-if (!roof.pilih) lenwy.sendText(roof.p, `Silahkan pilih \n\nBatu🗿\nKertas📄\nGunting✂️`, m)
-if (!roof.pilih2) lenwy.sendText(roof.p2, `Silahkan pilih \n\nBatu🗿\nKertas📄\nGunting✂️`, m)
-roof.waktu_milih = setTimeout(() => {
-if (!roof.pilih && !roof.pilih2) lenwy.sendText(from, `Kedua pemain tidak niat main,\nSuit dibatalkan`)
-else if (!roof.pilih || !roof.pilih2) {
-win = !roof.pilih ? roof.p2 : roof.p
-lenwy.sendTextWithMentions(from, `@${(roof.pilih ? roof.p2 : roof.p).split`@`[0]} tidak memilih suit, game berakhir`, m)
-}
-delete this.suit[roof.id]
-return !0
-}, roof.timeout)
-}
-let jwb = m.sender == roof.p
-let jwb2 = m.sender == roof.p2
-let g = /gunting/i
-let b = /batu/i
-let k = /kertas/i
-let reg = /^(gunting|batu|kertas)/i
-if (jwb && reg.test(m.text) && !roof.pilih && !m.isGroup) {
-roof.pilih = reg.exec(m.text.toLowerCase())[0]
-roof.text = m.text
-m.reply(`Kamu telah memilih ${m.text} ${!roof.pilih2 ? `\n\nMenunggu lawan memilih` : ''}`)
-if (!roof.pilih2) lenwy.sendText(roof.p2, '_Lawan sudah memilih_\nSekarang giliran kamu', 0)
-}
-if (jwb2 && reg.test(m.text) && !roof.pilih2 && !m.isGroup) {
-roof.pilih2 = reg.exec(m.text.toLowerCase())[0]
-roof.text2 = m.text
-m.reply(`Kamu telah memilih ${m.text} ${!roof.pilih ? `\n\nMenunggu lawan memilih` : ''}`)
-if (!roof.pilih) lenwy.sendText(roof.p, '_Lawan sudah memilih_\nSekarang giliran kamu', 0)
-}
-let stage = roof.pilih
-let stage2 = roof.pilih2
-if (roof.pilih && roof.pilih2) {
-clearTimeout(roof.waktu_milih)
-if (b.test(stage) && g.test(stage2)) win = roof.p
-else if (b.test(stage) && k.test(stage2)) win = roof.p2
-else if (g.test(stage) && k.test(stage2)) win = roof.p
-else if (g.test(stage) && b.test(stage2)) win = roof.p2
-else if (k.test(stage) && b.test(stage2)) win = roof.p
-else if (k.test(stage) && g.test(stage2)) win = roof.p2
-else if (stage == stage2) tie = true
-lenwy.sendText(roof.asal, `_*Hasil Suit*_${tie ? '\nSERI' : ''}
+klik https://wa.me/${botNumber.split(`@`)[0]}`,
+      m,
+      { mentions: [roof.p, roof.p2] }
+    );
 
-@${roof.p.split`@`[0]} (${roof.text}) ${tie ? '' : roof.p == win ? ` Menang \n` : ` Kalah \n`}
-@${roof.p2.split`@`[0]} (${roof.text2}) ${tie ? '' : roof.p2 == win ? ` Menang \n` : ` Kalah \n`}
-`.trim(), m, { mentions: [roof.p, roof.p2] })
-delete this.suit[roof.id]
-}
+    if (!roof.pilih)
+      lenwy.sendText(roof.p, `Silahkan pilih \n\nBatu🗿\nKertas📄\nGunting✂️`, m);
+    if (!roof.pilih2)
+      lenwy.sendText(roof.p2, `Silahkan pilih \n\nBatu🗿\nKertas📄\nGunting✂️`, m);
+
+    roof.waktu_milih = setTimeout(() => {
+      if (!roof.pilih && !roof.pilih2) {
+        lenwy.sendText(from, `Kedua pemain tidak niat main,\nSuit dibatalkan`);
+      } else if (!roof.pilih || !roof.pilih2) {
+        win = !roof.pilih ? roof.p2 : roof.p;
+        lenwy.sendTextWithMentions(
+          from,
+          `@${
+            (roof.pilih ? roof.p2 : roof.p).split(`@`)[0]
+          } tidak memilih suit, game berakhir`,
+          m
+        );
+      }
+      delete this.suit[roof.id];
+      return true;
+    }, roof.timeout);
+  }
+
+  let jwb = m.sender == roof.p;
+  let jwb2 = m.sender == roof.p2;
+  let g = /gunting/i;
+  let b = /batu/i;
+  let k = /kertas/i;
+  let reg = /^(gunting|batu|kertas)/i;
+
+  if (jwb && reg.test(m.text) && !roof.pilih && !m.isGroup) {
+    roof.pilih = reg.exec(m.text.toLowerCase())[0];
+    roof.text = m.text;
+    m.reply(
+      `Kamu telah memilih ${m.text} ${!roof.pilih2 ? `\n\nMenunggu lawan memilih` : ''}`
+    );
+    if (!roof.pilih2)
+      lenwy.sendText(roof.p2, '_Lawan sudah memilih_\nSekarang giliran kamu', 0);
+  }
+
+  if (jwb2 && reg.test(m.text) && !roof.pilih2 && !m.isGroup) {
+    roof.pilih2 = reg.exec(m.text.toLowerCase())[0];
+    roof.text2 = m.text;
+    m.reply(
+      `Kamu telah memilih ${m.text} ${!roof.pilih ? `\n\nMenunggu lawan memilih` : ''}`
+    );
+    if (!roof.pilih)
+      lenwy.sendText(roof.p, '_Lawan sudah memilih_\nSekarang giliran kamu', 0);
+  }
+
+  let stage = roof.pilih;
+  let stage2 = roof.pilih2;
+
+  if (roof.pilih && roof.pilih2) {
+    clearTimeout(roof.waktu_milih);
+
+    if (b.test(stage) && g.test(stage2)) win = roof.p;
+    else if (b.test(stage) && k.test(stage2)) win = roof.p2;
+    else if (g.test(stage) && k.test(stage2)) win = roof.p;
+    else if (g.test(stage) && b.test(stage2)) win = roof.p2;
+    else if (k.test(stage) && b.test(stage2)) win = roof.p;
+    else if (k.test(stage) && g.test(stage2)) win = roof.p2;
+    else if (stage == stage2) tie = true;
+
+    lenwy.sendText(
+      roof.asal,
+      `_*Hasil Suit*_${tie ? '\nSERI' : ''}
+
+@${roof.p.split(`@`)[0]} (${roof.text}) ${
+        tie ? '' : roof.p == win ? ` Menang \n` : ` Kalah \n`
+      }
+@${roof.p2.split(`@`)[0]} (${roof.text2}) ${
+        tie ? '' : roof.p2 == win ? ` Menang \n` : ` Kalah \n`
+      }`.trim(),
+      m,
+      { mentions: [roof.p, roof.p2] }
+    );
+    delete this.suit[roof.id];
+  }
 }
 
 if (m.isGroup) {
@@ -643,64 +739,8 @@ if (m.msg?.contextInfo?.mentionedJid?.some(jid => global.owner.includes(jid.repl
   return m.reply(mess.tagOwner);
 }
 
-const gameState = {
-  angkaAcak: null,
-  jumlahTebakan: 0
-};
-
-
 switch (command) {
-case 'menu': 
-case 'mainmenu': {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-LenwyLD()
-await sleep(200)
-    
-let anu = ` ❛❛ Hai, I'm ${global.botname} 👋 ❛❛
-
-   ➜ Whatsapp Bot To Solve Your Problems 🙌
-   ➜ Please Dont Call Bots Or Get Blocked 🚫
- 
-   ╭─ ─ ─ ❛❛𝓘𝗇𝖿𝗈 𝓑𝗈𝗍 ❛❛
-   │ ꖛ 𝗿𝘂𝗻𝘁𝗶𝗺𝗲 ⵓ ${runtime(process.uptime())}
-   │ ꖛ 𝗰𝗿𝗲𝗮𝘁𝗼𝗿 ⵓ wa.me/${authorr}
-   ╰╌╌╌╌╌╌╌╌╌𖧷⃝⃝⃝⏤͟͟͞͞ 
-
-   ╭─ ─ ─ ❛❛𝓘𝗇𝖿𝗈𝓤𝗌𝖾𝗋 ❛❛
-   │ ꖛ 𝗻𝗮𝗺𝗲 ⵓ ${pushname}
-   │ ꖛ 𝗻𝘂𝗺𝗯𝗲𝗿 ⵓ wa.me/${m.sender.split('@')[0]}
-   │ ꖛ 𝘀𝘁𝗮𝘁𝘂𝘀 ⵓ ${isCreator ? `${global.emoji} Creator` : isPrem ? '🎁 Premium' : "🏷️ User"}
-   ╰╌╌╌╌╌╌╌╌╌𖧷⃝⃝⃝⏤͟͟͞͞ 
-   
-   ❛❛ 𝓚 𝖾𝗍𝖾𝗋𝖺𝗇𝗀𝖺𝗇 ❛❛
-   ➜ 𝗵𝗲𝗹𝗽 ⵓ Menunjukkan Panduan
-   ➜ 𝗺𝗲𝗻𝘂 ⵓ Menunjukkan Simple Menu
-   ➜ 𝗮𝗹𝗹𝗺𝗲𝗻𝘂 ⵓ Menunjukkan Semua Menu
-   ➜ 𝗹𝗶𝘀𝘁 ⵓ Menunjukkan List
-
-
-
-   ╭─ ─ ─ ❛❛𝑀𝖾𝗇𝗎 ❛❛
-   ││ ♡゙ Aboutmenu ( Menu Tentang )
-   ││ ♡゙ Ownermenu ( Menu Owner )
-   ││ ♡゙ Groupmenu ( Menu Grup )
-   ││ ♡゙ Funmenu ( Menu Fun )
-   ││ ♡゙ Toolsmenu ( Menu Tools )
-   ││ ♡゙ Gamemenu ( Menu Game )
-   ││ ♡゙ Beritamenu ( Menu Berita )
-   ││ ♡゙ Randommenu ( Menu Random )
-   ││ ♡゙ Downloadmenu ( Menu Download )
-   ││ ♡゙ Islamimenu ( Menu Islam )
-   ││ ♡゙ Searchmenu ( Menu Search )
-   ││ ♡゙ Antimenu ( Menu Anti )
-   ╰╌╌╌╌╌╌╌╌╌𖧷⃝⃝⃝⏤͟͟͞͞ 
-
-⚠️ *Kalo Ada Error Bisa Chat Owner Ya*`
-m.reply(anu)
-}
-break
-
-case 'menu1': {
+case 'menu': {
     const fileContent = fs.readFileSync('./lenwy.js', 'utf-8');    
     let inputUser = text ? text.toLowerCase() : ''; 
     const getMenu = (categoryName) => {
@@ -759,9 +799,9 @@ ${list} ╰───── ♡゙𓇼𓂃 𓆪𐚁\n\n` : '';
         if (!menuResult) return m.reply(`Maaf kak, kategori menu *${inputUser}* tidak ditemukan!`);
     }
 
-    let textMenu = `            /)  /)      ❛❛ awoo, aku ${global.botname} ❛❛
-          ( „• ֊ •„ ) 
-     ◯┈──̇─∪──∪──̇──┈◯
+    let textMenu = `         /)  /)  ❛❛ awoo, aku ${global.botname} ❛❛
+       ( „• ֊ •„ ) 
+  ◯┈──̇─∪──∪──̇──┈◯
  ❛❛ Jangan chat dan call ${global.botname} ya ❛❛
  
  ╭─ ─ ─ ❛❛𝓘𝗇𝖿𝗈 𝓑𝗈𝗍
@@ -779,881 +819,20 @@ ${list} ╰───── ♡゙𓇼𓂃 𓆪𐚁\n\n` : '';
 }
 break
 
-case 'almenu': 
-case 'allmenu': {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-LenwyLD()
-await sleep(200)
-let anu = `               /)  /)  
-             („• ֊ •„) 
-◯┈──̇─∪─∪──̇──┈◯
- ❛❛ Hai, I'm ${global.botname} 👋 ❛❛
-
-   ➜ Whatsapp Bot To Solve Your Problems 🙌
-   ➜ Please Dont Call Bots Or Get Blocked 🚫
- 
-   ╭─ ─ ─ ❛❛𝓘𝗇𝖿𝗈 𝓑𝗈𝗍 ❛❛
-   │ ꖛ 𝗿𝘂𝗻𝘁𝗶𝗺𝗲 ⵓ ${runtime(process.uptime())}
-   │ ꖛ 𝗰𝗿𝗲𝗮𝘁𝗼𝗿 ⵓ wa.me/${authorr}
-   ╰╌╌╌╌╌╌╌╌╌𖧷⃝⃝⃝⏤͟͟͞͞ 
-
-   ╭─ ─ ─ ❛❛𝓘𝗇𝖿𝗈𝓤𝗌𝖾𝗋 ❛❛
-   │ ꖛ 𝗻𝗮𝗺𝗲 ⵓ ${pushname}
-   │ ꖛ 𝗻𝘂𝗺𝗯𝗲𝗿 ⵓ wa.me/${m.sender.split('@')[0]}
-   │ ꖛ 𝘀𝘁𝗮𝘁𝘂𝘀 ⵓ ${isCreator ? `${global.emoji} Creator` : isPrem ? '🎁 Premium' : "🏷️ User"}
-   ╰╌╌╌╌╌╌╌╌╌𖧷⃝⃝⃝⏤͟͟͞͞ 
-   
-   ❛❛ 𝓚 𝖾𝗍𝖾𝗋𝖺𝗇𝗀𝖺𝗇 ❛❛
-   ➜ 𝗵𝗲𝗹𝗽 ⵓ Menunjukkan Panduan
-   ➜ 𝗺𝗲𝗻𝘂 ⵓ Menunjukkan Simple Menu
-   ➜ 𝗮𝗹𝗹𝗺𝗲𝗻𝘂 ⵓ Menunjukkan Semua Menu
-   ➜ 𝗹𝗶𝘀𝘁 ⵓ Menunjukkan List
-
-
-
-   ╭───── 私❛❛ About Menu
-   ││
-   ││ ♡゙ Owner
-   ││ ♡゙ Developer
-   ││ ♡゙ Sewa
-   ││ ♡゙ Sc
-   ││ ♡゙ Ping
-   ││ ♡゙ Catatan
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-
-
-   ╭───── 私❛❛ Owner Menu
-   ││
-   ││ ♡゙ Cekidgc
-   ││ ♡゙ Pushkontak
-   ││ ♡゙ Pushkontak2
-   ││ ♡゙ Savekontak
-   ││ ♡゙ Public
-   ││ ♡゙ Self
-   ││ ♡゙ Enc
-   ││ ♡゙ Addallprem
-   ││ ♡゙ Delallprem
-   ││ ♡゙ Addprem
-   ││ ♡゙ Delprem
-   ││ ♡゙ Listprem
-   ││ ♡゙ Banall
-   ││ ♡゙ Delbanall
-   ││ ♡゙ Ban
-   ││ ♡゙ Delban
-   ││ ♡゙ Listban
-   ││ ♡゙ Setppbot
-   ││ ♡゙ Setppbotpanjang
-   ││ ♡゙ Join
-   ││ ♡゙ Leave
-   ││ ♡゙ Addgc
-   ││ ♡゙ Delgc
-   ││ ♡゙ Bcgc
-   ││ ♡゙ Bcgcvideo
-   ││ ♡゙ Autoread
-   ││ ♡゙ Block
-   ││ ♡゙ Unblock
-   ││ ♡゙ Listdb
-   ││ ♡゙ Getdb
-   ││ ♡゙ Getuser
-   ││ ♡゙ Restart
-   ││ ♡゙ Delsesi
-   ││ ♡゙ Delsampah
-   ││ ♡゙ Setppsewa
-   ││ ♡゙ Changewdsewa
-   ││ ♡゙ Changewdppj
-   ││ ♡゙ Addsewa
-   ││ ♡゙ Delsewa
-   ││ ♡゙ Ceksewa
-   ││ ♡゙ Cekexpired
-   ││ ♡゙ Perpanjangsewa
-   ││ ♡゙ Listsewa
-   ││ ♡゙ Backupbot
-   ││ ♡゙ Cekip
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Cekstatusakun
-   ││ ♡゙ Listlayanankebsos
-   ││ ♡゙ Addkebsos
-   ││ ♡゙ Delkebsos
-   ││ ♡゙ cekorderankebsos
-   ││ ♡゙ Addgctopup
-   ││ ♡゙ Delgctopup
-   ││ ♡゙ Upgrade
-   ││ ♡゙ Deposit
-   ││ ♡゙ Profit
-   ││ ♡゙ Setprofit
-   ││ ♡゙ Cekdata
-   ││ ♡゙ Getcase
-   ││ ♡゙ Addcase
-   ││ ♡゙ Editcase
-   ││ ♡゙ Delcase
-   ││ ♡゙ Cekcase
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-
-
-   ╭───── 私❛❛ Group Menu
-   ││
-   ││ ♡゙ Antich (on/off)
-   ││ ♡゙ Antiwame (on/off)
-   ││ ♡゙ Antilink (on/off)
-   ││ ♡゙ Antipl (on/off)
-   ││ ♡゙ Antitoxic1 (on/off)
-   ││ ♡゙ Antitoxic2 (on/off)
-   ││ ♡゙ Antilinktt (on/off)
-   ││ ♡゙ Antilinkyt (on/off)
-   ││ ♡゙ Antilinkgc1 (on/off)
-   ││ ♡゙ Antilinkgc2 (on/off)
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Addlist (key@Respon)
-   ││ ♡゙ Dellist (key)
-   ││ ♡゙ updatenamelist (key@newKey)
-   ││ ♡゙ updatelist (key@newRespon)
-   ││ ♡゙ setpayment (key@wording)
-   ││ ♡゙ changewording (key@newWording)
-   ││ ♡゙ delbutton (key)
-   ││ ♡゙ setbuttoncopy
-   ││ ♡゙ setbuttonurl
-   ││ ♡゙ pay
-   ││ ♡゙ Hidetag (textnya)
-   ││ ♡゙ Faketag (textnya)
-   ││ ♡゙ Tagall (textnya)
-   ││ ♡゙ Kick (628xx)
-   ││ ♡゙ Add (628xx)
-   ││ ♡゙ Promote (628xx)
-   ││ ♡゙ Demote (628xx)
-   ││ ♡゙ Sendlinkgc (628xx)
-   ││ ♡゙ Inspect (linknya)
-   ││ ♡゙ Inspect2 (linknya)
-   ││ ♡゙ Promoteall
-   ││ ♡゙ Demoteall
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Setdesk (on/off)
-   ││ ♡゙ Welcome (on/off/edit)
-   ││ ♡゙ Left (on/off/edit)
-   ││ ♡゙ Setlist (text)
-   ││ ♡゙ Setsimbol (text)
-   ││ ♡゙ SetGrup (open/close)
-   ││ ♡゙ Open (edit)
-   ││ ♡゙ Close (edit)
-   ││ ♡゙ Done (edit)
-   ││ ♡゙ Proses (edit)
-   ││ ♡゙ Jeda
-   ││ ♡゙ Editsubjek (textnya)
-   ││ ♡゙ Editdesk (textnya)
-   ││ ♡゙ Setppgc
-   ││ ♡゙ Linkgroup
-   ││ ♡゙ Resetlinkgc
-   ││ ♡゙ Afk
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Saran
-   ││ ♡゙ Reportbug
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-
-
-   ╭───── 私❛❛ Fun Menu
-   ││
-   ││ ♡゙ Truth
-   ││ ♡゙ Dare
-   ││ ♡゙ Rate
-   ││ ♡゙ Apakah
-   ││ ♡゙ Kapankah
-   ││ ♡゙ Bisakah
-   ││ ♡゙ Bagaimanakah
-   ││ ♡゙ Gantengcek
-   ││ ♡゙ Cantikcek
-   ││ ♡゙ Jodoh
-   ││ ♡゙ Readmore
-   ││ ♡゙ Cwr
-   ││ ♡゙ Couple
-   ││ ♡゙ Meme
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Cekkodam
-   ││ ♡゙ FML
-   ││ ♡゙ Bucin
-   ││ ♡゙ Quotes
-   ││ ♡゙ Motivasi
-   ││ ♡゙ Katabijak
-   ││ ♡゙ Katacinta
-   ││ ♡゙ Katagalau
-   ││ ♡゙ Katahacker
-   ││ ♡゙ Katailham
-   ││ ♡゙ Katasenja
-   ││ ♡゙ Katasindiran
-   ││ ♡゙ Quotesanime
-   ││ ♡゙ Quotespubg
-   ││ ♡゙ Quotesislamic
-   ││ ♡゙ Nickff
-   ││ ♡゙ Puisi
-   ││ ♡゙ Pantun
-   ││ ♡゙ Faktaunik
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-
-
-   ╭───── 私❛❛ Tools Menu
-   ││
-   ││ ♡゙ Sticker
-   ││ ♡゙ Smeme
-   ││ ♡゙ Qc
-   ││ ♡゙ Qckode
-   ││ ♡゙ Wm
-   ││ ♡゙ Brat
-   ││ ♡゙ Brat2
-   ││ ♡゙ Ttp
-   ││ ♡゙ Attp
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Createqr
-   ││ ♡゙ Detectqr
-   ││ ♡゙ Toimg
-   ││ ♡゙ Ocr
-   ││ ♡゙ Rvo
-   ││ ♡゙ Hd
-   ││ ♡゙ Hd2
-   ││ ♡゙ Hd3
-   ││ ♡゙ Hd4
-   ││ ♡゙ Removebg
-   ││ ♡゙ Toanime
-   ││ ♡゙ Tocyberpunk
-   ││ ♡゙ Todreamscape
-   ││ ♡゙ Tocomic
-   ││ ♡゙ Todonghua
-   ││ ♡゙ Todisney
-   ││ ♡゙ Toghibli
-   ││ ♡゙ Img2Txt
-   ││ ♡゙ Txt2img
-   ││ ♡゙ Txt2anime
-   ││ ♡゙ Txt2flux
-   ││ ♡゙ Txt2photoleap
-   ││ ♡゙ Txt2waifu
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Hdvid
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ text2speech
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Ssweb
-   ││ ♡゙ Sstab
-   ││ ♡゙ Sshp
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Cwr
-   ││ ♡゙ Ffstalk
-   ││ ♡゙ Mlstalk
-   ││ ♡゙ Ttstalk
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Reminder
-   ││ ♡゙ Getname
-   ││ ♡゙ Getpic
-   ││ ♡゙ Confes
-   ││ ♡゙ Confes2
-   ││ ♡゙ Readmore
-   ││ ♡゙ Cwr
-   ││ ♡゙ Tourl
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-
-
-   ╭───── 私❛❛ Game Menu
-   ││
-   ││ ♡゙ TTC
-   ││ ♡゙ Deltc
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Tebak Kata
-   ││ ♡゙ Tebak Gambar
-   ││ ♡゙ Tebak Lirik
-   ││ ♡゙ Tebak Kalimat
-   ││ ♡゙ Tebak Lontong
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Kuismath Noob
-   ││ ♡゙ Kuismath Easy
-   ││ ♡゙ Kuismath Medium
-   ││ ♡゙ Kuismath Hard
-   ││ ♡゙ Kuismath Extreme
-   ││ ♡゙ Kuismath Imposibble
-   ││ ♡゙ Kuismath Imposibble2
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-
-
-   ╭───── 私❛❛ Berita Menu
-   ││
-   ││ ♡゙ Inews
-   ││ ♡゙ Kontan
-   ││ ♡゙ KompasNews
-   ││ ♡゙ DetikNews
-   ││ ♡゙ DailyNews
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-
-
-   ╭───── 私❛❛ Random Menu
-   ││
-   ││ ♡゙ Qc
-   ││ ♡゙ Nickff
-   ││ ♡゙ Puisi
-   ││ ♡゙ Pantun
-   ││ ♡゙ Qckode
-   ││ ♡゙ Sticker
-   ││ ♡゙ Smeme
-   ││ ♡゙ Reminder
-   ││ ♡゙ Faktaunik
-   ││ ♡゙ Couple
-   ││ ♡゙ Meme
-   ││ ♡゙ Getname
-   ││ ♡゙ Getpic
-   ││ ♡゙ Confes
-   ││ ♡゙ Menfes
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-
-
-   ╭───── 私❛❛ Download Menu
-   ││
-   ││ ♡゙ Fb (linknya)
-   ││ ♡゙ Fbvideo (linknya)
-   ││ ♡゙ Fbfoto (linknya)
-   ││ ♡゙ Fbaudio (linknya)
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Ig (linknya)
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Tt (linknya)
-   ││ ♡゙ Ttaudio (linknya)
-
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Twitter (linknya)
-   ││ ♡゙ Twittervideo (linknya)
-   ││ ♡゙ Twitterfoto (linknya)
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Play (linknya)
-   ││ ♡゙ Ytmp3 (linknya)
-   ││ ♡゙ Ytmp4 (linknya)
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Mediafire (linknya)
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Spotify (text)
-   ││ ♡゙ Spotifydl (Linknya)
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-
-
-   ╭───── 私❛❛ Islami Menu
-   ││
-   ││ ♡゙ Doa
-   ││ ♡゙ Asmaul Husna
-   ││ ♡゙ Ayat Kursi
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-
-
-   ╭───── 私❛❛ Search Menu
-   ││
-   ││ ♡゙ Ai
-   ││ ♡゙ Yuna
-   ││ ♡゙ Search
-   ││ ♡゙ Imdb
-   ││ ♡゙ Chord
-   ││ ♡゙ Lirik
-   ││ ♡゙ Cuaca
-   ││ ♡゙ Jarak
-   ││ ♡゙ Google
-   ││ ♡゙ Mcserver
-   ││ ♡゙ Apksearch
-   ││ ♡゙ Animesearch
-   ││ ♡゙ Animeinfo
-   ││ ♡゙ Animedownload
-   ││ ♡゙ Translate
-   ││ ♡゙ Kodebahasa
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-
-
-   ╭───── 私❛❛ Anti Menu
-   ││
-   ││ ♡゙ Antich
-   ││ ♡゙ Antiwame
-   ││ ♡゙ Antilink
-   ││ ♡゙ Antipl
-   ││ ♡゙ Antitoxic1
-   ││ ♡゙ Antitoxic2
-   ││ ♡゙ Antilinktt
-   ││ ♡゙ Antilinkyt
-   ││ ♡゙ Antilinkgc1
-   ││ ♡゙ Antilinkgc2
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-
-⚠️ Kalo Ada Error Bisa Chat Owner Ya
-`
-m.reply(anu)
+// MULAI DARI SINI YAAAA
+// ===== AWAL MENU INFO ===== //
+case 'owner': {
+  if (text) return
+  await lenwy.sendContact(m.chat, author.map( i => i.split("@")[0]), m.quoted ? m.quoted.fakeObj : m)
 }
 break
 
-
-
-
-
-
-
-
-
-
-case 'aboutmenu': {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-LenwyLD()
-await sleep(200)
-m.reply(`   ╭───── 私❛❛ About Menu
-   ││
-   ││ ♡゙ Owner
-   ││ ♡゙ Developer
-   ││ ♡゙ Sewa
-   ││ ♡゙ Sc
-   ││ ♡゙ Ping
-   ││ ♡゙ Catatan
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-`)
+case 'bot': {
+if (text) return
+m.reply(`Iya Kak, ${pushname}`)
 }
 break
 
-case 'ownermenu':
-case 'menuowner': {
-  if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-  LenwyLD()
-  await sleep(200)
-  m.reply(`   ╭───── 私❛❛ Owner Menu
-   ││
-   ││ ♡゙ Cekidgc
-   ││ ♡゙ Pushkontak
-   ││ ♡゙ Pushkontak2
-   ││ ♡゙ Savekontak
-   ││ ♡゙ Public
-   ││ ♡゙ Self
-   ││ ♡゙ Enc
-   ││ ♡゙ Addallprem
-   ││ ♡゙ Delallprem
-   ││ ♡゙ Addprem
-   ││ ♡゙ Delprem
-   ││ ♡゙ Listprem
-   ││ ♡゙ Banall
-   ││ ♡゙ Delbanall
-   ││ ♡゙ Ban
-   ││ ♡゙ Delban
-   ││ ♡゙ Listban
-   ││ ♡゙ Setppbot
-   ││ ♡゙ Setppbotpanjang
-   ││ ♡゙ Join
-   ││ ♡゙ Leave
-   ││ ♡゙ Addgc
-   ││ ♡゙ Delgc
-   ││ ♡゙ Bcgc
-   ││ ♡゙ Bcgcvideo
-   ││ ♡゙ Autoread
-   ││ ♡゙ Block
-   ││ ♡゙ Unblock
-   ││ ♡゙ Listdb
-   ││ ♡゙ Getdb
-   ││ ♡゙ Getuser
-   ││ ♡゙ Restart
-   ││ ♡゙ Delsesi
-   ││ ♡゙ Delsampah
-   ││ ♡゙ Setppsewa
-   ││ ♡゙ Changewdsewa
-   ││ ♡゙ Changewdppj
-   ││ ♡゙ Addsewa
-   ││ ♡゙ Delsewa
-   ││ ♡゙ Ceksewa
-   ││ ♡゙ Cekexpired
-   ││ ♡゙ Perpanjangsewa
-   ││ ♡゙ Listsewa
-   ││ ♡゙ Backupbot
-   ││ ♡゙ Cekip
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Cekstatusakun
-   ││ ♡゙ Listlayanankebsos
-   ││ ♡゙ Addkebsos
-   ││ ♡゙ Delkebsos
-   ││ ♡゙ cekorderankebsos
-   ││ ♡゙ Addgctopup
-   ││ ♡゙ Delgctopup
-   ││ ♡゙ Upgrade
-   ││ ♡゙ Deposit
-   ││ ♡゙ Profit
-   ││ ♡゙ Setprofit
-   ││ ♡゙ Cekdata
-   ││ ♡゙ Getcase
-   ││ ♡゙ Addcase
-   ││ ♡゙ Editcase
-   ││ ♡゙ Delcase
-   ││ ♡゙ Cekcase
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-`)
-}
-break
-
-case 'groupmenu':
-case 'grupmenu': {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-LenwyLD()
-await sleep(200)
-m.reply(`   ╭───── 私❛❛ Group Menu
-   ││
-   ││ ♡゙ Antich (on/off)
-   ││ ♡゙ Antiwame (on/off)
-   ││ ♡゙ Antilink (on/off)
-   ││ ♡゙ Antipl (on/off)
-   ││ ♡゙ Antitoxic1 (on/off)
-   ││ ♡゙ Antitoxic2 (on/off)
-   ││ ♡゙ Antilinktt (on/off)
-   ││ ♡゙ Antilinkyt (on/off)
-   ││ ♡゙ Antilinkgc1 (on/off)
-   ││ ♡゙ Antilinkgc2 (on/off)
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Addlist (key@Respon)
-   ││ ♡゙ Dellist (key)
-   ││ ♡゙ updatenamelist (key@newKey)
-   ││ ♡゙ updatelist (key@newRespon)
-   ││ ♡゙ setpayment (key@wording)
-   ││ ♡゙ setbuttoncopy (key@disButn@cpyVal)
-   ││ ♡゙ setbuttonurl (key@disButn@urlVal)
-   ││ ♡゙ changewording (key@newWording)
-   ││ ♡゙ delbutton (key)
-   ││ ♡゙ pay
-   ││ ♡゙ Hidetag (textnya)
-   ││ ♡゙ Faketag (textnya)
-   ││ ♡゙ Tagall (textnya)
-   ││ ♡゙ Kick (628xx)
-   ││ ♡゙ Add (628xx)
-   ││ ♡゙ Promote (628xx)
-   ││ ♡゙ Demote (628xx)
-   ││ ♡゙ Sendlinkgc (628xx)
-   ││ ♡゙ Inspect (linknya)
-   ││ ♡゙ Inspect2 (linknya)
-   ││ ♡゙ Promoteall
-   ││ ♡゙ Demoteall
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Setdesk (on/off)
-   ││ ♡゙ Welcome (on/off/edit)
-   ││ ♡゙ Left (on/off/edit)
-   ││ ♡゙ Setlist (text)
-   ││ ♡゙ Setsimbol (text)
-   ││ ♡゙ SetGrup (open/close)
-   ││ ♡゙ Open (edit)
-   ││ ♡゙ Close (edit)
-   ││ ♡゙ Done (edit)
-   ││ ♡゙ Proses (edit)
-   ││ ♡゙ Jeda
-   ││ ♡゙ Editsubjek (textnya)
-   ││ ♡゙ Editdesk (textnya)
-   ││ ♡゙ Setppgc
-   ││ ♡゙ Linkgroup
-   ││ ♡゙ Resetlinkgc
-   ││ ♡゙ Afk
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Saran
-   ││ ♡゙ Reportbug
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-`)
-}
-break
-
-case 'funmenu': {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-LenwyLD()
-await sleep(200)
-m.reply(`   ╭───── 私❛❛ Fun Menu
-   ││
-   ││ ♡゙ Truth
-   ││ ♡゙ Dare
-   ││ ♡゙ Rate
-   ││ ♡゙ Apakah
-   ││ ♡゙ Kapankah
-   ││ ♡゙ Bisakah
-   ││ ♡゙ Bagaimanakah
-   ││ ♡゙ Gantengcek
-   ││ ♡゙ Cantikcek
-   ││ ♡゙ Jodoh
-   ││ ♡゙ Readmore
-   ││ ♡゙ Cwr
-   ││ ♡゙ Couple
-   ││ ♡゙ Meme
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ FML
-   ││ ♡゙ FML
-   ││ ♡゙ Bucin
-   ││ ♡゙ Quotes
-   ││ ♡゙ Motivasi
-   ││ ♡゙ Katabijak
-   ││ ♡゙ Katacinta
-   ││ ♡゙ Katagalau
-   ││ ♡゙ Katahacker
-   ││ ♡゙ Katailham
-   ││ ♡゙ Katasenja
-   ││ ♡゙ Katasindiran
-   ││ ♡゙ Quotesanime
-   ││ ♡゙ Quotespubg
-   ││ ♡゙ Quotesislamic
-   ││ ♡゙ Nickff
-   ││ ♡゙ Puisi
-   ││ ♡゙ Pantun
-   ││ ♡゙ Faktaunik
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-`)
-}
-break
-
-case 'toolsmenu':
-case 'toolmenu': {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-LenwyLD()
-await sleep(200)
-m.reply(`   ╭───── 私❛❛ Tools Menu
-   ││
-   ││ ♡゙ Sticker
-   ││ ♡゙ Smeme
-   ││ ♡゙ Qc
-   ││ ♡゙ Qckode
-   ││ ♡゙ Wm
-   ││ ♡゙ Brat
-   ││ ♡゙ Brat2
-   ││ ♡゙ Ttp
-   ││ ♡゙ Attp
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Createqr
-   ││ ♡゙ Detectqr
-   ││ ♡゙ Toimg
-   ││ ♡゙ Ocr
-   ││ ♡゙ Rvo
-   ││ ♡゙ Hd
-   ││ ♡゙ Hd2
-   ││ ♡゙ Hd3
-   ││ ♡゙ Hd4
-   ││ ♡゙ Removebg
-   ││ ♡゙ Toanime
-   ││ ♡゙ Tocyberpunk
-   ││ ♡゙ Todreamscape
-   ││ ♡゙ Tocomic
-   ││ ♡゙ Todonghua
-   ││ ♡゙ Todisney
-   ││ ♡゙ Toghibli
-   ││ ♡゙ Img2Txt
-   ││ ♡゙ Txt2img
-   ││ ♡゙ Txt2anime
-   ││ ♡゙ Txt2flux
-   ││ ♡゙ Txt2photoleap
-   ││ ♡゙ Txt2waifu
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Hdvid
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ text2speech
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Ssweb
-   ││ ♡゙ Sstab
-   ││ ♡゙ Sshp
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Cwr
-   ││ ♡゙ Ffstalk
-   ││ ♡゙ Mlstalk
-   ││ ♡゙ Ttstalk
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Reminder
-   ││ ♡゙ Getname
-   ││ ♡゙ Getpic
-   ││ ♡゙ Confes
-   ││ ♡゙ Confes2
-   ││ ♡゙ Readmore
-   ││ ♡゙ Cwr
-   ││ ♡゙ Tourl
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-`)
-}
-break
-
-case 'gamemenu': {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-LenwyLD()
-await sleep(200)
-m.reply(`   ╭───── 私❛❛ Game Menu
-   ││
-   ││ ♡゙ TTC
-   ││ ♡゙ Deltc
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Tebak Kata
-   ││ ♡゙ Tebak Gambar
-   ││ ♡゙ Tebak Lirik
-   ││ ♡゙ Tebak Kalimat
-   ││ ♡゙ Tebak Lontong
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Kuismath Noob
-   ││ ♡゙ Kuismath Easy
-   ││ ♡゙ Kuismath Medium
-   ││ ♡゙ Kuismath Hard
-   ││ ♡゙ Kuismath Extreme
-   ││ ♡゙ Kuismath Imposibble
-   ││ ♡゙ Kuismath Imposibble2
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-`)
-}
-break
-
-case 'beritamenu': {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-LenwyLD()
-await sleep(200)
-m.reply(`   ╭───── 私❛❛ Berita Menu
-   ││
-   ││ ♡゙ Inews
-   ││ ♡゙ Kontan
-   ││ ♡゙ KompasNews
-   ││ ♡゙ DetikNews
-   ││ ♡゙ DailyNews
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-`)
-}
-break
-
-case 'randommenu':
-case 'randmenu':{
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-const y11 = `   ╭───── 私❛❛ Random Menu
-   ││
-   ││ ♡゙ Qc
-   ││ ♡゙ Nickff
-   ││ ♡゙ Puisi
-   ││ ♡゙ Pantun
-   ││ ♡゙ Qckode
-   ││ ♡゙ Sticker
-   ││ ♡゙ Smeme
-   ││ ♡゙ Reminder
-   ││ ♡゙ Faktaunik
-   ││ ♡゙ Couple
-   ││ ♡゙ Meme
-   ││ ♡゙ Getname
-   ││ ♡゙ Getpic
-   ││ ♡゙ Confes
-   ││ ♡゙ Menfes
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-`
-m.reply(y11)
-}
-break
-
-case 'downmenu':
-case 'downloadmenu': {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-LenwyLD()
-await sleep(200)
-m.reply(`   ╭───── 私❛❛ Download Menu
-   ││
-   ││ ♡゙ Fb (linknya)
-   ││ ♡゙ Fbvideo (linknya)
-   ││ ♡゙ Fbfoto (linknya)
-   ││ ♡゙ Fbaudio (linknya)
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Ig (linknya)
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Tt (linknya)
-   ││ ♡゙ Ttaudio (linknya)
-
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Twitter (linknya)
-   ││ ♡゙ Twittervideo (linknya)
-   ││ ♡゙ Twitterfoto (linknya)
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Play (linknya)
-   ││ ♡゙ Ytmp3 (linknya)
-   ││ ♡゙ Ytmp4 (linknya)
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Mediafire (linknya)
-   ││ - - - - - - - - - - - -
-   ││ ♡゙ Spotify (text)
-   ││ ♡゙ Spotifydl (Linknya)
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-`)
-}
-break
-
-case 'islamimenu': {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-LenwyLD()
-await sleep(200)
-m.reply(`   ╭───── 私❛❛ Islami Menu
-   ││
-   ││ ♡゙ Doa
-   ││ ♡゙ Asmaul Husna
-   ││ ♡゙ Ayat Kursi
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-`)
-}
-break
-
-case 'searchmenu': {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-LenwyLD()
-await sleep(200)
-m.reply(`   ╭───── 私❛❛ Search Menu
-   ││
-   ││ ♡゙ Ai
-   ││ ♡゙ Yuna
-   ││ ♡゙ Imdb
-   ││ ♡゙ Chord
-   ││ ♡゙ Lirik
-   ││ ♡゙ Cuaca
-   ││ ♡゙ Jarak
-   ││ ♡゙ Google
-   ││ ♡゙ Mcserver
-   ││ ♡゙ Apksearch
-   ││ ♡゙ Animesearch
-   ││ ♡゙ Animeinfo
-   ││ ♡゙ Animedownload
-   ││ ♡゙ Translate
-   ││ ♡゙ Kodebahasa
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-`)
-}
-break
-
-case 'antimenu': {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-LenwyLD()
-await sleep(200)
-m.reply(`   ╭───── 私❛❛ Anti Menu
-   ││
-   ││ ♡゙ Antich
-   ││ ♡゙ Antiwame
-   ││ ♡゙ Antilink
-   ││ ♡゙ Antipl
-   ││ ♡゙ Antitoxic1
-   ││ ♡゙ Antitoxic2
-   ││ ♡゙ Antilinktt
-   ││ ♡゙ Antilinkyt
-   ││ ♡゙ Antilinkgc1
-   ││ ♡゙ Antilinkgc2
-   ╰───── ♡゙𓇼𓂃 𓆪𐚁
-`)
-}
-break
-
-
-
-
-
-
-
-
-
-
-
-case 'help': {
-m.reply(`*Panduan Untuk Menggunakan Fitur Bot*
-
-*#1 Membuat Sticker Whatsapp*
-*#2 Membuat Sticker Video*
-*#3 Mengubah Watermark Sticker*
-*#4 Meningkatkan Kualitas Gambar*
-*#5 Mengunduh Foto/Video Dari Link*
-*#6 Mengunduh Audio/Video Youtube*
-*#7 Mengunduh Lagu/Musik*
-*#8 Bertanya Kepada Bot*
-*#9 Mencari Berita*
-*#10 Mengubah Gambar Menjadi Link*
-*#11 Mengetahui Jarak Kota*
-*#12 Menghapus Pesan Bot*
-
-🎁 *Untuk Menampilkan Panduan Ketik Sesuai Nomor, Contoh : NO1* 
-
-⚠️ *Kalo Ada Error Bisa Chat Owner Ya* 😄
-`)
-}
-break
-// MULAI DARI SINI YA
-// ===== AWAL MENU GROUP ===== //
 case 'sc': {
 if (text) return
 let buy = `*Script?*
@@ -1664,6 +843,1357 @@ m.reply(buy)
 }
 break
 
+case 'ping': {
+    const { execSync } = require('child_process');
+    const used = process.memoryUsage();
+    const cpus = os.cpus().map(cpu => {
+        cpu.total = Object.keys(cpu.times).reduce((last, type) => last + cpu.times[type], 0);
+        return cpu;
+    });
+    const cpu = cpus.reduce((last, cpu, _, { length }) => {
+        last.total += cpu.total;
+        last.speed += cpu.speed / length;
+        last.times.user += cpu.times.user;
+        last.times.nice += cpu.times.nice;
+        last.times.sys += cpu.times.sys;
+        last.times.idle += cpu.times.idle;
+        last.times.irq += cpu.times.irq;
+        return last;
+    }, { speed: 0, total: 0, times: { user: 0, nice: 0, sys: 0, idle: 0, irq: 0 } });
+
+    let timestamp = speed();
+    let latensi = speed() - timestamp;
+    let neww = performance.now();
+    let oldd = performance.now();
+
+    let serverLocation = 'Tidak diketahui';
+    let ispName = 'Tidak diketahui';
+    let timeZone = 'Tidak diketahui';
+    try {
+        const res = await fetch('http://ip-api.com/json/');
+        const data = await res.json();
+        serverLocation = `${data.city}, ${data.regionName}, ${data.country}`;
+        ispName = data.isp;
+        timeZone = data.timezone;
+    } catch (e) {
+        serverLocation = 'Gagal mengambil data lokasi';
+        ispName = 'Gagal mengambil ISP';
+    }
+
+    let diskSpace = 'Tidak diketahui';
+    try {
+        if (os.platform() === 'win32') {
+            diskSpace = 'Gagal membaca (OS Windows)';
+        } else {
+            diskSpace = execSync("df -h / | awk 'NR==2 {print $3\" Terpakai dari \"$2\" (\"$5\")\"}'").toString().trim();
+        }
+    } catch (err) {
+        diskSpace = 'Error membaca disk';
+    }
+
+    const loadAvg = os.loadavg().map(v => v.toFixed(2)).join(' | ');
+
+    let respon = `
+⏱️ *Kecepatan Respon :* ${latensi.toFixed(4)} Detik
+🚀 *Speed :* ${oldd - neww} Milidetik
+
+🤖 *INFO BOT*
+ *⨠ Runtime Bot :* ${runtime(process.uptime())}
+ *⨠ Process ID :* ${process.pid}
+ *⨠ Storage / Disk :* ${diskSpace}
+ *⨠ Total RAM :* ${formatp(os.totalmem())}
+ *⨠ RAM Terpakai Bot :* ${formatp(used.rss)}
+ *⨠ RAM Sisa Sistem :* ${formatp(os.freemem())}
+
+💻 *INFO VPS*
+ *⨠ Hostname :* ${os.hostname()}
+ *⨠ Node.js :* ${process.version}
+ *⨠ Platform :* ${os.platform()} ${os.arch()}
+ *⨠ Uptime Server :* ${runtime(os.uptime())}
+ *⨠ Provider/ISP :* ${ispName}
+ *⨠ Region VPS :* ${serverLocation}
+ *⨠ Timezone :* ${timeZone}
+
+📈 *INFO CPU*
+ *⨠ Load Average :* ${loadAvg} (1m | 5m | 15m)
+${cpus[0] ? ` *⨠ Model :* ${cpus[0].model.trim()} (${cpu.speed} MHZ)
+${Object.keys(cpu.times).map(type => ` *⨠ ${(type + '*').padEnd(6)}:* ${(100 * cpu.times[type] / cpu.total).toFixed(2)}%`).join('\n')}
+ *⨠ Core(s) :* ${cpus.length} Core` : ''}
+`.trim();
+    m.reply(respon);
+}
+break
+
+case 'statusgc': {
+  if (!m.isGroup) return m.reply('⚠️ Perintah ini hanya bisa digunakan di dalam grup!')
+
+  try {
+    const groupData = global.db.data.chats[from]
+    if (!groupData) return m.reply('⚠️ Data grup tidak ditemukan dalam database. Coba kirim pesan apa saja di grup ini terlebih dahulu.');
+    const check = (status) => status ? '✅' : '❌'
+    let statusMessage = `*📊 Status ${groupName}*\n\n`
+    statusMessage += `*Pengaturan Umum:*\n`
+    statusMessage += `• Onlyadmin: ${check(groupData.onlyAdmin)}\n`
+    statusMessage += `• Welcome: ${check(groupData.wlcm)}\n`
+    statusMessage += `• Left: ${check(groupData.left)}\n\n`
+    statusMessage += `*Keamanan:*\n`
+    statusMessage += `• Antilinktt: ${check(groupData.antilinktt)}\n`
+    statusMessage += `• Antilinkyt: ${check(groupData.antilinkyt)}\n`
+    statusMessage += `• Antiwame: ${check(groupData.antiwame)}\n`
+    statusMessage += `• Antilink1: ${check(groupData.antilink1)}\n`
+    statusMessage += `• Antilink2: ${check(groupData.antilink2)}\n`
+    statusMessage += `• Antitoxic1: ${check(groupData.antitoxic1)}\n`
+    statusMessage += `• Antitoxic2: ${check(groupData.antitoxic2)}\n`
+    statusMessage += `• Antilinkgc1: ${check(groupData.antilinkgc1)}\n`
+    statusMessage += `• Antilinkgc2: ${check(groupData.antilinkgc2)}\n`
+    statusMessage += `• Antisw1: ${check(groupData.antisw1)}\n`
+    statusMessage += `• Antisw2: ${check(groupData.antisw2)}`
+    m.reply(statusMessage)
+  } catch (error) {
+    console.error('Terjadi kesalahan di statusgc:', error)
+    m.reply('⚠️ Terjadi kesalahan saat membaca database grup.')
+  }
+}
+break
+
+case 'kodebahasa': {
+m.reply(`Kode bahasa
+
+ *⨠ Af: Afrikaans* 
+ *⨠ Sq: Albanian*
+ *⨠ Ar: Arabic*
+ *⨠ Hy: Armenian*
+ *⨠ Ca: Catalan* 
+ *⨠ Zh: Chinese*
+ *⨠ Zh-Cn: Chinese (Mandarin/China)*
+ *⨠ Zh-Tw: Chinese (Mandarin/Taiwan)*
+ *⨠ Zh-Yue: Chinese (Cantonese)*
+ *⨠ Hr: Croatian*
+ *⨠ Cs: Czech*
+ *⨠ Da: Danish*
+ *⨠ Nl: Dutch*
+ *⨠ En: English*    
+ *⨠ En-Au: English (Australia)*
+ *⨠ En-Uk: English (United Kingdom)*
+ *⨠ en-Us: English (United States)* 
+ *⨠ Eo: Esperanto* 
+ *⨠ Fi: Finnish* 
+ *⨠ Fr: French*
+ *⨠ De: German*
+ *⨠ El: Greek* 
+ *⨠ Ht: Haitian Creole* 
+ *⨠ Hi: Hindi* 
+ *⨠ Hu: Hungarian* 
+ *⨠ Ss: Icelandic* 
+ *⨠ Id: Indonesian* 
+ *⨠ It: Italian*
+ *⨠ Ja: Japanese*
+ *⨠ Ko: Korean*
+ *⨠ La: Latin*
+ *⨠ Lv: Latvian*
+ *⨠ Mk: Macedonian*
+ *⨠ No: Norwegian*
+ *⨠ Pl: Polish*
+ *⨠ Pt: Portuguese*
+ *⨠ Pt-Br: Portuguese (Brazil)*
+ *⨠ Ro: Romanian*
+ *⨠ Ru: Russian*
+ *⨠ Sr: Serbian*
+ *⨠ Sk: Slovak*
+ *⨠ Es: Spanish* 
+ *⨠ Es-Es: Spanish (Spain)*
+ *⨠ Es-Us: Spanish (United States)*
+ *⨠ Sw: Swahili*
+ *⨠ Sv: Swedish*
+ *⨠ Ta: Tamil*
+ *⨠ Th: Thai*
+ *⨠ Tr: Turkish*
+ *⨠ Vi: Vietnamese* 
+ *⨠ Cy: Welsh*`)
+}
+break
+
+case 'qckode': {
+m.reply(`Kode warna
+
+ *⨠ Pink*
+ *⨠ Blue*
+ *⨠ Red*
+ *⨠ Green*
+ *⨠ Yellow*
+ *⨠ Purple*
+ *⨠ Darkblue*
+ *⨠ Lightblue*
+ *⨠ Ash*
+ *⨠ Orange*
+ *⨠ Black*
+ *⨠ White*
+ *⨠ Teal*
+ *⨠ Lightpink*
+ *⨠ Chocolate*
+ *⨠ Salmon*
+ *⨠ Magenta*
+ *⨠ Tan*
+ *⨠ Wheat*
+ *⨠ Deeppink*
+ *⨠ Fire*
+ *⨠ lenwyblue*
+ *⨠ Safron*
+ *⨠ Brightlenwyblue*
+ *⨠ Hotpink*
+ *⨠ Lightlenwyblue*
+ *⨠ Seagreen*
+ *⨠ Darkred*
+ *⨠ Orangered*
+ *⨠ Cyan*
+ *⨠ Violet*
+ *⨠ Mossgreen*
+ *⨠ Darkgreen*
+ *⨠ Navyblue*
+ *⨠ Darkorange*
+ *⨠ Darkpurple*
+ *⨠ Fuchsia*
+ *⨠ Darkmagenta*
+ *⨠ Darkgray*
+ *⨠ Peachpuff*
+ *⨠ Blackishgreen*
+ *⨠ Darkishred*
+ *⨠ Goldenrod*
+ *⨠ Darkishgray*
+ *⨠ Darkishpurple*
+ *⨠ Gold*
+ *⨠ Silver*`)
+}
+break
+// ===== AKHIR MENU INFO ===== //
+
+// ===== AWAL MENU OWNER ===== //
+case 'block': {
+if (!isCreator) return m.reply(mess.owner)
+let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
+await lenwy.updateBlockStatus(users, 'block').then((res) => m.reply(jsonformat(res))).catch((err) => m.reply(jsonformat(err)))
+}
+break
+
+case 'unblock': {
+if (!isCreator) return m.reply(mess.owner)
+let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
+await lenwy.updateBlockStatus(users, 'unblock').then((res) => m.reply(jsonformat(res))).catch((err) => m.reply(jsonformat(err)))
+}
+break
+
+case 'addripper': {
+  if (!isCreator) return m.reply(mess.owner)
+  if (!isBotAdmins) return m.reply(mess.botAdmin)
+    if (!text) return m.reply(`Masukkan nomor yang ingin ditambahkan.\nContoh: ${prefix + command} 628xxx`)
+
+    let nomor = text.replace(/[^0-9]/g, '')
+    var cek = await lenwy.onWhatsApp(nomor)
+    if (cek.length < 1) return m.reply("Nomor Tersebut Tidak Terdaftar Di WhatsApp")
+    const filePath = path.join(__dirname, './storage/dataRipper.json');
+
+    if (!fs.existsSync(filePath)) {
+        fs.writeFileSync(filePath, JSON.stringify([]));
+    }
+
+    let data = JSON.parse(fs.readFileSync(filePath));
+
+    if (data.includes(nomor)) {
+        return m.reply(`Nomor ${nomor} sudah terdaftar sebagai ripper.`)
+    }
+
+    data.push(nomor);
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+
+    m.reply(`Nomor ${nomor} berhasil ditambahkan ke daftar ripper.`)
+}
+break
+
+case 'delripper': {
+  if (!isCreator) return m.reply(mess.owner)
+    if (!text) return m.reply(`Masukkan nomor yang ingin dihapus.\nContoh: ${prefix + command} 628xxx`);
+
+    let nomor = text.replace(/[^0-9]/g, '');
+    const filePath = path.join(__dirname, './storage/dataRipper.json');
+
+    if (!fs.existsSync(filePath)) {
+        return m.reply('Daftar ripper masih kosong.');
+    }
+
+    let data;
+    try {
+        data = JSON.parse(fs.readFileSync(filePath));
+        if (!Array.isArray(data)) data = [];
+    } catch (e) {
+        data = [];
+    }
+
+    if (!data.includes(nomor)) {
+        return m.reply(`Nomor ${nomor} tidak ditemukan dalam daftar ripper.`);
+    }
+
+    data = data.filter(n => n !== nomor);
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+
+    m.reply(`Nomor ${nomor} berhasil dihapus dari daftar ripper.`);
+}
+break
+
+case 'listripper': {
+  if (!isCreator) return m.reply(mess.owner)
+
+    let owner;
+    try {
+        owner = JSON.parse(fs.readFileSync('./storage/dataRipper.json', 'utf8'))
+    } catch (err) {
+        console.error('Error reading premium.json:', err)
+        return m.reply('*Gagal Memuat Daftar Premium.*')
+    }
+
+    if (owner.length === 0) return m.reply('*Daftar Ripper Masih Kosong.*')
+
+    let teksooo = '\`— 𝗟𝗶𝘀𝘁 𝗥𝗶𝗽𝗽𝗲𝗿\`\n';
+    for (let i of owner) {
+        teksooo += `✉️ ${i}\n`
+    }
+    teksooo += `\nTotal: ${owner.length}`;
+
+    lenwy.sendMessage(from, { text: teksooo.trim() }, { quoted: m })
+}
+break
+
+case 'delsession': 
+case 'delsesi': {
+ if (!isCreator) return
+ fs.readdir(`./${sessionName}`, async function(err, files) {
+ if (err) {
+ console.log('Unable to scan directory: ' + err)
+ return m.reply('Unable to scan directory: ' + err)
+ }
+ let filteredArray = files.filter(item => 
+ item.startsWith("pre-key") || 
+ item.startsWith("sender-key") || 
+ item.startsWith("session-") || 
+ item.startsWith("app-state")
+ )
+ console.log(filteredArray.length)
+ let teks = `Detected ${filteredArray.length} junk files\n\n`
+ if (filteredArray.length === 0) return m.reply('Sedang menghapus sampah...')
+ filteredArray.forEach((item, i) => {
+ teks += (i + 1) + `. ${item}\n`
+ })
+ console.log(teks)
+ await sleep(200)
+ m.reply("Menghapus session...")
+ for (const file of filteredArray) {
+ fs.unlinkSync(`./${sessionName}/${file}`)
+ }
+ await sleep(200)
+ m.reply('Sukses menghapus session!')
+ })
+}
+break
+
+case 'delsampah': {
+if (!isCreator) return
+let directoryPath = path.join("./")
+fs.readdir(directoryPath, async function (err, files) {
+if (err) {
+  return m.reply("Tidak dapat memindai direktori: " + err)
+}
+let filteredArray = await files.filter(
+  (item) =>
+item.endsWith("gif") ||
+item.endsWith("png") ||
+item.endsWith("mp3") ||
+item.endsWith("mp4") ||
+item.endsWith("jpg") ||
+item.endsWith("jpeg") ||
+item.endsWith("webp") ||
+item.endsWith("webm"),
+)
+var teks = `Terdeteksi ${filteredArray.length} file sampah\n\n`
+if (filteredArray.length == 0) return m.reply(teks)
+filteredArray.map(function (e, i) {
+  teks += i + 1 + `. ${e}\n`
+})
+m.reply(teks)
+await sleep(200)
+m.reply("Menghapus file sampah...")
+await filteredArray.forEach(function (file) {
+  fs.unlinkSync(`./${file}`)
+})
+await sleep(200)
+m.reply("Berhasil menghapus semua sampah")
+  })
+}
+break
+
+case 'cekidgc': {
+if (!isCreator) return m.reply(mess.owner)
+LenwyLD()
+await sleep(200)
+let getGroups = await lenwy.groupFetchAllParticipating()
+let groups = Object.entries(getGroups).slice(0).map((entry) => entry[1])
+let anu = groups.map((v) => v.id)
+let teks = `*List Grup Yang Dimasuki ${botname}*\n🎁 *Total Group : ${anu.length} Group*\n\n`
+
+for (let x of anu) {
+  await sleep(5000)
+  let metadata2 = await lenwy.groupMetadata(x)
+  try {
+    let response2 = await lenwy.groupInviteCode(metadata2.id)
+    linkgc = `https://chat.whatsapp.com/${response2}`
+  } catch {
+    linkgc = '-'
+  }
+  teks += `*Nama Group : ${metadata2.subject}*
+🎁 *ID Group : ${metadata2.id}*
+📦 *Total Member Group : ${metadata2.participants.length}*
+📎 *Link Group : ${linkgc}*
+────────────────────────\n\n`
+  }
+  m.reply(teks + `*Cara Penggunaan : Pushkontak ID Group|Teks*\n🎁 *Contoh : Pushkontak ID Group|Save ${botname}*`)
+}
+break
+
+case 'prem': {
+  if (!isCreator) return m.reply(mess.owner)
+  
+  let action = args[0] ? args[0].toLowerCase() : ''
+  if (!['add', 'del', 'list'].includes(action)) {
+    return m.reply('*Format Salah!*\nContoh:\n- prem add 62812345678\n- prem del 62812345678\n- prem list')
+  }
+
+  if (action === 'list') {
+    if (premiumNumbers.length === 0) return m.reply('*Daftar Premium Masih Kosong.*')
+
+    let teksooo = 'List Premium\n'
+    for (let i of premiumNumbers) {
+        teksooo += `✉️ ${i}\n`
+    }
+    teksooo += `\nTotal: ${premiumNumbers.length}`
+
+    return lenwy.sendMessage(from, { text: teksooo.trim() }, { quoted: m })
+  }
+
+  if (!args[1]) return m.reply(`*Mana nomornya?*\nContoh: prem ${action} 62812345678`)
+
+  let number = args[1].replace(/[^0-9]/g, '')
+  if (number.length === 0) return m.reply('*Nomor tidak valid!*')
+
+  if (action === 'add') {
+    if (premiumNumbers.includes(number)) return m.reply(`⚠️ *Nomor ${number} sudah ada di database premium.*`)
+
+    try {
+      let isRegistered = await lenwy.onWhatsApp(number + '@s.whatsapp.net')
+      if (isRegistered && isRegistered.length > 0) {
+        premiumNumbers.push(number)
+        fs.writeFileSync(premiumFilePathh, JSON.stringify(premiumNumbers, null, 2))
+        return m.reply(`✅ *Sukses!*\nNomor ${number} berhasil ditambahkan ke premium.`)
+      } else {
+        return m.reply(`❌ *Gagal!*\nNomor ${number} tidak terdaftar di WhatsApp.`)
+      }
+    } catch (err) {
+      return m.reply(`❌ *Error saat mengecek nomor ke WhatsApp.*`)
+    }
+  }
+
+  if (action === 'del') {
+    let index = premiumNumbers.indexOf(number)
+    if (index !== -1) {
+      premiumNumbers.splice(index, 1)
+      fs.writeFileSync(premiumFilePathh, JSON.stringify(premiumNumbers, null, 2))
+      return m.reply(`✅ *Sukses!*\nNomor ${number} berhasil dihapus dari premium.`)
+    } else {
+      return m.reply(`❌ *Gagal!*\nNomor ${number} tidak ditemukan di database.`)
+    }
+  }
+}
+break
+
+case 'ban': {
+  if (!isCreator) return m.reply(mess.owner)
+  
+  let action = args[0] ? args[0].toLowerCase() : ''
+  if (!['add', 'del', 'list'].includes(action)) {
+    return m.reply('*Format Salah!*\nContoh:\n- ban add 62812345678\n- ban del 62812345678\n- ban list')
+  }
+
+  let bannedData = []
+  try {
+    bannedData = JSON.parse(fs.readFileSync(bannedFilePathh, 'utf8'))
+  } catch (err) {
+    bannedData = []
+  }
+
+  if (action === 'list') {
+    if (bannedData.length === 0) return m.reply('*Daftar Banned Masih Kosong.*')
+
+    let response = '*Daftar Banned:*\n\n'
+    response += bannedData.map((number, index) => `${index + 1}. ${number}`).join('\n')
+    return m.reply(response)
+  }
+
+  if (!args[1]) return m.reply(`*Mana nomornya?*\nContoh: ban ${action} 62812345678`)
+
+  let number = args[1].replace(/[^0-9]/g, '')
+  if (number.length === 0) return m.reply('*Nomor tidak valid!*')
+
+  let target = number + '@s.whatsapp.net'
+
+  if (action === 'add') {
+    if (bannedData.includes(target)) return m.reply(`⚠️ *Nomor ${number} sudah ada di daftar banned.*`)
+
+    try {
+      let isRegistered = await lenwy.onWhatsApp(target)
+      if (isRegistered && isRegistered.length > 0) {
+        bannedData.push(target)
+        fs.writeFileSync(bannedFilePathh, JSON.stringify(bannedData, null, 2))
+        return m.reply(`✅ *Sukses!*\nNomor ${number} berhasil ditambahkan ke daftar banned.`)
+      } else {
+        return m.reply(`❌ *Gagal!*\nNomor ${number} tidak terdaftar di WhatsApp.`)
+      }
+    } catch (err) {
+      return m.reply(`❌ *Error saat mengecek nomor ke WhatsApp.*`)
+    }
+  }
+
+  if (action === 'del') {
+    let index = bannedData.indexOf(target)
+    if (index !== -1) {
+      bannedData.splice(index, 1)
+      fs.writeFileSync(bannedFilePathh, JSON.stringify(bannedData, null, 2))
+      return m.reply(`✅ *Sukses!*\nNomor ${number} berhasil dihapus dari daftar banned.`)
+    } else {
+      return m.reply(`❌ *Gagal!*\nNomor ${number} tidak ditemukan di database.`)
+    }
+  }
+}
+break
+
+case 'setppsewa': {
+  if (!isCreator) return m.reply(mess.owner);
+  if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`);
+  
+  const path = './storage/data/image/fotosewa'; // Menentukan path file foto
+  
+  if (fs.existsSync(path)) {
+    fs.unlinkSync(path); // Menghapus file yang sudah ada
+    console.log(`File "${path}" berhasil dihapus.`);
+  }
+
+  await lenwy.downloadAndSaveMediaMessage(quoted, path);
+
+  m.reply('Foto berhasil diperbarui menjadi foto sewa.');
+}
+break
+
+case 'changewdsewa': {
+if (!isCreator) return (mess.owner)
+let teksnya = text ? text : ''
+global.text_sewa = teksnya
+m.reply(mess.success)
+}
+break
+
+case 'changewdppj': {
+if (!isCreator) return (mess.owner)
+let teksnya = text ? text : ''
+global.text_ppj = teksnya
+m.reply(mess.success)
+}
+break
+
+case 'sewa': {
+ async function createImage(url) {
+ const { imageMessage } = await generateWAMessageContent({
+ image: { url }
+ }, {
+ upload: lenwy.waUploadToServer
+ });
+ return imageMessage;
+ }
+ 
+ let tekssewa = global.text_sewa ? global.text_sewa : ` /) /) \n („• ֊ •„) \n╭───̇─∪─∪──̇──┈◯\n│❛ SEWA BOT ${botname} ˚\n│\n│1 вυℓαη : 𝖱𝗉 5.000\n│2 вυℓαη : 𝖱𝗉 10.000\n│𝟥 вυℓαη : 𝖱𝗉 15.000\n│𝟦 вυℓαη : 𝖱𝗉 18.000\n│𝟧 вυℓαη : 𝖱𝗉 21.000\n╰───────────✧✧✧`
+ let teksppj = global.text_ppj ? global.text_ppj : '\n\n ╭─────────────❍\n │ ʚ˚̣̣̣͙ɞ・𝙥𝙚𝙧𝙥𝙖𝙣𝙟𝙖𝙣𝙜・ \n │\n │1 вυℓαη : 𝖱𝗉 5.000\n │𝟤 вυℓαη : 𝖱𝗉 10.000\n │𝟥 вυℓαη : 𝖱𝗉 15.000\n │ρєямαηєη : 𝖱𝗉 60.000\n │Tidak Ada,\n │Yang Abadi Tuan\n ╰─────────────❍'
+
+ let imageUrl
+ if (fs.existsSync('./storage/data/image/fotosewa.jpg')) {
+ imageUrl = await createImage('./storage/data/image/fotosewa.jpg');
+ } else if (fs.existsSync('./storage/data/image/fotosewa.png')) {
+ imageUrl = await createImage('./storage/data/image/fotosewa.png');
+ } else if (fs.existsSync('./storage/data/image/fotosewa.webp')) {
+ imageUrl = await createImage('./storage/data/image/fotosewa.webp');
+ } else {
+ return m.reply(`Foto tidak tersedia, kamu harus ${prefix}setppsewa terlebih dahulu`)
+ }
+
+ const push = [{
+ body: proto.Message.InteractiveMessage.Body.fromObject({
+ text: tekssewa
+ }),
+ footer: proto.Message.InteractiveMessage.Footer.fromObject({
+ text: `Klik Admin Dibawah Ya`
+ }),
+ header: proto.Message.InteractiveMessage.Header.fromObject({
+ hasMediaAttachment: true,
+ imageMessage: imageUrl
+ }),
+ nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
+ buttons: [
+ {
+ name: "cta_url",
+ buttonParamsJson: `{"display_text":"Admin - ${global.ownername}","url":"https://api.whatsapp.com/send/?phone=${global.owner}&text=Haii+${global.ownername}%0ANak+Nyewa&type=phone_number&app_absent=0"}`
+ },
+ {
+ name: "cta_url",
+ buttonParamsJson: `{"display_text":"Developer - ${global.developername}","url":"https://api.whatsapp.com/send/?phone=${global.developer}&text=%0AHaii+${global.developername}%0AAda+Yang+Bug+Nih&type=phone_number&app_absent=0"}`
+ }
+ ]
+ })
+ }, {
+ body: proto.Message.InteractiveMessage.Body.fromObject({
+ text: teksppj
+ }),
+ footer: proto.Message.InteractiveMessage.Footer.fromObject({
+ text: `Klik Admin Dibawah Ya`
+ }),
+ header: proto.Message.InteractiveMessage.Header.fromObject({
+ hasMediaAttachment: true,
+ imageMessage: imageUrl
+ }),
+ nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
+ buttons: [
+ {
+ name: "cta_url",
+ buttonParamsJson: `{"display_text":"Admin - ${global.ownername}","url":"https://api.whatsapp.com/send/?phone=${global.owner}&text=Haii+${global.ownername}%0ANak+Perpanjang&type=phone_number&app_absent=0"}`
+ },
+ {
+ name: "cta_url",
+ buttonParamsJson: `{"display_text":"Developer - ${global.developername}","url":"https://api.whatsapp.com/send/?phone=${global.developer}&text=%0AHaii+${global.developername}%0AAda+Yang+Bug+Nih&type=phone_number&app_absent=0"}`
+ }
+ ]
+ })
+ }];
+
+ const bot = generateWAMessageFromContent(m.chat, {
+ viewOnceMessage: {
+ message: {
+ interactiveMessage: proto.Message.InteractiveMessage.fromObject({
+ body: proto.Message.InteractiveMessage.Body.create({
+ text: 'Berikut Daftarnya',
+ }),
+ footer: proto.Message.InteractiveMessage.Footer.create({
+ text: `> ${botname}`,
+ }),
+ header: proto.Message.InteractiveMessage.Header.create({
+ hasMediaAttachment: false
+ }),
+ carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({
+ cards: push
+ })
+ })
+ }
+ }
+ }, { quoted: m });
+
+ await lenwy.relayMessage(m.chat, bot.message, { messageId: bot.key.id });
+}
+break
+
+case 'addsewa':
+case 'tambahsewa': {
+ if (!isCreator) return m.reply(mess.owner)
+
+ if (!text && !m.isGroup) {
+ return m.reply(`Penggunaan:\n1. ${prefix + command} [durasi] (dari dalam grup)\n2. ${prefix + command} [durasi] [link grup] (dari chat pribadi)\n\nContoh:\n${prefix + command} 30d https://chat.whatsapp.com/xxxxx`)
+ }
+
+ let sewa = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
+
+ try {
+ let duration, groupId
+
+ if (m.isGroup && !text.includes('http')) {
+ [duration] = text.split(' ')
+ if (!duration) return m.reply(`Durasi harus diisi!\nContoh: ${prefix + command} 30d`)
+ groupId = m.chat
+ } else {
+ let [d, link] = text.split(' ')
+ if (!d || !link) return m.reply(`Durasi dan link grup harus diisi!\nContoh:\n${prefix + command} 30d https://chat.whatsapp.com/xxxxx`)
+if (link.includes('?')) link = link.split('?')[0]
+ duration = d
+
+ const coded = link.split("https://chat.whatsapp.com/")[1]
+ if (!coded) return m.reply("Link tidak valid 🤔")
+
+ try {
+ await lenwy.groupAcceptInvite(coded)
+ m.reply('Bot berhasil masuk ke grup.')
+ } catch (err) {
+ if (err.message.includes('not-authorized')) {
+ return m.reply('Gagal bergabung ke grup. Bot kemungkinan baru saja dikeluarkan.')
+ } else if (err.message.includes('gone')) {
+ return m.reply('Link grup sudah di reset.')
+ } else if (err.message.includes('conflict')) {
+ m.reply('Bot sudah berada di dalam grup.')
+ } else if (err.message.includes('already-exists')) {
+ return m.reply('Bot sudah meminta gabung ke grup.')
+ } else {
+ console.log(err)
+ return m.reply('Terjadi error yang tidak dikenali.')
+ }
+ }
+
+ groupId = await getGroupIdFromLink(link, lenwy)
+ if (!groupId) return m.reply('Gagal mendapatkan ID grup.')
+ }
+ if (sewa.some(entry => entry.groupId === groupId)) {
+ return m.reply(`Grup sudah ada dalam daftar sewa.`)
+ }
+ addSewaGroup(groupId, duration, sewa)
+ m.reply(`✅ Grup berhasil ditambahkan ke daftar sewa selama *${duration}*.`)
+ if (!m.isGroup) {
+ await lenwy.sendMessage(groupId, {text: `Hallo semua, saya adalah bot ${global.botname}. Grup ini telah disewa selama *${duration}*.\n\n- Admin dapat cek sisa waktu dengan ketik *${prefix}ceksewa*\n- Untuk fitur lengkap ketik *${prefix}allmenu*`})
+ }
+
+ } catch (err) {
+ console.error('Error saat addsewa:', err)
+ m.reply('❌ Gagal menambahkan sewa grup.')
+ }
+}
+break
+
+case 'delsewa':
+case 'hapussewa': {
+ if (!isCreator) return m.reply(mess.owner)
+
+ if (!text && !m.isGroup) {
+ return m.reply(`Untuk menghapus sewa grup dari chat pribadi, sertakan link grup.\nContoh:\n${prefix + command} https://chat.whatsapp.com/xxxxx`)
+ }
+
+ try {
+ let groupId
+ let link = text
+ if (m.isGroup) {
+ groupId = m.chat
+ } else if (text.includes('@g.us')) {
+ groupId = text
+ } else if (text.includes('https')) {
+ if (text.includes('?')) link = text.split('?')[0];
+ groupId = await getGroupIdFromLink(link, lenwy)
+ }
+
+ let sewa = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
+ const index = sewa.findIndex(entry => entry.groupId === groupId)
+
+ if (index === -1) return m.reply('Grup ini tidak ditemukan dalam daftar sewa.')
+
+ sewa.splice(index, 1)
+ fs.writeFileSync(pathsewa, JSON.stringify(sewa, null, 2))
+
+ lenwy.sendMessage(groupId, {text: `Masa sewa di group ini telah *hapus*.`})
+ m.reply('✅ Sewa grup berhasil dihapus.')
+ } catch (err) {
+ console.error('Error saat delsewa:', err)
+ m.reply('❌ Gagal menghapus sewa grup.')
+ }
+}
+break
+
+case 'checksewa':
+case 'ceksewa': {
+  if (!isAdmins && !isCreator) return m.reply(mess.admin)
+  if (!m.isGroup && !text) return m.reply(`Untuk mengecek sewa grup dari chat pribadi, sertakan link grup.\nContoh:\n${prefix + command} https://chat.whatsapp.com/xxxxx`)
+  let groupId = from
+  let link = text
+  if (!m.isGroup) {
+    if (text.includes('?')) link = text.split('?')[0]
+    groupId = await getGroupIdFromLink(link, lenwy)
+    if (!groupId) return m.reply(`Untuk mengecek sewa grup dari chat pribadi, sertakan link grup.\nContoh:\n${prefix + command} https://chat.whatsapp.com/xxxxx`)
+  }
+  try {
+    const currentDir = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
+    const entry = currentDir.find(entry => entry.groupId === groupId)
+    if (!entry) return m.reply(`Perintah ini hanya bisa dilakukan di dalam grup yang sudah di "${prefix}addsewa"`)
+    if (entry.isAlifetime) return m.reply(`Akan Habis Hingga Owner Pensiun.`)
+    const expiry = entry.expired;
+    const remainingTime = expiry - Date.now()
+    var days = Math.floor(remainingTime / (1000 * 60 * 60 * 24))
+    var hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+    var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60))
+    const status = `${days} hari ${hours} jam ${minutes} menit`;
+    m.reply(`Akan Habis Hingga ${status}.`)
+  } catch (error) {
+    m.reply('Terjadi kesalahan: ' + error.message)
+  }
+}
+break
+
+case 'removeexpired':
+case 'cekexp':
+case 'cekexpired': {
+  if (!isCreator) return m.reply(mess.owner)
+  try {
+    const currentDir = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
+    await expiredCheck(lenwy, currentDir) // Asumsikan `conn` adalah objek koneksi bot
+    m.reply('Pengecekan masa sewa sedang dilakukan, grup yang masa sewanya telah habis akan dihapus secara otomatis.')
+  } catch (error) {
+    m.reply(error.message)
+  }
+}
+break
+
+case 'perpanjangsewa': {
+ if (!isCreator) return m.reply(mess.owner)
+ if (!text && !m.isGroup) {
+ return m.reply(`Ada 2 cara untuk melakukan ${prefix + command} ini:\n1. Di dalam grup tanpa tambahan (cukup durasi).\n2. Di private chat dengan menyertakan *durasi* + *link grup*.\n\nContoh:\n${prefix + command} 30d https://chat.whatsapp.com/xxxxx`)
+ }
+
+ await sleep(500)
+ let currentDir = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
+
+ try {
+ let groupId, duration;
+
+ if (m.isGroup && !text.includes('https://chat.whatsapp.com/')) {
+ [duration] = text.split(' ')
+ if (!duration) return m.reply(`Durasi harus diisi!\nContoh:\n${prefix + command} 30d`)
+ groupId = m.chat
+ } else {
+ let [d, link] = text.split(' ')
+ if (!d || !link) return m.reply(`Durasi dan link grup harus diisi!\nContoh:\n${prefix + command} 30d https://chat.whatsapp.com/xxxxx`)
+ duration = d
+if (link.includes('?')) link = link.split('?')[0]
+ groupId = await getGroupIdFromLink(link, lenwy)
+ if (!groupId) return m.reply('Gagal mendapatkan ID grup dari link.')
+ }
+
+ if (!checkSewaGroup(groupId, currentDir)) {
+ return m.reply('Grup ini tidak ditemukan dalam daftar sewa. Anda tidak dapat memperpanjang masa sewanya.')
+ }
+
+ const pos = currentDir.findIndex(entry => entry.groupId === groupId)
+ if (pos !== -1) {
+ const isLifetime = ['alifetime', 'permanent', 'permanen', 'perma'].includes(duration.toLowerCase())
+
+ if (isLifetime) {
+ currentDir[pos].expired = null
+ currentDir[pos].isAlifetime = true
+ currentDir[pos].reminded1d = false
+ currentDir[pos].reminded1h = false
+ currentDir[pos].reminded1m = false
+ m.reply(`✅ Masa sewa grup${m.isGroup ? '' : ` dengan ID ${groupId}`} diperpanjang menjadi *Permanen*.`)
+ await lenwy.sendMessage(groupId, { text: `🎉 Masa sewa grup ini telah di ubah menjadi *Permanen*!` })
+ } else {
+ if (currentDir[pos].expired === null || currentDir[pos].isAlifetime === true) {
+ currentDir[pos].expired = Date.now() + toMs('3s') // Atau kamu bisa langsung toMs(duration)
+ await sleep(500)
+ }
+
+ currentDir[pos].expired += toMs(duration)
+ currentDir[pos].isAlifetime = false // Reset lifetime
+
+ currentDir[pos].reminded1d = false
+ currentDir[pos].reminded1h = false
+ currentDir[pos].reminded1m = false
+ let entry = currentDir[pos]
+ let expiry = entry.expired
+ let remainingTime = expiry - Date.now()
+ var days = Math.floor(remainingTime / (1000 * 60 * 60 * 24))
+ var hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+ var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60))
+ 
+ let status = `${days} hari ${hours} jam ${minutes} menit`;
+ await lenwy.sendMessage(groupId, { text: `⏳ Masa sewa telah diperpanjang selama *${duration}*. Sisa masa sewa saat ini adalah:\n*${status}*` })
+ m.reply(`✅ Masa sewa grup${m.isGroup ? '' : ` dengan ID ${groupId}`} berhasil diperpanjang selama *${duration}*.`)
+ }
+
+ fs.writeFileSync(pathsewa, JSON.stringify(currentDir, null, 2))
+ }
+
+ } catch (err) {
+ console.error('Error:', err)
+ m.reply('Terjadi kesalahan saat memperpanjang sewa. Pastikan format benar dan link masih aktif.')
+ }
+}
+break
+
+case 'listsewa': {
+  if (!isCreator) return m.reply(mess.owner)
+  LenwyLD()
+  try {
+      const currentDir = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
+      let ordernye = `*List Sewa*\nJumlah : ${currentDir.length}\n\n`
+      for (const entry of currentDir) {
+        await sleep(5000)
+          let idgc = entry.groupId;
+            let linkgc
+            try {
+              let response2 = await lenwy.groupInviteCode(idgc)
+              linkgc = `https://chat.whatsapp.com/${response2}`
+            } catch {
+              linkgc = '-'
+            }
+            try {
+              let metadata = await lenwy.groupMetadata(idgc)
+              const totalMembers = metadata.participants ? metadata.participants.length : 0;
+              let expirednya = `Permanent`
+              if (!entry.isAlifetime) {
+                const expiry = entry.expired;
+                const remainingTime = expiry - Date.now()
+                var days = Math.floor(remainingTime / (1000 * 60 * 60 * 24))
+                var hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+                var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60))
+                expirednya = `${days || '-'} hari ${hours || '-'} jam ${minutes || '-'} menit`
+              }
+
+              ordernye += `✅ ${metadata.subject}
+🎁 ID Group : ${entry.groupId}
+📦 Total Member : ${totalMembers || '-'} Member
+⏰ Expired : ${expirednya}
+> Link Group : ${linkgc}
+────────────────────────\n\n`
+            } catch (e) {
+              ordernye += `⛔
+🎁 Group ID: ${idgc}
+📦 Tidak bisa mengakses metadata grup, Kemungkinan bot telah keluar dari group.
+> Pesan: ${e.message}
+────────────────────────\n\n`
+            }
+      }
+      m.reply(ordernye + `> Gunakan ${prefix}delsewa (idGroup) untuk menghapus sewa jika private chat dengan bot
+> Gunakan ${prefix}delsewa untuk menghapus sewa jika berada di dalam grup`)
+  } catch (error) {
+      m.reply('Terjadi kesalahan saat membaca file: ' + error.message)
+  }
+}
+break
+
+case 'autoread': {
+  if (!isCreator) return m.reply(mess.owner);
+  if (q === 'on') {
+      global.db.data.settings[botNumber].autoread = true;
+      m.reply(`Berhasil mengubah autoread ke ${q}`);
+  } else if (q === 'off') {
+      global.db.data.settings[botNumber].autoread = false;
+      m.reply(`Berhasil mengubah autoread ke ${q}`);
+  } else {
+      m.reply(`*Ketik ${prefix + command} on/off*`);
+  }
+}
+break
+
+case 'join': {
+ if (!isCreator) return m.reply(mess.owner)
+ if (!text) return m.reply('Masukkan Link Group!')
+ if (!isUrl(text) || !text.includes('whatsapp.com')) return m.reply('Link tidak valid! 🤔')
+ let linknya = text
+ if (text.includes('?')) linknya = text.split('?')[0]
+ m.reply('Sabar Yaa')
+
+ try {
+ let result = linknya.split('https://chat.whatsapp.com/')[1]
+ if (!result) return m.reply('Link tidak valid! 🤔')
+ 
+ await lenwy.groupAcceptInvite(result)
+ m.reply('Bot berhasil bergabung ke grup!')
+ } catch (err) {
+ if (err.message.includes('not-authorized')) {
+ return m.reply('Gagal bergabung ke grup. Bot kemungkinan baru saja dikeluarkan.')
+ } else if (err.message.includes('gone')) {
+ return m.reply('Link grup sudah di reset.')
+ } else if (err.message.includes('conflict')) {
+ m.reply('Bot sudah berada di dalam grup.')
+ } else if (err.message.includes('already-exists')) {
+ return m.reply('Bot sudah meminta gabung ke grup.')
+ } else {
+ console.log(err)
+ return m.reply('Terjadi error yang tidak dikenali.')
+ }
+ }
+}
+break
+
+case 'leave': {
+ if (!isCreator) return m.reply(mess.owner)
+
+ if (m.isGroup) {
+ if (text) return
+ setTimeout(async () => {
+ try {
+ await lenwy.groupLeave(m.chat)
+ console.log(`Successfully left the group ${m.chat}`)
+ } catch (err) {
+ console.error('Error leaving the group:', err)
+ await m.reply('*Gagal meninggalkan grup.*')
+ }
+ }, 2000)
+ } else if (!m.isGroup) {
+ if (!text) return m.reply('*Mana ID Grup / Link Nya?*\n*Ketik cekidgc Buat Liat Id Nya*')
+ let groupId
+ if (text.includes('https://chat.whatsapp.com')) {
+ let linknya = text
+ if (text.includes('?')) linknya = text.split('?')[0]
+ groupId = await getGroupIdFromLink(linknya, lenwy)
+ } else if (text.includes('@g.us')) {
+ groupId = text
+ } else {
+ return m.reply(`Itu bukan id grup ataupun link grup`)
+ }
+ setTimeout(async () => {
+ try {
+ await lenwy.groupLeave(groupId)
+ m.reply(`Berhasil keluar dari grup ${groupId}`)
+ } catch (err) {
+ console.error('Error leaving the group:', err)
+ await m.reply('*Gagal meninggalkan grup.*')
+ }
+ }, 2000)
+ }
+}
+break
+
+case 'backupbot':
+case 'botbackup': {
+ if (!isAdmins && !isCreator) return m.reply(`Khusus admin dan owner`);
+
+ const selectedFiles = [
+  'library', 'project', 'Session', 'storage',
+  'author.json', 'banned.json', 'index.js',
+  'len.js', 'lenwy.js', 'package-lock.json', 'package.json', 'premium.json'
+ ];
+
+ const directoryPath = path.join("./");
+ fs.readdir(directoryPath, async (err, files) => {
+ if (err) return m.reply("Gagal membaca direktori: " + err);
+
+ const fileSampah = files.filter(item =>
+ item.match(/\.(gif|png|mp3|mp4|jpg|jpeg|webp|webm|zip|tar.gz|rar)$/)
+ );
+
+ if (fileSampah.length === 0) return m.reply(`Tidak ada file sampah ditemukan.`);
+
+ let teks = `🧹 Terdeteksi ${fileSampah.length} file sampah:\n\n`;
+ fileSampah.forEach((e, i) => teks += `${i + 1}. ${e}\n`);
+ m.reply(teks);
+ await sleep(1000);
+ m.reply("Menghapus file sampah...");
+
+ fileSampah.forEach(file => {
+ try {
+ fs.unlinkSync(path.join(directoryPath, file));
+ } catch (e) {
+ console.error(`Gagal hapus: ${file}`, e);
+ }
+ });
+
+ await sleep(1000);
+ m.reply("✅ Semua file sampah berhasil dihapus.");
+ });
+
+ await sleep(3000);
+
+ const ownerJid = `${global.owner}@s.whatsapp.net`;
+ const waktu = moment.tz('Asia/Jakarta').format('DD-MM');
+ const zipFileName = `Sc${global.ownername || 'Bot'}_${waktu}.zip`;
+
+ try {
+ const command = `zip -r ${zipFileName} ${selectedFiles.join(" ")}`;
+ execSync(command);
+
+ await lenwy.sendMessage(ownerJid, {
+ document: fs.readFileSync(`./${zipFileName}`),
+ mimetype: "application/zip",
+ fileName: zipFileName,
+ }, { quoted: m });
+
+ fs.unlink(`./${zipFileName}`, err => {
+ if (err) console.error(`❌ Gagal hapus ${zipFileName}:`, err);
+ else console.log(`✅ Backup "${zipFileName}" dikirim dan dihapus.`);
+ });
+
+ m.reply("📦 Backup berhasil dikirim ke owner.");
+ } catch (err) {
+ console.error("❌ Gagal backup:", err);
+ m.reply("❌ Terjadi kesalahan saat backup.");
+ }
+}
+break
+
+case 'autobackup': {
+  if (!isCreator) return m.reply(mess.owner)
+  if (!text) return m.reply(`*Ketik ${prefix + command} on/off*`)
+    if (q == 'on') {
+      global.autobakcup = true;
+      m.reply(mess.success)
+  } else if (q == 'off') {
+      global.autobakcup = false;
+      m.reply(mess.success)
+  } else {
+      m.reply(`*Ketik ${prefix + command} on/off*`)
+  }
+}
+break
+
+case 'mutegc': {
+  if (!isCreator) return m.reply(mess.owner)
+
+  let gcList;
+  try {
+    const data = fs.readFileSync('./storage/gcMuted.json', 'utf-8');
+    gcList = JSON.parse(data);
+  } catch (error) {
+    console.error('Error membaca file gcMuted.json:', error);
+    gcList = [];
+  }
+
+  let groupId;
+
+  if (m.isGroup) {
+    groupId = m.chat;
+  } else {
+    if (!text) return m.reply(`Kirim link grupnya dulu bang!\nContoh:\n${prefix + command} https://chat.whatsapp.com/xxxxx`)
+    let linknya = text
+    if (text.includes('?')) linknya = text.split('?')[0]
+    try {
+      groupId = await getGroupIdFromLink(linknya, lenwy);
+    } catch (err) {
+      console.error(err);
+      return m.reply("Gagal ambil ID grup dari link. Link mungkin tidak valid atau sudah expired.");
+    }
+  }
+
+  if (gcList.includes(groupId)) return m.reply(`Grup ${groupId} sudah dalam daftar mute.`);
+
+  gcList.push(groupId);
+  fs.writeFileSync('./storage/gcMuted.json', JSON.stringify(gcList, null, 2));
+  m.reply(`Grup ${groupId} berhasil dimute.`);
+}
+break
+
+case 'unmutegc': {
+  if (!isCreator) return m.reply(mess.owner)
+
+  let gcList;
+  try {
+    const data = fs.readFileSync('./storage/gcMuted.json', 'utf-8');
+    gcList = JSON.parse(data);
+  } catch (error) {
+    console.error('Error membaca file gcMuted.json:', error);
+    gcList = [];
+  }
+
+  let groupId;
+
+  if (m.isGroup) {
+    groupId = m.chat;
+  } else {
+    if (!text) return m.reply(`Kirim link grupnya dulu bang!\nContoh:\n${prefix + command} https://chat.whatsapp.com/xxxxx`);
+    let linknya = text
+    if (text.includes('?')) linknya = text.split('?')[0]
+    try {
+      groupId = await getGroupIdFromLink(linknya, lenwy);
+    } catch (err) {
+      console.error(err);
+      return m.reply("Gagal mengambil ID grup dari link. Link mungkin tidak valid atau sudah kadaluarsa.");
+    }
+  }
+
+  const index = gcList.indexOf(groupId);
+  if (index === -1) return m.reply(`Grup ${groupId} tidak ditemukan dalam daftar mute.`);
+
+  gcList.splice(index, 1);
+  fs.writeFileSync('./storage/gcMuted.json', JSON.stringify(gcList, null, 2));
+  m.reply(`Grup ${groupId} berhasil dihapus dari daftar gcMuted.`);
+}
+break
+
+case 'restart': {
+if (!isCreator) return m.reply(mess.owner)
+if (text) return
+m.reply(`restarting ${botname}`)
+await sleep(1500)
+process.exit()
+}
+break
+
+case 'getip': {
+    if (!isCreator) return m.reply(mess.owner)
+    try {
+        const res = await fetch('http://ip-api.com/json/');
+        const data = await res.json();
+
+        let ipv4 = data.query
+
+        if (ipv4) {
+            const replyMessage = `*📮INFO SERVER*\n\n*IP :* ${ipv4}\n*Country :* ${data.city}, ${data.regionName}, ${data.country}`;
+            m.reply(replyMessage)
+        } else {
+            m.reply('Gagal mengambil informasi IP IPv4. Silakan coba lagi nanti.')
+        }
+    } catch (error) {
+        console.error('Error fetching IP:', error)
+        m.reply('Gagal mengambil informasi IP. Silakan coba lagi nanti.')
+    }
+}
+break
+
+case 'getcase': {
+  if (!isCreator) return m.reply(mess.owner)
+  if (!text) return m.reply(`Contoh: "getcase menu"`)
+
+  try {
+    const fileContent = fs.readFileSync("./lenwy.js").toString()
+    let validasii = fileContent.split(`case '${text}'`)
+    const caseSplit = validasii ? validasii : fileContent.split(`case '${text}'`)
+    
+    if (caseSplit.length < 2) {
+        throw new Error(`Case '${text}' tidak ditemukan.`)
+    }
+
+    const caseContent = caseSplit[1].split("break")[0]
+    m.reply("case " + `'${text}'` + caseContent + "break")
+  } catch (error) {
+    m.reply(`${error.message}`)
+  }
+}
+break
+
+case 'addcase': {
+  if (!isCreator) return m.reply(mess.owner)
+  if (!q) return m.reply(`Masukan input`)
+  if (!q.includes("|||")) return m.reply(`❌ Format salah!\n\nGunakan:\n.addcase <caseTarget>|||<kodeCaseBaru>\n\nContoh:\n.addcase bot1|case 'bot2': {\n  m.reply(\`hii\`)\n}\nbreak`)
+
+  const [targetCase, newCaseCode] = q.split("|||")
+  const filePath = "./lenwy.js"
+  let fileContent = fs.readFileSync(filePath, "utf-8")
+
+  const casePattern = new RegExp(`case ['"\`]${targetCase}['"\`]:\\s*{`)
+  const match = fileContent.match(casePattern)
+  if (!match) return m.reply(`❌ Tidak ditemukan case '${targetCase}' di dalam lenwy.js.`)
+
+  const startIndex = match.index
+
+  const closingPattern = /}\s*\n\s*break/
+  const afterCase = fileContent.slice(startIndex)
+  const closeMatch = afterCase.match(closingPattern)
+
+  if (!closeMatch) return m.reply(`❌ Tidak dapat menemukan akhir blok \n\n}\nbreak\n\n untuk case '${targetCase}'. Pastikan format case-nya benar.`)
+
+  const insertPos = startIndex + closeMatch.index + closeMatch[0].length
+
+  const updatedContent = fileContent.slice(0, insertPos) + `\n\n${newCaseCode}\n` + fileContent.slice(insertPos)
+
+  fs.writeFileSync(filePath, updatedContent, "utf-8")
+
+  m.reply(`✅ Case baru berhasil ditambahkan di bawah *case '${targetCase}'!*\n\n🧩 Case yang ditambahkan:\n${newCaseCode}`)
+}
+break
+
+case 'editcase': {
+  if (!isCreator) return m.reply(mess.owner)
+  if (!text) return m.reply(`Contoh: ${prefix + command} <nama_case>|<case_baru>`)
+  let [caseName, ...newContentArr] = text.split('|')
+  caseName = caseName.trim()
+  let newContent = newContentArr.join('|').trim()
+  if (!caseName || !newContent) return m.reply(`Contoh:\n\n${prefix + command} hai|case 'hai':\n{m.reply('Hai juga')\n}\nbreak`)
+  const filePath = './lenwy.js';
+  try {
+      if (!fs.existsSync(filePath)) return m.reply(`File bot tidak ditemukan.`)
+      let fileContent = fs.readFileSync(filePath, 'utf-8')
+      const regex = new RegExp(`case ['"]${caseName}['"]: {([\\s\\S]*?)}\\s*break`, 'g')
+      if (!regex.test(fileContent)) return m.reply(`Case *${caseName}* tidak ditemukan.`)
+      const updatedFileContent = fileContent.replace(regex, `${newContent}`)
+      fs.writeFileSync(filePath, updatedFileContent, 'utf-8')
+      m.reply(`Case *${caseName}* berhasil diedit.`)
+  } catch (error) {
+      console.error('Error:', error)
+      m.reply('Terjadi kesalahan saat mengedit case. Coba lagi nanti.')
+  }
+}
+break
+
+case 'delcase': {
+if (!isCreator) return m.reply(mess.owner)
+if (!q)
+return m.reply("Masukan nama case yang akan di hapus")
+let filePath = "./lenwy.js"
+fs.readFile(filePath, "utf8", (err, data) => {
+    if (err) console.error("Kesalahan untuk menambahkan case:", err)
+
+    const regex = new RegExp(`case\\s*['"]${q}['"]\\s*:.*?break?`, "gs")
+    const modifiedData = data.replace(regex, "")
+    if (modifiedData === data) {
+      console.log(`Case '${q}' tidak ditemukan.`)
+    } else {
+      fs.writeFile(filePath, modifiedData, "utf8", (err) => {
+      if (err) {
+        m.reply(`Case ${q} Tidak Ada`)
+        console.error("Terjadi kesalahan saat menulis file:", err)
+      }
+      m.reply(`Mas, Done. Coba Cek`)
+      console.log(`Teks dari case '${q}' telah dihapus dari file.`)
+    })
+  }
+})
+}
+break
+
+case 'totalfitur': {
+  var mytext = fs.readFileSync("./lenwy.js").toString()
+  var numUpper = (mytext.match(/case '/g) || []).length
+  m.reply(`Hallo ${pushname}
+Saat ini ${botname} memiliki total fitur ${numUpper}`)
+}
+break
+
+case 'cekcase': {
+if (!isCreator) return
+if (!text) return m.reply(`Contoh: ${prefix+command} caseName`)
+const caseName = text.trim()
+if (!caseName) return m.reply(`Masukkan nama case yang ingin dicek. Contoh: ${prefix+command} caseName`)
+const cekCase = async (caseName) => {
+try {
+const fileContent = await fs.promises.readFile("./lenwy.js", "utf-8")
+const caseRegex = new RegExp(`case '${caseName}'[\\s\\S]*?break`, 'g')
+const match = fileContent.match(caseRegex)
+if (!match) {
+return { found: false };
+}
+const lines = fileContent.split('\n')
+const caseLines = match[0].split('\n')
+const startLine = lines.indexOf(caseLines[0]) + 1;
+const endLine = startLine + caseLines.length - 1;
+return {
+found: true,
+startLine,
+endLine,
+content: match[0]
+};
+} catch (error) {
+return { error: `Terjadi kesalahan saat membaca file: ${error.message}` };
+}};
+const result = await cekCase(caseName)
+if (result.error) {
+m.reply(result.error)
+} else if (result.found) {
+const message = `*CASE DITEMUKAN!*
+• Nama Case: ${caseName}
+• Baris Awal: ${result.startLine}
+• Baris Akhir: ${result.endLine}
+
+Mau sekalian di ambil? Ketik getcase ${caseName}`
+m.reply(message)
+} else {
+m.reply(`Case '${caseName}' tidak ditemukan.`)
+}
+}
+break
+// ===== AKHIR MENU OWNER ===== //
+
+// ===== AWAL MENU GROUP ===== //
 case 'setsimbol': {
   if (!m.isGroup) return m.reply(mess.group);
   if (!isAdmins) return m.reply(mess.admin);
@@ -1674,8 +2204,7 @@ case 'setsimbol': {
 }
 break
 
-case 'list':
-case 'listmenu': {
+case 'list': {
   if (args[0] === 'edit') {
     if (!isAdmins) return m.reply(mess.admin)
     const teks = args.slice(1).join(' ').trim()
@@ -1692,15 +2221,10 @@ Ketik:
 *Placeholder yang bisa digunakan:*
 
 - {GROUPNAME} = nama grup
-- {TAG} = tag admin/pengirim
-- {JAM} = jam saat ini
-- {MENIT} = menit saat ini
-- {DETIK} = detik saat ini
-- {HARI} = nama hari saat ini
-- {TANGGAL} = tanggal saat ini
-- {BULAN} = angka bulan saat ini
-- {TAHUN} = tahun saat ini
-- {NAMABULAN} = nama bulan saat ini
+- {TAG} = tag pengirim
+- {JAM} = jam, menit, detik saat ini
+- {NAMAHARI} = nama hari saat ini
+- {TANGGAL} = tanggal, bulan, tahun saat ini
 - {SIMBOL} = menampilkan seluruh daftar list yang tersedia
 
 *Contoh:*
@@ -1709,8 +2233,8 @@ ${prefix + command} edit
 │
 │ Halo {TAG}
 │
-│ 📅 {HARI}, {TANGGAL} {NAMABULAN} {TAHUN}
-│ 🕒 {JAM}:{MENIT}:{DETIK} WIB
+│ 📅 {NAMAHARI}, {TANGGAL}
+│ 🕒 {JAM} WIB
 │ 🏠 {GROUPNAME}
 │
 │ {SIMBOL}
@@ -1733,9 +2257,9 @@ ${prefix + command} edit
 
   const textListTemplate = global.datagc[groupID].text_list || `Halo {TAG} selamat datang di *{GROUPNAME}*
 
-── .✦ Hari : {HARI}
-── .✦ Tanggal : {TANGGAL}/{BULAN}/{TAHUN}
-── .✦ Jam : {JAM}:{MENIT}:{DETIK}
+── .✦ Hari : {NAMAHARI}
+── .✦ Tanggal : {TANGGAL}
+── .✦ Jam : {JAM} WIB
 
 ㅤㅤ⤿─ ⓘ 𝗰ׅ𝝰ׄ𝘁𝝰ׄ𝗹ׅ𝝾︩ׄ𝗴ׄ{SIMBOL}
 ㅤㅤ──┈─┈──┈─┈ 𓈀 ──┈─┈──┈─┈`
@@ -1744,16 +2268,11 @@ ${prefix + command} edit
 
   const replaceTags = (text) => {
     return text
-      .replace(/{TAG}/gi, usertag)
       .replace(/{GROUPNAME}/gi, groupName)
-      .replace(/{JAM}/gi, jamnya)
-      .replace(/{MENIT}/gi, menitnya)
-      .replace(/{DETIK}/gi, detiknya)
-      .replace(/{HARI}/gi, harinya)
-      .replace(/{TANGGAL}/gi, tanggalnya)
-      .replace(/{BULAN}/gi, bulannya)
-      .replace(/{NAMABULAN}/gi, namabulannya)
-      .replace(/{TAHUN}/gi, tahunnya);
+      .replace(/{TAG}/gi, usertag)
+      .replace(/{JAM}/gi, wib)
+      .replace(/{NAMAHARI}/gi, harinya)
+      .replace(/{TANGGAL}/gi, hariini2)
   };
 
   try {
@@ -1798,12 +2317,13 @@ break
 case 'addlist': {
 if (!isAdmins) return m.reply(mess.admin)
 if (!m.isGroup) return m.reply(mess.group)
+if (!q.includes('@')) return m.reply(`Contoh: ${prefix+command} Key@Respon\nContoh: addlist wdp@harga wdp`)
 let args = q.split("@")
 let args1 = args[0].toLowerCase().trim()
 let args2 = args[1]
-if (!q.includes('@') && args1 == args2) return m.reply(`${prefix+command} Key@Respon\nContoh: addlist wdp@harga wdp`)
-if (!args1 || !args2) return m.reply(`Key dan respon nya harus di isi kak`)
-if (isAlreadyResponList(from, args1, db_respon_list)) return m.reply(`Nama list ${args1} suda ada`)
+if (!args1 || !args2) return m.reply(`Key dan respon harus di isi kak`)
+if (args1 == args2) return m.reply(`Key dan respon tidak boleh sama kak`)
+if (isAlreadyResponList(from, args1, db_respon_list)) return m.reply(`Nama list ${args1} sudah ada`)
 if (/image/.test(mime)) {
   media = await lenwy.downloadAndSaveMediaMessage(quoted)
   mem = await uploaderLebih(media)
@@ -2036,756 +2556,6 @@ await lenwy.groupParticipantsUpdate(from, [users], 'demote')
 m.reply(mess.success)
 }
 break
-// ===== AKHIR MENU GROUP ===== //
-
-// ===== AWAL MENU FUN ===== //
-case 'bot': {
-if (text) return
-m.reply(`Iya Kak, ${pushname}`)
-}
-break
-
-case 'rate': {
-if (!q) return m.reply(`*Contoh: ${prefix + command} Penampilan gw*`)
-if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
-const ra = ['5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60', '65', '70', '75', '80', '85', '90', '95', '100']
-const te = ra[Math.floor(Math.random() * ra.length)]
-m.reply(`*Rate : ${q}*\n🎁 *Jawaban : ${te}%*`)
-}
-break
-
-case 'apakah': {
-if (!q) return m.reply(`*Contoh: ${prefix + command} gw lagi marah*`)
-if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
-const apa = ['Iya', 'Tidak', 'Bisa Jadi', 'Betul']
-const kah = apa[Math.floor(Math.random() * apa.length)]
-m.reply(`*Pertanyaan : Apakah ${q}*\n🎁 *Jawaban : ${kah}*`)
-}
-break
-
-case 'kapankah': {
-if (!q) return m.reply(`*Contoh: ${prefix + command} gw masuk rsj*`)
-if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
-const kapan = ['5 Hari Lagi', '10 Hari Lagi', '15 Hari Lagi', '20 Hari Lagi', '25 Hari Lagi', '30 Hari Lagi', '35 Hari Lagi', '40 Hari Lagi', '45 Hari Lagi', '50 Hari Lagi', '55 Hari Lagi', '60 Hari Lagi', '65 Hari Lagi', '70 Hari Lagi', '75 Hari Lagi', '80 Hari Lagi', '85 Hari Lagi', '90 Hari Lagi', '95 Hari Lagi', '100 Hari Lagi', '5 Bulan Lagi', '10 Bulan Lagi', '15 Bulan Lagi', '20 Bulan Lagi', '25 Bulan Lagi', '30 Bulan Lagi', '35 Bulan Lagi', '40 Bulan Lagi', '45 Bulan Lagi', '50 Bulan Lagi', '55 Bulan Lagi', '60 Bulan Lagi', '65 Bulan Lagi', '70 Bulan Lagi', '75 Bulan Lagi', '80 Bulan Lagi', '85 Bulan Lagi', '90 Bulan Lagi', '95 Bulan Lagi', '100 Bulan Lagi', '1 Tahun Lagi', '2 Tahun Lagi', '3 Tahun Lagi', '4 Tahun Lagi', '5 Tahun Lagi', 'Besok', 'Lusa', `Abis Command Ini Juga Lu ${q}`]
-const kapankah = kapan[Math.floor(Math.random() * kapan.length)]
-m.reply(`*Pertanyaan : Kapankah ${q}*\n🎁 *Jawaban : ${kapankah}*`)
-}
-break
-
-case 'bisakah': {
-if (!q) return m.reply(`*Contoh: ${prefix + command} gw hamil*`)
-if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
-const bisa = ['Bisa', 'Gak Bisa', 'Gak Bisa Awokawok', 'TENTU KAMU PASTI BISA!!!!']
-const ga = bisa[Math.floor(Math.random() * bisa.length)]
-m.reply(`*Pertanyaan : Bisakah ${q}*\n🎁 *Jawaban : ${ga}*`)
-}
-break
-
-case 'bagaimanakah': {
-if (!q) return m.reply(`*Contoh: ${prefix + command} gw kuyang*`)
-if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
-const gimana = ['Ya Begitulah', 'Gak Normal', 'Maaf Bot Tidak Bisa Menjawab', 'Coba Deh Cari Di Gugel', 'Kayaknya Lanjut Part 2', 'Kepo Kamu', 'Gimana Aja']
-const ya = gimana[Math.floor(Math.random() * gimana.length)]
-m.reply(`*Pertanyaan : Bagaimanakah ${q}*\n🎁 *Jawaban : ${ya}*`)
-}
-break
-
-case 'cekganteng': {
-if (!q) return m.reply(`*Contoh: ${prefix + command} gw*`)
-if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
-const gan = ['Normal','Ganteng Njir','Ganteng Amat Bang','Jaga Penampilan Ya','Kurang :c','Lumayan','Boleh Juga']
-const teng = gan[Math.floor(Math.random() * gan.length)]
-m.reply(`*Nama* ${q}\n🎁 *Jawaban : ${teng}*`)
-}
-break
-
-case 'cekcantik': {
-if (!q) return m.reply(`*Contoh: ${prefix + command} gw*`)
-if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
-const can = ['Normal','Cantik Njir','Cantik Amat Sih','Jaga Penampilan Ya','Kurang :c','Lumayan','Boleh Juga']
-const tik = can[Math.floor(Math.random() * can.length)]
-m.reply(`*Nama* ${q}\n🎁 *Jawaban : ${tik}*`)
-}
-break
-
-// ===== AKHIR MENU FUN ===== //
-
-// ===== TOOLS COMMANDS ===== //
-// ===== AWAL MENU TOOLS ===== //
-
-case 'kalkulator':
-case 'calculator': {
-    if (!q) return m.reply(`*Contoh:*
-> kalkulator 12/2
-> kalkulator 12*2
-> kalkulator 12+2
-> kalkulator 12-2`)
-
-    const operator = q.match(/[+\-*/]/)?.[0]
-    if (!operator) return m.reply('*Operator tidak valid!*')
-
-    const [a, b] = q.split(operator).map(x => Number(x.trim()))
-    if (isNaN(a) || isNaN(b)) return m.reply('*Input harus berupa angka!*')
-    if (operator === '/' && b === 0) return m.reply('*Pembagian dengan nol tidak diperbolehkan!*')
-
-    const hasil = {
-        '+': a + b,
-        '-': a - b,
-        '*': a * b,
-        '/': a / b
-    }[operator]
-
-    m.reply(`🎁 *Hasil:* ${hasil}`)
-}
-break
-
-case 'createqr': {
-if (!text) return m.reply(`*Contoh : Createqr ${botname}*`)
-LenwyLD()
-const qrcode = require('qrcode')
-const qyuer = await qrcode.toDataURL(text, { scale: 8 })
-let data = new Buffer.from(qyuer.replace('data:image/png;base64,', ''), 'base64')
-lenwy.sendMessage(from, { image: data, caption: mess.success }, { quoted: m })
-}
-break
-
-case 'detectqr': {
-LenwyLD()
-try {
-mee = await lenwy.downloadAndSaveMediaMessage(quoted)
-mem = await uploader60Minute(mee)
-const res = await fetch(`http://api.qrserver.com/v1/read-qr-code/?fileurl=${mem}`)
-const data = await res.json()
-m.reply(util.format(data[0]))
-} catch (err) {
-m.reply(`*Mana Qrnya?*`)
-}
-}
-break
-
-case 'hdvid':
-case 'hdvidio':
-case 'hdvideo': {
-  const who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? lenwy.user.jid : m.sender;
-  const q = m.quoted ? m.quoted : m;
-  const mime = (q.msg || q).mimetype || '';
-
-  if (!mime) return m.reply(`Videonya mana?`)
-  if (!/video/.test(mime)) {
-    return m.reply(`Kirim/kutip video dengan caption ${prefix + command}`)
-  }
-  LenwyLD()
-  let media = await q.download()
-let video = Math.floor(Math.random() * 100) + 1;
-
-  const inputFilePath = `./input${video}.mp4`;
-  fs.writeFileSync(inputFilePath, media)
-
-  const outputFilePath = `./output${video}.mp4`;
-  const dir = './';
-  if (!fs.existsSync(dir)){
-      fs.mkdirSync(dir)
-  }
-
-  const ffmpegCommand = `ffmpeg -i ${inputFilePath} -vf "hqdn3d=1.5:1.5:6:6,unsharp=3:3:0.6,eq=brightness=0.05:contrast=1.1:saturation=1.05" -vcodec libx264 -preset slower -crf 22 -acodec copy -movflags +faststart ${outputFilePath}`;
-
-  exec(ffmpegCommand, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error: ${error.message}`)
-      return
-    }
-    console.log(`stdout: ${stdout}`)
-    console.error(`stderr: ${stderr}`)
-    lenwy.sendMessage(m.chat, { caption: `_Video berhasil ditingkatkan kualitasnya_`, video: { url: outputFilePath } }, { quoted: m })
-    fs.unlinkSync(inputFilePath)
-  })
-}
-break
-
-case 'hd':
-case 'hdr':
-case 'remini': {
- if (!quoted) return m.reply(`Fotonya Mana?`)
- if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`)
- await LenwyLD()
- try {
- let media = await lenwy.downloadAndSaveMediaMessage(quoted)
- let anu = await uploader60Minute(media)
- let result = (util.format(anu))
- console.log(anu)
- await lenwy.sendMessage(m.chat, { image: { url: `https://api.nexray.eu.cc/tools/v1/enhancer?url=${result}` }, caption: 'SUCCESS ✅' }, { quoted: m })
- } catch (e) {
- console.error(e);
- return m.reply('Error, Coba Pakai hd2')
- }
-}
-break
-
-case 'hd2':
-case 'hdr2':
-case 'remini2': {
-if (!quoted) return m.reply('Fotonya Mana?')
-if (!/image/.test(mime)) return m.reply('Fotonya Mana?')
-LenwyLD()
-let media = await lenwy.downloadAndSaveMediaMessage(quoted)
-let anu = await uploader60Minute(media)
-let result = util.format(anu)
-try {
- await lenwy.sendMessage(m.chat, { image: { url: `https://api.nexray.eu.cc/tools/upscale?url=${result}&resolusi=2` }, caption: 'Selesai' }, { quoted: m })
-} catch {
- return m.reply('Error, Coba Pakai hd3')
-}
-}
-break
-
-case 'hd3':
-case 'hdr3':
-case 'remini3': {
-if (!quoted) return m.reply(`Fotonya Mana?`)
-if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`)
-LenwyLD()
-let media = await lenwy.downloadAndSaveMediaMessage(quoted)
-let anu = await uploader60Minute(media)
-let result = (util.format(anu))
-try {
- await lenwy.sendMessage(m.chat,{ image:{ url: `https://api.nexray.eu.cc/tools/v1/upscale?url=${result}` }, caption:'Selesai' },{ quoted: m })
-} catch (e) {
- return m.reply('Error, Coba Pakai hd4')
-}
-}
-break
-
-case 'hd4':
-case 'hdr4':
-case 'remini4': {
-if (!quoted) return m.reply(`Fotonya Mana?`)
-if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`)
-LenwyLD()
-let media = await lenwy.downloadAndSaveMediaMessage(quoted)
-let anu = await uploader60Minute(media)
-let result = (util.format(anu))
-try {
-  await lenwy.sendMessage(m.chat,{ image:{ url: `https://api.nexray.eu.cc/tools/v3/upscale?url=${result}` }, caption:'Selesai' },{ quoted: m })
-} catch (e) {
-  return m.reply('Error, Coba Pakai hd5')
-}
-}
-break
-
-case 'hd5':
-case 'hdr5':
-case 'remini5': {
-if (!quoted) return m.reply(`Fotonya Mana?`)
-if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`)
-LenwyLD()
-let media = await lenwy.downloadAndSaveMediaMessage(quoted)
-let anu = await uploader60Minute(media)
-let result = (util.format(anu))
-try {
-  const { data } = await axios.get(`https://api.vreden.my.id/api/v1/artificial/imglarger/enhance?url=${result}`, { headers: { 'User-Agent': 'Mozilla/5.0' } })
-  console.log(data.result)
-  await lenwy.sendMessage(m.chat,{ image:{ url: data.result.download }, caption:'Selesai' },{ quoted: m })
-} catch (e) {
-  return m.reply('Error')
-}
-}
-break
-
-case 'skinswap': {
-  if (!quoted) return m.reply(`Fotonya Mana?`)
-  if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`)
-
-  let color_Skin = ["black", "pink", "green", "blue", "purple", "red", "gold", "silver", "brown", "orange"]
-
-  if (!color_Skin.includes(text.toLowerCase())) {
-      return m.reply(`Warna *${text}* tidak tersedia!\nGunakan salah satu dari:\n${color_Skin.join(', ')}`)
-  }
-
-  LenwyLD()
-  await sleep(200)
-  let media = await lenwy.downloadAndSaveMediaMessage(quoted)
-  let anu = await uploader60Minute(media)
-  let result = (util.format(anu))
-  try {
-      const result2 = await (await fetch(`https://${global.api.maelyn.domain}/api/img2img/skinswap?url=${result}&style=${text.toLowerCase()}`, {
-          headers: {
-              'x-maelyn-auth': global.api.maelyn.apikey
-          }
-      })).json()
-      await lenwy.sendMessage(m.chat, { image: { url: result2.result }, caption: 'Selesai' }, { quoted: m })
-  } catch (e) {
-      console.log(e)
-      return m.reply('Error saat proses skinswap!')
-  }
-}
-break
-
-case 'ocr': {
-if (!quoted) return m.reply(`Fotonya Mana?`)
-if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`)
-try{
-let media = await lenwy.downloadAndSaveMediaMessage(quoted)
-let anu = await uploader60Minute(media)
-let result = (util.format(anu))
-const proses = await (await fetch(`https://deoberon-api.vercel.app/tools/ocr?url=${result}`)).json()
-let teks = proses.result
-await lenwy.sendMessage(m.chat, { text: `Hasilnya: ${teks}` }, { quoted: m})
-} catch (error) {
-console.error(error)
-m.reply('Error')
-}
-}
-break
-
-case 'removebg':
-case 'nobg': {
-if (!quoted) return m.reply(`Fotonya Mana?`)
-if (!/image/.test(mime)) return m.reply(`Mana Fotonya?`)
-LenwyLD()
-let media = await lenwy.downloadAndSaveMediaMessage(quoted)
-let anu = await uploader60Minute(media)
-let result = (util.format(anu))
-const proses = await (await fetch(`https://${global.api.ham.domain}/tools/removebg?apikey=${global.api.ham.apikey}&url=${result}`)).json()
-console.log(proses)
-await lenwy.sendMessage(m.chat, { image: { url: proses.result.url }, caption: '🎁 *Removebg Selesai*'}, { quoted: m })
-}
-break
-  
-case 'qc': {
-    if (!q) return m.reply(`*Contoh :* Qc white Lenwy\n🎁 *Kode Warna:* Qckode`)
-    if (q.length > 400) return m.reply('*Maksimal 400 Karakter*')
-
-    const [color, ...msg] = q.split(' ')
-    const message = msg.join(' ')
-    if (!message) return m.reply('*Teks tidak boleh kosong!*')
-
-    const colors = {
-        pink: '#f68ac9',
-        blue: '#6cace4',
-        red: '#f44336',
-        green: '#4caf50',
-        yellow: '#ffeb3b',
-        purple: '#9c27b0',
-        darkblue: '#0d47a1',
-        lightblue: '#03a9f4',
-        ash: '#9e9e9e',
-        orange: '#ff9800',
-        black: '#000000',
-        white: '#ffffff',
-        teal: '#008080',
-        lightpink: '#ffc0cb',
-        chocolate: '#a52a2a',
-        salmon: '#ffa07a',
-        magenta: '#ff00ff',
-        tan: '#d2b48c',
-        wheat: '#f5deb3',
-        deeppink: '#ff1493',
-        fire: '#b22222',
-        lenwyblue: '#00bfff',
-        brightlenwyblue: '#1e90ff',
-        hotpink: '#ff69b4',
-        lightlenwyblue: '#87ceeb',
-        seagreen: '#20b2aa',
-        darkred: '#8b0000',
-        orangered: '#ff4500',
-        cyan: '#48d1cc',
-        violet: '#ba55d3',
-        mossgreen: '#00ff7f',
-        darkgreen: '#008000',
-        navyblue: '#191970',
-        darkorange: '#ff8c00',
-        darkpurple: '#9400d3',
-        fuchsia: '#ff00ff',
-        darkmagenta: '#8b008b',
-        darkgray: '#2f4f4f',
-        peachpuff: '#ffdab9',
-        darkishgreen: '#bdb76b',
-        darkishred: '#dc143c',
-        goldenrod: '#daa520',
-        darkishgray: '#696969',
-        darkishpurple: '#483d8b',
-        gold: '#ffd700',
-        silver: '#c0c0c0'
-    }
-
-    const backgroundColor = colors[color]
-    if (!backgroundColor) {
-        return m.reply(
-            '☘ *Kode Warna Tidak Ditemukan*\n' +
-            '🎁 Contoh : Qc white Lenwy\n' +
-            '⚠ Gunakan huruf kecil'
-        )
-    }
-
-    const obj = {
-        type: 'quote',
-        format: 'png',
-        backgroundColor,
-        width: 512,
-        height: 768,
-        scale: 2,
-        messages: [{
-            entities: [],
-            avatar: true,
-            from: {
-                id: 1,
-                name: pushname,
-                photo: {
-                    url: await lenwy.profilePictureUrl(m.sender, 'image')
-                        .catch(() => 'https://telegra.ph/file/6880771a42bad09dd6087.jpg')
-                }
-            },
-            text: message,
-            replyMessage: {}
-        }]
-    }
-
-    const res = await axios.post('https://bot.lyo.su/quote/generate', obj)
-    const buffer = Buffer.from(res.data.result.image, 'base64')
-
-    await lenwy.sendImageAsSticker(m.chat, buffer, m, { packname: global.packname, author: global.author })
-}
-break
-
-case 'img2txt':
-if (!/image/.test(mime)) return m.reply(`Gambarnya Mana?`)
-if (/image/.test(mime)) {
-LenwyLD()
-let mee = await lenwy.downloadAndSaveMediaMessage(quoted)
-let mem = await uploader60Minute(mee)
-let res = await (await fetch(`https://itzpire.com/tools/img2text?url=${mem}`)).json()
-let result = res.result
-lenwy.sendMessage(m.chat,{image:{url: mem}, caption:`${result}`},{quoted: m})
-}
-break
-
-case 'txt2img':
-case 'texttoimage':
-case 'tekstoimage':
-case 'text2image':
-case 'teks2image':
-case 'txt2image': {
-    if (!q) return m.reply(`*Mau Gambar Apa?*`)
-
-    LenwyLD
-    await sleep(200)
-
-
-    try {
-        const apiUrl = `https://endpoint.web.id/ai/txt2img?key=315602&prompt=${encodeURIComponent(q)}`;
-
-        let response = await fetch(apiUrl)
-        let json = await response.json()
-
-        if (json.status && json.code === 200) {
-            let imageUrl = json.result.url;
-
-            lenwy.sendMessage(m.chat, { image: { url: imageUrl }, caption: `Gambar untuk prompt: "${q}"` }, { quoted: m })
-        } else {
-            m.reply(`Gagal mendapatkan gambar. Silakan coba lagi.`)
-        }
-    } catch (error) {
-        console.error('Error:', error)
-        m.reply(`Terjadi kesalahan saat memproses permintaan.`)
-    }
-}
-break
-
-case 'geminiimg': {
-if (!quoted) return m.reply('Mana Gambarnya?')
-m.reply('Sabar Yaa')
-if (!/image/.test(mime)) return m.reply("Hanya Support Gambar")
-let media = await lenwy.downloadAndSaveMediaMessage(quoted)
-let anu = await uploader60Minute(media)
-let { data } = await axios.get("https://gmni.vercel.app/api/img?imageUrl="+ anu +"&prompt=" + text)
-m.reply(data.text)
-}
-break
-
-case 'lirik':
-case 'liriklagu': {
-  if (!text) return m.reply(`Masukan Judul Lagu`)
-  if (text.length > 30) return m.reply(`Maksimal 30 Karakter`)    
-  LenwyLD()
-  await sleep(200)
-  try{
-    let anu = await (await fetch(`https://endpoint.web.id/tools/lirik?key=315602&query=${text}`)).json()
-    let result = anu.result
-    let caption = '📃 Judul : ' + result.title + '\n📣 Artis : ' + result.artist + '\n\n🎁 Lirik :\n' + result.lyrics
-    m.reply(caption)
-  } catch (error) {
-    m.reply(`⚠️ Lirik Lagu Tidak Ditemukan ${error}`)
-  }
-}
-break
-
-case 'kodebahasa': {
-m.reply(`Kode bahasa
-
- *⨠ Af: Afrikaans* 
- *⨠ Sq: Albanian*
- *⨠ Ar: Arabic*
- *⨠ Hy: Armenian*
- *⨠ Ca: Catalan* 
- *⨠ Zh: Chinese*
- *⨠ Zh-Cn: Chinese (Mandarin/China)*
- *⨠ Zh-Tw: Chinese (Mandarin/Taiwan)*
- *⨠ Zh-Yue: Chinese (Cantonese)*
- *⨠ Hr: Croatian*
- *⨠ Cs: Czech*
- *⨠ Da: Danish*
- *⨠ Nl: Dutch*
- *⨠ En: English*    
- *⨠ En-Au: English (Australia)*
- *⨠ En-Uk: English (United Kingdom)*
- *⨠ en-Us: English (United States)* 
- *⨠ Eo: Esperanto* 
- *⨠ Fi: Finnish* 
- *⨠ Fr: French*
- *⨠ De: German*
- *⨠ El: Greek* 
- *⨠ Ht: Haitian Creole* 
- *⨠ Hi: Hindi* 
- *⨠ Hu: Hungarian* 
- *⨠ Ss: Icelandic* 
- *⨠ Id: Indonesian* 
- *⨠ It: Italian*
- *⨠ Ja: Japanese*
- *⨠ Ko: Korean*
- *⨠ La: Latin*
- *⨠ Lv: Latvian*
- *⨠ Mk: Macedonian*
- *⨠ No: Norwegian*
- *⨠ Pl: Polish*
- *⨠ Pt: Portuguese*
- *⨠ Pt-Br: Portuguese (Brazil)*
- *⨠ Ro: Romanian*
- *⨠ Ru: Russian*
- *⨠ Sr: Serbian*
- *⨠ Sk: Slovak*
- *⨠ Es: Spanish* 
- *⨠ Es-Es: Spanish (Spain)*
- *⨠ Es-Us: Spanish (United States)*
- *⨠ Sw: Swahili*
- *⨠ Sv: Swedish*
- *⨠ Ta: Tamil*
- *⨠ Th: Thai*
- *⨠ Tr: Turkish*
- *⨠ Vi: Vietnamese* 
- *⨠ Cy: Welsh*`)
-}
-break
-
-case 'qckode': {
-m.reply(`Kode warna
-
- *⨠ Pink*
- *⨠ Blue*
- *⨠ Red*
- *⨠ Green*
- *⨠ Yellow*
- *⨠ Purple*
- *⨠ Darkblue*
- *⨠ Lightblue*
- *⨠ Ash*
- *⨠ Orange*
- *⨠ Black*
- *⨠ White*
- *⨠ Teal*
- *⨠ Lightpink*
- *⨠ Chocolate*
- *⨠ Salmon*
- *⨠ Magenta*
- *⨠ Tan*
- *⨠ Wheat*
- *⨠ Deeppink*
- *⨠ Fire*
- *⨠ lenwyblue*
- *⨠ Safron*
- *⨠ Brightlenwyblue*
- *⨠ Hotpink*
- *⨠ Lightlenwyblue*
- *⨠ Seagreen*
- *⨠ Darkred*
- *⨠ Orangered*
- *⨠ Cyan*
- *⨠ Violet*
- *⨠ Mossgreen*
- *⨠ Darkgreen*
- *⨠ Navyblue*
- *⨠ Darkorange*
- *⨠ Darkpurple*
- *⨠ Fuchsia*
- *⨠ Darkmagenta*
- *⨠ Darkgray*
- *⨠ Peachpuff*
- *⨠ Blackishgreen*
- *⨠ Darkishred*
- *⨠ Goldenrod*
- *⨠ Darkishgray*
- *⨠ Darkishpurple*
- *⨠ Gold*
- *⨠ Silver*`)
-}
-break
-
-// ===== AKHIR MENU TOOLS ===== //
-
-// ===== OWNER COMMANDS ===== //
-// ===== AWAL MENU OWNER ===== //
-
-case 'cekidgc': {
-if (!isCreator) return m.reply(mess.owner)
-LenwyLD()
-await sleep(200)
-let getGroups = await lenwy.groupFetchAllParticipating()
-let groups = Object.entries(getGroups).slice(0).map((entry) => entry[1])
-let anu = groups.map((v) => v.id)
-let teks = `*List Grup Yang Dimasuki ${botname}*\n🎁 *Total Group : ${anu.length} Group*\n\n`
-
-for (let x of anu) {
-  await sleep(5000)
-  let metadata2 = await lenwy.groupMetadata(x)
-  try {
-    let response2 = await lenwy.groupInviteCode(metadata2.id)
-    linkgc = `https://chat.whatsapp.com/${response2}`
-  } catch {
-    linkgc = '-'
-  }
-  teks += `*Nama Group : ${metadata2.subject}*
-🎁 *ID Group : ${metadata2.id}*
-📦 *Total Member Group : ${metadata2.participants.length}*
-📎 *Link Group : ${linkgc}*
-────────────────────────\n\n`
-  }
-  m.reply(teks + `*Cara Penggunaan : Pushkontak ID Group|Teks*\n🎁 *Contoh : Pushkontak ID Group|Save ${botname}*`)
-}
-break
-
-case 'prem': {
-  if (!isCreator) return m.reply(mess.owner)
-  
-  let action = args[0] ? args[0].toLowerCase() : ''
-  if (!['add', 'del', 'list'].includes(action)) {
-    return m.reply('*Format Salah!*\nContoh:\n- prem add 62812345678\n- prem del 62812345678\n- prem list')
-  }
-
-  if (action === 'list') {
-    if (premiumNumbers.length === 0) return m.reply('*Daftar Premium Masih Kosong.*')
-
-    let teksooo = 'List Premium\n'
-    for (let i of premiumNumbers) {
-        teksooo += `✉️ ${i}\n`
-    }
-    teksooo += `\nTotal: ${premiumNumbers.length}`
-
-    return lenwy.sendMessage(from, { text: teksooo.trim() }, { quoted: m })
-  }
-
-  if (!args[1]) return m.reply(`*Mana nomornya?*\nContoh: prem ${action} 62812345678`)
-
-  let number = args[1].replace(/[^0-9]/g, '')
-  if (number.length === 0) return m.reply('*Nomor tidak valid!*')
-
-  if (action === 'add') {
-    if (premiumNumbers.includes(number)) return m.reply(`⚠️ *Nomor ${number} sudah ada di database premium.*`)
-
-    try {
-      let isRegistered = await lenwy.onWhatsApp(number + '@s.whatsapp.net')
-      if (isRegistered && isRegistered.length > 0) {
-        premiumNumbers.push(number)
-        fs.writeFileSync(premiumFilePathh, JSON.stringify(premiumNumbers, null, 2))
-        return m.reply(`✅ *Sukses!*\nNomor ${number} berhasil ditambahkan ke premium.`)
-      } else {
-        return m.reply(`❌ *Gagal!*\nNomor ${number} tidak terdaftar di WhatsApp.`)
-      }
-    } catch (err) {
-      return m.reply(`❌ *Error saat mengecek nomor ke WhatsApp.*`)
-    }
-  }
-
-  if (action === 'del') {
-    let index = premiumNumbers.indexOf(number)
-    if (index !== -1) {
-      premiumNumbers.splice(index, 1)
-      fs.writeFileSync(premiumFilePathh, JSON.stringify(premiumNumbers, null, 2))
-      return m.reply(`✅ *Sukses!*\nNomor ${number} berhasil dihapus dari premium.`)
-    } else {
-      return m.reply(`❌ *Gagal!*\nNomor ${number} tidak ditemukan di database.`)
-    }
-  }
-}
-break
-
-case 'ban': {
-  if (!isCreator) return m.reply(mess.owner)
-  
-  let action = args[0] ? args[0].toLowerCase() : ''
-  if (!['add', 'del', 'list'].includes(action)) {
-    return m.reply('*Format Salah!*\nContoh:\n- ban add 62812345678\n- ban del 62812345678\n- ban list')
-  }
-
-  let bannedData = []
-  try {
-    bannedData = JSON.parse(fs.readFileSync(bannedFilePathh, 'utf8'))
-  } catch (err) {
-    bannedData = []
-  }
-
-  if (action === 'list') {
-    if (bannedData.length === 0) return m.reply('*Daftar Banned Masih Kosong.*')
-
-    let response = '*Daftar Banned:*\n\n'
-    response += bannedData.map((number, index) => `${index + 1}. ${number}`).join('\n')
-    return m.reply(response)
-  }
-
-  if (!args[1]) return m.reply(`*Mana nomornya?*\nContoh: ban ${action} 62812345678`)
-
-  let number = args[1].replace(/[^0-9]/g, '')
-  if (number.length === 0) return m.reply('*Nomor tidak valid!*')
-
-  let target = number + '@s.whatsapp.net'
-
-  if (action === 'add') {
-    if (bannedData.includes(target)) return m.reply(`⚠️ *Nomor ${number} sudah ada di daftar banned.*`)
-
-    try {
-      let isRegistered = await lenwy.onWhatsApp(target)
-      if (isRegistered && isRegistered.length > 0) {
-        bannedData.push(target)
-        fs.writeFileSync(bannedFilePathh, JSON.stringify(bannedData, null, 2))
-        return m.reply(`✅ *Sukses!*\nNomor ${number} berhasil ditambahkan ke daftar banned.`)
-      } else {
-        return m.reply(`❌ *Gagal!*\nNomor ${number} tidak terdaftar di WhatsApp.`)
-      }
-    } catch (err) {
-      return m.reply(`❌ *Error saat mengecek nomor ke WhatsApp.*`)
-    }
-  }
-
-  if (action === 'del') {
-    let index = bannedData.indexOf(target)
-    if (index !== -1) {
-      bannedData.splice(index, 1)
-      fs.writeFileSync(bannedFilePathh, JSON.stringify(bannedData, null, 2))
-      return m.reply(`✅ *Sukses!*\nNomor ${number} berhasil dihapus dari daftar banned.`)
-    } else {
-      return m.reply(`❌ *Gagal!*\nNomor ${number} tidak ditemukan di database.`)
-    }
-  }
-}
-break
-
-// ===== AKHIR MENU OWNER ===== //
-// ===== INFO COMMANDS ===== //
-// ===== AWAL MENU INFO ===== //
-
-case 'owner': {
-  if (text) return
-  await lenwy.sendContact(m.chat, author.map( i => i.split("@")[0]), m.quoted ? m.quoted.fakeObj : m)
-}
-break
 
 case 'hidetag':
 case 'h': {
@@ -2832,22 +2602,18 @@ Ketik:
 *Placeholder yang bisa digunakan:*
 
 - {GROUPNAME} = nama grup
-- {TAGDIRI} = tag admin/pengirim
-- {JAM} = jam saat ini
-- {MENIT} = menit saat ini
-- {DETIK} = detik saat ini
-- {HARI} = nama hari saat ini
-- {TANGGAL} = tanggal saat ini
-- {BULAN} = angka bulan saat ini
-- {TAHUN} = tahun saat ini
-- {NAMABULAN} = nama bulan saat ini
+- {TAG} = tag pengirim
+- {JAM} = jam, menit, detik saat ini
+- {NAMAHARI} = nama hari saat ini
+- {TANGGAL} = tanggal, bulan, tahun saat ini
+- {SIMBOL} = menampilkan seluruh daftar list yang tersedia
 
 *Contoh:*
 ${prefix + command} edit
-🔒 Grup telah ditutup oleh {TAGDIRI}
+🔒 Grup telah ditutup oleh {TAG}
 
-📅 {HARI}, {TANGGAL} {NAMABULAN} {TAHUN}
-🕒 {JAM}:{MENIT}:{DETIK} WIB
+📅 {NAMAHARI}, {TANGGAL}
+🕒 {JAM} WIB
 
 Grup {GROUPNAME} sementara ditutup.`)
   }
@@ -2856,15 +2622,10 @@ Grup {GROUPNAME} sementara ditutup.`)
   const usertag = `@${m.sender.split('@')[0]}`
   const replacers = {
     '{GROUPNAME}': groupName,
-    '{TAGDIRI}': usertag,
-    '{JAM}': jamnya,
-    '{MENIT}': menitnya,
-    '{DETIK}': detiknya,
-    '{HARI}': harinya,
-    '{TANGGAL}': tanggalnya,
-    '{BULAN}': bulannya,
-    '{TAHUN}': tahunnya,
-    '{NAMABULAN}': namabulannya
+    '{TAG}': usertag,
+    '{JAM}': wib,
+    '{NAMAHARI}': harinya,
+    '{TANGGAL}': hariini2
   }
   for (const [key, value] of Object.entries(replacers)) {
     settextclose = settextclose.replaceAll(key, value)
@@ -2893,22 +2654,18 @@ Ketik:
 *Placeholder yang bisa digunakan:*
 
 - {GROUPNAME} = nama grup
-- {TAGDIRI} = tag admin/pengirim
-- {JAM} = jam saat ini
-- {MENIT} = menit saat ini
-- {DETIK} = detik saat ini
-- {HARI} = nama hari saat ini
-- {TANGGAL} = tanggal saat ini
-- {BULAN} = angka bulan saat ini
-- {TAHUN} = tahun saat ini
-- {NAMABULAN} = nama bulan saat ini
+- {TAG} = tag pengirim
+- {JAM} = jam, menit, detik saat ini
+- {NAMAHARI} = nama hari saat ini
+- {TANGGAL} = tanggal, bulan, tahun saat ini
+- {SIMBOL} = menampilkan seluruh daftar list yang tersedia
 
 *Contoh:*
 ${prefix + command} edit
-🔓 Grup telah dibuka oleh {TAGDIRI}
+🔓 Grup telah dibuka oleh {TAG}
 
-📅 {HARI}, {TANGGAL} {NAMABULAN} {TAHUN}
-🕒 {JAM}:{MENIT}:{DETIK} WIB
+📅 {NAMAHARI}, {TANGGAL}
+🕒 {JAM} WIB
 
 Selamat berdiskusi di {GROUPNAME}`);
   }
@@ -2917,15 +2674,10 @@ Selamat berdiskusi di {GROUPNAME}`);
   const usertag = `@${m.sender.split('@')[0]}`
   const replacers = {
     '{GROUPNAME}': groupName,
-    '{TAGDIRI}': usertag,
-    '{JAM}': jamnya,
-    '{MENIT}': menitnya,
-    '{DETIK}': detiknya,
-    '{HARI}': harinya,
-    '{TANGGAL}': tanggalnya,
-    '{BULAN}': bulannya,
-    '{TAHUN}': tahunnya,
-    '{NAMABULAN}': namabulannya
+    '{TAG}': usertag,
+    '{JAM}': wib,
+    '{NAMAHARI}': harinya,
+    '{TANGGAL}': hariini2
   }
   for (const [key, value] of Object.entries(replacers)) {
     settextopen = settextopen.replaceAll(key, value)
@@ -2964,110 +2716,6 @@ case 'jeda': {
 }
 break
 
-case 'setdesk': {
-if (!m.isGroup) return m.reply(mess.group)
-if (!isAdmins) return m.reply(mess.admin)
- if (q == 'on'){
-await lenwy.groupSettingUpdate(from, 'unlocked').then((res) => m.reply(`Sukses Membuka Edit Info Group 🫡`)).catch((err) => m.reply(jsonformat(err)))
- } else if (q == 'off'){
-await lenwy.groupSettingUpdate(from, 'locked').then((res) => m.reply(`Sukses Menutup Edit Info Group 🫡`)).catch((err) => m.reply(jsonformat(err)))
- } else {
- lenwy.sendMessage(m.chat, { image: ppnyauser, caption: ` Silahkan Ketik
-Setdesk on
-Setdesk off`}, {quoted:m}) 
-
-}
-}
-break
-
-case 'join': {
- if (!isCreator) return m.reply(mess.owner)
- if (!text) return m.reply('Masukkan Link Group!')
- if (!isUrl(text) || !text.includes('whatsapp.com')) return m.reply('Link tidak valid! 🤔')
- let linknya = text
- if (text.includes('?')) linknya = text.split('?')[0]
- m.reply('Sabar Yaa')
-
- try {
- let result = linknya.split('https://chat.whatsapp.com/')[1]
- if (!result) return m.reply('Link tidak valid! 🤔')
- 
- await lenwy.groupAcceptInvite(result)
- m.reply('Bot berhasil bergabung ke grup!')
- } catch (err) {
- if (err.message.includes('not-authorized')) {
- return m.reply('Gagal bergabung ke grup. Bot kemungkinan baru saja dikeluarkan.')
- } else if (err.message.includes('gone')) {
- return m.reply('Link grup sudah di reset.')
- } else if (err.message.includes('conflict')) {
- m.reply('Bot sudah berada di dalam grup.')
- } else if (err.message.includes('already-exists')) {
- return m.reply('Bot sudah meminta gabung ke grup.')
- } else {
- console.log(err)
- return m.reply('Terjadi error yang tidak dikenali.')
- }
- }
-}
-break
-
-case 'leave': {
- if (!isCreator) return m.reply(mess.owner)
-
- if (m.isGroup) {
- if (text) return
- setTimeout(async () => {
- try {
- await lenwy.groupLeave(m.chat)
- console.log(`Successfully left the group ${m.chat}`)
- } catch (err) {
- console.error('Error leaving the group:', err)
- await m.reply('*Gagal meninggalkan grup.*')
- }
- }, 2000)
- } else if (!m.isGroup) {
- if (!text) return m.reply('*Mana ID Grup / Link Nya?*\n*Ketik cekidgc Buat Liat Id Nya*')
- let groupId
- if (text.includes('https://chat.whatsapp.com')) {
- let linknya = text
- if (text.includes('?')) linknya = text.split('?')[0]
- groupId = await getGroupIdFromLink(linknya, lenwy)
- } else if (text.includes('@g.us')) {
- groupId = text
- } else {
- return m.reply(`Itu bukan id grup ataupun link grup`)
- }
- setTimeout(async () => {
- try {
- await lenwy.groupLeave(groupId)
- m.reply(`Berhasil keluar dari grup ${groupId}`)
- } catch (err) {
- console.error('Error leaving the group:', err)
- await m.reply('*Gagal meninggalkan grup.*')
- }
- }, 2000) // 5000 ms = 5 detik
- }
-}
-break
-
-case 'editsubjek': {
-if (!m.isGroup) return m.reply(mess.group)
-if (!isBotAdmins) return m.reply(mess.botAdmin)
-if (!isAdmins) return m.reply(mess.admin)
-if (!text) m.reply('Text nya ?')
-await lenwy.groupUpdateSubject(from, text).catch((err) => m.reply(jsonformat(err)))
-}
-break
-
-case 'editdesk': {
-if (!m.isGroup) return m.reply(mess.group)
-if (!isBotAdmins) return m.reply(mess.botAdmin)
-if (!isAdmins) return m.reply(mess.admin)
-if (!text) m.reply('Text Nya ?')
-await lenwy.groupUpdateDescription(from, text).catch((err) => m.reply(jsonformat(err)))
-}
-break
-
 case 'tagall': {
 if (!m.isGroup) return m.reply(mess.group)
 if (!isAdmins) return m.reply(mess.admin)
@@ -3083,9 +2731,9 @@ break
 case 'inspect': {
 if (isBan) return m.reply('*Lu Di Ban Owner*')
 if (!args[0]) return m.reply("Linknya?")
-let linkRegex = args.join(" ")
-let coded = linkRegex.split("https://chat.whatsapp.com/")[1]
-if (!coded) return m.reply("Link Invalid 🤔")
+let coded = args.join(" ").split("https://chat.whatsapp.com/")[1]
+if (!coded) return m.reply("Link invalid")
+
 lenwy.query({
 tag: "iq",
 attrs: {
@@ -3095,266 +2743,45 @@ to: "@g.us"
 },
 content: [{ tag: "invite", attrs: { code: coded } }]
 }).then(async(res) => { 
-tekse = `*Group Link Yang Di Inspect*
+let attrs = res.content[0].attrs;
+let tekse = `「 *INSPECT GROUP LINK* 」\n
+▸ *Nama Group* : ${attrs.subject || "Undefined"}
+▸ *Pembuat* : ${attrs.creator ? "@" + attrs.creator.split("@")[0] : "Undefined"}
+▸ *Dibuat Pada* : ${attrs.creation ? moment(attrs.creation * 1000).tz("Asia/Jakarta").format("DD-MM-YYYY, HH:mm:ss") : "Undefined"}
+▸ *Total Member* : ${attrs.size || "Undefined"} Member
+▸ *Deskripsi Diubah* : ${attrs.s_t ? moment(attrs.s_t * 1000).tz("Asia/Jakarta").format("DD-MM-YYYY, HH:mm:ss") : "Undefined"}
+▸ *ID Group* : ${attrs.id ? attrs.id + "@g.us" : "Undefined"}\n
+© By ${botname}`
 
- *⨠ Nama Group : ${res.content[0].attrs.subject ? res.content[0].attrs.subject : "undefined"}*
- *⨠ Deskripsi Di Ubah : ${res.content[0].attrs.s_t ? moment(res.content[0].attrs.s_t *1000).tz("Asia/Jakarta").format("DD-MM-YYYY, HH:mm:ss") : "undefined"}*
- *⨠ Pembuat Group : ${res.content[0].attrs.creator ? "@" + res.content[0].attrs.creator.split("@")[0] : "undefined"}*
- *⨠ Group Di Buat : ${res.content[0].attrs.creation ? moment(res.content[0].attrs.creation * 1000).tz("Asia/Jakarta").format("DD-MM-YYYY, HH:mm:ss") : "undefined"}*
- *⨠ Total Member : ${res.content[0].attrs.size ? res.content[0].attrs.size : "undefined"} Member*
-
-*⨠ ID Group  : ${res.content[0].attrs.id ? res.content[0].attrs.id : "undefined"}*
-🎁 *By ${botname}*`
+let pp;
 try {
-pp = await lenwy.profilePictureUrl(res.content[0].attrs.id + "@g.us", "image")
+pp = await lenwy.profilePictureUrl(attrs.id + "@g.us", "image")
 } catch {
 pp = "https://tse2.mm.bing.net/th?id=OIP.n1C1oxOvYLLyDIavrBFoNQHaHa&pid=Api&P=0&w=153&h=153"
 }
+
 lenwy.sendFile(from, pp, "", m, { caption: tekse, mentions: await lenwy.parseMention(tekse) })
-
+}).catch(() => {
+m.reply("Gagal mengambil data, mungkin link sudah tidak valid atau kedaluwarsa.")
 })
 }
 break
 
-case 'inspect2': {
-if (isBan) return m.reply('Lu Di Ban Owner')
-if (!args[0]) return m.reply("Linknya?")
-let linkRegex = args.join(" ")
-let coded = linkRegex.split("https://chat.whatsapp.com/")[1]
-if (!coded) return reply("Link Invalid")
-lenwy.query({
-tag: "iq",
-attrs: {
-type: "get",
-xmlns: "w:g2",
-to: "@g.us"
-},
-content: [{ tag: "invite", attrs: { code: coded } }]
-}).then(async(res) => { 
-tekse = `「 Group Link Yang Di Inspect 」
-▸ Nama Group : ${res.content[0].attrs.subject ? res.content[0].attrs.subject : "undefined"}
-
-▸ Deskripsi Di Ubah : ${res.content[0].attrs.s_t ? moment(res.content[0].attrs.s_t *1000).tz("Asia/Jakarta").format("DD-MM-YYYY, HH:mm:ss") : "undefined"}
-▸ Pembuat Group : ${res.content[0].attrs.creator ? "@" + res.content[0].attrs.creator.split("@")[0] : "undefined"}
-▸ Group Di Buat : ${res.content[0].attrs.creation ? moment(res.content[0].attrs.creation * 1000).tz("Asia/Jakarta").format("DD-MM-YYYY, HH:mm:ss") : "undefined"}
-▸ Total Member : ${res.content[0].attrs.size ? res.content[0].attrs.size : "undefined"} Member
-
-▸ ID Group  : ${res.content[0].attrs.id ? res.content[0].attrs.id : "undefined"}@g.us
-
-©By ${botname}`
-try {
-pp = await lenwy.profilePictureUrl(res.content[0].attrs.id + "@g.us", "image")
-} catch {
-pp = "https://tse2.mm.bing.net/th?id=OIP.n1C1oxOvYLLyDIavrBFoNQHaHa&pid=Api&P=0&w=153&h=153"
-}
-lenwy.sendFile(from, pp, "", m, { caption: tekse, mentions: await lenwy.parseMention(tekse) })
-
-})
-}
-break
-
-case 'ping':
-case 'botstatus':
-case 'statusbot': {
-    const { execSync } = require('child_process');
-    const used = process.memoryUsage();
-    const cpus = os.cpus().map(cpu => {
-        cpu.total = Object.keys(cpu.times).reduce((last, type) => last + cpu.times[type], 0);
-        return cpu;
-    });
-    const cpu = cpus.reduce((last, cpu, _, { length }) => {
-        last.total += cpu.total;
-        last.speed += cpu.speed / length;
-        last.times.user += cpu.times.user;
-        last.times.nice += cpu.times.nice;
-        last.times.sys += cpu.times.sys;
-        last.times.idle += cpu.times.idle;
-        last.times.irq += cpu.times.irq;
-        return last;
-    }, { speed: 0, total: 0, times: { user: 0, nice: 0, sys: 0, idle: 0, irq: 0 } });
-
-    let timestamp = speed();
-    let latensi = speed() - timestamp;
-    let neww = performance.now();
-    let oldd = performance.now();
-
-    let serverLocation = 'Tidak diketahui';
-    let ispName = 'Tidak diketahui';
-    let timeZone = 'Tidak diketahui';
-    try {
-        const res = await fetch('http://ip-api.com/json/');
-        const data = await res.json();
-        serverLocation = `${data.city}, ${data.regionName}, ${data.country}`;
-        ispName = data.isp;
-        timeZone = data.timezone;
-    } catch (e) {
-        serverLocation = 'Gagal mengambil data lokasi';
-        ispName = 'Gagal mengambil ISP';
-    }
-
-    let diskSpace = 'Tidak diketahui';
-    try {
-        if (os.platform() === 'win32') {
-            diskSpace = 'Gagal membaca (OS Windows)';
-        } else {
-            diskSpace = execSync("df -h / | awk 'NR==2 {print $3\" Terpakai dari \"$2\" (\"$5\")\"}'").toString().trim();
-        }
-    } catch (err) {
-        diskSpace = 'Error membaca disk';
-    }
-
-    const loadAvg = os.loadavg().map(v => v.toFixed(2)).join(' | ');
-
-    let respon = `
-⏱️ *Kecepatan Respon :* ${latensi.toFixed(4)} Detik
-🚀 *Speed :* ${oldd - neww} Milidetik
-
-🤖 *INFO BOT*
- *⨠ Runtime Bot :* ${runtime(process.uptime())}
- *⨠ Process ID :* ${process.pid}
- *⨠ Storage / Disk :* ${diskSpace}
- *⨠ Total RAM :* ${formatp(os.totalmem())}
- *⨠ RAM Terpakai Bot :* ${formatp(used.rss)}
- *⨠ RAM Sisa Sistem :* ${formatp(os.freemem())}
-
-💻 *INFO VPS & SERVER*
- *⨠ Hostname :* ${os.hostname()}
- *⨠ Node.js :* ${process.version}
- *⨠ Platform :* ${os.platform()} ${os.arch()}
- *⨠ Uptime Server :* ${runtime(os.uptime())}
- *⨠ Provider/ISP :* ${ispName}
- *⨠ Region VPS :* ${serverLocation}
- *⨠ Timezone :* ${timeZone}
-
-📈 *INFO CPU & BEBAN SISTEM*
- *⨠ Load Average :* ${loadAvg} (1m | 5m | 15m)
-${cpus[0] ? ` *⨠ Model :* ${cpus[0].model.trim()} (${cpu.speed} MHZ)
-${Object.keys(cpu.times).map(type => ` *⨠ ${(type + '*').padEnd(6)}:* ${(100 * cpu.times[type] / cpu.total).toFixed(2)}%`).join('\n')}
- *⨠ Core(s) :* ${cpus.length} Core` : ''}
-`.trim();
-
-    m.reply(respon);
-}
-break
-
-case 'bcgc':
-case 'bcgroup': {
-    if (!isCreator) return m.reply(mess.OnlyOwner)
-    if (!q) return m.reply(`*Bukan Gitu Loh*\n> *Contoh : ${prefix + command} OEE SEMUAANYAA*`)
-    if (!text) return m.reply(`*Teks Broadcast Tidak Ditemukan*\n> *Contoh : ${prefix + command} OEEE*`)
-
-    let getGroups;
-    try {
-        getGroups = await lenwy.groupFetchAllParticipating()
-    } catch (err) {
-        console.error('Error fetching groups:', err)
-        return m.reply('*Gagal mengambil daftar grup.*')
-    }
-    let groups = Object.entries(getGroups).slice(0).map(entry => entry[1])
-    let groupIds = groups.map(v => v.id)
-    m.reply(`*Mengirim Broadcast Ke ${groupIds.length} Group Chat, Waktu Selesai ${groupIds.length * 1.5} detik*`)
-    for (let groupId of groupIds) {
-        await sleep(200)
-        try {
-            await lenwy.sendMessage(groupId, { text: `${text}` }, { quoted: m })
-        } catch (err) {
-            console.error('Error sending message to group:', groupId, err)
-        }
-    }
-    m.reply(`*Sukses Mengirim Broadcast Ke ${groupIds.length} Group*`)
-}
-break
-
-
-case 'bcimg':
-case 'bcvid':
-case 'bcvideo':
-case 'share': {
-    if (!isCreator) return m.reply('Maaf, Command ini Khusus untuk Developer Bot WhatsApp')
-    if (m.isGroup) return m.reply(mess.private)
-    if (!text) return m.reply(`*Penggunaan Salah Silahkan Gunakan Seperti Ini*\n${prefix + command} teks\n\nReply Gambar/Video Untuk Mengirim Gambar/Video Ke Semua Group`)
-
-
-
-    let getGroups;
-    try {
-        getGroups = await lenwy.groupFetchAllParticipating()
-    } catch (err) {
-        console.error('Error fetching groups:', err)
-        return m.reply('*Gagal mengambil daftar grup.*')
-    }
-
-    let groups = Object.entries(getGroups).map(entry => entry[1])
-    let groupIds = groups.map(v => v.id)
-
-    global.teksjpm = text;
-
-    let mime = m.quoted ? m.quoted.mimetype : '';
-
-    for (let groupId of groupIds) {
-        let metadata;
-        try {
-            metadata = await lenwy.groupMetadata(groupId)
-        } catch (err) {
-            console.error(`Error fetching metadata for group ${groupId}:`, err)
-            continue; // Lanjutkan ke grup berikutnya jika terjadi kesalahan
-        }
-
-        let participants = metadata.participants || []
-
-        try {
-            if (/image/.test(mime)) {
-                if (!m.quoted) return m.reply('Tidak ada gambar yang di-reply.')
-                let media = await lenwy.downloadAndSaveMediaMessage(m.quoted)
-                let mediaUrl = await uploader60Minute(media)
-                await lenwy.sendMessage(groupId, { image: { url: mediaUrl }, caption: global.teksjpm, contextInfo: { mentionedJid: participants.map(p => p.id) } }, { quoted: m })
-            } else if (/video/.test(mime)) {
-                if (!m.quoted) return m.reply('Tidak ada video yang di-reply.')
-                let media = await lenwy.downloadAndSaveMediaMessage(m.quoted)
-                let mediaUrl = await uploader60Minute(media)
-                await lenwy.sendMessage(groupId, { video: { url: mediaUrl }, caption: global.teksjpm, contextInfo: { mentionedJid: participants.map(p => p.id) } }, { quoted: m })
-            } else {
-                await lenwy.sendMessage(groupId, { text: global.teksjpm, contextInfo: { mentionedJid: participants.map(p => p.id) } }, { quoted: m })
-            }
-            await sleep(200) // Tunggu 2 detik antara pengiriman pesan
-        } catch (err) {
-            console.error(`Error sending message to group ${groupId}:`, err)
-        }
-    }
-
-    m.reply(`*Sukses Mengirim Broadcast Ke ${groupIds.length} Group*`)
-}
-break
-
-
-
-
-
-
-
-
-case 'antich1':
-case 'antich2':
+case 'antilinktt':
+case 'antilinkyt':
 case 'antiwame':
 case 'antilink1':
 case 'antilink2':
-case 'antipl':
 case 'antitoxic1':
 case 'antitoxic2':
 case 'antilinkgc1':
 case 'antilinkgc2':
-case 'antilinktt':
-case 'antilinkyt':
-case 'antibot':
 case 'antisw1':
 case 'antisw2': {
   if (!m.isGroup) return m.reply(mess.group);
   if (!isAdmins && !isCreator) return m.reply(mess.admin);
   if (!isBotAdmins) return m.reply(mess.botAdmin);
   let dbKey = command;
-  if (command === 'antipl') dbKey = 'antipanel';
-  if (command === 'antilinktt') dbKey = 'antitiktok';
-  if (command === 'antilinkyt') dbKey = 'antiyoutube';
   if (q === 'on') {
       global.db.data.chats[m.chat][dbKey] = true;
       if (['antilink1', 'antilink2', 'antilinkgc1', 'antilinkgc2'].includes(command)) {
@@ -3382,1039 +2809,336 @@ case 'antisw2': {
 }
 break
 
-case 'autoread': {
-  if (!isCreator) return m.reply(mess.owner);
-  if (q === 'on') {
-      global.db.data.settings[botNumber].autoread = true;
-      m.reply(`Berhasil mengubah autoread ke ${q}`);
-  } else if (q === 'off') {
-      global.db.data.settings[botNumber].autoread = false;
-      m.reply(`Berhasil mengubah autoread ke ${q}`);
-  } else {
-      m.reply(`*Ketik ${prefix + command} on/off*`);
+case 'welcome': {
+  if (!isAdmins) return m.reply(mess.admin)
+  if (!global.db.data.chats[m.chat]) global.db.data.chats[m.chat] = {}
+  if (!global.datagc[m.chat]) global.datagc[m.chat] = {}
+  if (!text) {
+    return m.reply(`*Pengaturan fitur ${command}*
+
+Ketik:
+- *${prefix + command} on* untuk mengaktifkan
+- *${prefix + command} off* untuk menonaktifkan
+- *${prefix + command} edit teksnya* untuk mengubah teks welcome
+
+*Placeholder yang bisa dipakai:*
+- {GROUPNAME} = nama grup
+- {TAG} = tag yang masuk
+- {JAM} = jam, menit, detik saat ini
+- {NAMAHARI} = nama hari saat ini
+- {TANGGAL} = tanggal, bulan, tahun saat ini
+
+*Contoh:*
+${prefix + command} edit Halo {TAG}, selamat datang di {GROUPNAME}
+Join at {TANGGAL} | {JAM}`)
   }
+  if (args[0] === 'on') {
+    global.db.data.chats[m.chat].wlcm = true
+    fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
+    return m.reply('Fitur Welcome berhasil diaktifkan.')
+  }
+  if (args[0] === 'off') {
+    global.db.data.chats[m.chat].wlcm = false
+    fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
+    return m.reply('Fitur Welcome berhasil dinonaktifkan.')
+  }
+  if (args[0] === 'edit') {
+    const teksnye = args.slice(1).join(' ').trim()
+    global.datagc[m.chat].text_welcome = teksnye
+    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
+    return m.reply(teksnye ? `Teks ${command} berhasil diubah` : `Teks ${command} berhasil direset ke bawaan`)
+  }
+  return m.reply(`Pilihan tidak valid.\nGunakan: on, off, atau edit`)
 }
 break
 
+case 'left': {
+  if (!isAdmins) return m.reply(mess.admin)
+  if (!global.db.data.chats[m.chat]) global.db.data.chats[m.chat] = {}
+  if (!global.datagc[m.chat]) global.datagc[m.chat] = {}
+  if (!text) {
+    return m.reply(`*Pengaturan fitur ${command}*
 
+Ketik:
+- *${prefix + command} on* untuk mengaktifkan
+- *${prefix + command} off* untuk menonaktifkan
+- *${prefix + command} edit teksnya* untuk mengubah teks welcome
 
+*Placeholder yang bisa dipakai:*
+- {GROUPNAME} = nama grup
+- {TAG} = tag yang masuk
+- {JAM} = jam, menit, detik saat ini
+- {NAMAHARI} = nama hari saat ini
+- {TANGGAL} = tanggal, bulan, tahun saat ini
 
+*Contoh:*
+${prefix + command} edit Sampai jumpa {TAG} dari grup {GROUPNAME}
+Keluar pada {NAMAHARI}, {TANGGAL} | {JAM}:{MENIT}`)
+  }
 
-
-
-
-
-case 'stiker':
-case 'sticker':
-case 's':
-case 'stickers':
-case 'sgif': {
- if (isBan) return m.reply('⚠ *Kamu Di Ban Owner*')
- if (!quoted) return m.reply(`Balas Video/Image Dengan Caption ${prefix + command}`)
- if (!/image/.test(mime) && !/video/.test(mime)) return
- if (/image/.test(mime)) {
- var stream = await downloadContentFromMessage(m.quoted? quoted : m.message.imageMessage, 'image');
- var buffer = Buffer.from([]);
- for await(const chunk of stream) {
- buffer = Buffer.concat([buffer, chunk]);
- }
- let buffers = await writeExifImg(buffer, { packname: global.packname, author: global.author });
- await lenwy.sendMessage(from, { sticker: { url: buffers } }, { quoted: m });
- } else if (/video/.test(mime)) {
- var stream = await downloadContentFromMessage(m.quoted? quoted : m.message.videoMessage, 'video');
- var buffer = Buffer.from([]);
- for await(const chunk of stream) {
- buffer = Buffer.concat([buffer, chunk]);
- }
- let buffers = await writeExifVid(buffer, { packname: global.packname, author: global.author });
- await lenwy.sendMessage(from, { sticker: { url: buffers } }, { quoted: m });
- } else {
- m.reply(`Balas gambar/video/sticker dengan caption ${prefix + 'sticker'} \n*(MAKSIMAL 10 DETIK!*)`);
- } 
- }
-break
-
-case 'smeme':
-case 'stickermeme':
-case 'stickmeme': {
-let respond = `Kirim/reply image/sticker dengan caption ${prefix + command} text1|text2`
-if (!/image/.test(mime)) return
-if (!text) return m.reply(respond)
-LenwyLD()
-await sleep(200)
-let atas = text.split('|')[0] ? text.split('|')[0] : '-'
-let bawah = text.split('|')[1] ? text.split('|')[1] : '-'
-try {
-let mee = await lenwy.downloadAndSaveMediaMessage(quoted)
-let mem = await uploader60Minute(mee)
-let smeme = `https://api.memegen.link/images/custom/${encodeURIComponent(atas)}/${encodeURIComponent(bawah)}.png?background=${mem}`
-let awikwok = await lenwy.sendImageAsSticker(m.chat, smeme, m, { packname: global.packname, author: global.author })
-await fs.unlinkSync(awikwok)
-} catch (e) {
-m.reply(mess.error + e)
-}
+  if (args[0] === 'on') {
+    global.db.data.chats[m.chat].left = true
+    fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
+    return m.reply('Fitur Left berhasil diaktifkan.')
+  }
+  if (args[0] === 'off') {
+    global.db.data.chats[m.chat].left = false
+    fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
+    return m.reply('Fitur Left berhasil dinonaktifkan.')
+  }
+  if (args[0] === 'edit') {
+    const teksnye = args.slice(1).join(' ').trim()
+    global.datagc[m.chat].text_left = teksnye
+    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
+    return m.reply(teksnye ? `Teks ${command} berhasil diubah` : `Teks ${command} berhasil direset ke bawaan`)
+  }
+  return m.reply(`Pilihan tidak valid.\nGunakan: on, off, atau edit`)
 }
 break
 
-case 'cuaca': {
-if (!text) return m.reply('*Mana Lokasinya?*')
-if (text.length > 20) return m.reply(`*Maksimal 20 Karakter*`)
-LenwyLD()
-await sleep(200)
-try {
-let wdata = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${text}&units=metric&appid=060a6bcfa19809c2cd4d97a212b19273&language=id`)
-let Lenwy_txt = ""
-Lenwy_txt += `*Cuaca Dari : ${text}*\n`
-Lenwy_txt += `☁️ *Cuaca :* *${wdata.data.weather[0].main}*\n`
-Lenwy_txt += `🧾 *Deskripsi :* *${wdata.data.weather[0].description}*\n`
-Lenwy_txt += `🌡️ *Suhu Rata Rata :* *${wdata.data.main.temp}*\n`
-Lenwy_txt += `💨 *Tekanan :* *${wdata.data.main.pressure}*\n`
-Lenwy_txt += `🧴 *kelembapan :* *${wdata.data.main.humidity}*\n`
-Lenwy_txt += `🛳️ *Garis Bujur :* *${wdata.data.coord.lat}*\n`
-Lenwy_txt += `🌏 *Negara :* *${wdata.data.sys.country}*\n`
-lenwy.sendMessage(m.chat, { text: Lenwy_txt, }, { quoted: m })
-} catch (e) {
-m.reply(`Pastikan Wilayahnya Adalah Kota`)
-}
+case 'onlyadmin': {
+  if (!isAdmins) return m.reply(mess.admin)
+  if (!global.db.data.chats[m.chat]) global.db.data.chats[m.chat] = {}
+  if (!global.datagc[m.chat]) global.datagc[m.chat] = {}
+  if (!text) return m.reply(`Contoh:
+${prefix + command} on / off`)
+  if (args[0] === 'on') {
+    global.db.data.chats[m.chat].onlyAdmin = true
+  } else if (args[0] === 'off') {
+    global.db.data.chats[m.chat].onlyAdmin = false
+  }
+  fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
+  m.reply(mess.success)
 }
 break
 
-case 'gpt4':
-case 'gpt':
-case 'ai': {
-if (!text) return m.reply(`*Mau Nanya Apa Ama AI?*`) 
- LenwyLD()
- if (/image/.test(mime)) {
-  try {
-    if (quoted && /image/.test(mime)) {
-        try {
-          let media = await merlynn.downloadAndSaveMediaMessage(quoted)
-          let anu = await uploader60Minute(media)
-          let data = await (await fetch(`https://${global.api.maelyn.domain}/api/ai/gemini`,
-                    {
-                      method: "POST",
-                      headers: {
-                        "x-maelyn-auth": global.api.maelyn.apikey,
-                        "Content-Type": "application/json"
-                      },
-                      body: JSON.stringify({
-                        "prompt": text,
-                        "model": "gemini-3-flash-preview",
-                        "mode": "chat",
-                        "images": [
-                          anu
-                        ]
-                      })
-                    }
-                  )).json();
-          console.log(data)
-          m.reply(data.result.text)
-        } catch (e) {
-          console.log(e)
-          return m.reply("*maaf, sedang terjadi error saat ini*")
-        }
-      } else {
-        let gpt = await (await fetch(`https://${global.api.maelyn.domain}/api/ai/gemini`,
-                    {
-                      method: "POST",
-                      headers: {
-                        "x-maelyn-auth": global.api.maelyn.apikey,
-                        "Content-Type": "application/json"
-                      },
-                      body: JSON.stringify({
-                        "prompt": text,
-                        "mode": "chat",
-                        "model": "gemini-3-flash-preview"
-                      })
-                    }
-                  )).json();
-        console.log(gpt)
-        m.reply(gpt.result.text)
-      }
-   } catch (e) {
-    console.log(e)
-    return m.reply("*Error Kak :(*")
-   }
- }
-}
-break
-
-case 'search':
-case 'searchai':
-  if (!text) return m.reply(`*Begini Loh*\n\n> *${command} Gempa di jepang*`)
-  LenwyLD()
-  try {
-     let you = await (await fetch(`https://${global.api.maelyn.domain}/api/perplexity?q=${text}`, {
-       headers: {
-         'x-maelyn-auth': global.api.maelyn.apikey
-       }
-     })).json()
-     console.log(you)
-     let result = you.result
-     let sourcenya = `> *Source*\n`
-     result.source.forEach((url, index) => {
-      sourcenya += `(${index + 1}) ${url}\n`
-     });
-     m.reply(`${result.answer}
-
-${sourcenya}`)
-   } catch (e) {
-       lenwy.sendMessage (m.chat, { react: { text: `❌`, key: m.key }})
-     }
-break
-
-
-case 'asmaul husna': {
-const t3xt = require(`./storage/teks/${command}.json`)
-const r4andT3xt = t3xt[Math.floor(Math.random() * t3xt.length)]
-lenwy.sendMessage(from, { text: r4andT3xt }, { quoted: m })
-}
-break
-
-case 'ayat kursi': {
-let result = `🎁 *Ayat Kursi*
-
-✉️ *Arab :*
-اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ
-
-✉️ *Latin :*
-*“Alloohu laa ilaaha illaa huwal hayyul qoyyuum, laa ta’khudzuhuu sinatuw walaa naum. Lahuu maa fissamaawaati wa maa fil ardli man dzal ladzii yasyfa’u ‘indahuu illaa biidznih, ya’lamu maa baina aidiihim wamaa kholfahum wa laa yuhiithuuna bisyai’im min ‘ilmihii illaa bimaa syaa’ wasi’a kursiyyuhus samaawaati wal ardlo walaa ya’uuduhuu hifdhuhumaa wahuwal ‘aliyyul ‘adhiim.”*
-
-✉️ *Artinya:*
-Allah, tidak ada Tuhan (yang berhak disembah) melainkan Dia Yang Hidup kekal lagi terus menerus mengurus (makhluk-Nya) tidak mengantuk dan tidak tidur. Kepunyaan-Nya apa yang di langit dan di bumi. Tiada yang dapat memberi syafa'at di sisi Allah tanpa izin-Nya.
-Allah mengetahui apa-apa yang di hadapan mereka dan di belakang mereka, dan mereka tidak mengetahui apa-apa dari ilmu Allah melainkan apa yang dikehendaki-Nya. Kursi Allah meliputi langit dan bumi. Dan Allah tidak merasa berat memelihara keduanya, dan Allah Maha Tinggi lagi Maha Besar." 
-*(QS. Al Baqarah: 255)*`
-lenwy.sendMessage(m.chat, { image: { url: 'https://telegra.ph/file/afb17800d56775ad1791d.png' }, caption: result}, { quoted: m })
-}
-
-break
-
-case 'kisahnabi': {
-if (!text) return m.reply(`*Tolong Masukkan Nama Nabi*`) 
-try{
-let ilenwy = await fetchJson(`https://api.zeeoneofc.my.id/api/islam/kisahnabi?apikey=QIO8xicLNkEV43Y&nabi=${text}`)
-const namanabi = ilenwy.result.name
-const kelahiran = ilenwy.result.birth
-const wafat = ilenwy.result.death_age
-const asal = ilenwy.result.country_from
-const ceritanabi = ilenwy.result.story
-var lenwy_result = `*Kisah Nabi*
-🎁 *Nama Nabi : ${namanabi}*
-🗓️ *Hari Kelahiran : ${kelahiran}*
-🕒 *Wafat Pada Umur : ${wafat}*
-🌏 *Asal : ${asal}*
-
-📑 *Kisah Dari Nabi ${namanabi} :*
-${ceritanabi}`
-m.reply(lenwy_result) 
-} catch (error) {
-    return m.reply(mess.error)
-}
-}
-break
-
-case 'doa': {
-if (!text) return m.reply(`*Tolong Masukkan Doa Yang Ingin Dicari*`) 
-try{
-LenwyLD()
-await sleep(200)
-let ilenwy = await fetchJson(`https://doa-doa-api-ahmadramadhan.fly.dev/api/doa/${text}`)
-const namadoa = ilenwy.doa
-const ayat = ilenwy.ayat
-const latin = ilenwy.latin
-var lenwy_result = `*Pencarian : ${namadoa}*
-
-*${ayat}*
-
-*${latin}*`
-m.reply(lenwy_result) 
-} catch (error) {
-    return m.reply(mess.error)
-}
-}
-break
-
-case 'toimg': {
-if (isBan) return m.reply(mess.ban)
-try {
-  LenwyLD()
-  await sleep(200)
-if (!quoted) return m.reply ('Reply Image')
-if (!/webp/.test(mime)) reply `Balas sticker dengan caption *${prefix + command}*`
-let media = await lenwy.downloadAndSaveMediaMessage(quoted)
-let ran = await getRandom('.png')
-exec(`ffmpeg -i ${media} ${ran}`, (err) => {
-fs.unlinkSync(media)
-if (err) m.reply(err)
-let buffer = fs.readFileSync(ran)
-lenwy.sendMessage(from, { image: buffer }, {quoted:m})
-fs.unlinkSync(ran)
+case 'tagsubject':
+case 'faketag': {
+if (!m.isGroup) return m.reply(mess.group)
+if (!isAdmins) return m.reply(mess.admin)
+if (!q) return m.reply(`Teks Nya Mana Kak?`)
+lenwy.sendMessage(m.chat, {
+  text: "@"+m.chat,
+  contextInfo: {
+    mentionedJid: participants.map(a => a.id),
+    groupMentions: [{
+        groupJid: m.chat,
+        groupSubject: q
+    }]
+   }
 })
-} catch (e) {
-    m.reply('[!] pastikan kamu reply stiker yang tidak gerak')
-}
 }
 break
 
-case 'tovid': {
-  if (isBan) return m.reply(mess.ban);
-  try {
-    if (!quoted) return m.reply(`Balas sticker dengan caption *${prefix + command}*`);
+case 'addpay': {
+  if (!isAdmins) return m.reply(mess.admin);
+  if (!text || !text.includes('@')) return m.reply(`Contoh: Kirim foto dengan caption:\n${prefix + command} ewallet@Berikut Nomor E-Wallet nya:\nGopay: 085261255548\nDana: 085261255548`);
+  if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`);
 
-    if (!/webp/.test(mime)) return m.reply(`Balas sticker dengan caption *${prefix + command}*`);
+  let [paymentMethod, ...paymentDataArr] = text.split('@');
+  let paymentData = paymentDataArr.join('@');
+  let groupID = m.chat;
+  let paymentDataId = `${groupID.split('@')[0]}-${paymentMethod}`;
+  
+  let imageUrl = await lenwy.downloadAndSaveMediaMessage(quoted, `./storage/data/image/${paymentDataId}`);
+  let _db = readDatabasePayment() || [];
 
-    if (/webp/.test(mime)) {
-      let media = await lenwy.downloadAndSaveMediaMessage(quoted); // Download sticker
-      let ran = await getRandom('.mp4'); // Generate nama file video
+  if (_db.some(entry => entry.id === groupID && entry.key === paymentMethod)) {
+      return m.reply(`Key dengan metode ${paymentMethod} sudah ada untuk grup ini.`);
+  }
 
-      const isAnimated = await isAnimatedWebp(media);
-      if (!isAnimated) {
-        return m.reply('Sticker yang kamu kirim bukan animasi webp. Harap kirim sticker animasi.');
-      }
+  _db.push({ id: groupID, key: paymentMethod, paymentData, imageUrl });
+  writeDatabasePayment(_db);
+  return m.reply(`Pembayaran dengan metode ${paymentMethod} berhasil disimpan.
+lanjutkan dengan menambahkan tombol
+menggunakan perintah ${prefix}btnlink atau ${prefix}btncopy`);
+}
+break
 
-      exec(`ffmpeg -v error -i ${media} -t 10 -c:v libx264 -pix_fmt yuv420p -f mp4 ${ran}`, (err) => {
-        fs.unlinkSync(media); // Hapus file sticker
-        if (err) {
-          return m.reply(`Terjadi kesalahan saat mengonversi sticker: ${err.message}`);
-        }
+case 'delpay': {
+  if (!isAdmins) return;
+  if (!text) return m.reply(`Contoh: ${prefix + command} key`);
 
-        let buffer = fs.readFileSync(ran); // Baca file video
-        lenwy.sendMessage(from, { video: buffer, caption: 'Sticker converted to video' }, { quoted: m }); // Kirim video hasil konversi
-        fs.unlinkSync(ran); // Hapus file video setelah dikirim
+  let _db = readDatabasePayment();
+  let paymentIndex = _db.findIndex(item => item.key === text && item.id === m.chat);
+
+  if (paymentIndex === -1) {
+      let availableKeys = _db.filter(item => item.id === m.chat).map((item, i) => `${i + 1}. ${item.key}`);
+      return m.reply(availableKeys.length === 0 ? "Tidak ada data pembayaran." : `Key tidak ditemukan. Key tersedia:\n${availableKeys.join('\n')}`);
+  }
+
+  let [deletedPayment] = _db.splice(paymentIndex, 1);
+  if (deletedPayment.imageUrl) {
+      require('fs').unlink(deletedPayment.imageUrl, (err) => {
+          if (err) console.error("Gagal menghapus file gambar:", err);
       });
-    }
-  } catch (e) {
-    m.reply(`[!] Pastikan kamu reply sticker dengan benar (format sticker GIF atau video). Error: ${e.message}`);
-  }
-}
-break;
-
-case 'chord':
-  if (!text) return m.reply('masukkan judul lagunya!')
-  try {
-    let chord = await (await fetch('https://endpoint.web.id/search/chord?key=315602&query=' + text)).json()
-    LenwyLD()
-    await sleep(200)
-    let result = chord.result;
-    
-    let message = `${result.title}\n\n`
-    message += `Artis: ${result.artist}\n`
-    message += `URL: ${result.url}\n`
-    message += `URL Artis: ${result.artistUrl}\n\n`
-    message += `Chord:\n${result.lyrics}`;
-    
-    lenwy.sendMessage(m.chat, { text: message }, { quoted: m })
-  } catch (e) {
-    m.reply('terjadi kesalahan: ' + e)
-  }
-break
-
-case 'jodoh': {
-if (!m.isGroup) return
-let member = participants.map(u => u.id)
-let me = m.sender
-let jodoh = member[Math.floor(Math.random() * member.length)]
-await lenwy.sendMessage(from, { text : `@${me.split('@')[0]} ❤ @${jodoh.split('@')[0]}`, mentions : [me, jodoh] }, { quoted: m })
-}
-break
-
-case 'jodoh2': {
-  if (!m.isGroup) return
-  let member = participants.map(u => u.id)
-  let me = m.sender
-  let jodoh = member[Math.floor(Math.random() * member.length)]
-  let msg = generateWAMessageFromContent(m.chat, {
-    viewOnceMessage: {
-      message: {
-          "messageContextInfo": {
-            "deviceListMetadata": {},
-            "deviceListMetadataVersion": 2
-          },
-          interactiveMessage: proto.Message.InteractiveMessage.create({
-            body: proto.Message.InteractiveMessage.Body.create({
-              text: `@${me.split('@')[0]} ❤ @${jodoh.split('@')[0]}`
-            }),
-            footer: proto.Message.InteractiveMessage.Footer.create({
-              text: "HALOO INI FOOTER"
-            }),
-            header: proto.Message.InteractiveMessage.Header.create({
-              title: "HAIII INi header",
-              subtitle: "HUEEEEEKKK",
-              hasMediaAttachment: false
-            }),
-            nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
-              buttons: [
-                {
-                  name: "single_select",
-                  "buttonParamsJson": JSON.stringify({
-                    title:"[ PILIH ]",
-                    sections:[{
-                      title: "INI JUDUL",
-
-                      rows:[{
-                        title: "pay a",
-                        id: `pay a`
-                      }]
-                    }]
-                  })
-                }
-              ],
-            }),
-            contextInfo: {
-            mentionedJid: [me, jodoh], 
-            forwardingScore: 9999,
-            isForwarded: true
-            }
-         })
-      }
-    }
-  }, { quoted: m })
-  await lenwy.relayMessage(msg.key.remoteJid, msg.message, {
-  messageId: msg.key.id
-  })
-  }
-  break
-
-
-
-
-
-case 'play':
-case 'song': {
- if (isBan) return m.reply(mess.ban);
- if (!text) return m.reply(`*Mau Dengerin Lagu Apa?*`);
- LenwyLD();
-
- try {
- let searchnya = await (await fetch(`https://api.nexray.eu.cc/search/youtube?q=${encodeURIComponent(text)}`)).json();
- let res = searchnya.result; // Ambil semua hasil pencarian
- let audioInfo = res?.[0] || {};
- let procees = await (await fetch(`https://api.nexray.eu.cc/downloader/v1/ytmp3?url=${audioInfo.url}`)).json();
- console.log(procees)
- await lenwy.sendMessage(m.chat, { audio: { url: procees.result.url }, mimetype: 'audio/mp4' }, { quoted: m })
- } catch (e) {
- console.log(e)
- }
-}
-break
-
-case 'ytmp3': {
- if (!text) return m.reply(`*Link Youtubenya Mana?*`)
-try {
-LenwyLD()
-await sleep(200)
-m.reply('Process sending audio, mungkin ini membutuhkan 1-3 menit jika durasi audio terlalu panjang!')
-let procees = await (await fetch(`https://api.nexray.eu.cc/downloader/v1/ytmp3?url=${encodeURIComponent(text)}`)).json();
-console.log(procees)
-let audioUrl = procees.result.url
-
-lenwy.sendMessage(m.chat, { audio: { url: audioUrl }, mimetype: 'audio/mp4' }, { quoted: m });
-} catch (e) {
-m.reply('terjadi error :' + e)
-}
-}
-break
-
-case 'ytmp4': {
-if (!text) return m.reply(`*Link Youtubenya Mana?*`)
-try {
-LenwyLD()
-m.reply('Process sending video, mungkin membutuhkan 1-3 menit jika durasi video terlalu panjang!')
-let procees = await (await fetch(`https://api.nexray.eu.cc/downloader/v1/ytmp4?url=${encodeURIComponent(text)}`)).json();
-console.log(procees)
-lenwy.sendMessage(m.chat,{ video: {url: procees.result.url }, caption: `Caption: ${procees.result.title}` }, {quoted: m})
-} catch (e) {
-m.reply('terjadi error :' + e)
-}
-}
-break
-
-
-case 'spotify': {
-  if (!text) return m.reply("*Mau Cari Lagu Apa?*");
-  LenwyLD();
-  try {
-    var result = await axios.get(`https://api.vreden.my.id/api/v1/search/spotify?query=${text}&limit=3`, { headers: { 'User-Agent': 'Mozilla/5.0' } })
-  } catch (error) {
-    return m.reply('*Gagal melakukan pencarian, coba lagi nanti.*');
   }
 
-  if (!result || !result.data.result || result.data.result.search_data.length === 0) {
-    return m.reply('*Tidak ada hasil ditemukan*');
-  }
-
-  let res = result.data.result.search_data; // Ambil semua hasil pencarian
-  let audioInfo = res[Math.floor(Math.random() * res.length)];
-  console.log(audioInfo.song_link)
-  let { data } = await axios.get(`https://api.vreden.my.id/api/v1/download/spotify?url=${audioInfo.song_link}`, { headers: { 'User-Agent': 'Mozilla/5.0' } })
-  console.log(data)
-
-  if (data.result) {
-    lenwy.sendMessage(m.chat, { audio: { url: data.result.download }, mimetype: 'audio/mp4' }, { quoted: m });
-  } else {
-    return m.reply('*Gagal mendapatkan audio preview, coba lagi nanti.*');
-  }
+  writeDatabasePayment(_db);
+  m.reply(`Data pembayaran "${text}" berhasil dihapus.`);
 }
 break
 
-
-
-
-
-case 'ttdl':
-case 'tt': {
-  if (!text) return m.reply(`*Link Tiktoknya Mana?*`);
-  if (!isUrl(text)) return m.reply(mess.link);
+case 'editpay': {
+  if (!isAdmins) return;
+  if (!text.includes('@')) return m.reply(`Contoh: ${prefix + command} key@teksBaru`);
   
-  LenwyLD();
-
-  try {
-    let response = await (await fetch(`https://api.siputzx.my.id/api/d/tiktok/v2?url=${encodeURIComponent(text)}`)).json();
-    console.log(response);
-
-    if (!response.status || !response.data) {
-      return m.reply("Gagal mengambil data dari API.");
-    }
-
-    let data = response.data;
-    
-    let capt = `*Title:* ${data.text || 'No Title'}\n` +
-               `*Author:* ${data.author_nickname}\n` +
-               `*Views:* ${data.play_count.toLocaleString()} | *Likes:* ${data.like_count.toLocaleString()}\n` +
-               `*Shares:* ${data.share_count.toLocaleString()}`;
-
-    if (data.slides && typeof data.slides === 'object') {
-      for (const key in data.slides) {
-        const slide = data.slides[key];
-        if (slide?.url) {
-          await lenwy.sendMessage(m.chat, { image: { url: slide.url } }, { quoted: m });
-        }
-      }
-      m.reply(capt || '');
-    } else if (data.no_watermark_link) {
-      let videoUrl = data.no_watermark_link;
-      await lenwy.sendMessage(m.chat, {
-        video: { url: videoUrl },
-        caption: capt
-      }, { quoted: m });
-    } else {
-      m.reply("Tipe konten tidak dikenali atau media tidak ditemukan.");
-    }
-
-    if (data.music_link) {
-      let audioTitle = 'Tiktok_Audio';
-      await lenwy.sendMessage(m.chat, {
-        audio: { url: data.music_link },
-        mimetype: 'audio/mpeg',
-        fileName: `${audioTitle}.mp3`
-      }, { quoted: m });
-    }
-
-  } catch (error) {
-    console.error("Error TikTok DL:", error);
-    m.reply("Terjadi kesalahan saat memproses permintaan.");
-  }
-}
-break
-
-
-
-
-
-case 'ig':
-case 'igdl': {
-  if (!text) return m.reply(`*Link Instagramnya Mana?*`)
-  if (!isUrl(text)) return m.reply(mess.link)
+  let [key, newWording] = text.split('@');
+  let _db = readDatabasePayment();
+  let payment = _db.find(item => item.id === m.chat && item.key === key);
   
-  LenwyLD()
-  await sleep(200)
-  try {
-    let ress = await igdl(text);
-    console.log(ress);
-    
-    const total = ress.length;
-    const step = Math.floor(Math.sqrt(total));
-    const batas = step;
-    for (let i = 0; i < step; i++) {
-      let responseIg = await axios.head(ress[i].url); 
-      let contentType = responseIg.headers['content-type'];
-      if (contentType.startsWith('image/')) {
-        await lenwy.sendMessage(m.chat, { image: { url: ress[i].url}, caption: mess.success }, { quoted: m });
-      } else {
-        await lenwy.sendMessage(m.chat, { video: { url: ress[i].url}, caption: mess.success }, { quoted: m });
-      }
-    }
-  } catch (e) {
-    m.reply(e)
-  }
+  if (!payment) return m.reply(`Key "${key}" tidak ditemukan di grup ini.`);
+
+  payment.paymentData = newWording;
+  writeDatabasePayment(_db);
+  return m.reply(`Wording untuk key "${key}" berhasil diubah.`);
 }
 break
 
+case 'btnlink': {
+  if (!isAdmins) return m.reply(mess.admin);
+  if (!text.includes('@')) return m.reply(`Contoh: ${prefix + command} key@namaTombol@url`);
 
-
-
-
-
-case 'fb':
-case 'fbdl': {
- if (!text) return m.reply(`*Link Fbnya Mana?*`)
- if (!isUrl(text)) return m.reply(mess.link)
- LenwyLD()
- await sleep(200)
- try {
- let { status, result } = await (await fetch(`https://${global.api.maelyn.domain}/api/facebook?url=${text}`, {
-   headers: {
-     'x-maelyn-auth': global.api.maelyn.apikey
-   }
- })).json()
- if (status === "Success") {
- let videoHD = result.medias.find(media => media.quality === 'hd')
- await lenwy.sendMessage(m.chat, { video: { url: videoHD?.url }}, { quoted: m })
- } else {
- m.reply(`Gagal mengambil data`)
- }
- } catch (error) {
- m.reply(`Error: ${error}`)
- console.log(error)
- }
-}
-break
-
-
-
-
-
-
-case 'twitter':
-case 'xdl': {
-  if (!text) return m.reply(`*Link Twitternya Mana?*`)
-  if (!isUrl(text)) return m.reply(mess.link)
-  LenwyLD()
-  try {
-    let response = await (await fetch(`https://${global.api.maelyn.domain}/api/x?url=${text}`, {
-      headers: {
-        'x-maelyn-auth': global.api.maelyn.apikey
-      }
-    })).json()
-    lenwy.sendMessage(m.chat, { video: { url: response.result.video_hd }, caption: `Caption: ${response.result.desc}` }, { quoted: m })
-    await sleep(200)
-    await lenwy.sendMessage(m.chat, { audio: { url: response.result.audio }, mimetype: 'audio/mp4' }, { quoted: m });
-  } catch (error) {
-    console.error(error)
-    m.reply(mess.error)
-  }
-}
-break
-
-
-
-
-
-
-
-case 'mediafire': {
-  if (isBan) return m.reply(mess.ban)
-  if (!text) return m.reply(mess.link)
-  LenwyLD()
-  await sleep(200)
-  const baby1 = await (await fetch('https://endpoint.web.id/downloader/mediafire?key=315602&url=' + text)).json()
-  const shanz = baby1.result;
-  const extension = shanz.filename.split('.').pop().toLowerCase()
-
-  const mimeTypes = {
-      'pdf': 'application/pdf',
-      'jpg': 'image/jpeg',
-      'jpeg': 'image/jpeg',
-      'png': 'image/png',
-      'gif': 'image/gif',
-      'mp4': 'video/mp4',
-      'mp3': 'audio/mpeg',
-      'zip': 'application/zip',
-      'txt': 'text/plain',
-  };
-  const mimeType = mimeTypes[extension] || 'application/octet-stream';
-
-  const result4 = `🔧 *MEDIAFIRE DOWNLOADER*\r\n\r\n🔖 *Name* : ${shanz.name}\r\n💽 *Size* : ${shanz.size}\r\n📌 *Desc* : ${shanz.desc}`
+  let [key, displayName, url] = text.split('@');
+  let _db = readDatabasePayment();
+  let paymentData = _db.find(item => item.key === key && item.id === m.chat);
   
-  lenwy.sendMessage(m.chat, {
-      document: { url: shanz.media },
-      fileName: shanz.filename,
-      mimetype: mimeType,
-      caption: result4
-  }, { quoted: m })
+  if (!paymentData) return m.reply(`Key "${key}" tidak ditemukan di grup ini.`);
+
+  paymentData.buttonData = paymentData.buttonData || [];
+  paymentData.buttonData.push({
+      name: "cta_url",
+      buttonParamsJson: JSON.stringify({ display_text: displayName, url: url })
+  });
+
+  writeDatabasePayment(_db);
+  return m.reply(`Tombol URL "${displayName}" berhasil diset untuk key "${key}".`);
 }
 break
 
-case 'ssweb': 
-case 'ssdesktop':
-case 'ssdesk': {
-  if (!q) return m.reply(`*Contoh ${prefix + command} Link Kamu*`)
-  try {
-      lenwy.sendMessage(from, { image: { url: `https://api.autoresbot.com/api/ssweb?url=${encodeURIComponent(q)}&apikey=4c04faf21fb8524bad4a9cb7` }, caption: mess.success }, { quoted: m })
-  } catch (error) {
-    console.error('Error saat memanggil API:', error)
-    m.reply('Terjadi kesalahan saat memproses permintaan.')
-  }
-}
-break
-        
-case 'sswebhp': 
-case 'sshp':
-case 'sshandphone': {
-  if (!q) return m.reply(`*Contoh ${prefix + command} Link Kamu*`)
-  const apiUrl = `https://endpoint.web.id/tools/sswebphone?key=315602&url=${encodeURIComponent(q)}`;
-  try {
-    const response = await axios.get(apiUrl)
-    if (response.data.status && response.data.code === 200) {
-      const imageUrl = response.data.result;
-      lenwy.sendMessage(from, { image: { url: imageUrl }, caption: mess.success }, { quoted: m })
-    } else {
-      m.reply('Gagal mendapatkan tangkapan layar dari API.')
-    }
-  } catch (error) {
-    console.error('Error saat memanggil API:', error)
-    m.reply('Terjadi kesalahan saat memproses permintaan.')
-  }
-}
-break
-       
-case 'sstab': {
-  if (!q) return m.reply(`*Contoh ${prefix + command} Link Kamu*`)
-  const apiUrl = `https://endpoint.web.id/tools/sswebtab?key=315602&url=${encodeURIComponent(q)}`;
-  try {
-    const response = await axios.get(apiUrl)
-    if (response.data.status && response.data.code === 200) {
-      const imageUrl = response.data.result;
-      lenwy.sendMessage(from, { image: { url: imageUrl }, caption: mess.success }, { quoted: m })
-    } else {
-      m.reply('Gagal mendapatkan tangkapan layar dari API.')
-    }
-  } catch (error) {
-    console.error('Error saat memanggil API:', error)
-    m.reply('Terjadi kesalahan saat memproses permintaan.')
-  }
-}
-break
+case 'btncopy': {
+  if (!isAdmins) return;
+  if (!text.includes('@')) return m.reply(`Contoh: ${prefix + command} <key>@<namaTombol>@<teksCopy>`);
 
-case 'wm': {
-  if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-  if (!quoted) return m.reply(`⚠️ Balas sticker dengan caption ${prefix + command}`)
-  if (!text) return m.reply(`Contoh: ${prefix + command} teks_packname`)
-
-  try {
-    if (quoted.mtype !== 'stickerMessage') return m.reply(`⚠️ Fitur ini khusus untuk reply ke *sticker*!`);
-    const webpBuffer = await quoted.download()
-    if (!webpBuffer || webpBuffer.length === 0) return m.reply('⚠️ Gagal download sticker!');
-
-    const img = new Image()
-    await img.load(webpBuffer)
-
-    const json = {
-      "sticker-pack-id": "com.snowcorp.stickerly.android.stickercontentprovider b5e7275f-f1de-4137-961f-57becfad34f2",
-      "sticker-pack-name": text,
-      "sticker-pack-publisher": '',
-      "emojis": ["🤖"] 
-    }
-
-    const exifAttr = Buffer.from([0x49, 0x49, 0x2A, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x41, 0x57, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16, 0x00, 0x00, 0x00])
-    const jsonBuf = Buffer.from(JSON.stringify(json), 'utf-8')
-    const padding = Buffer.alloc(jsonBuf.length % 2 === 1 ? 1 : 0)
-    const exif = Buffer.concat([exifAttr, jsonBuf, padding])
-    exif.writeUInt32LE(jsonBuf.length, 14)
-    img.exif = exif
-    const finalStickerBuffer = await img.save(null)
-    await lenwy.sendMessage(from, { sticker: finalStickerBuffer }, { quoted: m })
-  } catch (err) {
-    console.error('Error detail:', err)
-    m.reply(`⚠️ Error! ${err.message}`)
-  }
-}
-break
-
-case 'pin':
-case 'pinterest': {
-  if (!text) return m.reply(`*Contoh:* ${prefix + command} FF🗿`)
+  let [key, displayName, nilaiCopy] = text.split('@');
+  let _db = readDatabasePayment();
+  let paymentData = _db.find(item => item.key === key && item.id === m.chat);
   
-  LenwyLD()
-  await sleep(200)
-  let push = []
-  try {
-    async function createImage(url) {
-      const { imageMessage } = await generateWAMessageContent({
-        image: { url }
-      }, {
-        upload: lenwy.waUploadToServer
-      })
-      return imageMessage;
-    }
+  if (!paymentData) return m.reply(`Key "${key}" tidak ditemukan di grup ini.`);
 
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        let randIndex = Math.floor(Math.random() * (i + 1));
-        [array[i], array[randIndex]] = [array[randIndex], array[i]];
-      }
-    }
-    
-    let { data } = await axios.get(`https://api.nexray.eu.cc/search/pinterest?q=${encodeURIComponent(text)}`)
-    
-    if (!data.status || !data.result || data.result.length === 0) {
-      throw new Error("Gagal mengambil data atau gambar tidak ditemukan")
-    }
-    
-    let res = data.result
-    shuffleArray(res) // Acak urutan gambarnya
-    res = res.slice(0, 10) // Ambil maksimal 10 gambar
+  paymentData.buttonData = paymentData.buttonData || [];
+  paymentData.buttonData.push({
+      name: "cta_copy",
+      buttonParamsJson: JSON.stringify({ display_text: displayName, id: nilaiCopy, copy_code: nilaiCopy })
+  });
 
-    let i = 1;
-    for (let pinData of res) {
-      push.push({
-        body: proto.Message.InteractiveMessage.Body.fromObject({
-          text: `*${pinData.grid_title || 'Pinterest'}*\n\nImage Ke ${i++}/${res.length}`
-        }),
-        footer: proto.Message.InteractiveMessage.Footer.fromObject({
-          text: `By ${botname}`
-        }),
-        header: proto.Message.InteractiveMessage.Header.fromObject({
-          title: '', 
-          hasMediaAttachment: false,
-          imageMessage: await createImage(pinData.images_url) // Ambil link gambar dari JSON terbaru
-        }),
-        nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
-          buttons: [
-            {
-              "name": "cta_url",
-              "buttonParamsJson": `{"display_text":"Source Pin","url":"${pinData.pin}","merchant_url":"${pinData.pin}"}`
-            }
-          ]
-        })
-      })
-    }
-    
-    const botMsg = generateWAMessageFromContent(m.chat, {
-      viewOnceMessage: {
-        message: {
-          messageContextInfo: {
-            deviceListMetadata: {},
-            deviceListMetadataVersion: 2
-          },
-          interactiveMessage: proto.Message.InteractiveMessage.fromObject({
-            body: proto.Message.InteractiveMessage.Body.create({
-              text: '*P I N T E R E S T*', 
-            }),
-            footer: proto.Message.InteractiveMessage.Footer.create({
-              text: '*Hasil Dari:* ' + text,
-            }),
-            header: proto.Message.InteractiveMessage.Header.create({
-              hasMediaAttachment: false
-            }),
-            carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({
-              cards: [...push]
-            })
+  writeDatabasePayment(_db);
+  return m.reply(`Tombol salin "${nilaiCopy}" berhasil diset untuk key "${key}".`);
+}
+break
+
+case 'delbtn': {
+  if (!isAdmins) return;
+  if (!text) return m.reply('Contoh: delbutton key');
+  
+  let _db = readDatabasePayment();
+  let payment = _db.find(item => item.id === m.chat && item.key === text);
+  
+  if (!payment) return m.reply(`Key "${text}" tidak ditemukan di grup ini.`);
+
+  payment.buttonData = [];
+  writeDatabasePayment(_db);
+  return m.reply(`Semua tombol untuk key "${text}" berhasil dihapus.`);
+}
+break
+
+case 'pay': {
+  let _db = readDatabasePayment();
+  let payments = _db.filter(item => item.id === m.chat);
+  
+  if (payments.length === 0) return m.reply("Tidak ada data pembayaran di grup ini.");
+  
+  let missingButtons = payments.filter(p => !p.buttonData || p.buttonData.length === 0).map(p => p.key);
+  if (missingButtons.length > 0) return m.reply(`Key "${missingButtons.join(', ')}" belum diset tombolnya.`);
+
+  let pushCards = await Promise.all(payments.map(async (payment) => {
+      let { imageMessage } = await generateWAMessageContent({ image: { url: payment.imageUrl } }, { upload: lenwy.waUploadToServer });
+      return {
+          body: proto.Message.InteractiveMessage.Body.fromObject({ text: payment.paymentData }),
+          footer: proto.Message.InteractiveMessage.Footer.fromObject({ text: `` }),
+          header: proto.Message.InteractiveMessage.Header.fromObject({ hasMediaAttachment: true, imageMessage }),
+          nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
+              buttons: payment.buttonData.map(button => ({ name: button.name, buttonParamsJson: button.buttonParamsJson }))
           })
-        }
+      };
+  }));
+
+  let bot = generateWAMessageFromContent(m.chat, {
+      viewOnceMessage: {
+          message: {
+              interactiveMessage: proto.Message.InteractiveMessage.fromObject({
+                  body: proto.Message.InteractiveMessage.Body.create({ text: 'Berikut Daftarnya' }),
+                  footer: proto.Message.InteractiveMessage.Footer.create({ text: `> ${botname}` }),
+                  header: proto.Message.InteractiveMessage.Header.create({ hasMediaAttachment: false }),
+                  carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({ cards: pushCards })
+              })
+          }
       }
-    }, {quoted: m})
+  }, { quoted: m });
 
-    await lenwy.relayMessage(m.chat, botMsg.message, {
-      messageId: botMsg.key.id
-    })
+  await lenwy.relayMessage(m.chat, bot.message, { messageId: bot.key.id });
+}
+break
 
-  } catch (e) {
-    console.log(e) 
-    m.reply('Yah error di bagian: ' + e.message) 
+case 'setstick': {
+  if (!isAdmins) return m.reply(mess.admin);
+  if (!text) return m.reply(`Contoh: Reply foto/sticker dengan caption:\n${prefix + command} (Key)`)
+  if (!/image/.test(mime)) return m.reply(`Foto atau Sticker nya Mana?`);
+
+  let nameKey = text
+  let groupID = m.chat;
+  let imageUrl = await lenwy.downloadAndSaveMediaMessage(quoted, `./storage/data/sticker/${nameKey + groupID}`)
+  let db_sticker = JSON.parse(fs.readFileSync('./storage/databaseSticker.json'))
+
+  if (!Array.isArray(db_sticker)) {
+    db_sticker = [];
   }
+  let existingPayment = db_sticker.find(entry => entry.id === groupID && entry.key === nameKey);
+  if (existingPayment) {
+      return m.reply(`Sticker dengan key ${nameKey} sudah ada untuk grup ini.`);
+  }
+  let obj_add = {
+    id: groupID,
+    key: nameKey,
+    imageUrl: imageUrl
+  };
+
+  db_sticker.push(obj_add);
+  fs.writeFileSync('./storage/databaseSticker.json', JSON.stringify(db_sticker, null, 3), 'utf-8');
+  m.reply(`Sticker ${nameKey} berhasil disimpan`);
 }
 break
 
-case 'quotes': {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-var resi = await Quotes()
-teks = `\n${global.emoji} *Author: ${resi.author}*\n`
-teks = `\n🎁 *Quotes:*\n`
-teks = `*${resi.quotes}*\n`
-m.reply(teks)
+case 'liststick': {
+  if (text) return
+  let db_sticker = JSON.parse(fs.readFileSync('./storage/databaseSticker.json'))
+  if (!isAlreadyResponStickGroup(m.chat, db_sticker)) return m.reply(`*Belum Ada Sticker Yang Terdaftar Di Grup Ini*`);
+  let sortedList = db_sticker.filter(i => i.id === m.chat).sort((a, b) => a.key.localeCompare(b.key));
+  let tek = `List Sticker Yang Terdaftar Di Group ${groupName}\n`
+  for (let i of sortedList) {
+    tek += `\n> *${i.key}*`
+  }
+  m.reply(tek)
 }
 break
 
-case 'quotesanime': {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-const an1 = JSON.parse(fs.readFileSync("./storage/text/quotesanime.json"))
-const r4ndan1 = an1[Math.floor(Math.random() * an1.length)]
-const tgt99 = `*Random Quotes Anime*
-
-🍁 *Nama Anime : ${r4ndan1.anime}*
-🍁 *Nama Character : ${r4ndan1.character}*
-🍁 *Episode : ${r4ndan1.episode}*
-
-🎁 *Quotes : ${r4ndan1.quotes}*`
-lenwy.sendMessage(from, { text: tgt99 }, { quoted: m })
-}
-break
-
-case 'meme': {
-var reis = await JalanTikusMeme()
-teks = ""
-teks += "*Random Meme*\n\n"
-teks += `🎁 *Source Meme :* ${reis}`
-teks += ""
-lenwy.sendMessage(m.chat, { image : { url : reis }, caption: teks }, { quoted:m })
-}
-break
-
-case 'tourl': {
-if (!/image/.test(mime) && !/video/.test(mime)) return m.reply(`*Mana Foto Atau Video Nya?*`)
-if (/image/.test(mime)) {
-LenwyLD()
-await sleep(200)
-let media = await lenwy.downloadAndSaveMediaMessage(quoted)
-let anu = await uploader60Minute(media)
-m.reply(util.format(anu))
-} else if (/video/.test(mime)) {
-  let q = m.quoted ? m.quoted : m;
-
-    let media = await q.download()
-    let link = await uploader60Minute(media)
-    console.log(link)
-    await m.reply(`${link}`)
-} else {
-m.reply(`Mokad kah? Chat Developer!!!`)
-}
-}
-break
-
-case 'tourl2': {
-if (!/image/.test(mime) && !/video/.test(mime)) return m.reply(`*Mana Foto Atau Video Nya?*`)
-if (/image/.test(mime)) {
-LenwyLD()
-await sleep(200)
-let media = await lenwy.downloadAndSaveMediaMessage(quoted)
-let anu = await uploaderLebih(media)
-m.reply(util.format(anu))
-} else if (/video/.test(mime)) {
-  let q = m.quoted ? m.quoted : m;
-
-    let media = await q.download()
-    let link = await uploader60Minute(media)
-    console.log(link)
-    await m.reply(`${link}`)
-} else {
-m.reply(`Mokad kah? Chat Developer!!!`)
-}
-}
-break
-
-case 'tourlvid': {
-if (!/video/.test(mime)) return m.reply(`*Mana Video Nya?*`)
-LenwyLD()
-await sleep(200)
-let media = await lenwy.downloadAndSaveMediaMessage(quoted)
-if (/video/.test(mime)) {
-  let q = m.quoted ? m.quoted : m;
-
-    let media = await q.download()
-    let link = await uploader60Minute(media)
-    await m.reply(`${link}`)
-} else if (/video/.test(mime)) {
-let anu = await uploader60Minute(media)
-m.reply(util.format(anu))
-} else {
-m.reply(`Mokad kah? Chat Developer!!!`)
-}
-await fs.unlinkSync(media)
-}
-break
-
-case 'reminder': {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-if (!args[0] || !args[1]) return m.reply('*Format : Reminder Waktu s/m/h/d Pesan*\n\n📑 *Contoh : Reminder 30m Jangan Lupa Sholat*')
-const time = toMs(args[0])
-const message = args.slice(1).join(' ')
-setTimeout(() => {
-lenwy.sendMessage(from, { text : `*Reminder Untuk @${sender.split("@")[0]}*\n\n📑 *Dengan Pesan :* ${message}`, contextInfo:{mentionedJid:[sender]}}, { quoted: m })}, time)
-m.reply(`📑 *Berhasil Mengatur Reminder Untuk ${args[0]} ${args[1]} Ke Depan*`)
-}
-break
-
-case 'couple': {
-LenwyLD()
-await sleep(200)
-let anu = await fetchJson('https://raw.githubusercontent.com/iamriz7/kopel_/main/kopel.json')
-let random = anu[Math.floor(Math.random() * anu.length)]
-lenwy.sendMessage(from, { image: { url: random.male }, caption: `🎁 *Couple Male*` }, {quoted:m})
-lenwy.sendMessage(from, { image: { url: random.female }, caption: `🎁 *Couple Female*` }, {quoted:m})
-}
-break
-
-case 'getname': {
-if (qtod === "true") {
-namenye = await lenwy.getName(m.quoted.sender)
-m.reply(`Namanya: ${namenye}`)
-} else if (qtod === "false") {
-lenwy.sendMessage(from, {text:"✉️ *Reply Orangnya*"}, {quoted:m})
-}
-}
-break
-
-case 'getpic': {
-if (qtod === "true") {
-try {
-pporg = await lenwy.profilePictureUrl(m.quoted.sender, 'image')
-} catch {
-pporg = 'https://i0.wp.com/www.gambarunik.id/wp-content/uploads/2019/06/Top-Gambar-Foto-Profil-Kosong-Lucu-Tergokil-.jpg'
-}
-lenwy.sendMessage(from, { image : { url : pporg }, caption:`*Selesai*` }, {quoted:m})
-} else if (qtod === "false") {
-try {
-pporgs = await lenwy.profilePictureUrl(from, 'image')
-} catch {
-pporgs = 'https://i0.wp.com/www.gambarunik.id/wp-content/uploads/2019/06/Top-Gambar-Foto-Profil-Kosong-Lucu-Tergokil-.jpg'
-}
-lenwy.sendMessage(from, { image : { url : pporgs }, caption:`*Selesai*` }, {quoted:m})
-}
-}
-break
-
-case 'block': {
-if (!isCreator) return m.reply(mess.owner)
-LenwyLD()
-await sleep(200)
-let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
-await lenwy.updateBlockStatus(users, 'block').then((res) => m.reply(jsonformat(res))).catch((err) => m.reply(jsonformat(err)))
-}
-break
-
-case 'unblock': {
-if (!isCreator) return m.reply(mess.owner)
-LenwyLD()
-await sleep(200)
-let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
-await lenwy.updateBlockStatus(users, 'unblock').then((res) => m.reply(jsonformat(res))).catch((err) => m.reply(jsonformat(err)))
-}
-break
-
-case 'cwr': {
-if (!text) return m.reply('*Format : Cwr [Total Match] [Winrate Saat Ini] [Target Winrate]*\n\n📑 *Contoh : Cwr 1200 67% 89%*')
-var cwl = text.split(' ')
-if (!cwl || cwl.length !== 3) return m.reply('*Format : Cwr [Total Match] [Winrate Saat Ini] [Target Winrate]*\n\n📑 *Contoh : Cwr 1200 67% 89%*')          
-const tMatch = parseFloat(cwl[0])
-const tWr = parseFloat(cwl[1])
-const wrReq = parseFloat(cwl[2])          
-if (isNaN(tMatch) || isNaN(tWr) || isNaN(wrReq)) {
-return m.reply('⚠️ *Pastikan Semuanya Berupa Angka*')
-}
-let tLose = tMatch * (100 - tWr) / 100;
-let seratusPersen = tLose * (100 / (100 - wrReq))
-let final = seratusPersen - tMatch;
-const tekl = `*Winrate Calculator Mobile Legend*
-
-📑 *Data Yang Diberikan*
- *⨠ Total Petandingan : ${tMatch}*
- *⨠ Winrate Saat Ini : ${tWr}%*
- *⨠ Target Winrate : ${wrReq}%*
-
-🎁 *Hasil :*
-*Butuh ${Math.round(final)} Pertandingan Tanpa Kalah Untuk Mencapai ${wrReq}% Winrate*`;
-m.reply(tekl)
+case 'delstick': {
+  if (!isAdmins) return m.reply(mess.admin);
+  if (!text) return m.reply(`Contoh: ${prefix + command} (key)`);
+  let db_sticker = JSON.parse(fs.readFileSync('./storage/databaseSticker.json'))
+  if (!isKeyResponStick(m.chat, text.toLowerCase(), db_sticker)) return m.reply(`*Sticker Dengan Key ${text} Tidak Ada Dalam Liststick*`);
+  await delResponStick(m.chat, text.toLowerCase(), db_sticker)
+  m.reply(`*Sukses Menghapus Sticker Dengan Key ${text}*`)
 }
 break
 
@@ -4432,188 +3156,6 @@ case 'afk': {
     lenwy.sendMessage(m.chat, { text: `*${pushname} Sedang AFK*\n⚠️ *Dengan Alasan :* ${text ? text : 'Tidak ada'}` })
 }
 break
-
-case 'tebak': {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
- if (args[0] === "gambar") {
- if (tebakgambar.hasOwnProperty(m.sender.split('@')[0])) m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan!*')
- let anu = await fetchJson('https://raw.githubusercontent.com/BochilTeam/database/master/games/tebakgambar.json')
- let result = anu[Math.floor(Math.random() * anu.length)]
- lenwy.sendImage(from, result.img, `*Silahkan Jawab Soal Di Atas Ini*\n\n📑 *Deskripsi :* ${result.deskripsi}\n\n🕒 *Waktu : 60s*`, m).then(() => {
- tebakgambar[m.sender.split('@')[0]] = result.jawaban.toLowerCase()
- })
- await sleep(60000)
- if (tebakgambar.hasOwnProperty(m.sender.split('@')[0])) {
- console.log("Jawaban: " + result.jawaban)
- lenwy.sendMessage(m.chat, { text: `🕒 *Waktu Habis*\n🎁 *Jawaban : ${tebakgambar[m.sender.split('@')[0]]}*\n\n📣 *Ingin Bermain Lagi? Ketik Tebak Gambar*`}, {quoted:m}) 
- delete tebakgambar[m.sender.split('@')[0]]
- }
- } else if (args[0] === 'kata') {
- if (tebakkata.hasOwnProperty(m.sender.split('@')[0])) m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan!*')
- let anu = await fetchJson('https://raw.githubusercontent.com/BochilTeam/database/master/games/tebakkata.json')
- let result = anu[Math.floor(Math.random() * anu.length)]
- lenwy.sendText(from, `*Silahkan Jawab Pertanyaan Berikut :*\n\n📦 *${result.soal}*\n\n🕒 *Waktu : 60s*`, m).then(() => {
- tebakkata[m.sender.split('@')[0]] = result.jawaban.toLowerCase()
- })
- await sleep(60000)
- if (tebakkata.hasOwnProperty(m.sender.split('@')[0])) {
- console.log("Jawaban: " + result.jawaban)
- lenwy.sendMessage(m.chat, { text: `🕒 *Waktu Habis*\n🎁 *Jawaban : ${tebakkata[m.sender.split('@')[0]]}*\n\n📣 *Ingin Bermain Lagi? Ketik Tebak Kata*` }, {quoted:m}) 
- delete tebakkata[m.sender.split('@')[0]]
- }
- } else if (args[0] === 'kalimat') {
- if (tebakkalimat.hasOwnProperty(m.sender.split('@')[0])) m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan!*')
- let anu = await fetchJson('https://raw.githubusercontent.com/BochilTeam/database/master/games/tebakkalimat.json')
- let result = anu[Math.floor(Math.random() * anu.length)]
- lenwy.sendText(from, `*Silahkan Jawab Pertanyaan Berikut :*\n\n📦 *Pertanyaan :* ${result.soal}\n\n🕒 *Waktu : 60s*`, m).then(() => {
- tebakkalimat[m.sender.split('@')[0]] = result.jawaban.toLowerCase()
- })
- await sleep(60000)
- if (tebakkalimat.hasOwnProperty(m.sender.split('@')[0])) {
- console.log("Jawaban: " + result.jawaban)
- lenwy.sendMessage(m.chat, { text:`🕒 *Waktu Habis*\n🎁 *Jawaban : ${tebakkalimat[m.sender.split('@')[0]]}*\n\n📣 *Ingin Bermain Lagi? Ketik Tebak Kalimat*`}, {quoted:m}) 
- delete tebakkalimat[m.sender.split('@')[0]]
- }
- } else if (args[0] === 'lirik') {
- if (tebaklirik.hasOwnProperty(m.sender.split('@')[0])) m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan!*')
- let anu = await fetchJson('https://raw.githubusercontent.com/BochilTeam/database/master/games/tebaklirik.json')
- let result = anu[Math.floor(Math.random() * anu.length)]
- lenwy.sendText(from, `*Ini Adalah Lirik Dari Lagu? :* \n\n📦 *${result.soal}?*\n\n🕒 *Waktu : 60s*`, m).then(() => {
- tebaklirik[m.sender.split('@')[0]] = result.jawaban.toLowerCase()
- })
- await sleep(60000)
- if (tebaklirik.hasOwnProperty(m.sender.split('@')[0])) {
- console.log("Jawaban: " + result.jawaban)
- lenwy.sendMessage(m.chat, { text: `🕒 *Waktu Habis*\n🎁 *Jawaban : ${tebaklirik[m.sender.split('@')[0]]}*\n\n📣 *Ingin Bermain Lagi? Ketik Tebak Lirik*`} , {quoted:m}) 
- delete tebaklirik[m.sender.split('@')[0]]
- }
- } else if (args[0] === 'lontong') {
- if (caklontong.hasOwnProperty(m.sender.split('@')[0])) m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan!*')
- let anu = await fetchJson('https://raw.githubusercontent.com/BochilTeam/database/master/games/caklontong.json')
- let result = anu[Math.floor(Math.random() * anu.length)]
- lenwy.sendText(from, `*Jawablah Pertanyaan Berikut :*\n📦 *${result.soal}*\n🕒 *Waktu : 60s*`, m).then(() => {
- caklontong[m.sender.split('@')[0]] = result.jawaban.toLowerCase()
-caklontong_desk[m.sender.split('@')[0]] = result.deskripsi
- })
- await sleep(60000)
- if (caklontong.hasOwnProperty(m.sender.split('@')[0])) {
- console.log("Jawaban: " + result.jawaban)
- lenwy.sendMessage(m.chat, { text:`🕒 *Waktu Habis*\n🎁 *Jawaban : ${caklontong[m.sender.split('@')[0]]}*\n\n📑 *Deskripsi : ${caklontong_desk[m.sender.split('@')[0]]}* \n\n📣 *Ingin Bermain Lagi? Ketik Tebak Lontong*`}, {quoted:m}) 
- delete caklontong[m.sender.split('@')[0]]
-delete caklontong_desk[m.sender.split('@')[0]]
- }
- }
-}
-break
-
-case 'kuismath':
-case 'math': {
-  if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-  if (kuismath.hasOwnProperty(m.sender.split('@')[0])) m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan!*')
-  if (!text) return m.reply(`Mode: ${Object.keys(modes).join(' | ')}
-Contoh penggunaan: ${prefix}math medium`);
-  let { genMath, modes } = require('./library/math')
-  let result = await genMath(text.toLowerCase())
-  await lenwy.sendText(from,
-    `*Berapa Hasil Dari : ${result.soal.toLowerCase()}*?
-🕒 *Waktu : ${(result.waktu / 1000).toFixed(2)} detik*`,
-  m).then(() => {
-    kuismath[m.sender.split('@')[0]] = result.jawaban
-  })
-  await sleep(result.waktu)
-  if (kuismath.hasOwnProperty(m.sender.split('@')[0])) {
-    console.log("Jawaban: " + result.jawaban)
-    m.reply("🕒 *Waktu Habis*\n🎁 *Jawaban :* " + kuismath[m.sender.split('@')[0]])
-    delete kuismath[m.sender.split('@')[0]]
-  }
-}
-break
-
-case 'tebakangka': {
-    if (gameState.angkaAcak === null) {
-        gameState.angkaAcak = Math.floor(Math.random() * 20) + 1;
-        gameState.jumlahTebakan = 0; // Reset jumlah tebakan
-        m.reply('Aku sudah memikirkan sebuah angka antara 1-20. Coba tebak!')
-    } else {
-        const tebakan = parseInt(text)
-        if (isNaN(tebakan) || tebakan < 1 || tebakan > 20) {
-            return m.reply('Tebakan harus berupa angka antara 1-20.')
-        }
-
-        gameState.jumlahTebakan++;
-
-        if (tebakan < gameState.angkaAcak) {
-            return m.reply("Tebakan Anda terlalu rendah. Coba lagi!")
-        } else if (tebakan > gameState.angkaAcak) {
-            return m.reply("Tebakan Anda terlalu tinggi. Coba lagi!")
-        } else {
-            m.reply(`Selamat! Anda telah menebak angka ${gameState.angkaAcak} dengan ${gameState.jumlahTebakan} tebakan.`)
-            gameState.angkaAcak = null;
-        }
-    }
-}
-break
-
-case 'ttc': case 'ttt': case 'tictactoe': {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-let TicTacToe = require("./library/tictactoe")
-this.game = this.game ? this.game : {}
-if (Object.values(this.game).find(room => room.id.startsWith('tictactoe') && [room.game.playerX, room.game.playerO].includes(m.sender))) return m.reply('⚠️ *Kamu Masih Didalam Permainan Atau Menunggu Lawan Bermain*\n\n> Ketik delttc atau nyerah untuk keluar dari permainan')
-let room = Object.values(this.game).find(room => room.state === 'WAITING' && (text ? room.name === text : true))
-if (room) {
-m.reply('*Lawan Bermain Ditemukan*')
-room.o = from
-room.game.playerO = m.sender
-room.state = 'PLAYING'
-let arr = room.game.render().map(v => {
-return {
-X: '❌',
-O: '⭕',
-1: '1️⃣',
-2: '2️⃣',
-3: '3️⃣',
-4: '4️⃣',
-5: '5️⃣',
-6: '6️⃣',
-7: '7️⃣',
-8: '8️⃣',
-9: '9️⃣',
-}[v]
-})
-let str = `Room ID: ${room.id}
-
-${arr.slice(0, 3).join('')}
-${arr.slice(3, 6).join('')}
-${arr.slice(6).join('')}
-
-Menunggu @${room.game.currentTurn.split('@')[0]}
-
-Ketik *nyerah* untuk menyerah dan mengakui kekalahan`
-if (room.x !== room.o) await lenwy.sendText(room.x, str, m, { mentions: parseMention(str) } )
-await lenwy.sendText(room.o, str, m, { mentions: parseMention(str) } )
-} else {
-room = {
-id: 'tictactoe-' + (+new Date),
-x: from,
-o: '',
-game: new TicTacToe(m.sender, 'o'),
-state: 'WAITING'
-}
-if (text) room.name = text
-m.reply('*Menunggu Lawan Bermain*' + (text ? ` mengetik command dibawah ini ${prefix}${command} ${text}` : ''))
-this.game[room.id] = room
-}
-}
-break
-
-case 'delttc': case 'delttt': {
-if (isBan) return m.reply('*Lu Di Ban Owner Gak Usah Sok asik Tolol*')
-let roomnya = Object.values(this.game).find(room => room.id.startsWith('tictactoe') && [room.game.playerX, room.game.playerO].includes(m.sender))
-if (!roomnya) return m.reply('Kamu sedang tidak berada di room tictactoe!')
-delete this.game[roomnya.id]
-m.reply('Berhasil delete session room tictactoe!')
-}
-break   
 
 case 'del':
 case 'delete': {
@@ -4798,6 +3340,1166 @@ Jam {JAM}:{MENIT} WIB`)
   await lenwy.sendMessage(m.chat,{ text: settextproses, mentions: [quotedSender, m.sender] },{ quoted: m })
 }
 break
+// ===== AKHIR MENU GROUP ===== //
+
+// ===== AWAL MENU DOWNLOAD ===== //
+case 'play': {
+ if (isBan) return m.reply(mess.ban);
+ if (!text) return m.reply(`*Mau Dengerin Lagu Apa?*`);
+ LenwyLD();
+
+ try {
+ let searchnya = await (await fetch(`https://api.nexray.eu.cc/search/youtube?q=${encodeURIComponent(text)}`)).json();
+ let res = searchnya.result; // Ambil semua hasil pencarian
+ let audioInfo = res?.[0] || {};
+ let procees = await (await fetch(`https://api.nexray.eu.cc/downloader/v1/ytmp3?url=${audioInfo.url}`)).json();
+ console.log(procees)
+ await lenwy.sendMessage(m.chat, { audio: { url: procees.result.url }, mimetype: 'audio/mp4' }, { quoted: m })
+ } catch (e) {
+ console.log(e)
+ }
+}
+break
+
+case 'ytmp3': {
+ if (!text) return m.reply(`*Link Youtubenya Mana?*`)
+try {
+LenwyLD()
+await sleep(200)
+m.reply('Process sending audio, mungkin ini membutuhkan 1-3 menit jika durasi audio terlalu panjang!')
+let procees = await (await fetch(`https://api.nexray.eu.cc/downloader/v1/ytmp3?url=${encodeURIComponent(text)}`)).json();
+console.log(procees)
+let audioUrl = procees.result.url
+
+lenwy.sendMessage(m.chat, { audio: { url: audioUrl }, mimetype: 'audio/mp4' }, { quoted: m });
+} catch (e) {
+m.reply('terjadi error :' + e)
+}
+}
+break
+
+case 'ytmp4': {
+if (!text) return m.reply(`*Link Youtubenya Mana?*`)
+try {
+LenwyLD()
+m.reply('Process sending video, mungkin membutuhkan 1-3 menit jika durasi video terlalu panjang!')
+let procees = await (await fetch(`https://api.nexray.eu.cc/downloader/v1/ytmp4?url=${encodeURIComponent(text)}`)).json();
+console.log(procees)
+lenwy.sendMessage(m.chat,{ video: {url: procees.result.url }, caption: `Caption: ${procees.result.title}` }, {quoted: m})
+} catch (e) {
+m.reply('terjadi error :' + e)
+}
+}
+break
+
+case 'spotify': {
+  if (!text) return m.reply("*Mau Cari Lagu Apa?*");
+  LenwyLD();
+  try {
+    var result = await axios.get(`https://api.vreden.my.id/api/v1/search/spotify?query=${text}&limit=3`, { headers: { 'User-Agent': 'Mozilla/5.0' } })
+  } catch (error) {
+    return m.reply('*Gagal melakukan pencarian, coba lagi nanti.*');
+  }
+
+  if (!result || !result.data.result || result.data.result.search_data.length === 0) {
+    return m.reply('*Tidak ada hasil ditemukan*');
+  }
+
+  let res = result.data.result.search_data; // Ambil semua hasil pencarian
+  let audioInfo = res[Math.floor(Math.random() * res.length)];
+  console.log(audioInfo.song_link)
+  let { data } = await axios.get(`https://api.vreden.my.id/api/v1/download/spotify?url=${audioInfo.song_link}`, { headers: { 'User-Agent': 'Mozilla/5.0' } })
+  console.log(data)
+
+  if (data.result) {
+    lenwy.sendMessage(m.chat, { audio: { url: data.result.download }, mimetype: 'audio/mp4' }, { quoted: m });
+  } else {
+    return m.reply('*Gagal mendapatkan audio preview, coba lagi nanti.*');
+  }
+}
+break
+
+case 'tt': {
+  if (!text) return m.reply(`*Link Tiktoknya Mana?*`);
+  if (!isUrl(text)) return m.reply(mess.link);
+  
+  LenwyLD();
+
+  try {
+    let response = await (await fetch(`https://api.siputzx.my.id/api/d/tiktok/v2?url=${encodeURIComponent(text)}`)).json();
+    console.log(response);
+
+    if (!response.status || !response.data) {
+      return m.reply("Gagal mengambil data dari API.");
+    }
+
+    let data = response.data;
+    
+    let capt = `*Title:* ${data.text || 'No Title'}\n` +
+               `*Author:* ${data.author_nickname}\n` +
+               `*Views:* ${data.play_count.toLocaleString()} | *Likes:* ${data.like_count.toLocaleString()}\n` +
+               `*Shares:* ${data.share_count.toLocaleString()}`;
+
+    if (data.slides && typeof data.slides === 'object') {
+      for (const key in data.slides) {
+        const slide = data.slides[key];
+        if (slide?.url) {
+          await lenwy.sendMessage(m.chat, { image: { url: slide.url } }, { quoted: m });
+        }
+      }
+      m.reply(capt || '');
+    } else if (data.no_watermark_link) {
+      let videoUrl = data.no_watermark_link;
+      await lenwy.sendMessage(m.chat, {
+        video: { url: videoUrl },
+        caption: capt
+      }, { quoted: m });
+    } else {
+      m.reply("Tipe konten tidak dikenali atau media tidak ditemukan.");
+    }
+
+    if (data.music_link) {
+      let audioTitle = 'Tiktok_Audio';
+      await lenwy.sendMessage(m.chat, {
+        audio: { url: data.music_link },
+        mimetype: 'audio/mpeg',
+        fileName: `${audioTitle}.mp3`
+      }, { quoted: m });
+    }
+
+  } catch (error) {
+    console.error("Error TikTok DL:", error);
+    m.reply("Terjadi kesalahan saat memproses permintaan.");
+  }
+}
+break
+
+case 'ig': {
+  if (!text) return m.reply(`*Link Instagramnya Mana?*`)
+  if (!isUrl(text)) return m.reply(mess.link)
+  
+  LenwyLD()
+  await sleep(200)
+  try {
+    let ress = await igdl(text);
+    console.log(ress);
+    
+    const total = ress.length;
+    const step = Math.floor(Math.sqrt(total));
+    const batas = step;
+    for (let i = 0; i < step; i++) {
+      let responseIg = await axios.head(ress[i].url); 
+      let contentType = responseIg.headers['content-type'];
+      if (contentType.startsWith('image/')) {
+        await lenwy.sendMessage(m.chat, { image: { url: ress[i].url}, caption: mess.success }, { quoted: m });
+      } else {
+        await lenwy.sendMessage(m.chat, { video: { url: ress[i].url}, caption: mess.success }, { quoted: m });
+      }
+    }
+  } catch (e) {
+    m.reply(e)
+  }
+}
+break
+
+case 'fb': {
+ if (!text) return m.reply(`*Link Fbnya Mana?*`)
+ if (!isUrl(text)) return m.reply(mess.link)
+ LenwyLD()
+ await sleep(200)
+ try {
+ let { status, result } = await (await fetch(`https://${global.api.maelyn.domain}/api/facebook?url=${text}`, {
+   headers: {
+     'x-maelyn-auth': global.api.maelyn.apikey
+   }
+ })).json()
+ if (status === "Success") {
+ let videoHD = result.medias.find(media => media.quality === 'hd')
+ await lenwy.sendMessage(m.chat, { video: { url: videoHD?.url }}, { quoted: m })
+ } else {
+ m.reply(`Gagal mengambil data`)
+ }
+ } catch (error) {
+ m.reply(`Error: ${error}`)
+ console.log(error)
+ }
+}
+break
+
+case 'x': {
+  if (!text) return m.reply(`*Link Twitternya Mana?*`)
+  if (!isUrl(text)) return m.reply(mess.link)
+  LenwyLD()
+  try {
+    let response = await (await fetch(`https://${global.api.maelyn.domain}/api/x?url=${text}`, {
+      headers: {
+        'x-maelyn-auth': global.api.maelyn.apikey
+      }
+    })).json()
+    lenwy.sendMessage(m.chat, { video: { url: response.result.video_hd }, caption: `Caption: ${response.result.desc}` }, { quoted: m })
+    await sleep(200)
+    await lenwy.sendMessage(m.chat, { audio: { url: response.result.audio }, mimetype: 'audio/mp4' }, { quoted: m });
+  } catch (error) {
+    console.error(error)
+    m.reply(mess.error)
+  }
+}
+break
+
+case 'mediafire': {
+  if (isBan) return m.reply(mess.ban)
+  if (!text) return m.reply(mess.link)
+  LenwyLD()
+  await sleep(200)
+  const baby1 = await (await fetch('https://endpoint.web.id/downloader/mediafire?key=315602&url=' + text)).json()
+  const shanz = baby1.result;
+  const extension = shanz.filename.split('.').pop().toLowerCase()
+
+  const mimeTypes = {
+      'pdf': 'application/pdf',
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'png': 'image/png',
+      'gif': 'image/gif',
+      'mp4': 'video/mp4',
+      'mp3': 'audio/mpeg',
+      'zip': 'application/zip',
+      'txt': 'text/plain',
+  };
+  const mimeType = mimeTypes[extension] || 'application/octet-stream';
+
+  const result4 = `🔧 *MEDIAFIRE DOWNLOADER*\r\n\r\n🔖 *Name* : ${shanz.name}\r\n💽 *Size* : ${shanz.size}\r\n📌 *Desc* : ${shanz.desc}`
+  
+  lenwy.sendMessage(m.chat, {
+      document: { url: shanz.media },
+      fileName: shanz.filename,
+      mimetype: mimeType,
+      caption: result4
+  }, { quoted: m })
+}
+break
+
+case 'ssweb': {
+  if (!q) return m.reply(`*Contoh ${prefix + command} Link Kamu*`)
+  try {
+      lenwy.sendMessage(from, { image: { url: `https://api.autoresbot.com/api/ssweb?url=${encodeURIComponent(q)}&apikey=4c04faf21fb8524bad4a9cb7` }, caption: mess.success }, { quoted: m })
+  } catch (error) {
+    console.error('Error saat memanggil API:', error)
+    m.reply('Terjadi kesalahan saat memproses permintaan.')
+  }
+}
+break
+        
+case 'sswebhp': {
+  if (!q) return m.reply(`*Contoh ${prefix + command} Link Kamu*`)
+  const apiUrl = `https://endpoint.web.id/tools/sswebphone?key=315602&url=${encodeURIComponent(q)}`;
+  try {
+    const response = await axios.get(apiUrl)
+    if (response.data.status && response.data.code === 200) {
+      const imageUrl = response.data.result;
+      lenwy.sendMessage(from, { image: { url: imageUrl }, caption: mess.success }, { quoted: m })
+    } else {
+      m.reply('Gagal mendapatkan tangkapan layar dari API.')
+    }
+  } catch (error) {
+    console.error('Error saat memanggil API:', error)
+    m.reply('Terjadi kesalahan saat memproses permintaan.')
+  }
+}
+break
+       
+case 'sstab': {
+  if (!q) return m.reply(`*Contoh ${prefix + command} Link Kamu*`)
+  const apiUrl = `https://endpoint.web.id/tools/sswebtab?key=315602&url=${encodeURIComponent(q)}`;
+  try {
+    const response = await axios.get(apiUrl)
+    if (response.data.status && response.data.code === 200) {
+      const imageUrl = response.data.result;
+      lenwy.sendMessage(from, { image: { url: imageUrl }, caption: mess.success }, { quoted: m })
+    } else {
+      m.reply('Gagal mendapatkan tangkapan layar dari API.')
+    }
+  } catch (error) {
+    console.error('Error saat memanggil API:', error)
+    m.reply('Terjadi kesalahan saat memproses permintaan.')
+  }
+}
+break
+
+case 'pin':
+case 'pinterest': {
+  if (!text) return m.reply(`*Contoh:* ${prefix + command} FF🗿`)
+  
+  LenwyLD()
+  await sleep(200)
+  let push = []
+  try {
+    async function createImage(url) {
+      const { imageMessage } = await generateWAMessageContent({
+        image: { url }
+      }, {
+        upload: lenwy.waUploadToServer
+      })
+      return imageMessage;
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        let randIndex = Math.floor(Math.random() * (i + 1));
+        [array[i], array[randIndex]] = [array[randIndex], array[i]];
+      }
+    }
+    
+    let { data } = await axios.get(`https://api.nexray.eu.cc/search/pinterest?q=${encodeURIComponent(text)}`)
+    
+    if (!data.status || !data.result || data.result.length === 0) {
+      throw new Error("Gagal mengambil data atau gambar tidak ditemukan")
+    }
+    
+    let res = data.result
+    shuffleArray(res) // Acak urutan gambarnya
+    res = res.slice(0, 10) // Ambil maksimal 10 gambar
+
+    let i = 1;
+    for (let pinData of res) {
+      push.push({
+        body: proto.Message.InteractiveMessage.Body.fromObject({
+          text: `*${pinData.grid_title || 'Pinterest'}*\n\nImage Ke ${i++}/${res.length}`
+        }),
+        footer: proto.Message.InteractiveMessage.Footer.fromObject({
+          text: `By ${botname}`
+        }),
+        header: proto.Message.InteractiveMessage.Header.fromObject({
+          title: '', 
+          hasMediaAttachment: false,
+          imageMessage: await createImage(pinData.images_url) // Ambil link gambar dari JSON terbaru
+        }),
+        nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
+          buttons: [
+            {
+              "name": "cta_url",
+              "buttonParamsJson": `{"display_text":"Source Pin","url":"${pinData.pin}","merchant_url":"${pinData.pin}"}`
+            }
+          ]
+        })
+      })
+    }
+    
+    const botMsg = generateWAMessageFromContent(m.chat, {
+      viewOnceMessage: {
+        message: {
+          messageContextInfo: {
+            deviceListMetadata: {},
+            deviceListMetadataVersion: 2
+          },
+          interactiveMessage: proto.Message.InteractiveMessage.fromObject({
+            body: proto.Message.InteractiveMessage.Body.create({
+              text: '*P I N T E R E S T*', 
+            }),
+            footer: proto.Message.InteractiveMessage.Footer.create({
+              text: '*Hasil Dari:* ' + text,
+            }),
+            header: proto.Message.InteractiveMessage.Header.create({
+              hasMediaAttachment: false
+            }),
+            carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({
+              cards: [...push]
+            })
+          })
+        }
+      }
+    }, {quoted: m})
+
+    await lenwy.relayMessage(m.chat, botMsg.message, {
+      messageId: botMsg.key.id
+    })
+
+  } catch (e) {
+    console.log(e) 
+    m.reply('Yah error di bagian: ' + e.message) 
+  }
+}
+break
+// ===== AKHIR MENU DOWNLOAD ===== //
+
+// ===== AWAL MENU FUN ===== //
+case 'rate': {
+  if (!q) return m.reply(`*Contoh: ${prefix + command} Penampilan gw*`)
+  if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
+  const persen = Math.floor(Math.random() * 101)
+  m.reply(`*Rate : ${q}*\n🔮 *Jawaban : ${persen}%*`)
+}
+break
+
+case 'apakah': {
+  if (!q) return m.reply(`*Contoh: ${prefix + command} gw lagi marah*`)
+  if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
+  const apa = ['Iya', 'Tidak', 'Bisa jadi', 'Betul', 'Gak mungkin lah bro', 'Yoi dong', 'Kayaknya sih iya', 'Mimpi aja terus', 'Tentu tidak', 'Rahasia Ilahi']
+  const kah = apa[Math.floor(Math.random() * apa.length)]
+  m.reply(`*Pertanyaan : Apakah ${q}*\n🔮 *Jawaban : ${kah}*`)
+}
+break
+
+case 'kapankah': {
+  if (!q) return m.reply(`*Contoh: ${prefix + command} gw masuk rsj*`)
+  if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
+  const kapan = ['Besok', 'Lusa', 'Tahun depan', 'Nggak akan pernah', 'Bulan depan', 'Minggu depan', 'Kapan-kapan', `Abis command ini juga lu ${q}`, 'Nunggu lu glow up', 'Gak tau, tanya aja sama rumput yang bergoyang', '10 abad lagi', 'Bentar lagi kayaknya']
+  const kapankah = kapan[Math.floor(Math.random() * kapan.length)]
+  m.reply(`*Pertanyaan : Kapankah ${q}*\n🔮 *Jawaban : ${kapankah}*`)
+}
+break
+
+case 'bisakah': {
+  if (!q) return m.reply(`*Contoh: ${prefix + command} gw hamil*`)
+  if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
+  const bisa = ['Bisa', 'Gak bisa', 'Gak bisa awokawok', 'Tentu kamu pasti bisa!!!!', 'Coba aja sendiri', 'Mungkin bisa, kalau ada keajaiban', 'Mustahil bos', 'Bisa sih, tapi boong', 'Bisa dong, kan lu anak dewa']
+  const ga = bisa[Math.floor(Math.random() * bisa.length)]
+  m.reply(`*Pertanyaan : Bisakah ${q}*\n🔮 *Jawaban : ${ga}*`)
+}
+break
+
+case 'bagaimanakah': {
+  if (!q) return m.reply(`*Contoh: ${prefix + command} gw kuyang*`)
+  if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
+  const gimana = ['Ya begitulah', 'Gak normal', 'Maaf bot tidak bisa menjawab', 'Coba deh cari di gugel', 'Kayaknya lanjut part 2', 'Kepo kamu', 'Gimana aja', 'Di luar nalar', 'Agak laen emang', 'Sulit dipercaya tapi nyata']
+  const ya = gimana[Math.floor(Math.random() * gimana.length)]
+  m.reply(`*Pertanyaan : Bagaimanakah ${q}*\n🔮 *Jawaban : ${ya}*`)
+}
+break
+
+case 'cekganteng': {
+  if (!q) return m.reply(`*Contoh: ${prefix + command} gw*`)
+  if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
+  const gan = ['Normal', 'Ganteng njir', 'Ganteng amat bang', 'Jaga penampilan ya', 'Kurang', 'Lumayan', 'Boleh juga', 'Muka lu kek abang bakso', 'Damage nya parah', 'Ganteng maksimal', 'Biasa aja wir']
+  const teng = gan[Math.floor(Math.random() * gan.length)]
+  m.reply(`*Nama :* ${q}\n🔮 *Jawaban : ${teng} (${Math.floor(Math.random() * 101)}%)*`)
+}
+break
+
+case 'cekcantik': {
+  if (!q) return m.reply(`*Contoh: ${prefix + command} gw*`)
+  if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
+  const can = ['Normal', 'Cantik njir', 'Cantik amat sih', 'Jaga penampilan ya', 'Kurang', 'Lumayan', 'Boleh juga', 'Kek bidadari jatuh dari surga', 'Damage nya parah', 'Cantik maksimal', 'Biasa aja wir', 'Spek bidadari']
+  const tik = can[Math.floor(Math.random() * can.length)]
+  m.reply(`*Nama :* ${q}\n🔮 *Jawaban : ${tik} (${Math.floor(Math.random() * 101)}%)*`)
+}
+break
+
+case 'asmaul husna': {
+const t3xt = require(`./storage/teks/${command}.json`)
+const r4andT3xt = t3xt[Math.floor(Math.random() * t3xt.length)]
+lenwy.sendMessage(from, { text: r4andT3xt }, { quoted: m })
+}
+break
+
+case 'ayat kursi': {
+let result = `🎁 *Ayat Kursi*
+
+✉️ *Arab :*
+اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ
+
+✉️ *Latin :*
+*“Alloohu laa ilaaha illaa huwal hayyul qoyyuum, laa ta’khudzuhuu sinatuw walaa naum. Lahuu maa fissamaawaati wa maa fil ardli man dzal ladzii yasyfa’u ‘indahuu illaa biidznih, ya’lamu maa baina aidiihim wamaa kholfahum wa laa yuhiithuuna bisyai’im min ‘ilmihii illaa bimaa syaa’ wasi’a kursiyyuhus samaawaati wal ardlo walaa ya’uuduhuu hifdhuhumaa wahuwal ‘aliyyul ‘adhiim.”*
+
+✉️ *Artinya:*
+Allah, tidak ada Tuhan (yang berhak disembah) melainkan Dia Yang Hidup kekal lagi terus menerus mengurus (makhluk-Nya) tidak mengantuk dan tidak tidur. Kepunyaan-Nya apa yang di langit dan di bumi. Tiada yang dapat memberi syafa'at di sisi Allah tanpa izin-Nya.
+Allah mengetahui apa-apa yang di hadapan mereka dan di belakang mereka, dan mereka tidak mengetahui apa-apa dari ilmu Allah melainkan apa yang dikehendaki-Nya. Kursi Allah meliputi langit dan bumi. Dan Allah tidak merasa berat memelihara keduanya, dan Allah Maha Tinggi lagi Maha Besar." 
+*(QS. Al Baqarah: 255)*`
+lenwy.sendMessage(m.chat, { image: { url: 'https://telegra.ph/file/afb17800d56775ad1791d.png' }, caption: result}, { quoted: m })
+}
+
+break
+
+case 'kisahnabi': {
+if (!text) return m.reply(`*Tolong Masukkan Nama Nabi*`) 
+try{
+let ilenwy = await fetchJson(`https://api.zeeoneofc.my.id/api/islam/kisahnabi?apikey=QIO8xicLNkEV43Y&nabi=${text}`)
+const namanabi = ilenwy.result.name
+const kelahiran = ilenwy.result.birth
+const wafat = ilenwy.result.death_age
+const asal = ilenwy.result.country_from
+const ceritanabi = ilenwy.result.story
+var lenwy_result = `*Kisah Nabi*
+🎁 *Nama Nabi : ${namanabi}*
+🗓️ *Hari Kelahiran : ${kelahiran}*
+🕒 *Wafat Pada Umur : ${wafat}*
+🌏 *Asal : ${asal}*
+
+📑 *Kisah Dari Nabi ${namanabi} :*
+${ceritanabi}`
+m.reply(lenwy_result) 
+} catch (error) {
+    return m.reply(mess.error)
+}
+}
+break
+
+case 'doa': {
+if (!text) return m.reply(`*Tolong Masukkan Doa Yang Ingin Dicari*`) 
+try{
+LenwyLD()
+await sleep(200)
+let ilenwy = await fetchJson(`https://doa-doa-api-ahmadramadhan.fly.dev/api/doa/${text}`)
+const namadoa = ilenwy.doa
+const ayat = ilenwy.ayat
+const latin = ilenwy.latin
+var lenwy_result = `*Pencarian : ${namadoa}*
+
+*${ayat}*
+
+*${latin}*`
+m.reply(lenwy_result) 
+} catch (error) {
+    return m.reply(mess.error)
+}
+}
+break
+
+case 'jodoh': {
+if (!m.isGroup) return
+let member = participants.map(u => u.id)
+let me = m.sender
+let jodoh = member[Math.floor(Math.random() * member.length)]
+await lenwy.sendMessage(from, { text : `@${me.split('@')[0]} ❤ @${jodoh.split('@')[0]}`, mentions : [me, jodoh] }, { quoted: m })
+}
+break
+
+case 'quotes': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+var resi = await Quotes()
+teks = `\n${global.emoji} *Author: ${resi.author}*\n`
+teks = `\n🎁 *Quotes:*\n`
+teks = `*${resi.quotes}*\n`
+m.reply(teks)
+}
+break
+
+case 'quotesanime': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+const an1 = JSON.parse(fs.readFileSync("./storage/text/quotesanime.json"))
+const r4ndan1 = an1[Math.floor(Math.random() * an1.length)]
+const tgt99 = `*Random Quotes Anime*
+
+🍁 *Nama Anime : ${r4ndan1.anime}*
+🍁 *Nama Character : ${r4ndan1.character}*
+🍁 *Episode : ${r4ndan1.episode}*
+
+🎁 *Quotes : ${r4ndan1.quotes}*`
+lenwy.sendMessage(from, { text: tgt99 }, { quoted: m })
+}
+break
+
+case 'meme': {
+var reis = await JalanTikusMeme()
+teks = ""
+teks += "*Random Meme*\n\n"
+teks += `🎁 *Source Meme :* ${reis}`
+teks += ""
+lenwy.sendMessage(m.chat, { image : { url : reis }, caption: teks }, { quoted:m })
+}
+break
+
+case 'tebak': {
+  if (args[0] === "gambar") {
+    if (tebakgambar.hasOwnProperty(m.chat)) return m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan Di Chat Ini!*');
+    let anu = await fetchJson('https://raw.githubusercontent.com/BochilTeam/database/master/games/tebakgambar.json');
+    let result = anu[Math.floor(Math.random() * anu.length)];
+    lenwy.sendImage(from, result.img, `*Silahkan Jawab Soal Di Atas Ini*\n\n📑 *Deskripsi :* ${result.deskripsi}\n\n🕒 *Waktu : 60s*`, m).then(() => { tebakgambar[m.chat] = result.jawaban.toLowerCase(); });
+    await sleep(60000);
+    if (tebakgambar.hasOwnProperty(m.chat)) {
+      console.log("Jawaban: " + result.jawaban);
+      lenwy.sendMessage(m.chat, { text: `🕒 *Waktu Habis*\n🎁 *Jawaban : ${tebakgambar[m.chat]}*\n\n📣 *Ingin Bermain Lagi? Ketik Tebak Gambar*` }, { quoted: m });
+      delete tebakgambar[m.chat];
+    }
+  } else if (args[0] === 'kata') {
+    if (tebakkata.hasOwnProperty(m.chat)) return m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan Di Chat Ini!*');
+    let anu = await fetchJson('https://raw.githubusercontent.com/BochilTeam/database/master/games/tebakkata.json');
+    let result = anu[Math.floor(Math.random() * anu.length)];
+    lenwy.sendText(from, `*Silahkan Jawab Pertanyaan Berikut :*\n\n📦 *${result.soal}*\n\n🕒 *Waktu : 60s*`, m).then(() => { tebakkata[m.chat] = result.jawaban.toLowerCase(); });
+    await sleep(60000);
+    if (tebakkata.hasOwnProperty(m.chat)) {
+      console.log("Jawaban: " + result.jawaban);
+      lenwy.sendMessage(m.chat, { text: `🕒 *Waktu Habis*\n🎁 *Jawaban : ${tebakkata[m.chat]}*\n\n📣 *Ingin Bermain Lagi? Ketik Tebak Kata*` }, { quoted: m });
+      delete tebakkata[m.chat];
+    }
+  } else if (args[0] === 'kalimat') {
+    if (tebakkalimat.hasOwnProperty(m.chat)) return m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan Di Chat Ini!*');
+    let anu = await fetchJson('https://raw.githubusercontent.com/BochilTeam/database/master/games/tebakkalimat.json');
+    let result = anu[Math.floor(Math.random() * anu.length)];
+    lenwy.sendText(from, `*Silahkan Jawab Pertanyaan Berikut :*\n\n📦 *Pertanyaan :* ${result.soal}\n\n🕒 *Waktu : 60s*`, m).then(() => { tebakkalimat[m.chat] = result.jawaban.toLowerCase(); });
+    await sleep(60000);
+    if (tebakkalimat.hasOwnProperty(m.chat)) {
+      console.log("Jawaban: " + result.jawaban);
+      lenwy.sendMessage(m.chat, { text: `🕒 *Waktu Habis*\n🎁 *Jawaban : ${tebakkalimat[m.chat]}*\n\n📣 *Ingin Bermain Lagi? Ketik Tebak Kalimat*` }, { quoted: m });
+      delete tebakkalimat[m.chat];
+    }
+  } else if (args[0] === 'lirik') {
+    if (tebaklirik.hasOwnProperty(m.chat)) return m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan Di Chat Ini!*');
+    let anu = await fetchJson('https://raw.githubusercontent.com/BochilTeam/database/master/games/tebaklirik.json');
+    let result = anu[Math.floor(Math.random() * anu.length)];
+    lenwy.sendText(from, `*Ini Adalah Lirik Dari Lagu? :*\n\n📦 *${result.soal}?*\n\n🕒 *Waktu : 60s*`, m).then(() => { tebaklirik[m.chat] = result.jawaban.toLowerCase(); });
+    await sleep(60000);
+    if (tebaklirik.hasOwnProperty(m.chat)) {
+      lenwy.sendMessage(m.chat, { text: `🕒 *Waktu Habis*\n🎁 *Jawaban : ${tebaklirik[m.chat]}*\n\n📣 *Ingin Bermain Lagi? Ketik Tebak Lirik*` }, { quoted: m });
+      delete tebaklirik[m.chat];
+    }
+  } else if (args[0] === 'lontong') {
+    if (caklontong.hasOwnProperty(m.chat)) return m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan Di Chat Ini!*');
+    let anu = await fetchJson('https://raw.githubusercontent.com/BochilTeam/database/master/games/caklontong.json');
+    let result = anu[Math.floor(Math.random() * anu.length)];
+    lenwy.sendText(from, `*Jawablah Pertanyaan Berikut :*\n📦 *${result.soal}*\n🕒 *Waktu : 60s*`, m).then(() => { caklontong[m.chat] = result.jawaban.toLowerCase(); caklontong_desk[m.chat] = result.deskripsi; });
+    await sleep(60000);
+    if (caklontong.hasOwnProperty(m.chat)) {
+      lenwy.sendMessage(m.chat, { text: `🕒 *Waktu Habis*\n🎁 *Jawaban : ${caklontong[m.chat]}*\n\n📑 *Deskripsi : ${caklontong_desk[m.chat]}*\n\n📣 *Ingin Bermain Lagi? Ketik Tebak Lontong*` }, { quoted: m });
+      delete caklontong[m.chat];
+      delete caklontong_desk[m.chat];
+    }
+  } else if (args[0] === 'angka') {
+    if (tebakangka.hasOwnProperty(m.chat)) return m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan Di Chat Ini!*');
+    let randomNum = Math.floor(Math.random() * 100) + 1;
+    lenwy.sendText(from, `*Silahkan Tebak Angka Berikut :*\n\n📦 *Bot memikirkan angka dari 1 sampai 100*\n\n🕒 *Waktu : 60s*`, m).then(() => { tebakangka[m.chat] = randomNum.toString(); });
+    await sleep(60000);
+    if (tebakangka.hasOwnProperty(m.chat)) {
+      lenwy.sendMessage(m.chat, { text: `🕒 *Waktu Habis*\n🎁 *Jawaban : ${tebakangka[m.chat]}*\n\n📣 *Ingin Bermain Lagi? Ketik Tebak Angka*` }, { quoted: m });
+      delete tebakangka[m.chat];
+    }
+  }
+}
+break
+
+case 'math': {
+  if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+  if (kuismath.hasOwnProperty(m.sender.split('@')[0])) m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan!*')
+  if (!text) return m.reply(`Mode: ${Object.keys(modes).join(' | ')}
+Contoh penggunaan: ${prefix}math medium`);
+  let { genMath, modes } = require('./library/math')
+  let result = await genMath(text.toLowerCase())
+  await lenwy.sendText(from,
+    `*Berapa Hasil Dari : ${result.soal.toLowerCase()}*?
+🕒 *Waktu : ${(result.waktu / 1000).toFixed(2)} detik*`,
+  m).then(() => {
+    kuismath[m.sender.split('@')[0]] = result.jawaban
+  })
+  await sleep(result.waktu)
+  if (kuismath.hasOwnProperty(m.sender.split('@')[0])) {
+    console.log("Jawaban: " + result.jawaban)
+    m.reply("🕒 *Waktu Habis*\n🎁 *Jawaban :* " + kuismath[m.sender.split('@')[0]])
+    delete kuismath[m.sender.split('@')[0]]
+  }
+}
+break
+
+case 'ttc': {
+  if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*');
+  
+  let TicTacToe = require("./library/tictactoe");
+  this.game = this.game || {};
+  
+  if (Object.values(this.game).find(room => room.id.startsWith('tictactoe') && [room.game.playerX, room.game.playerO].includes(m.sender))) {
+    return m.reply('⚠️ *Kamu Masih Didalam Permainan Atau Menunggu Lawan Bermain*\n\n> Ketik delttc atau nyerah untuk keluar dari permainan');
+  }
+  
+  let room = Object.values(this.game).find(room => room.state === 'WAITING' && (text ? room.name === text : true));
+  
+  if (room) {
+    clearTimeout(room.timeout);
+    
+    m.reply('*Lawan Bermain Ditemukan*');
+    room.o = from;
+    room.game.playerO = m.sender;
+    room.state = 'PLAYING';
+    
+    let arr = room.game.render().map(v => {
+      return {
+        X: '❌',
+        O: '⭕',
+        1: '1️⃣',
+        2: '2️⃣',
+        3: '3️⃣',
+        4: '4️⃣',
+        5: '5️⃣',
+        6: '6️⃣',
+        7: '7️⃣',
+        8: '8️⃣',
+        9: '9️⃣',
+      }[v];
+    });
+    
+    let str = `Room ID: ${room.id}\n\n${arr.slice(0, 3).join('')}\n${arr.slice(3, 6).join('')}\n${arr.slice(6).join('')}\n\nMenunggu @${room.game.currentTurn.split('@')[0]}\n\nKetik *nyerah* untuk menyerah dan mengakui kekalahan`;
+    
+    if (room.x !== room.o) await lenwy.sendText(room.x, str, m, { mentions: parseMention(str) });
+    await lenwy.sendText(room.o, str, m, { mentions: parseMention(str) });
+    
+  } else {
+    room = {
+      id: 'tictactoe-' + (+new Date),
+      x: from,
+      o: '',
+      game: new TicTacToe(m.sender, 'o'),
+      state: 'WAITING',
+      timeout: setTimeout(() => {
+        if (this.game[room.id] && this.game[room.id].state === 'WAITING') {
+          lenwy.sendMessage(room.x, { text: '🕒 *Waktu Habis*\n\nLawan bermain tidak ditemukan dalam 1 menit. Room TicTacToe telah dibatalkan secara otomatis.' });
+          delete this.game[room.id];
+        }
+      }, 60000)
+    };
+    
+    if (text) room.name = text;
+    m.reply('*Menunggu Lawan Bermain*' + (text ? ` mengetik command dibawah ini ${prefix}${command} ${text}` : ''));
+    this.game[room.id] = room;
+  }
+}
+break
+// ===== AKHIR MENU FUN ===== //
+
+// ===== AWAL MENU TOOLS ===== //
+case 'kalkulator': {
+    if (!q) return m.reply(`*Contoh:*
+> kalkulator 12/2
+> kalkulator 12*2
+> kalkulator 12+2
+> kalkulator 12-2`)
+
+    const operator = q.match(/[+\-*/]/)?.[0]
+    if (!operator) return m.reply('*Operator tidak valid!*')
+
+    const [a, b] = q.split(operator).map(x => Number(x.trim()))
+    if (isNaN(a) || isNaN(b)) return m.reply('*Input harus berupa angka!*')
+    if (operator === '/' && b === 0) return m.reply('*Pembagian dengan nol tidak diperbolehkan!*')
+
+    const hasil = {
+        '+': a + b,
+        '-': a - b,
+        '*': a * b,
+        '/': a / b
+    }[operator]
+
+    m.reply(`🎁 *Hasil:* ${hasil}`)
+}
+break
+
+case 'createqr': {
+if (!text) return m.reply(`*Contoh : Createqr ${botname}*`)
+LenwyLD()
+const qrcode = require('qrcode')
+const qyuer = await qrcode.toDataURL(text, { scale: 8 })
+let data = new Buffer.from(qyuer.replace('data:image/png;base64,', ''), 'base64')
+lenwy.sendMessage(from, { image: data, caption: mess.success }, { quoted: m })
+}
+break
+
+case 'detectqr': {
+LenwyLD()
+try {
+mee = await lenwy.downloadAndSaveMediaMessage(quoted)
+mem = await uploader60Minute(mee)
+const res = await fetch(`http://api.qrserver.com/v1/read-qr-code/?fileurl=${mem}`)
+const data = await res.json()
+m.reply(util.format(data[0]))
+} catch (err) {
+m.reply(`*Mana Qrnya?*`)
+}
+}
+break
+
+case 'hdvid': {
+  const who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? lenwy.user.jid : m.sender;
+  const q = m.quoted ? m.quoted : m;
+  const mime = (q.msg || q).mimetype || '';
+
+  if (!mime) return m.reply(`Videonya mana?`)
+  if (!/video/.test(mime)) {
+    return m.reply(`Kirim/kutip video dengan caption ${prefix + command}`)
+  }
+  LenwyLD()
+  let media = await q.download()
+let video = Math.floor(Math.random() * 100) + 1;
+
+  const inputFilePath = `./input${video}.mp4`;
+  fs.writeFileSync(inputFilePath, media)
+
+  const outputFilePath = `./output${video}.mp4`;
+  const dir = './';
+  if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir)
+  }
+
+  const ffmpegCommand = `ffmpeg -i ${inputFilePath} -vf "hqdn3d=1.5:1.5:6:6,unsharp=3:3:0.6,eq=brightness=0.05:contrast=1.1:saturation=1.05" -vcodec libx264 -preset slower -crf 22 -acodec copy -movflags +faststart ${outputFilePath}`;
+
+  exec(ffmpegCommand, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error: ${error.message}`)
+      return
+    }
+    console.log(`stdout: ${stdout}`)
+    console.error(`stderr: ${stderr}`)
+    lenwy.sendMessage(m.chat, { caption: `_Video berhasil ditingkatkan kualitasnya_`, video: { url: outputFilePath } }, { quoted: m })
+    fs.unlinkSync(inputFilePath)
+  })
+}
+break
+
+case 'hd': {
+ if (!quoted) return m.reply(`Fotonya Mana?`)
+ if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`)
+ await LenwyLD()
+ try {
+ let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+ let anu = await uploader60Minute(media)
+ let result = (util.format(anu))
+ console.log(anu)
+ await lenwy.sendMessage(m.chat, { image: { url: `https://api.nexray.eu.cc/tools/v1/enhancer?url=${result}` }, caption: 'SUCCESS ✅' }, { quoted: m })
+ } catch (e) {
+ console.error(e);
+ return m.reply('Error, Coba Pakai hd2')
+ }
+}
+break
+
+case 'hd2': {
+if (!quoted) return m.reply('Fotonya Mana?')
+if (!/image/.test(mime)) return m.reply('Fotonya Mana?')
+LenwyLD()
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+let anu = await uploader60Minute(media)
+let result = util.format(anu)
+try {
+ await lenwy.sendMessage(m.chat, { image: { url: `https://api.nexray.eu.cc/tools/upscale?url=${result}&resolusi=2` }, caption: 'Selesai' }, { quoted: m })
+} catch {
+ return m.reply('Error, Coba Pakai hd3')
+}
+}
+break
+
+case 'hd3': {
+if (!quoted) return m.reply(`Fotonya Mana?`)
+if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`)
+LenwyLD()
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+let anu = await uploader60Minute(media)
+let result = (util.format(anu))
+try {
+ await lenwy.sendMessage(m.chat,{ image:{ url: `https://api.nexray.eu.cc/tools/v1/upscale?url=${result}` }, caption:'Selesai' },{ quoted: m })
+} catch (e) {
+ return m.reply('Error, Coba Pakai hd4')
+}
+}
+break
+
+case 'skinswap': {
+  if (!quoted) return m.reply(`Fotonya Mana?`)
+  if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`)
+
+  let color_Skin = ["black", "pink", "green", "blue", "purple", "red", "gold", "silver", "brown", "orange"]
+
+  if (!color_Skin.includes(text.toLowerCase())) {
+      return m.reply(`Warna *${text}* tidak tersedia!\nGunakan salah satu dari:\n${color_Skin.join(', ')}`)
+  }
+  let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+  let anu = await uploader60Minute(media)
+  let result = (util.format(anu))
+  try {
+      const result2 = await (await fetch(`https://${global.api.maelyn.domain}/api/img2img/skinswap?url=${result}&style=${text.toLowerCase()}`, {
+          headers: {
+              'x-maelyn-auth': global.api.maelyn.apikey
+          }
+      })).json()
+      await lenwy.sendMessage(m.chat, { image: { url: result2.result }, caption: 'Selesai' }, { quoted: m })
+  } catch (e) {
+      console.log(e)
+      return m.reply('Error saat proses skinswap!')
+  }
+}
+break
+
+case 'ocr': {
+if (!quoted) return m.reply(`Fotonya Mana?`)
+if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`)
+try{
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+let anu = await uploader60Minute(media)
+let result = (util.format(anu))
+const proses = await (await fetch(`https://deoberon-api.vercel.app/tools/ocr?url=${result}`)).json()
+let teks = proses.result
+await lenwy.sendMessage(m.chat, { text: `Hasilnya: ${teks}` }, { quoted: m})
+} catch (error) {
+console.error(error)
+m.reply('Error')
+}
+}
+break
+
+case 'removebg':
+case 'nobg': {
+if (!quoted) return m.reply(`Fotonya Mana?`)
+if (!/image/.test(mime)) return m.reply(`Mana Fotonya?`)
+LenwyLD()
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+let anu = await uploader60Minute(media)
+let result = (util.format(anu))
+const proses = await (await fetch(`https://${global.api.ham.domain}/tools/removebg?apikey=${global.api.ham.apikey}&url=${result}`)).json()
+console.log(proses)
+await lenwy.sendMessage(m.chat, { image: { url: proses.result.url }, caption: '🎁 *Removebg Selesai*'}, { quoted: m })
+}
+break
+  
+case 'qc': {
+    if (!q) return m.reply(`*Contoh :* Qc white Lenwy\n🎁 *Kode Warna:* Qckode`)
+    if (q.length > 400) return m.reply('*Maksimal 400 Karakter*')
+
+    const [color, ...msg] = q.split(' ')
+    const message = msg.join(' ')
+    if (!message) return m.reply('*Teks tidak boleh kosong!*')
+
+    const colors = {
+        pink: '#f68ac9',
+        blue: '#6cace4',
+        red: '#f44336',
+        green: '#4caf50',
+        yellow: '#ffeb3b',
+        purple: '#9c27b0',
+        darkblue: '#0d47a1',
+        lightblue: '#03a9f4',
+        ash: '#9e9e9e',
+        orange: '#ff9800',
+        black: '#000000',
+        white: '#ffffff',
+        teal: '#008080',
+        lightpink: '#ffc0cb',
+        chocolate: '#a52a2a',
+        salmon: '#ffa07a',
+        magenta: '#ff00ff',
+        tan: '#d2b48c',
+        wheat: '#f5deb3',
+        deeppink: '#ff1493',
+        fire: '#b22222',
+        lenwyblue: '#00bfff',
+        brightlenwyblue: '#1e90ff',
+        hotpink: '#ff69b4',
+        lightlenwyblue: '#87ceeb',
+        seagreen: '#20b2aa',
+        darkred: '#8b0000',
+        orangered: '#ff4500',
+        cyan: '#48d1cc',
+        violet: '#ba55d3',
+        mossgreen: '#00ff7f',
+        darkgreen: '#008000',
+        navyblue: '#191970',
+        darkorange: '#ff8c00',
+        darkpurple: '#9400d3',
+        fuchsia: '#ff00ff',
+        darkmagenta: '#8b008b',
+        darkgray: '#2f4f4f',
+        peachpuff: '#ffdab9',
+        darkishgreen: '#bdb76b',
+        darkishred: '#dc143c',
+        goldenrod: '#daa520',
+        darkishgray: '#696969',
+        darkishpurple: '#483d8b',
+        gold: '#ffd700',
+        silver: '#c0c0c0'
+    }
+
+    const backgroundColor = colors[color]
+    if (!backgroundColor) {
+        return m.reply(
+            '☘ *Kode Warna Tidak Ditemukan*\n' +
+            '🎁 Contoh : Qc white Lenwy\n' +
+            '⚠ Gunakan huruf kecil'
+        )
+    }
+
+    const obj = {
+        type: 'quote',
+        format: 'png',
+        backgroundColor,
+        width: 512,
+        height: 768,
+        scale: 2,
+        messages: [{
+            entities: [],
+            avatar: true,
+            from: {
+                id: 1,
+                name: pushname,
+                photo: {
+                    url: await lenwy.profilePictureUrl(m.sender, 'image')
+                        .catch(() => 'https://telegra.ph/file/6880771a42bad09dd6087.jpg')
+                }
+            },
+            text: message,
+            replyMessage: {}
+        }]
+    }
+
+    const res = await axios.post('https://bot.lyo.su/quote/generate', obj)
+    const buffer = Buffer.from(res.data.result.image, 'base64')
+
+    await lenwy.sendImageAsSticker(m.chat, buffer, m, { packname: global.packname, author: global.author })
+}
+break
+
+case 'img2txt':
+if (!/image/.test(mime)) return m.reply(`Gambarnya Mana?`)
+if (/image/.test(mime)) {
+LenwyLD()
+let mee = await lenwy.downloadAndSaveMediaMessage(quoted)
+let mem = await uploader60Minute(mee)
+let res = await (await fetch(`https://itzpire.com/tools/img2text?url=${mem}`)).json()
+let result = res.result
+lenwy.sendMessage(m.chat,{image:{url: mem}, caption:`${result}`},{quoted: m})
+}
+break
+
+case 'txt2img': {
+    if (!q) return m.reply(`*Mau Gambar Apa?*`)
+
+    LenwyLD
+    await sleep(200)
+
+
+    try {
+        const apiUrl = `https://endpoint.web.id/ai/txt2img?key=315602&prompt=${encodeURIComponent(q)}`;
+
+        let response = await fetch(apiUrl)
+        let json = await response.json()
+
+        if (json.status && json.code === 200) {
+            let imageUrl = json.result.url;
+
+            lenwy.sendMessage(m.chat, { image: { url: imageUrl }, caption: `Gambar untuk prompt: "${q}"` }, { quoted: m })
+        } else {
+            m.reply(`Gagal mendapatkan gambar. Silakan coba lagi.`)
+        }
+    } catch (error) {
+        console.error('Error:', error)
+        m.reply(`Terjadi kesalahan saat memproses permintaan.`)
+    }
+}
+break
+
+case 'geminiimg': {
+if (!quoted) return m.reply('Mana Gambarnya?')
+m.reply('Sabar Yaa')
+if (!/image/.test(mime)) return m.reply("Hanya Support Gambar")
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+let anu = await uploader60Minute(media)
+let { data } = await axios.get("https://gmni.vercel.app/api/img?imageUrl="+ anu +"&prompt=" + text)
+m.reply(data.text)
+}
+break
+
+case 'lirik': {
+  if (!text) return m.reply(`Masukan Judul Lagu`)
+  if (text.length > 30) return m.reply(`Maksimal 30 Karakter`)    
+  LenwyLD()
+  await sleep(200)
+  try{
+    let anu = await (await fetch(`https://endpoint.web.id/tools/lirik?key=315602&query=${text}`)).json()
+    let result = anu.result
+    let caption = '📃 Judul : ' + result.title + '\n📣 Artis : ' + result.artist + '\n\n🎁 Lirik :\n' + result.lyrics
+    m.reply(caption)
+  } catch (error) {
+    m.reply(`⚠️ Lirik Lagu Tidak Ditemukan ${error}`)
+  }
+}
+break
+
+case 'cekkodam': {
+if (!q) return m.reply(`*Contoh: ${prefix + command} gw*`)
+if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
+const tik = await (await fetch(`https://${global.api.ham.domain}/primbon/cekkhodam?apikey=${global.api.ham.apikey}&name=${q}`)).json()
+m.reply(tik.result.message)
+}
+break
+
+case 'brat': {
+  if (!text) return m.reply(`Penggunaan : ${prefix + command} <img/vid> <teks>\n\nContoh:\n${prefix + command} img Halo kamu\n${prefix + command} vid Halo kamu`);
+  let argsList = text.split(' ');
+  let type = argsList[0].toLowerCase();
+  let bratText = argsList.slice(1).join(' ');
+  if (type !== 'img' && type !== 'vid') {
+    return m.reply(`Tipe tidak valid! Harap gunakan *img* untuk gambar atau *vid* untuk video.\n\nContoh: ${prefix + command} img halo`);
+  }
+  if (!bratText) return m.reply(`Teksnya mana?\nContoh: ${prefix + command} ${type} halo`);
+  let isVideo = type === 'vid' ? 'true' : 'false';
+  try {
+    const response = await fetch(`https://${global.api.maelyn.domain}/api/canvas/brat?text=${encodeURIComponent(bratText)}&isvideo=${isVideo}&speed=medium`, {
+      method: "GET",
+      headers: {
+        "x-maelyn-auth": global.api.maelyn.apikey
+      }
+    });
+    const proses = await response.json();
+    console.log(proses);
+    if (isVideo === 'true') {
+      await lenwy.sendVideoAsSticker(from, proses.result.url, m, { packname: global.packname, author: global.author });
+    } else {
+      await lenwy.sendImageAsSticker(from, proses.result.url, m, { packname: global.packname, author: global.author });
+    }
+  } catch (e) {
+    console.error(e);
+    await m.reply("Maaf, terjadi kesalahan saat memproses permintaan.");
+  }
+}
+break
+
+case 'pantun': {
+    try {
+        let response = await axios.get('https://apis.xyrezz.online-server.biz.id/api/pantun');
+        let pantunList = response.data;
+        let randomIndex = Math.floor(Math.random() * pantunList.length);
+        let randomPantun = pantunList[randomIndex];
+
+        m.reply(randomPantun.trim());
+    } catch (error) {
+        console.error(error);
+        m.reply('Terjadi kesalahan saat memuat pantun.');
+    }
+}
+break
+
+case 'txt2chibi': {
+  if (!text) m.reply(`Contoh: ${prefix + command} a boy with a black jacket and blue hair`)
+  LenwyLD()
+  let res = await (await fetch(`https://${global.api.maelyn.domain}/api/txt2chibi?prompt=${text}&resolution=Square`, {
+    headers: {
+      'x-maelyn-auth': global.api.maelyn.apikey
+    }
+  })).json()
+  for (let imageUrl of res.result) {
+    await lenwy.sendMessage(m.chat, { image: { url: imageUrl }}, { quoted: m })
+  }
+}
+break
+
+case 'robloxstalk': {
+ if (!text) return m.reply('masukkan username roblox anda');
+ LenwyLD();
+ try {
+ const response = await (await fetch(`https://${global.api.ham.domain}/stalk/roblox?apikey=${global.api.ham.apikey}&nickname=${encodeURIComponent(text)}`)).json()
+ const data = response.result;
+ console.log(data)
+
+ const formatPesan = `*🍒 ROBLOX PROFILE 🍒*\n\n` +
+ `*PROFILE*\n` +
+ `> *Username*: @${data.userInfo.name || '-'}\n` +
+ `> *Display Name*: ${data.userInfo.displayName || '-'}\n` +
+ `> *Bio*: ${data.userInfo.description && data.userInfo.description !== '-' ? data.userInfo.description : 'No bio available'}\n\n` +
+ `*INFORMATION*\n` +
+ `> *Created*: ${new Date(data.userInfo.created).toLocaleString('en-US')}\n` +
+ `> *Verified*: ${data.userInfo.hasVerifiedBadge ? '✅' : '❌'}\n\n` +
+ `*STATISTICS*\n` +
+ `> *Friends*: ${data.userFriendCount.count.toLocaleString() || '-'}`
+
+ await lenwy.sendMessage(m.chat, { image: { url: data.userAvatar.data[0].imageUrl }, caption: formatPesan }, { quoted: m });
+ } catch (e) {
+ console.error(e);
+ m.reply('Terjadi kesalahan saat mengambil data.');
+ }
+}
+break
 
 case 'ffstalk': {
  if (isBan) return m.reply(mess.ban)
@@ -4813,8 +4515,7 @@ Id: ${text}`)
 }
 }
 break
-
-case 'stalkml':     
+   
 case 'mlstalk': {
  if (!q) return m.reply(`Contoh ${prefix + command} 696964467(8770)`)
  let parts = q.split("(");
@@ -4863,10 +4564,313 @@ ${topupText}`);
 }
 break
 
-case 'jadinyata':
-case 'toreal':
-case 'toanime':
-case 'jadianime': {
+case 'sticker':
+case 's':{
+ if (isBan) return m.reply('⚠ *Kamu Di Ban Owner*')
+ if (!quoted) return m.reply(`Balas Video/Image Dengan Caption ${prefix + command}`)
+ if (!/image/.test(mime) && !/video/.test(mime)) return
+ if (/image/.test(mime)) {
+ var stream = await downloadContentFromMessage(m.quoted? quoted : m.message.imageMessage, 'image');
+ var buffer = Buffer.from([]);
+ for await(const chunk of stream) {
+ buffer = Buffer.concat([buffer, chunk]);
+ }
+ let buffers = await writeExifImg(buffer, { packname: global.packname, author: global.author });
+ await lenwy.sendMessage(from, { sticker: { url: buffers } }, { quoted: m });
+ } else if (/video/.test(mime)) {
+ var stream = await downloadContentFromMessage(m.quoted? quoted : m.message.videoMessage, 'video');
+ var buffer = Buffer.from([]);
+ for await(const chunk of stream) {
+ buffer = Buffer.concat([buffer, chunk]);
+ }
+ let buffers = await writeExifVid(buffer, { packname: global.packname, author: global.author });
+ await lenwy.sendMessage(from, { sticker: { url: buffers } }, { quoted: m });
+ } else {
+ m.reply(`Balas gambar/video/sticker dengan caption ${prefix + 'sticker'} \n*(MAKSIMAL 10 DETIK!*)`);
+ } 
+ }
+break
+
+case 'smeme': {
+let respond = `Kirim/reply image/sticker dengan caption ${prefix + command} text1|text2`
+if (!/image/.test(mime)) return
+if (!text) return m.reply(respond)
+LenwyLD()
+await sleep(200)
+let atas = text.split('|')[0] ? text.split('|')[0] : '-'
+let bawah = text.split('|')[1] ? text.split('|')[1] : '-'
+try {
+let mee = await lenwy.downloadAndSaveMediaMessage(quoted)
+let mem = await uploader60Minute(mee)
+let smeme = `https://api.memegen.link/images/custom/${encodeURIComponent(atas)}/${encodeURIComponent(bawah)}.png?background=${mem}`
+let awikwok = await lenwy.sendImageAsSticker(m.chat, smeme, m, { packname: global.packname, author: global.author })
+await fs.unlinkSync(awikwok)
+} catch (e) {
+m.reply(mess.error + e)
+}
+}
+break
+
+case 'cuaca': {
+if (!text) return m.reply('*Mana Lokasinya?*')
+if (text.length > 20) return m.reply(`*Maksimal 20 Karakter*`)
+LenwyLD()
+await sleep(200)
+try {
+let wdata = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${text}&units=metric&appid=060a6bcfa19809c2cd4d97a212b19273&language=id`)
+let Lenwy_txt = ""
+Lenwy_txt += `*Cuaca Dari : ${text}*\n`
+Lenwy_txt += `☁️ *Cuaca :* *${wdata.data.weather[0].main}*\n`
+Lenwy_txt += `🧾 *Deskripsi :* *${wdata.data.weather[0].description}*\n`
+Lenwy_txt += `🌡️ *Suhu Rata Rata :* *${wdata.data.main.temp}*\n`
+Lenwy_txt += `💨 *Tekanan :* *${wdata.data.main.pressure}*\n`
+Lenwy_txt += `🧴 *kelembapan :* *${wdata.data.main.humidity}*\n`
+Lenwy_txt += `🛳️ *Garis Bujur :* *${wdata.data.coord.lat}*\n`
+Lenwy_txt += `🌏 *Negara :* *${wdata.data.sys.country}*\n`
+lenwy.sendMessage(m.chat, { text: Lenwy_txt, }, { quoted: m })
+} catch (e) {
+m.reply(`Pastikan Wilayahnya Adalah Kota`)
+}
+}
+break
+
+case 'ai': {
+if (!text) return m.reply(`*Mau Nanya Apa Ama AI?*`) 
+ LenwyLD()
+ if (/image/.test(mime)) {
+  try {
+    if (quoted && /image/.test(mime)) {
+        try {
+          let media = await merlynn.downloadAndSaveMediaMessage(quoted)
+          let anu = await uploader60Minute(media)
+          let data = await (await fetch(`https://${global.api.maelyn.domain}/api/ai/gemini`,
+                    {
+                      method: "POST",
+                      headers: {
+                        "x-maelyn-auth": global.api.maelyn.apikey,
+                        "Content-Type": "application/json"
+                      },
+                      body: JSON.stringify({
+                        "prompt": text,
+                        "model": "gemini-3-flash-preview",
+                        "mode": "chat",
+                        "images": [
+                          anu
+                        ]
+                      })
+                    }
+                  )).json();
+          console.log(data)
+          m.reply(data.result.text)
+        } catch (e) {
+          console.log(e)
+          return m.reply("*maaf, sedang terjadi error saat ini*")
+        }
+      } else {
+        let gpt = await (await fetch(`https://${global.api.maelyn.domain}/api/ai/gemini`,
+                    {
+                      method: "POST",
+                      headers: {
+                        "x-maelyn-auth": global.api.maelyn.apikey,
+                        "Content-Type": "application/json"
+                      },
+                      body: JSON.stringify({
+                        "prompt": text,
+                        "mode": "chat",
+                        "model": "gemini-3-flash-preview"
+                      })
+                    }
+                  )).json();
+        console.log(gpt)
+        m.reply(gpt.result.text)
+      }
+   } catch (e) {
+    console.log(e)
+    return m.reply("*Error Kak :(*")
+   }
+ }
+}
+break
+
+case 'search': {
+  if (!text) return m.reply(`*Begini Loh*\n\n> *${command} Gempa di jepang*`)
+  LenwyLD()
+  try {
+     let you = await (await fetch(`https://${global.api.maelyn.domain}/api/perplexity?q=${text}`, {
+       headers: {
+         'x-maelyn-auth': global.api.maelyn.apikey
+       }
+     })).json()
+     console.log(you)
+     let result = you.result
+     let sourcenya = `> *Source*\n`
+     result.source.forEach((url, index) => {
+      sourcenya += `(${index + 1}) ${url}\n`
+     });
+     m.reply(`${result.answer}
+
+${sourcenya}`)
+   } catch (e) {
+       lenwy.sendMessage (m.chat, { react: { text: `❌`, key: m.key }})
+     }
+    }
+break
+
+case 'toimg': {
+if (isBan) return m.reply(mess.ban)
+try {
+  LenwyLD()
+  await sleep(200)
+if (!quoted) return m.reply ('Reply Image')
+if (!/webp/.test(mime)) reply `Balas sticker dengan caption *${prefix + command}*`
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+let ran = await getRandom('.png')
+exec(`ffmpeg -i ${media} ${ran}`, (err) => {
+fs.unlinkSync(media)
+if (err) m.reply(err)
+let buffer = fs.readFileSync(ran)
+lenwy.sendMessage(from, { image: buffer }, {quoted:m})
+fs.unlinkSync(ran)
+})
+} catch (e) {
+    m.reply('[!] pastikan kamu reply stiker yang tidak gerak')
+}
+}
+break
+
+case 'tovid': {
+  if (isBan) return m.reply(mess.ban);
+  try {
+    if (!quoted) return m.reply(`Balas sticker dengan caption *${prefix + command}*`);
+
+    if (!/webp/.test(mime)) return m.reply(`Balas sticker dengan caption *${prefix + command}*`);
+
+    if (/webp/.test(mime)) {
+      let media = await lenwy.downloadAndSaveMediaMessage(quoted); // Download sticker
+      let ran = await getRandom('.mp4'); // Generate nama file video
+
+      const isAnimated = await isAnimatedWebp(media);
+      if (!isAnimated) {
+        return m.reply('Sticker yang kamu kirim bukan animasi webp. Harap kirim sticker animasi.');
+      }
+
+      exec(`ffmpeg -v error -i ${media} -t 10 -c:v libx264 -pix_fmt yuv420p -f mp4 ${ran}`, (err) => {
+        fs.unlinkSync(media); // Hapus file sticker
+        if (err) {
+          return m.reply(`Terjadi kesalahan saat mengonversi sticker: ${err.message}`);
+        }
+
+        let buffer = fs.readFileSync(ran); // Baca file video
+        lenwy.sendMessage(from, { video: buffer, caption: 'Sticker converted to video' }, { quoted: m }); // Kirim video hasil konversi
+        fs.unlinkSync(ran); // Hapus file video setelah dikirim
+      });
+    }
+  } catch (e) {
+    m.reply(`[!] Pastikan kamu reply sticker dengan benar (format sticker GIF atau video). Error: ${e.message}`);
+  }
+}
+break
+
+case 'chord':
+  if (!text) return m.reply('masukkan judul lagunya!')
+  try {
+    let chord = await (await fetch('https://endpoint.web.id/search/chord?key=315602&query=' + text)).json()
+    LenwyLD()
+    await sleep(200)
+    let result = chord.result;
+    
+    let message = `${result.title}\n\n`
+    message += `Artis: ${result.artist}\n`
+    message += `URL: ${result.url}\n`
+    message += `URL Artis: ${result.artistUrl}\n\n`
+    message += `Chord:\n${result.lyrics}`;
+    
+    lenwy.sendMessage(m.chat, { text: message }, { quoted: m })
+  } catch (e) {
+    m.reply('terjadi kesalahan: ' + e)
+  }
+break
+
+case 'wm': {
+  if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+  if (!quoted) return m.reply(`⚠️ Balas sticker dengan caption ${prefix + command}`)
+  if (!text) return m.reply(`Contoh: ${prefix + command} teks_packname`)
+
+  try {
+    if (quoted.mtype !== 'stickerMessage') return m.reply(`⚠️ Fitur ini khusus untuk reply ke *sticker*!`);
+    const webpBuffer = await quoted.download()
+    if (!webpBuffer || webpBuffer.length === 0) return m.reply('⚠️ Gagal download sticker!');
+
+    const img = new Image()
+    await img.load(webpBuffer)
+
+    const json = {
+      "sticker-pack-id": "com.snowcorp.stickerly.android.stickercontentprovider b5e7275f-f1de-4137-961f-57becfad34f2",
+      "sticker-pack-name": text,
+      "sticker-pack-publisher": '',
+      "emojis": ["🤖"] 
+    }
+
+    const exifAttr = Buffer.from([0x49, 0x49, 0x2A, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x41, 0x57, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16, 0x00, 0x00, 0x00])
+    const jsonBuf = Buffer.from(JSON.stringify(json), 'utf-8')
+    const padding = Buffer.alloc(jsonBuf.length % 2 === 1 ? 1 : 0)
+    const exif = Buffer.concat([exifAttr, jsonBuf, padding])
+    exif.writeUInt32LE(jsonBuf.length, 14)
+    img.exif = exif
+    const finalStickerBuffer = await img.save(null)
+    await lenwy.sendMessage(from, { sticker: finalStickerBuffer }, { quoted: m })
+  } catch (err) {
+    console.error('Error detail:', err)
+    m.reply(`⚠️ Error! ${err.message}`)
+  }
+}
+break
+
+case 'reminder': {
+if (!args[0] || !args[1]) return m.reply('*Format : Reminder Waktu s/m/h/d Pesan*\n\n📑 *Contoh : Reminder 30m Jangan Lupa Sholat*')
+const time = toMs(args[0])
+const message = args.slice(1).join(' ')
+setTimeout(() => {
+lenwy.sendMessage(from, { text : `*Reminder Untuk @${sender.split("@")[0]}*\n\n📑 *Dengan Pesan :* ${message}`, contextInfo:{mentionedJid:[sender]}}, { quoted: m })}, time)
+m.reply(`📑 *Berhasil Mengatur Reminder Untuk ${args[0]} ${args[1]} Ke Depan*`)
+}
+break
+
+case 'couple': {
+let anu = await fetchJson('https://raw.githubusercontent.com/iamriz7/kopel_/main/kopel.json')
+let random = anu[Math.floor(Math.random() * anu.length)]
+lenwy.sendMessage(from, { image: { url: random.male }, caption: `🎁 *Couple Male*` }, {quoted:m})
+lenwy.sendMessage(from, { image: { url: random.female }, caption: `🎁 *Couple Female*` }, {quoted:m})
+}
+break
+
+case 'cwr': {
+if (!text) return m.reply('*Format : Cwr [Total Match] [Winrate Saat Ini] [Target Winrate]*\n\n📑 *Contoh : Cwr 1200 67% 89%*')
+var cwl = text.split(' ')
+if (!cwl || cwl.length !== 3) return m.reply('*Format : Cwr [Total Match] [Winrate Saat Ini] [Target Winrate]*\n\n📑 *Contoh : Cwr 1200 67% 89%*')          
+const tMatch = parseFloat(cwl[0])
+const tWr = parseFloat(cwl[1])
+const wrReq = parseFloat(cwl[2])          
+if (isNaN(tMatch) || isNaN(tWr) || isNaN(wrReq)) {
+return m.reply('⚠️ *Pastikan Semuanya Berupa Angka*')
+}
+let tLose = tMatch * (100 - tWr) / 100;
+let seratusPersen = tLose * (100 / (100 - wrReq))
+let final = seratusPersen - tMatch;
+const tekl = `*Winrate Calculator Mobile Legend*
+
+📑 *Data Yang Diberikan*
+ *⨠ Total Petandingan : ${tMatch}*
+ *⨠ Winrate Saat Ini : ${tWr}%*
+ *⨠ Target Winrate : ${wrReq}%*
+
+🎁 *Hasil :*
+*Butuh ${Math.round(final)} Pertandingan Tanpa Kalah Untuk Mencapai ${wrReq}% Winrate*`;
+m.reply(tekl)
+}
+break
+
+case 'toanime': {
     if (!quoted) return m.reply('*Fotonya Mana?*')
     if (!/image/.test(mime)) return m.reply(`*Send/Reply Foto Dengan Caption ${prefix + command}*`)
 
@@ -4901,8 +4905,7 @@ case 'jadianime': {
 }
 break
 
-case 'tocyberpunk':
-case 'jadicyberpunk': {
+case 'tocyberpunk': {
     if (isBan) return m.reply(mess.ban)
     if (!quoted) return m.reply('*Fotonya Mana?*')
     if (!/image/.test(mime)) return m.reply(`*Send/Reply Foto Dengan Caption ${prefix + command}*`)
@@ -4921,8 +4924,7 @@ case 'jadicyberpunk': {
 }
 break
 
-case 'todreamscape':
-case 'jadidreamscape': {
+case 'todreamscape': {
     if (isBan) return m.reply(mess.ban)
     if (!quoted) return m.reply('*Fotonya Mana?*')
     if (!/image/.test(mime)) return m.reply(`*Send/Reply Foto Dengan Caption ${prefix + command}*`)
@@ -4941,8 +4943,7 @@ case 'jadidreamscape': {
 }
 break
 
-case 'tocomic':
-case 'jadicomic': {
+case 'tocomic': {
     if (isBan) return m.reply(mess.ban)
     if (!quoted) return m.reply('*Fotonya Mana?*')
     if (!/image/.test(mime)) return m.reply(`*Send/Reply Foto Dengan Caption ${prefix + command}*`)
@@ -4961,8 +4962,7 @@ case 'jadicomic': {
 }
 break
 
-case 'todonghua':
-case 'jadidonghua': {
+case 'todonghua': {
     if (isBan) return m.reply(mess.ban)
     if (!quoted) return m.reply('*Fotonya Mana?*')
     if (!/image/.test(mime)) return m.reply(`*Send/Reply Foto Dengan Caption ${prefix + command}*`)
@@ -4981,8 +4981,7 @@ case 'jadidonghua': {
 }
 break
 
-case 'todisney':
-case 'jadidisney': {
+case 'todisney': {
     if (isBan) return m.reply(mess.ban)
     if (!quoted) return m.reply('*Fotonya Mana?*')
     if (!/image/.test(mime)) return m.reply(`*Send/Reply Foto Dengan Caption ${prefix + command}*`)
@@ -5001,8 +5000,7 @@ case 'jadidisney': {
 }
 break
 
-case 'toghibli':
-case 'jadighibli': {
+case 'toghibli': {
     if (isBan) return m.reply(mess.ban)
     if (!quoted) return m.reply('*Fotonya Mana?*')
     if (!/image/.test(mime)) return m.reply(`*Send/Reply Foto Dengan Caption ${prefix + command}*`)
@@ -5021,10 +5019,7 @@ case 'jadighibli': {
 }
 break
 
-case 'fluxschenell':
-case 'flux':
-case 'txt2flux':
-case 'texttoflux': {
+case 'txt2flux': {
 if (isBan) return m.reply(mess.ban)
 if (!text) return m.reply(`*Mau Gambar Apa?*`)
 LenwyLD()
@@ -5038,9 +5033,7 @@ m.reply(mess.error)
 }
 break
 
-case 'photoleap':
-case 'txt2photoleap':
-case 'texttophotoleap': {
+case 'txt2photoleap': {
     if (isBan) return m.reply(mess.ban)
     if (!text) return m.reply(`*Mau Gambar Apa?*`)
     LenwyLD()
@@ -5056,10 +5049,7 @@ case 'texttophotoleap': {
 }
 break
 
-case '2waifu':
-case 'towaifu':
-case 'txt2waifu':
-case 'texttowaifu': {
+case 'txt2waifu':{
   if (isBan) return m.reply(mess.ban)
   if (!text) return m.reply(`*Mau Gambar Apa?*`)
   LenwyLD()
@@ -5075,6 +5065,37 @@ case 'texttowaifu': {
 }
 break
 
+case 'txt2speech': {
+if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+if (args.length == 0) return m.reply(`*Mo Convert Text Apa Ke Suara?*`)
+try {
+  let result = await (await fetch(`https://deoberon-api.vercel.app/tools/text-to-speech?text=${q}`)).json()
+  let data = result.result
+  let dataTts = data.find(u => u.voice_name.toLowerCase() == "eminem")
+  lenwy.sendMessage(m.chat, { audio: { url: dataTts.eminem }, mimetype: 'audio/mp4' })
+} catch (e) {
+m.reply('Error')
+console.log(e)
+}
+}
+break
+
+case 'txt2anime': {
+if (!text) return m.reply(`*Mau Gambar Apa?*`)
+LenwyLD
+await sleep(200)
+LenwyLD()
+await sleep(200)
+try{
+let mauGambar = text
+let result = await (await fetch(`https://endpoint.web.id/ai/sdxl-anime?key=315602&prompt=${q}`)).json()
+lenwy.sendMessage(m.chat, { image: { url: result.result.image }, caption: `Gambar untuk prompt: "${mauGambar}"` }, { quoted: m })
+} catch (error) {
+m.reply(mess.error)
+}
+}
+break
+
 case 'readmore': {
 m.reply(`*Pemisahnya adalah "|"*\n\n*Contoh:*\n> ${command} Hai, |Nama Saya Adalah ${botname}`)
 let [l, r] = text.split`|`
@@ -5087,7 +5108,7 @@ break
 case 'tinyurl': {
   if (!text) return m.reply(`*Mana Link Yang Akan Di Pendekkan?*`)
 
-  let urlToShorten = q; // Pastikan q berisi URL yang valid
+  let urlToShorten = q;
   let response = await fetch(`https://api.ryzendesu.vip/api/tool/tinyurl?url=${urlToShorten}`)
   
   if (!response.ok) {
@@ -5100,8 +5121,7 @@ case 'tinyurl': {
 }
 break
 
-case 'rvo':
-case 'readviewonce': {
+case 'rvo': {
 if (!m.isGroup) return m.reply(mess.group)
 if (!isAdmins && !isCreator) return m.reply(mess.admin)
 if (!isQuotedViewOnce) return m.reply('*Reply Foto, Video Atau Voice Note Yang Di View Once*')
@@ -5211,386 +5231,159 @@ case 'tovn': {
 }
 break
 
-case 'bingimg': {
-await lenwy.sendMessage(m.chat, { react: { text: "🕛",key: m.key,}
-})
-await lenwy.sendMessage(m.chat, { react: { text: "🕒",key: m.key,}
-})
-await lenwy.sendMessage(m.chat, { react: { text: "🕕",key: m.key,}
-})
-await lenwy.sendMessage(m.chat, { react: { text: "🕘",key: m.key,}
-})
-await lenwy.sendMessage(m.chat, { react: { text: "✅️",key: m.key,}
-})
-if (!text) return m.reply('Masukan Gambarannya\nContoh:\nAnime cowok memakai baju hitam sedang coding bertuliskan ${botname}')
-m.reply('*Proses ini membutuhkan waktu beberapa saat silahkan tunggu*')
-try {
-let img = await fetchJson(`http://15.235.142.199/api/ai/bingAi?prompt=${text}&apikey=DdUFIJY3sIGZW0g`)
-let imgs = img.image
-let c = 0
-for (let ims of img.image) {
-if (c == 0) await lenwy.sendMessage(m.chat, { image: { url: ims }, caption: `*[ V1 ]* Bing ${botname} ☑\n\n${m.isGroup ? '_Sisa Foto Dikirim Di Private Chat_' : ""}` }, { quoted: m })
-else await lenwy.sendMessage(m.sender, { image: { url: ims }}, { quoted: m })
-c += 4
-await sleep(200)
-}
-} catch {
-m.reply('Terjadi kesalahan!')
-}
+case 'getname': {
+  if (qtod !== "true") return m.reply("✉️ *Reply Orangnya*");
+  let namenye = await lenwy.getName(m.quoted.sender);
+  m.reply(`Namanya: ${namenye}`);
 }
 break
 
-case 'texttospeech':
-case 'tekstospeech':
-case 'txt2speech':
-case 'tts': {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-if (args.length == 0) return m.reply(`*Mo Convert Text Apa Ke Suara?*`)
+case 'getpic': {
+  let target = qtod === "true" ? m.quoted.sender : from;
+  let pporg;
+  try {
+    pporg = await lenwy.profilePictureUrl(target, 'image');
+  } catch {
+    pporg = 'https://i0.wp.com/www.gambarunik.id/wp-content/uploads/2019/06/Top-Gambar-Foto-Profil-Kosong-Lucu-Tergokil-.jpg';
+  }
+  lenwy.sendMessage(from, { image: { url: pporg }, caption: mess.success }, { quoted: m });
+}
+break
+
+case 'cekipurl': {
+if (!text) return m.reply(`Contoh: ${prefix + command} urlNya\n\n> Note: Tanpa https://`)
+if (text.startsWith('https://')) return m.reply(`Note: Tanpa https://`)
+  try {
+    const address = await dns.lookup(text);
+    m.reply(`IPv4 Address of https://${text}: ${address.address}`);
+  } catch (err) {
+    console.error('Error:', err.message);
+  }    
+}
+break
+
+case 'fetch': {
+if (!text) m.reply('Masukkan link nya')
 try {
-  let result = await (await fetch(`https://deoberon-api.vercel.app/tools/text-to-speech?text=${q}`)).json()
-  let data = result.result
-  let dataTts = data.find(u => u.voice_name.toLowerCase() == "eminem")
-  lenwy.sendMessage(m.chat, { audio: { url: dataTts.eminem }, mimetype: 'audio/mp4' })
+let res = await (await fetch(`${text}`)).json()
+console.log(res)
+m.reply(`${text}\n\n`+ JSON.stringify(res, null, 2))
 } catch (e) {
-m.reply('Error')
-console.log(e)
+m.reply(JSON.stringify(e, null, 2))
+m.reply(e.message)
 }
 }
 break
 
-case 'sdxl':
-case 'texttoanime':
-case 'tekstoanime':
-case 'text2anime':
-case 'teks2anime':
-case 'txt2anime': {
-if (!text) return m.reply(`*Mau Gambar Apa?*`)
-LenwyLD
-await sleep(200)
+case 'cekidch': {
+ if (!text) return m.reply('📌 Kirim link channel WhatsApp-nya!');
+ if (!text.includes("https://whatsapp.com/channel/")) return m.reply('❌ Link tidak valid! Format harus: https://whatsapp.com/channel/...');
+
+ try {
+ const channelCode = text.split('https://whatsapp.com/channel/')[1];
+ const res = await lenwy.newsletterMetadata("invite", channelCode);
+
+ if (!res?.id) return reply('❌ Gagal mengambil info channel.');
+
+ const verified = res.verification === 'VERIFIED' ? '✅ Ya' : '❌ Tidak';
+ const status = res.state === 'ACTIVE' ? '🟢 Aktif' : '🔴 Tidak aktif';
+ 
+ const teks = `⬣ *INFORMASI CHANNEL*\n\n` +
+ `📌 *Nama:* ${res.name || '-'}\n` +
+ `🆔 *ID:* ${res.id}\n` +
+ `👥 *Followers:* ${res.subscribers?.toLocaleString('id-ID') || 0}\n` +
+ `📶 *Status:* ${status}\n` +
+ `☑️ *Verified:* ${verified}`;
+
+ await lenwy.sendMessage(m.chat, {
+ text: teks,
+ footer: `🔹 Gunakan tombol di bawah untuk copy ID Channel`,
+ title: `📡 Channel: ${res.name || 'Tidak diketahui'}`,
+ interactiveButtons: [
+ {
+ name: 'cta_copy',
+ buttonParamsJson: JSON.stringify({
+ display_text: '📋 Copy ID Channel',
+ id: res.id,
+ copy_code: res.id
+ })
+ }
+ ]
+ }, { quoted: m });
+
+ } catch (err) {
+ console.error(err);
+ return m.reply(`❌ *Gagal mengambil data channel:*\n${err.message || 'Tidak diketahui.'}`);
+ }
+}
+break
+
+case 'tourl': {
+if (!/image/.test(mime) && !/video/.test(mime)) return m.reply(`*Mana Foto Atau Video Nya?*`)
+if (/image/.test(mime)) {
 LenwyLD()
 await sleep(200)
-try{
-let mauGambar = text
-let result = await (await fetch(`https://endpoint.web.id/ai/sdxl-anime?key=315602&prompt=${q}`)).json()
-lenwy.sendMessage(m.chat, { image: { url: result.result.image }, caption: `Gambar untuk prompt: "${mauGambar}"` }, { quoted: m })
-} catch (error) {
-m.reply(mess.error)
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+let anu = await uploader60Minute(media)
+m.reply(util.format(anu))
+} else if (/video/.test(mime)) {
+  let q = m.quoted ? m.quoted : m;
+
+    let media = await q.download()
+    let link = await uploader60Minute(media)
+    console.log(link)
+    await m.reply(`${link}`)
+} else {
+m.reply(`Mokad kah? Chat Developer!!!`)
 }
 }
 break
 
-case 'welcome': {
-  if (!isAdmins) return m.reply(mess.admin)
-  if (!global.db.data.chats[m.chat]) global.db.data.chats[m.chat] = {}
-  if (!global.datagc[m.chat]) global.datagc[m.chat] = {}
-  if (!text) {
-    return m.reply(`*Pengaturan fitur ${command}*
-
-Ketik:
-- *${prefix + command} on* untuk mengaktifkan
-- *${prefix + command} off* untuk menonaktifkan
-- *${prefix + command} edit teksnya* untuk mengubah teks welcome
-
-*Placeholder yang bisa dipakai:*
-- {GROUPNAME} = nama grup
-- {USERTAG} = tag user yang masuk
-- {JAM} = jam sekarang
-- {MENIT} = menit sekarang
-- {DETIK} = detik sekarang
-- {HARI} = nama hari
-- {TANGGAL} = tanggal
-- {BULAN} = angka bulan
-- {TAHUN} = tahun
-- {NAMABULAN} = nama bulan
-
-*Contoh:*
-${prefix + command} edit Halo {USERTAG}, selamat datang di {GROUPNAME}
-Masuk pada {HARI}, {TANGGAL} {NAMABULAN} {TAHUN} jam {JAM}:{MENIT}`)
-  }
-  if (args[0] === 'on') {
-    global.db.data.chats[m.chat].wlcm = true
-    fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
-    return m.reply('Fitur Welcome berhasil diaktifkan.')
-  }
-  if (args[0] === 'off') {
-    global.db.data.chats[m.chat].wlcm = false
-    fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
-    return m.reply('Fitur Welcome berhasil dinonaktifkan.')
-  }
-  if (args[0] === 'edit') {
-    const teksnye = args.slice(1).join(' ').trim()
-    global.datagc[m.chat].text_welcome = teksnye
-    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
-    return m.reply(teksnye ? `Teks ${command} berhasil diubah` : `Teks ${command} berhasil direset ke bawaan`)
-  }
-  return m.reply(`Pilihan tidak valid.\nGunakan: on, off, atau edit`)
-}
-break
-
-case 'left': {
-  if (!isAdmins) return m.reply(mess.admin)
-  if (!global.db.data.chats[m.chat]) global.db.data.chats[m.chat] = {}
-  if (!global.datagc[m.chat]) global.datagc[m.chat] = {}
-  if (!text) {
-    return m.reply(`*Pengaturan fitur ${command}*
-
-Ketik:
-- *${prefix + command} on* untuk mengaktifkan
-- *${prefix + command} off* untuk menonaktifkan
-- *${prefix + command} edit teksnya* untuk mengubah teks left
-
-*Placeholder yang bisa dipakai:*
-- {GROUPNAME} = nama grup
-- {USERTAG} = tag user yang masuk
-- {JAM} = jam sekarang
-- {MENIT} = menit sekarang
-- {DETIK} = detik sekarang
-- {HARI} = nama hari
-- {TANGGAL} = tanggal
-- {BULAN} = angka bulan
-- {TAHUN} = tahun
-- {NAMABULAN} = nama bulan
-
-*Contoh:*
-${prefix + command} edit Sampai jumpa {USERTAG} dari grup {GROUPNAME}
-Keluar pada {HARI}, {TANGGAL} {NAMABULAN} {TAHUN} jam {JAM}:{MENIT}`)
-  }
-
-  if (args[0] === 'on') {
-    global.db.data.chats[m.chat].left = true
-    fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
-    return m.reply('Fitur Left berhasil diaktifkan.')
-  }
-  if (args[0] === 'off') {
-    global.db.data.chats[m.chat].left = false
-    fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
-    return m.reply('Fitur Left berhasil dinonaktifkan.')
-  }
-  if (args[0] === 'edit') {
-    const teksnye = args.slice(1).join(' ').trim()
-    global.datagc[m.chat].text_left = teksnye
-    fs.writeFileSync('./storage/databaseGroup.json', JSON.stringify(global.datagc, null, 2))
-    return m.reply(teksnye ? `Teks ${command} berhasil diubah` : `Teks ${command} berhasil direset ke bawaan`)
-  }
-  return m.reply(`Pilihan tidak valid.\nGunakan: on, off, atau edit`)
-}
-break
-
-case 'onlyadmin': {
-  if (!isAdmins) return m.reply(mess.admin)
-  if (!global.db.data.chats[m.chat]) global.db.data.chats[m.chat] = {}
-  if (!global.datagc[m.chat]) global.datagc[m.chat] = {}
-  if (!text) return m.reply(`Contoh:
-${prefix + command} on / off`)
-  if (args[0] === 'on') {
-    global.db.data.chats[m.chat].onlyAdmin = true
-  } else if (args[0] === 'off') {
-    global.db.data.chats[m.chat].onlyAdmin = false
-  }
-  fs.writeFileSync('./storage/database.json', JSON.stringify(global.db.data, null, 2))
-  m.reply(mess.success)
-}
-break
-
-case 'restart': {
-if (!isCreator) return m.reply(mess.owner)
-if (text) return
-m.reply(`restarting ${botname}`)
-await sleep(1500)
-process.exit()
-}
-break
-
-case 'tagsubject':
-case 'faketag': {
-if (!m.isGroup) return m.reply(mess.group)
-if (!isAdmins) return m.reply(mess.admin)
-if (!q) return m.reply(`Teks Nya Mana Kak?`)
-lenwy.sendMessage(m.chat, {
-  text: "@"+m.chat,
-  contextInfo: {
-    mentionedJid: participants.map(a => a.id),
-    groupMentions: [{
-        groupJid: m.chat,
-        groupSubject: q
-    }]
-   }
-})
-}
-break
-
-case 'delsession': 
-case 'delsesi': {
- if (!isCreator) return
- fs.readdir(`./${sessionName}`, async function(err, files) {
- if (err) {
- console.log('Unable to scan directory: ' + err)
- return m.reply('Unable to scan directory: ' + err)
- }
- let filteredArray = files.filter(item => 
- item.startsWith("pre-key") || 
- item.startsWith("sender-key") || 
- item.startsWith("session-") || 
- item.startsWith("app-state")
- )
- console.log(filteredArray.length)
- let teks = `Detected ${filteredArray.length} junk files\n\n`
- if (filteredArray.length === 0) return m.reply('Sedang menghapus sampah...')
- filteredArray.forEach((item, i) => {
- teks += (i + 1) + `. ${item}\n`
- })
- console.log(teks)
- await sleep(200)
- m.reply("Menghapus session...")
- for (const file of filteredArray) {
- fs.unlinkSync(`./${sessionName}/${file}`)
- }
- await sleep(200)
- m.reply('Sukses menghapus session!')
- })
-}
-break
-
-case 'delsampah': {
+case 'tourl2': {
 if (!isCreator) return
-let directoryPath = path.join("./")
-fs.readdir(directoryPath, async function (err, files) {
-if (err) {
-  return m.reply("Tidak dapat memindai direktori: " + err)
-}
-let filteredArray = await files.filter(
-  (item) =>
-item.endsWith("gif") ||
-item.endsWith("png") ||
-item.endsWith("mp3") ||
-item.endsWith("mp4") ||
-item.endsWith("jpg") ||
-item.endsWith("jpeg") ||
-item.endsWith("webp") ||
-item.endsWith("webm"),
-)
-var teks = `Terdeteksi ${filteredArray.length} file sampah\n\n`
-if (filteredArray.length == 0) return m.reply(teks)
-filteredArray.map(function (e, i) {
-  teks += i + 1 + `. ${e}\n`
-})
-m.reply(teks)
+if (!/image/.test(mime) && !/video/.test(mime)) return m.reply(`*Mana Foto Atau Video Nya?*`)
+if (/image/.test(mime)) {
+LenwyLD()
 await sleep(200)
-m.reply("Menghapus file sampah...")
-await filteredArray.forEach(function (file) {
-  fs.unlinkSync(`./${file}`)
-})
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+let anu = await uploaderLebih(media)
+m.reply(util.format(anu))
+} else if (/video/.test(mime)) {
+  let q = m.quoted ? m.quoted : m;
+
+    let media = await q.download()
+    let link = await uploader60Minute(media)
+    console.log(link)
+    await m.reply(`${link}`)
+} else {
+m.reply(`Mokad kah? Chat Developer!!!`)
+}
+}
+break
+
+case 'tourlvid': {
+if (!/video/.test(mime)) return m.reply(`*Mana Video Nya?*`)
+LenwyLD()
 await sleep(200)
-m.reply("Berhasil menghapus semua sampah")
-  })
+let media = await lenwy.downloadAndSaveMediaMessage(quoted)
+if (/video/.test(mime)) {
+  let q = m.quoted ? m.quoted : m;
+
+    let media = await q.download()
+    let link = await uploader60Minute(media)
+    await m.reply(`${link}`)
+} else if (/video/.test(mime)) {
+let anu = await uploader60Minute(media)
+m.reply(util.format(anu))
+} else {
+m.reply(`Mokad kah? Chat Developer!!!`)
+}
+await fs.unlinkSync(media)
 }
 break
-
-case 'catatan': {
-if (text) return
-let catat =`Fitur untuk Setopen dan Setclose
-1. @groupname = menampilkan nama group
-2. @tagdiri = mentag pengirim/sender
-3. @tagreply = tag orang yang pesannya di reply
-4. @jam = menampilkan jam saat ini
-5. @menit = menampilkan menit saat ini
-6. @detik = menampilkan detik saat ini
-7. @hari = menampilkan hari saat ini
-8. @tanggal = menampilkan tanggal saat ini
-9. @bulan = menampilkan bulan saat ini
-10. @tahun = menampilkan tahun saat ini
-11. @namabulan = menampilkan nama bulan saat ini
-
-
-Fitur untuk setdone dan setproses
-1. @groupname = menampilkan nama group
-2. @tagdiri = mentag pengirim/sender
-3. @tagreply = tag orang yang pesannya di reply
-4. @jam = menampilkan jam saat ini
-5. @menit = menampilkan menit saat ini
-6. @detik = menampilkan detik saat ini
-7. @hari = menampilkan hari saat ini
-8. @tanggal = menampilkan tanggal saat ini
-9. @bulan = menampilkan bulan saat ini
-10. @tahun = menampilkan tahun saat ini
-11. @namabulan = menampilkan nama bulan saat ini
-12. @pesanan = isi text untuk menjadikan nya bahan yang di pesan
-
-
-Fitur untuk setwelcome dan setleft
-1. @groupname = menampilkan nama group
-2. @usertag = mentag user saat join atau left
-3. @jam = menampilkan jam saat ini
-4. @menit = menampilkan menit saat ini
-5. @detik = menampilkan detik saat ini
-6. @hari = menampilkan hari saat ini
-7. @tanggal = menampilkan tanggal saat ini
-8. @bulan = menampilkan bulan saat ini
-9. @tahun = menampilkan tahun saat ini
-10. @namabulan = menampilkan nama bulan saat ini
-
-
-Fitur untuk setlist
-1. {GROUPNAME} = menampilkan nama group
-2. {TAG} = mentag pengirim/sender
-3. {JAM} = menampilkan jam saat ini
-4. {MENIT} = menampilkan menit saat ini
-5. {DETIK} = menampilkan detik saat ini
-6. {HARI} = menampilkan nama hari saat ini
-7. {TANGGAL} = menampilkan tanggal saat ini
-8. {BULAN} = menampilkan bulan saat ini
-9. {TAHUN} = menampilkan tahun saat ini
-10. {NAMABULAN} = menampilkan nama bulan saat ini
-11. {SIMBOL} = menampilkan list-list yang ada`
-
-m.reply(catat)
-}
-break
-
-case 'statusgc': {
-  if (!m.isGroup) return m.reply('⚠️ Perintah ini hanya bisa digunakan di dalam grup!')
-
-  try {
-    const groupData = global.db.data.chats[from]
-    if (!groupData) return m.reply('⚠️ Data grup tidak ditemukan dalam database. Coba kirim pesan apa saja di grup ini terlebih dahulu.');
-
-    const check = (status) => status ? '✅ Aktif' : '❌ Off'
-    let statusMessage = `*📊 STATUS PENGATURAN GRUP*\n`
-    statusMessage += `ID: ${from}\n\n`
-
-    statusMessage += `*Pengaturan Umum:*\n`
-    statusMessage += `• Only Admin: ${check(groupData.onlyAdmin)}\n`
-    statusMessage += `• Welcome (Wlcm): ${check(groupData.wlcm)}\n`
-    statusMessage += `• Goodbye (Left): ${check(groupData.left)}\n\n`
-    statusMessage += `*Keamanan & Perlindungan:*\n`
-    statusMessage += `• Anti Toxic 1: ${check(groupData.antitoxic1)}\n`
-    statusMessage += `• Anti Toxic 2: ${check(groupData.antitoxic2)}\n`
-    statusMessage += `• Anti Link Umum: ${check(groupData.antilink)}\n`
-    statusMessage += `• Anti Link Umum 2: ${check(groupData.antilink2)}\n`
-    statusMessage += `• Anti Link GC: ${check(groupData.antilinkgc)}\n`
-    statusMessage += `• Anti Link GC 2: ${check(groupData.antilinkgc2)}\n`
-    statusMessage += `• Anti Link YouTube: ${check(groupData.antilinkyt)}\n`
-    statusMessage += `• Anti Link TikTok: ${check(groupData.antilinktt)}\n`
-    statusMessage += `• Anti Channel (CH): ${check(groupData.antich)}\n`
-    statusMessage += `• Anti Channel (CH) 2: ${check(groupData.antich2)}\n`
-    statusMessage += `• Anti Wa.me: ${check(groupData.antiwame)}\n`
-    statusMessage += `• Anti Panel: ${check(groupData.antipanel)}\n`
-    statusMessage += `• Anti Virtex: ${check(groupData.antivirtex)}\n`
-    statusMessage += `• Anti Bot Lain: ${check(groupData.antibot)}\n`
-
-    m.reply(statusMessage)
-
-  } catch (error) {
-    console.error('Terjadi kesalahan di statusgc:', error)
-    m.reply('⚠️ Terjadi kesalahan saat membaca database grup.')
-  }
-}
-break
-
-// ===== AKHIR MENU INFO ===== //
+// ===== AKHIR MENU TOOLS ===== //
 
 // ===== AWAL MENU TOPUP ===== //
-
 case 'cekstatusakun': {
   if (!isCreator) return
 
@@ -6961,1355 +6754,7 @@ order Kode Id Server [ order ML5 12345678 1234 ]
 order2 Kode Id Server [ order2 ML5 12345678 1234 ]`)   
 }
 break
-
-
-
-
-
-
-
-
-
-
-
 // ===== AKHIR MENU TOPUP ===== //
-
-// ===== AWAL MENU DEVELOPER ===== //
-
-case 'getcase': {
-  if (!isCreator) return m.reply(mess.owner)
-  if (!text) return m.reply(`Contoh: "getcase menu"`)
-
-  try {
-    const fileContent = fs.readFileSync("./lenwy.js").toString()
-    let validasii = fileContent.split(`case '${text}'`)
-    const caseSplit = validasii ? validasii : fileContent.split(`case '${text}'`)
-    
-    if (caseSplit.length < 2) {
-        throw new Error(`Case '${text}' tidak ditemukan.`)
-    }
-
-    const caseContent = caseSplit[1].split("break")[0]
-    m.reply("case " + `'${text}'` + caseContent + "break")
-  } catch (error) {
-    m.reply(`${error.message}`)
-  }
-}
-break
-
-case 'addcase': {
-  if (!isCreator) return m.reply(mess.owner)
-  if (!q) return m.reply(`Masukan input`)
-  if (!q.includes("|||")) return m.reply(`❌ Format salah!\n\nGunakan:\n.addcase <caseTarget>|||<kodeCaseBaru>\n\nContoh:\n.addcase bot1|case 'bot2': {\n  m.reply(\`hii\`)\n}\nbreak`)
-
-  const [targetCase, newCaseCode] = q.split("|||")
-  const filePath = "./lenwy.js"
-  let fileContent = fs.readFileSync(filePath, "utf-8")
-
-  const casePattern = new RegExp(`case ['"\`]${targetCase}['"\`]:\\s*{`)
-  const match = fileContent.match(casePattern)
-  if (!match) return m.reply(`❌ Tidak ditemukan case '${targetCase}' di dalam lenwy.js.`)
-
-  const startIndex = match.index
-
-  const closingPattern = /}\s*\n\s*break/
-  const afterCase = fileContent.slice(startIndex)
-  const closeMatch = afterCase.match(closingPattern)
-
-  if (!closeMatch) return m.reply(`❌ Tidak dapat menemukan akhir blok \n\n}\nbreak\n\n untuk case '${targetCase}'. Pastikan format case-nya benar.`)
-
-  const insertPos = startIndex + closeMatch.index + closeMatch[0].length
-
-  const updatedContent = fileContent.slice(0, insertPos) + `\n\n${newCaseCode}\n` + fileContent.slice(insertPos)
-
-  fs.writeFileSync(filePath, updatedContent, "utf-8")
-
-  m.reply(`✅ Case baru berhasil ditambahkan di bawah *case '${targetCase}'!*\n\n🧩 Case yang ditambahkan:\n${newCaseCode}`)
-}
-break
-
-case 'editcase': {
-  if (!isCreator) return m.reply(mess.owner)
-  if (!text) return m.reply(`Contoh: ${prefix + command} <nama_case>|<case_baru>`)
-  let [caseName, ...newContentArr] = text.split('|')
-  caseName = caseName.trim()
-  let newContent = newContentArr.join('|').trim()
-  if (!caseName || !newContent) return m.reply(`Contoh:\n\n${prefix + command} hai|case 'hai':\n{m.reply('Hai juga')\n}\nbreak`)
-  const filePath = './lenwy.js';
-  try {
-      if (!fs.existsSync(filePath)) return m.reply(`File bot tidak ditemukan.`)
-      let fileContent = fs.readFileSync(filePath, 'utf-8')
-      const regex = new RegExp(`case ['"]${caseName}['"]: {([\\s\\S]*?)}\\s*break`, 'g')
-      if (!regex.test(fileContent)) return m.reply(`Case *${caseName}* tidak ditemukan.`)
-      const updatedFileContent = fileContent.replace(regex, `${newContent}`)
-      fs.writeFileSync(filePath, updatedFileContent, 'utf-8')
-      m.reply(`Case *${caseName}* berhasil diedit.`)
-  } catch (error) {
-      console.error('Error:', error)
-      m.reply('Terjadi kesalahan saat mengedit case. Coba lagi nanti.')
-  }
-}
-break
-
-case 'delcase': {
-if (!isCreator) return m.reply(mess.owner)
-if (!q)
-return m.reply("Masukan nama case yang akan di hapus")
-let filePath = "./lenwy.js"
-fs.readFile(filePath, "utf8", (err, data) => {
-    if (err) console.error("Kesalahan untuk menambahkan case:", err)
-
-    const regex = new RegExp(`case\\s*['"]${q}['"]\\s*:.*?break?`, "gs")
-    const modifiedData = data.replace(regex, "")
-    if (modifiedData === data) {
-      console.log(`Case '${q}' tidak ditemukan.`)
-    } else {
-      fs.writeFile(filePath, modifiedData, "utf8", (err) => {
-      if (err) {
-        m.reply(`Case ${q} Tidak Ada`)
-        console.error("Terjadi kesalahan saat menulis file:", err)
-      }
-      m.reply(`Mas, Done. Coba Cek`)
-      console.log(`Teks dari case '${q}' telah dihapus dari file.`)
-    })
-  }
-})
-}
-break
-
-case 'totalfitur': {
-  var mytext = fs.readFileSync("./lenwy.js").toString()
-  var numUpper = (mytext.match(/case '/g) || []).length
-  m.reply(`Hallo ${pushname}
-Saat ini ${botname} memiliki total fitur ${numUpper}`)
-}
-break
-
-case 'cekcase': {
-if (!isCreator) return
-if (!text) return m.reply(`Contoh: ${prefix+command} caseName`)
-const caseName = text.trim()
-if (!caseName) return m.reply(`Masukkan nama case yang ingin dicek. Contoh: ${prefix+command} caseName`)
-const cekCase = async (caseName) => {
-try {
-const fileContent = await fs.promises.readFile("./lenwy.js", "utf-8")
-const caseRegex = new RegExp(`case '${caseName}'[\\s\\S]*?break`, 'g')
-const match = fileContent.match(caseRegex)
-if (!match) {
-return { found: false };
-}
-const lines = fileContent.split('\n')
-const caseLines = match[0].split('\n')
-const startLine = lines.indexOf(caseLines[0]) + 1;
-const endLine = startLine + caseLines.length - 1;
-return {
-found: true,
-startLine,
-endLine,
-content: match[0]
-};
-} catch (error) {
-return { error: `Terjadi kesalahan saat membaca file: ${error.message}` };
-}};
-const result = await cekCase(caseName)
-if (result.error) {
-m.reply(result.error)
-} else if (result.found) {
-const message = `*CASE DITEMUKAN!*
-• Nama Case: ${caseName}
-• Baris Awal: ${result.startLine}
-• Baris Akhir: ${result.endLine}
-
-Mau sekalian di ambil? Ketik getcase ${caseName}`
-m.reply(message)
-} else {
-m.reply(`Case '${caseName}' tidak ditemukan.`)
-}
-}
-break
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-case 'setppsewa': {
-  if (!isCreator) return m.reply(mess.owner);
-  if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`);
-  
-  const path = './storage/data/image/fotosewa'; // Menentukan path file foto
-  
-  if (fs.existsSync(path)) {
-    fs.unlinkSync(path); // Menghapus file yang sudah ada
-    console.log(`File "${path}" berhasil dihapus.`);
-  }
-
-  await lenwy.downloadAndSaveMediaMessage(quoted, path);
-
-  m.reply('Foto berhasil diperbarui menjadi foto sewa.');
-}
-break
-
-case 'changewdsewa': {
-if (!isCreator) return (mess.owner)
-let teksnya = text ? text : ''
-global.text_sewa = teksnya
-m.reply(mess.success)
-}
-break
-
-case 'changewdppj': {
-if (!isCreator) return (mess.owner)
-let teksnya = text ? text : ''
-global.text_ppj = teksnya
-m.reply(mess.success)
-}
-break
-
-case 'sewa': {
- async function createImage(url) {
- const { imageMessage } = await generateWAMessageContent({
- image: { url }
- }, {
- upload: lenwy.waUploadToServer
- });
- return imageMessage;
- }
- 
- let tekssewa = global.text_sewa ? global.text_sewa : ` /) /) \n („• ֊ •„) \n╭───̇─∪─∪──̇──┈◯\n│❛ SEWA BOT ${botname} ˚\n│\n│1 вυℓαη : 𝖱𝗉 5.000\n│2 вυℓαη : 𝖱𝗉 10.000\n│𝟥 вυℓαη : 𝖱𝗉 15.000\n│𝟦 вυℓαη : 𝖱𝗉 18.000\n│𝟧 вυℓαη : 𝖱𝗉 21.000\n╰───────────✧✧✧`
- let teksppj = global.text_ppj ? global.text_ppj : '\n\n ╭─────────────❍\n │ ʚ˚̣̣̣͙ɞ・𝙥𝙚𝙧𝙥𝙖𝙣𝙟𝙖𝙣𝙜・ \n │\n │1 вυℓαη : 𝖱𝗉 5.000\n │𝟤 вυℓαη : 𝖱𝗉 10.000\n │𝟥 вυℓαη : 𝖱𝗉 15.000\n │ρєямαηєη : 𝖱𝗉 60.000\n │Tidak Ada,\n │Yang Abadi Tuan\n ╰─────────────❍'
-
- let imageUrl
- if (fs.existsSync('./storage/data/image/fotosewa.jpg')) {
- imageUrl = await createImage('./storage/data/image/fotosewa.jpg');
- } else if (fs.existsSync('./storage/data/image/fotosewa.png')) {
- imageUrl = await createImage('./storage/data/image/fotosewa.png');
- } else if (fs.existsSync('./storage/data/image/fotosewa.webp')) {
- imageUrl = await createImage('./storage/data/image/fotosewa.webp');
- } else {
- return m.reply(`Foto tidak tersedia, kamu harus ${prefix}setppsewa terlebih dahulu`)
- }
-
- const push = [{
- body: proto.Message.InteractiveMessage.Body.fromObject({
- text: tekssewa
- }),
- footer: proto.Message.InteractiveMessage.Footer.fromObject({
- text: `Klik Admin Dibawah Ya`
- }),
- header: proto.Message.InteractiveMessage.Header.fromObject({
- hasMediaAttachment: true,
- imageMessage: imageUrl
- }),
- nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
- buttons: [
- {
- name: "cta_url",
- buttonParamsJson: `{"display_text":"Admin - ${global.ownername}","url":"https://api.whatsapp.com/send/?phone=${global.owner}&text=Haii+${global.ownername}%0ANak+Nyewa&type=phone_number&app_absent=0"}`
- },
- {
- name: "cta_url",
- buttonParamsJson: `{"display_text":"Developer - ${global.developername}","url":"https://api.whatsapp.com/send/?phone=${global.developer}&text=%0AHaii+${global.developername}%0AAda+Yang+Bug+Nih&type=phone_number&app_absent=0"}`
- }
- ]
- })
- }, {
- body: proto.Message.InteractiveMessage.Body.fromObject({
- text: teksppj
- }),
- footer: proto.Message.InteractiveMessage.Footer.fromObject({
- text: `Klik Admin Dibawah Ya`
- }),
- header: proto.Message.InteractiveMessage.Header.fromObject({
- hasMediaAttachment: true,
- imageMessage: imageUrl
- }),
- nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
- buttons: [
- {
- name: "cta_url",
- buttonParamsJson: `{"display_text":"Admin - ${global.ownername}","url":"https://api.whatsapp.com/send/?phone=${global.owner}&text=Haii+${global.ownername}%0ANak+Perpanjang&type=phone_number&app_absent=0"}`
- },
- {
- name: "cta_url",
- buttonParamsJson: `{"display_text":"Developer - ${global.developername}","url":"https://api.whatsapp.com/send/?phone=${global.developer}&text=%0AHaii+${global.developername}%0AAda+Yang+Bug+Nih&type=phone_number&app_absent=0"}`
- }
- ]
- })
- }];
-
- const bot = generateWAMessageFromContent(m.chat, {
- viewOnceMessage: {
- message: {
- interactiveMessage: proto.Message.InteractiveMessage.fromObject({
- body: proto.Message.InteractiveMessage.Body.create({
- text: 'Berikut Daftarnya',
- }),
- footer: proto.Message.InteractiveMessage.Footer.create({
- text: `> ${botname}`,
- }),
- header: proto.Message.InteractiveMessage.Header.create({
- hasMediaAttachment: false
- }),
- carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({
- cards: push
- })
- })
- }
- }
- }, { quoted: m });
-
- await lenwy.relayMessage(m.chat, bot.message, { messageId: bot.key.id });
-}
-break
-
-case 'addsewa':
-case 'tambahsewa': {
- if (!isCreator) return m.reply(mess.owner)
-
- if (!text && !m.isGroup) {
- return m.reply(`Penggunaan:\n1. ${prefix + command} [durasi] (dari dalam grup)\n2. ${prefix + command} [durasi] [link grup] (dari chat pribadi)\n\nContoh:\n${prefix + command} 30d https://chat.whatsapp.com/xxxxx`)
- }
-
- let sewa = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
-
- try {
- let duration, groupId
-
- if (m.isGroup && !text.includes('http')) {
- [duration] = text.split(' ')
- if (!duration) return m.reply(`Durasi harus diisi!\nContoh: ${prefix + command} 30d`)
- groupId = m.chat
- } else {
- let [d, link] = text.split(' ')
- if (!d || !link) return m.reply(`Durasi dan link grup harus diisi!\nContoh:\n${prefix + command} 30d https://chat.whatsapp.com/xxxxx`)
-if (link.includes('?')) link = link.split('?')[0]
- duration = d
-
- const coded = link.split("https://chat.whatsapp.com/")[1]
- if (!coded) return m.reply("Link tidak valid 🤔")
-
- try {
- await lenwy.groupAcceptInvite(coded)
- m.reply('Bot berhasil masuk ke grup.')
- } catch (err) {
- if (err.message.includes('not-authorized')) {
- return m.reply('Gagal bergabung ke grup. Bot kemungkinan baru saja dikeluarkan.')
- } else if (err.message.includes('gone')) {
- return m.reply('Link grup sudah di reset.')
- } else if (err.message.includes('conflict')) {
- m.reply('Bot sudah berada di dalam grup.')
- } else if (err.message.includes('already-exists')) {
- return m.reply('Bot sudah meminta gabung ke grup.')
- } else {
- console.log(err)
- return m.reply('Terjadi error yang tidak dikenali.')
- }
- }
-
- groupId = await getGroupIdFromLink(link, lenwy)
- if (!groupId) return m.reply('Gagal mendapatkan ID grup.')
- }
- if (sewa.some(entry => entry.groupId === groupId)) {
- return m.reply(`Grup sudah ada dalam daftar sewa.`)
- }
- addSewaGroup(groupId, duration, sewa)
- m.reply(`✅ Grup berhasil ditambahkan ke daftar sewa selama *${duration}*.`)
- if (!m.isGroup) {
- await lenwy.sendMessage(groupId, {text: `Hallo semua, saya adalah bot ${global.botname}. Grup ini telah disewa selama *${duration}*.\n\n- Admin dapat cek sisa waktu dengan ketik *${prefix}ceksewa*\n- Untuk fitur lengkap ketik *${prefix}allmenu*`})
- }
-
- } catch (err) {
- console.error('Error saat addsewa:', err)
- m.reply('❌ Gagal menambahkan sewa grup.')
- }
-}
-break
-
-case 'delsewa':
-case 'hapussewa': {
- if (!isCreator) return m.reply(mess.owner)
-
- if (!text && !m.isGroup) {
- return m.reply(`Untuk menghapus sewa grup dari chat pribadi, sertakan link grup.\nContoh:\n${prefix + command} https://chat.whatsapp.com/xxxxx`)
- }
-
- try {
- let groupId
- let link = text
- if (m.isGroup) {
- groupId = m.chat
- } else if (text.includes('@g.us')) {
- groupId = text
- } else if (text.includes('https')) {
- if (text.includes('?')) link = text.split('?')[0];
- groupId = await getGroupIdFromLink(link, lenwy)
- }
-
- let sewa = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
- const index = sewa.findIndex(entry => entry.groupId === groupId)
-
- if (index === -1) return m.reply('Grup ini tidak ditemukan dalam daftar sewa.')
-
- sewa.splice(index, 1)
- fs.writeFileSync(pathsewa, JSON.stringify(sewa, null, 2))
-
- lenwy.sendMessage(groupId, {text: `Masa sewa di group ini telah *hapus*.`})
- m.reply('✅ Sewa grup berhasil dihapus.')
- } catch (err) {
- console.error('Error saat delsewa:', err)
- m.reply('❌ Gagal menghapus sewa grup.')
- }
-}
-break
-
-case 'checksewa':
-case 'ceksewa': {
-  if (!isAdmins && !isCreator) return m.reply(mess.admin)
-  if (!m.isGroup && !text) return m.reply(`Untuk mengecek sewa grup dari chat pribadi, sertakan link grup.\nContoh:\n${prefix + command} https://chat.whatsapp.com/xxxxx`)
-  let groupId = from
-  let link = text
-  if (!m.isGroup) {
-    if (text.includes('?')) link = text.split('?')[0]
-    groupId = await getGroupIdFromLink(link, lenwy)
-    if (!groupId) return m.reply(`Untuk mengecek sewa grup dari chat pribadi, sertakan link grup.\nContoh:\n${prefix + command} https://chat.whatsapp.com/xxxxx`)
-  }
-  try {
-    const currentDir = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
-    const entry = currentDir.find(entry => entry.groupId === groupId)
-    if (!entry) return m.reply(`Perintah ini hanya bisa dilakukan di dalam grup yang sudah di "${prefix}addsewa"`)
-    if (entry.isAlifetime) return m.reply(`Akan Habis Hingga Owner Pensiun.`)
-    const expiry = entry.expired;
-    const remainingTime = expiry - Date.now()
-    var days = Math.floor(remainingTime / (1000 * 60 * 60 * 24))
-    var hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-    var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60))
-    const status = `${days} hari ${hours} jam ${minutes} menit`;
-    m.reply(`Akan Habis Hingga ${status}.`)
-  } catch (error) {
-    m.reply('Terjadi kesalahan: ' + error.message)
-  }
-}
-break
-
-case 'removeexpired':
-case 'cekexp':
-case 'cekexpired': {
-  if (!isCreator) return m.reply(mess.owner)
-  try {
-    const currentDir = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
-    await expiredCheck(lenwy, currentDir) // Asumsikan `conn` adalah objek koneksi bot
-    m.reply('Pengecekan masa sewa sedang dilakukan, grup yang masa sewanya telah habis akan dihapus secara otomatis.')
-  } catch (error) {
-    m.reply(error.message)
-  }
-}
-break
-
-case 'perpanjangsewa': {
- if (!isCreator) return m.reply(mess.owner)
- if (!text && !m.isGroup) {
- return m.reply(`Ada 2 cara untuk melakukan ${prefix + command} ini:\n1. Di dalam grup tanpa tambahan (cukup durasi).\n2. Di private chat dengan menyertakan *durasi* + *link grup*.\n\nContoh:\n${prefix + command} 30d https://chat.whatsapp.com/xxxxx`)
- }
-
- await sleep(500)
- let currentDir = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
-
- try {
- let groupId, duration;
-
- if (m.isGroup && !text.includes('https://chat.whatsapp.com/')) {
- [duration] = text.split(' ')
- if (!duration) return m.reply(`Durasi harus diisi!\nContoh:\n${prefix + command} 30d`)
- groupId = m.chat
- } else {
- let [d, link] = text.split(' ')
- if (!d || !link) return m.reply(`Durasi dan link grup harus diisi!\nContoh:\n${prefix + command} 30d https://chat.whatsapp.com/xxxxx`)
- duration = d
-if (link.includes('?')) link = link.split('?')[0]
- groupId = await getGroupIdFromLink(link, lenwy)
- if (!groupId) return m.reply('Gagal mendapatkan ID grup dari link.')
- }
-
- if (!checkSewaGroup(groupId, currentDir)) {
- return m.reply('Grup ini tidak ditemukan dalam daftar sewa. Anda tidak dapat memperpanjang masa sewanya.')
- }
-
- const pos = currentDir.findIndex(entry => entry.groupId === groupId)
- if (pos !== -1) {
- const isLifetime = ['alifetime', 'permanent', 'permanen', 'perma'].includes(duration.toLowerCase())
-
- if (isLifetime) {
- currentDir[pos].expired = null
- currentDir[pos].isAlifetime = true
- currentDir[pos].reminded1d = false
- currentDir[pos].reminded1h = false
- currentDir[pos].reminded1m = false
- m.reply(`✅ Masa sewa grup${m.isGroup ? '' : ` dengan ID ${groupId}`} diperpanjang menjadi *Permanen*.`)
- await lenwy.sendMessage(groupId, { text: `🎉 Masa sewa grup ini telah di ubah menjadi *Permanen*!` })
- } else {
- if (currentDir[pos].expired === null || currentDir[pos].isAlifetime === true) {
- currentDir[pos].expired = Date.now() + toMs('3s') // Atau kamu bisa langsung toMs(duration)
- await sleep(500)
- }
-
- currentDir[pos].expired += toMs(duration)
- currentDir[pos].isAlifetime = false // Reset lifetime
-
- currentDir[pos].reminded1d = false
- currentDir[pos].reminded1h = false
- currentDir[pos].reminded1m = false
- let entry = currentDir[pos]
- let expiry = entry.expired
- let remainingTime = expiry - Date.now()
- var days = Math.floor(remainingTime / (1000 * 60 * 60 * 24))
- var hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
- var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60))
- 
- let status = `${days} hari ${hours} jam ${minutes} menit`;
- await lenwy.sendMessage(groupId, { text: `⏳ Masa sewa telah diperpanjang selama *${duration}*. Sisa masa sewa saat ini adalah:\n*${status}*` })
- m.reply(`✅ Masa sewa grup${m.isGroup ? '' : ` dengan ID ${groupId}`} berhasil diperpanjang selama *${duration}*.`)
- }
-
- fs.writeFileSync(pathsewa, JSON.stringify(currentDir, null, 2))
- }
-
- } catch (err) {
- console.error('Error:', err)
- m.reply('Terjadi kesalahan saat memperpanjang sewa. Pastikan format benar dan link masih aktif.')
- }
-}
-break
-
-case 'listsewa': {
-  if (!isCreator) return m.reply(mess.owner)
-  LenwyLD()
-  try {
-      const currentDir = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
-      let ordernye = `*List Sewa*\nJumlah : ${currentDir.length}\n\n`
-      for (const entry of currentDir) {
-        await sleep(5000)
-          let idgc = entry.groupId;
-            let linkgc
-            try {
-              let response2 = await lenwy.groupInviteCode(idgc)
-              linkgc = `https://chat.whatsapp.com/${response2}`
-            } catch {
-              linkgc = '-'
-            }
-            try {
-              let metadata = await lenwy.groupMetadata(idgc)
-              const totalMembers = metadata.participants ? metadata.participants.length : 0;
-              let expirednya = `Permanent`
-              if (!entry.isAlifetime) {
-                const expiry = entry.expired;
-                const remainingTime = expiry - Date.now()
-                var days = Math.floor(remainingTime / (1000 * 60 * 60 * 24))
-                var hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-                var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60))
-                expirednya = `${days || '-'} hari ${hours || '-'} jam ${minutes || '-'} menit`
-              }
-
-              ordernye += `✅ ${metadata.subject}
-🎁 ID Group : ${entry.groupId}
-📦 Total Member : ${totalMembers || '-'} Member
-⏰ Expired : ${expirednya}
-> Link Group : ${linkgc}
-────────────────────────\n\n`
-            } catch (e) {
-              ordernye += `⛔
-🎁 Group ID: ${idgc}
-📦 Tidak bisa mengakses metadata grup, Kemungkinan bot telah keluar dari group.
-> Pesan: ${e.message}
-────────────────────────\n\n`
-            }
-      }
-      m.reply(ordernye + `> Gunakan ${prefix}delsewa (idGroup) untuk menghapus sewa jika private chat dengan bot
-> Gunakan ${prefix}delsewa untuk menghapus sewa jika berada di dalam grup`)
-  } catch (error) {
-      m.reply('Terjadi kesalahan saat membaca file: ' + error.message)
-  }
-}
-break
-
-case 'backupbot':
-case 'botbackup': {
- if (!isAdmins && !isCreator) return m.reply(`Khusus admin dan owner`);
-
- const selectedFiles = [
-  'library', 'project', 'Session', 'storage',
-  'author.json', 'banned.json', 'index.js',
-  'len.js', 'lenwy.js', 'package-lock.json', 'package.json', 'premium.json'
- ];
-
- const directoryPath = path.join("./");
- fs.readdir(directoryPath, async (err, files) => {
- if (err) return m.reply("Gagal membaca direktori: " + err);
-
- const fileSampah = files.filter(item =>
- item.match(/\.(gif|png|mp3|mp4|jpg|jpeg|webp|webm|zip|tar.gz|rar)$/)
- );
-
- if (fileSampah.length === 0) return m.reply(`Tidak ada file sampah ditemukan.`);
-
- let teks = `🧹 Terdeteksi ${fileSampah.length} file sampah:\n\n`;
- fileSampah.forEach((e, i) => teks += `${i + 1}. ${e}\n`);
- m.reply(teks);
- await sleep(1000);
- m.reply("Menghapus file sampah...");
-
- fileSampah.forEach(file => {
- try {
- fs.unlinkSync(path.join(directoryPath, file));
- } catch (e) {
- console.error(`Gagal hapus: ${file}`, e);
- }
- });
-
- await sleep(1000);
- m.reply("✅ Semua file sampah berhasil dihapus.");
- });
-
- await sleep(3000);
-
- const ownerJid = `${global.owner}@s.whatsapp.net`;
- const waktu = moment.tz('Asia/Jakarta').format('DD-MM');
- const zipFileName = `Sc${global.ownername || 'Bot'}_${waktu}.zip`;
-
- try {
- const command = `zip -r ${zipFileName} ${selectedFiles.join(" ")}`;
- execSync(command);
-
- await lenwy.sendMessage(ownerJid, {
- document: fs.readFileSync(`./${zipFileName}`),
- mimetype: "application/zip",
- fileName: zipFileName,
- }, { quoted: m });
-
- fs.unlink(`./${zipFileName}`, err => {
- if (err) console.error(`❌ Gagal hapus ${zipFileName}:`, err);
- else console.log(`✅ Backup "${zipFileName}" dikirim dan dihapus.`);
- });
-
- m.reply("📦 Backup berhasil dikirim ke owner.");
- } catch (err) {
- console.error("❌ Gagal backup:", err);
- m.reply("❌ Terjadi kesalahan saat backup.");
- }
-}
-break
-
-case 'autobackup': {
-  if (!isCreator) return m.reply(mess.owner)
-  if (!text) return m.reply(`*Ketik ${prefix + command} on/off*`)
-    if (q == 'on') {
-      global.autobakcup = true;
-      m.reply(mess.success)
-  } else if (q == 'off') {
-      global.autobakcup = false;
-      m.reply(mess.success)
-  } else {
-      m.reply(`*Ketik ${prefix + command} on/off*`)
-  }
-}
-break
-
-case 'getip':
-case 'cekip': {
-    if (!isCreator) return m.reply(mess.owner)
-    
-    try {
-        const res = await fetch('http://ip-api.com/json/');
-        const data = await res.json();
-
-        let ipv4 = data.query
-
-        if (ipv4) {
-            const replyMessage = `*📮INFO SERVER*\n\n*IP :* ${ipv4}\n*Country :* ${data.city}, ${data.regionName}, ${data.country}`;
-            m.reply(replyMessage)
-        } else {
-            m.reply('Gagal mengambil informasi IP IPv4. Silakan coba lagi nanti.')
-        }
-    } catch (error) {
-        console.error('Error fetching IP:', error)
-        m.reply('Gagal mengambil informasi IP. Silakan coba lagi nanti.')
-    }
-}
-break
-
-case 'setpayment': {
-  if (!isAdmins) return m.reply(mess.admin);
-  if (!text) return m.reply(`Contoh: Kirimkan foto dengan caption:\n${prefix + command} ewallet@Berikut Nomor E-Wallet nya:\nGopay: 085261255548\nDana: 085261255548`)
-  if (!/image/.test(mime)) return m.reply(`Fotonya Mana?`);
-
-  let paymentMethod = text.split('@')[0]; // Metode pembayaran (misal: gopay)
-  let paymentData = text.split('@')[1];
-  if (!paymentData || !paymentMethod) {
-      return m.reply(`Contoh: ${prefix + command} ewallet@Berikut Nomor E-Wallet nya:\nGopay: 085261255548\nDana: 085261255548`);
-  }
-
-  let groupID = m.chat; // Menggunakan ID grup untuk penyimpanan data
-
-  let paymentDataId = `${groupID.split('@')[0]}-${paymentMethod}`; // Misal: 'groupID_gopay'
-
-  let imageUrl = await lenwy.downloadAndSaveMediaMessage(quoted, `./storage/data/image/${paymentDataId}`);
-
-  let _db = readDatabasePayment();
-
-  if (!Array.isArray(_db)) {
-      _db = [];
-  }
-
-  let existingPayment = _db.find(entry => entry.id === groupID && entry.key === paymentMethod);
-  if (existingPayment) {
-      return m.reply(`Key dengan metode ${paymentMethod} sudah ada untuk grup ini.`);
-  }
-
-  let obj_add = {
-      id: groupID,
-      key: paymentMethod,
-      paymentData: paymentData, // Menyimpan ID pembayaran
-      imageUrl: imageUrl
-  };
-
-  _db.push(obj_add);
-
-  writeDatabasePayment(_db);
-
-  return m.reply(`Pembayaran dengan metode ${paymentMethod} berhasil disimpan. Gambar pembayaran telah diterima.`);
-}
-break
-
-case 'setbuttonurl': {
-  if (!isAdmins) return
-  if (!budy.includes('@')) return m.reply("Harap kirimkan format yang benar: setbuttonurl <key>@<displayName>@<url>")
-
-  let key = text.split('@')[0];
-  let displayName = text.split('@')[1];
-  let url = text.split('@')[2];
-
-  let _db = readDatabasePayment();
-
-  let paymentData = _db.find(item => item.key === key && item.id === m.chat);
-  if (!paymentData) {
-      return m.reply(`Key "${key}" tidak ditemukan di grup ini.`);
-  }
-
-  let button = {
-      name: "cta_url",
-      buttonParamsJson: JSON.stringify({
-          display_text: displayName, // Nama tombol
-          url: url                   // URL yang akan diarahkan ketika tombol ditekan
-      })
-  };
-
-  if (!paymentData.buttonData) {
-      paymentData.buttonData = []; // Inisialisasi jika belum ada buttonData
-  }
-
-  paymentData.buttonData.push(button);
-
-  writeDatabasePayment(_db);
-
-  return m.reply(`Tombol URL dengan teks "${displayName}" dan URL "${url}" telah berhasil diset untuk key "${key}".`);
-}
-break
-
-case 'setbuttoncopy': {
-  if (!isAdmins) return
-  if (!budy.includes('@')) return m.reply("Harap kirimkan format yang benar: setbuttonurl <key>@<displayName>@<url>")
-
-  let key = text.split('@')[0];
-  let displayName = text.split('@')[1];
-  let nilaiCopy = text.split('@')[2];
-  let _db = readDatabasePayment();
-
-  let paymentData = _db.find(item => item.key === key && item.id === m.chat);
-  if (!paymentData) {
-      return m.reply(`Key "${key}" tidak ditemukan di grup ini.`);
-  }
-
-  let button = {
-      name: "cta_copy",
-      buttonParamsJson: JSON.stringify({
-          display_text: displayName, // Nama tombol
-          id: nilaiCopy,             // ID yang bisa diubah sesuai kebutuhan
-          copy_code: nilaiCopy      // Teks yang disalin
-      })
-  };
-
-  if (!paymentData.buttonData) {
-      paymentData.buttonData = []; // Inisialisasi jika belum ada buttonData
-  }
-
-  paymentData.buttonData.push(button);
-
-  writeDatabasePayment(_db);
-
-  return m.reply(`Tombol salin dengan teks "${nilaiCopy}" telah berhasil diset untuk key "${key}".`);
-}
-break
-
-case 'changewording': {
-    if (!isAdmins) return
-    if (!text) return m.reply('Contoh: changewording key@newWording');
-    
-    let [key, newWording] = text.split('@');
-    
-    if (!key || !newWording) return m.reply('Format yang benar: changewording key@newWording');
-    
-    let _db = readDatabasePayment();
-    
-    let payments = _db.filter(item => item.id === m.chat);
-    
-    if (payments.length === 0) {
-        return m.reply("Tidak ada data pembayaran yang ditemukan di grup ini.");
-    }
-    
-    let payment = payments.find(item => item.key === key);
-    
-    if (!payment) {
-        return m.reply(`Key "${key}" tidak ditemukan di grup ini.`);
-    }
-
-    payment.paymentData = newWording;
-
-    writeDatabasePayment(_db);
-
-    return m.reply(`Wording untuk key "${key}" berhasil diubah.`);
-}
-break
-
-case 'delbutton': {
-    if (!isAdmins) return
-    if (!text) return m.reply('Contoh: delbutton key');
-    
-    let key = text  // Extract the key from the text
-    
-    if (!key) return m.reply('Contoh: delbutton key');
-    
-    let _db = readDatabasePayment();
-    
-    let payments = _db.filter(item => item.id === m.chat);
-    
-    if (payments.length === 0) {
-        return m.reply("Tidak ada data pembayaran yang ditemukan di grup ini.");
-    }
-    
-    let payment = payments.find(item => item.key === key);
-    
-    if (!payment) {
-        return m.reply(`Key "${key}" tidak ditemukan di grup ini.`);
-    }
-
-    payment.buttonData = [];  // Empty the buttonData array
-
-    writeDatabasePayment(_db);
-
-    return m.reply(`Semua tombol untuk key "${key}" berhasil dihapus.`);
-}
-break
-
-case 'pay': {
-  let _db = readDatabasePayment();
-  
-  let payments = _db.filter(item => item.id === m.chat);
-  
-  if (payments.length === 0) {
-      return m.reply("Tidak ada data pembayaran yang ditemukan di grup ini.");
-  }
-  
-  let missingButtons = [];
-
-  for (let payment of payments) {
-      if (!payment.buttonData || payment.buttonData.length === 0) {
-          missingButtons.push(payment.key); // Menambahkan key ke array missingButtons
-      }
-  }
-
-  if (missingButtons.length > 0) {
-      return m.reply(`Key "${missingButtons.join(', ')}" belum di setbuttoncopy atau setbuttonurl.`);
-  }
-  
-  async function createImage(filePath) {
-      let { imageMessage } = await generateWAMessageContent({
-          image: { url: filePath }  // Menggunakan path file lokal
-      }, {
-          upload: lenwy.waUploadToServer
-      });
-      return imageMessage;
-  }
-
-  let push = payments.map(async (payment) => {
-      let imageMessage = await createImage(payment.imageUrl); // Menggunakan imageUrl dari data JSON
-      
-      return {
-          body: proto.Message.InteractiveMessage.Body.fromObject({
-              text: payment.paymentData
-          }),
-          footer: proto.Message.InteractiveMessage.Footer.fromObject({
-              text: ``
-          }),
-          header: proto.Message.InteractiveMessage.Header.fromObject({
-              hasMediaAttachment: true,
-              imageMessage: imageMessage // Gunakan imageUrl yang ada di dalam data
-          }),
-          nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
-              buttons: payment.buttonData.map(button => ({
-                  name: button.name,
-                  buttonParamsJson: button.buttonParamsJson
-              }))
-          })
-      };
-  });
-
-  let pushCards = await Promise.all(push);
-
-  let bot = generateWAMessageFromContent(m.chat, {
-      viewOnceMessage: {
-          message: {
-              interactiveMessage: proto.Message.InteractiveMessage.fromObject({
-                  body: proto.Message.InteractiveMessage.Body.create({
-                      text: 'Berikut Daftarnya',
-                  }),
-                  footer: proto.Message.InteractiveMessage.Footer.create({
-                      text: `> ${botname}`,
-                  }),
-                  header: proto.Message.InteractiveMessage.Header.create({
-                      hasMediaAttachment: false
-                  }),
-                  carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({
-                      cards: pushCards
-                  })
-              })
-          }
-      }
-  }, { quoted: m });
-
-  await lenwy.relayMessage(m.chat, bot.message, {
-      messageId: bot.key.id
-  });
-}
-break
-
-case 'delpayment': {
-  if (!isAdmins) return
-  let key = text;
-  if (!key) return m.reply("Harap kirimkan format yang benar: delpayment <key>");
-
-  let _db = readDatabasePayment();
-
-  let paymentIndex = _db.findIndex(item => item.key === key && item.id === m.chat);
-
-  if (paymentIndex === -1) {
-    let availableKeys = _db
-      .filter(item => item.id === m.chat)
-      .map((item, index) => `${index + 1}. ${item.key}`);
-    if (availableKeys.length === 0) {
-      return m.reply("Tidak ada data pembayaran yang tersedia di grup ini.");
-    }
-    return m.reply(`Key "${key}" tidak ditemukan. Key yang tersedia:\n${availableKeys.join('\n')}`);
-  }
-
-  let deletedPayment = _db.splice(paymentIndex, 1)[0];
-
-  if (deletedPayment.imageUrl) {
-    const fs = require('fs');
-    fs.unlink(deletedPayment.imageUrl, (err) => {
-      if (err) console.error("Gagal menghapus file gambar:", err);
-    });
-  }
-
-  writeDatabasePayment(_db);
-
-  m.reply(`Data pembayaran dengan key "${key}" berhasil dihapus.`);
-}
-break
-
-case 'cekkhodam':
-case 'cekkodam': {
-if (!q) return m.reply(`*Contoh: ${prefix + command} gw*`)
-if (text.length > 40) return m.reply(`*Maksimal 40 Karakter*`)
-const tik = await (await fetch(`https://${global.api.ham.domain}/primbon/cekkhodam?apikey=${global.api.ham.apikey}&name=${q}`)).json()
-m.reply(tik.result.message)
-}
-break
-
-
-
-case 'brat': {
- if (isBan) return m.reply('⚠ *Kamu Di Ban Owner*');
- if (!text) return m.reply(`Penggunaan : ${prefix + command} <teks>`);
- try {
-const proses = await (await fetch(`https://${global.api.maelyn.domain}/api/canvas/brat?text=${text}&isvideo=false&speed=medium`,
-  {
-    method: "GET",
-    headers: {
-      "x-maelyn-auth": global.api.maelyn.apikey
-    }
-  }
-)).json()
- console.log(proses)
- await lenwy.sendImageAsSticker(from, proses.result.url, m, { packname: global.packname, author: global.author });
- } catch (e) {
- console.log(e);
- await m.reply(`Terjadi kesalahan saat membuat stiker`);
- }
-}
-break
-
-case 'cekipurl': {
-if (!text) return m.reply(`Contoh: ${prefix + command} urlNya\n\n> Note: Tanpa https://`)
-if (text.startsWith('https://')) return m.reply(`Note: Tanpa https://`)
-  try {
-    const address = await dns.lookup(text);
-    m.reply(`IPv4 Address of https://${text}: ${address.address}`);
-  } catch (err) {
-    console.error('Error:', err.message);
-  }    
-}
-break
-
-case 'ttp': {
-  if (!q) return m.reply(`Gunakan dengan cara ${command} text\n\nContoh : ${command} lucu abis`)
-  if (q.length > 75) return m.reply(`Teksnya terlalu panjang`)
-  
-  var data = await getBuffer(`https://${global.api.lolhuman.domain}/api/ttp?apikey=${global.api.lolhuman.apikey}&text=${encodeURIComponent(q)}`)
-  var rand2 = getRandom('.webp')
-  fs.writeFileSync(`./${rand2}`, data)
-    exec(`webpmux -set exif ./data.exif ./${rand2} -o ./${rand2}`, async (error) => {
-    lenwy.sendMessage(from, { sticker: fs.readFileSync(`./${rand2}`) }, { quoted: m })
-    execSync(`rm -rf ./${rand2}.png`)
-    fs.unlinkSync(`./${rand2}`)
-  })
-}
-break
-        
-case 'attp': {
-  if (!q) return m.reply(`Gunakan dengan cara ${command} text\n\nContoh : ${command} lucu abiss`)
-  if (q.length > 75) return reply(`Teksnya terlalu panjang`)
-            
-  var data = await getBuffer(`https://${global.api.lolhuman.domain}/api/attp?apikey=${global.api.lolhuman.apikey}&text=${encodeURIComponent(q)}`)
-  var rand2 = getRandom('.webp')
-  fs.writeFileSync(`./${rand2}`, data)
-  exec(`webpmux -set exif ./data.exif ./${rand2} -o ./${rand2}`, async (error) => {
-    lenwy.sendMessage(from, { sticker: fs.readFileSync(`./${rand2}`) }, { quoted: m })
-    fs.unlinkSync(`./${rand2}`)
-})
-}
-break
-
-case 'setstick': {
-  if (!isAdmins) return m.reply(mess.admin);
-  if (!text) return m.reply(`Contoh: Reply foto/sticker dengan caption:\n${prefix + command} (Key)`)
-  if (!/image/.test(mime)) return m.reply(`Foto atau Sticker nya Mana?`);
-
-  let nameKey = text
-  let groupID = m.chat; // Menggunakan ID grup untuk penyimpanan data
-  let imageUrl = await lenwy.downloadAndSaveMediaMessage(quoted, `./storage/data/sticker/${nameKey + groupID}`)
-  let db_sticker = JSON.parse(fs.readFileSync('./storage/databaseSticker.json'))
-
-  if (!Array.isArray(db_sticker)) {
-    db_sticker = [];
-  }
-  let existingPayment = db_sticker.find(entry => entry.id === groupID && entry.key === nameKey);
-  if (existingPayment) {
-      return m.reply(`Sticker dengan key ${nameKey} sudah ada untuk grup ini.`);
-  }
-  let obj_add = {
-    id: groupID,
-    key: nameKey,
-    imageUrl: imageUrl
-  };
-
-  db_sticker.push(obj_add);
-  fs.writeFileSync('./storage/databaseSticker.json', JSON.stringify(db_sticker, null, 3), 'utf-8');
-  m.reply(`Sticker ${nameKey} berhasil disimpan`);
-}
-break
-
-case 'liststick': {
-  if (text) return
-  let db_sticker = JSON.parse(fs.readFileSync('./storage/databaseSticker.json'))
-  if (!isAlreadyResponStickGroup(m.chat, db_sticker)) return m.reply(`*Belum Ada Sticker Yang Terdaftar Di Grup Ini*`);
-  let sortedList = db_sticker.filter(i => i.id === m.chat).sort((a, b) => a.key.localeCompare(b.key));
-  let tek = `List Sticker Yang Terdaftar Di Group ${groupName}\n`
-  for (let i of sortedList) {
-    tek += `\n> *${i.key}*`
-  }
-  m.reply(tek)
-}
-break
-
-case 'delstick': {
-  if (!isAdmins) return m.reply(mess.admin);
-  if (!text) return m.reply(`Contoh: ${prefix + command} (key)`);
-  let db_sticker = JSON.parse(fs.readFileSync('./storage/databaseSticker.json'))
-  if (!isKeyResponStick(m.chat, text.toLowerCase(), db_sticker)) return m.reply(`*Sticker Dengan Key ${text} Tidak Ada Dalam Liststick*`);
-  await delResponStick(m.chat, text.toLowerCase(), db_sticker)
-  m.reply(`*Sukses Menghapus Sticker Dengan Key ${text}*`)
-}
-break
-
-case 'mutegc': {
-  if (!isCreator) return
-
-  let gcList;
-  try {
-    const data = fs.readFileSync('./storage/gcMuted.json', 'utf-8');
-    gcList = JSON.parse(data);
-  } catch (error) {
-    console.error('Error membaca file gcMuted.json:', error);
-    gcList = [];
-  }
-
-  let groupId;
-
-  if (m.isGroup) {
-    groupId = m.chat;
-  } else {
-    if (!text) return m.reply(`Kirim link grupnya dulu bang!\nContoh:\n${prefix + command} https://chat.whatsapp.com/xxxxx`)
-    let linknya = text
-    if (text.includes('?')) linknya = text.split('?')[0]
-    try {
-      groupId = await getGroupIdFromLink(linknya, lenwy);
-    } catch (err) {
-      console.error(err);
-      return m.reply("Gagal ambil ID grup dari link. Link mungkin tidak valid atau sudah expired.");
-    }
-  }
-
-  if (gcList.includes(groupId)) return m.reply(`Grup ${groupId} sudah dalam daftar mute.`);
-
-  gcList.push(groupId);
-  fs.writeFileSync('./storage/gcMuted.json', JSON.stringify(gcList, null, 2));
-  m.reply(`Grup ${groupId} berhasil dimute.`);
-}
-break
-
-case 'unmutegc': {
-  if (!isCreator) return
-
-  let gcList;
-  try {
-    const data = fs.readFileSync('./storage/gcMuted.json', 'utf-8');
-    gcList = JSON.parse(data);
-  } catch (error) {
-    console.error('Error membaca file gcMuted.json:', error);
-    gcList = [];
-  }
-
-  let groupId;
-
-  if (m.isGroup) {
-    groupId = m.chat;
-  } else {
-    if (!text) return m.reply(`Kirim link grupnya dulu bang!\nContoh:\n${prefix + command} https://chat.whatsapp.com/xxxxx`);
-    let linknya = text
-    if (text.includes('?')) linknya = text.split('?')[0]
-    try {
-      groupId = await getGroupIdFromLink(linknya, lenwy);
-    } catch (err) {
-      console.error(err);
-      return m.reply("Gagal mengambil ID grup dari link. Link mungkin tidak valid atau sudah kadaluarsa.");
-    }
-  }
-
-  const index = gcList.indexOf(groupId);
-  if (index === -1) return m.reply(`Grup ${groupId} tidak ditemukan dalam daftar mute.`);
-
-  gcList.splice(index, 1);
-  fs.writeFileSync('./storage/gcMuted.json', JSON.stringify(gcList, null, 2));
-  m.reply(`Grup ${groupId} berhasil dihapus dari daftar gcMuted.`);
-}
-break
-
-case 'pantun': {
-    try {
-        let response = await axios.get('https://apis.xyrezz.online-server.biz.id/api/pantun');
-        let pantunList = response.data;
-        let randomIndex = Math.floor(Math.random() * pantunList.length);
-        let randomPantun = pantunList[randomIndex];
-
-        m.reply(randomPantun.trim());
-    } catch (error) {
-        console.error(error);
-        m.reply('Terjadi kesalahan saat memuat pantun.');
-    }
-}
-break
-
-case 'bratvid': {
-if (!text) return m.reply(`text nya`)
- try {
- const proses = await (await fetch(`https://${global.api.maelyn.domain}/api/canvas/brat?text=${text}&isvideo=true&speed=medium`,
-  {
-    method: "GET",
-    headers: {
-      "x-maelyn-auth": global.api.maelyn.apikey
-    }
-  }
-)).json()
- console.log(proses)
- await lenwy.sendImageAsSticker(from, proses.result.url, m, { packname: global.packname, author: global.author })
-
- } catch (err) {
- console.error(err);
- m.reply("Maaf, terjadi kesalahan saat memproses permintaan.");
- }
-}
-break
-
-case 'txt2chibi':
-case 'text2chibi':
-case 'texttochibi':
-case 'chibi': {
-  if (!text) m.reply(`Contoh: ${prefix + command} a boy with a black jacket and blue hair`)
-  LenwyLD()
-  let res = await (await fetch(`https://${global.api.maelyn.domain}/api/txt2chibi?prompt=${text}&resolution=Square`, {
-    headers: {
-      'x-maelyn-auth': global.api.maelyn.apikey
-    }
-  })).json()
-  for (let imageUrl of res.result) {
-    await lenwy.sendMessage(m.chat, { image: { url: imageUrl }}, { quoted: m })
-  }
-}
-break
-
-case 'txt2chibi':
-case 'text2chibi':
-case 'texttochibi':
-case 'chibi': {
-  if (!text) m.reply(`Contoh: ${prefix + command} a boy with a black jacket and blue hair`)
-  LenwyLD()
-  let res = await (await fetch(`https://${global.api.maelyn.domain}/api/txt2img/minecraft?prompt=${text}&resolution=Square`, {
-    headers: {
-      'x-maelyn-auth': global.api.maelyn.apikey
-    }
-  })).json()
-  for (let imageUrl of res.result) {
-    await lenwy.sendMessage(m.chat, { image: { url: imageUrl }}, { quoted: m })
-  }
-}
-break
-
-case 'fetch': {
-if (!text) m.reply('Masukkan link nya')
-
-try {
-let res = await (await fetch(`${text}`)).json()
-console.log(res)
-m.reply(`${text}\n\n`+ JSON.stringify(res, null, 2))
-} catch (e) {
-m.reply(JSON.stringify(e, null, 2))
-m.reply(e.message)
-}
-}
-break
-
-case 'addripper': {
-  if (!isCreator) return m.reply(mess.owner)
-  if (!isBotAdmins) return m.reply(mess.botAdmin)
-    if (!text) return m.reply(`Masukkan nomor yang ingin ditambahkan.\nContoh: ${prefix + command} 628xxx`)
-
-    let nomor = text.replace(/[^0-9]/g, '')
-    var cek = await lenwy.onWhatsApp(nomor)
-    if (cek.length < 1) return m.reply("Nomor Tersebut Tidak Terdaftar Di WhatsApp")
-    const filePath = path.join(__dirname, './storage/dataRipper.json');
-
-    if (!fs.existsSync(filePath)) {
-        fs.writeFileSync(filePath, JSON.stringify([]));
-    }
-
-    let data = JSON.parse(fs.readFileSync(filePath));
-
-    if (data.includes(nomor)) {
-        return m.reply(`Nomor ${nomor} sudah terdaftar sebagai ripper.`)
-    }
-
-    data.push(nomor);
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-
-    m.reply(`Nomor ${nomor} berhasil ditambahkan ke daftar ripper.`)
-}
-break
-
-case 'delripper': {
-  if (!isCreator) return m.reply(mess.owner)
-    if (!text) return m.reply(`Masukkan nomor yang ingin dihapus.\nContoh: ${prefix + command} 628xxx`);
-
-    let nomor = text.replace(/[^0-9]/g, '');
-    const filePath = path.join(__dirname, './storage/dataRipper.json');
-
-    if (!fs.existsSync(filePath)) {
-        return m.reply('Daftar ripper masih kosong.');
-    }
-
-    let data;
-    try {
-        data = JSON.parse(fs.readFileSync(filePath));
-        if (!Array.isArray(data)) data = [];
-    } catch (e) {
-        data = [];
-    }
-
-    if (!data.includes(nomor)) {
-        return m.reply(`Nomor ${nomor} tidak ditemukan dalam daftar ripper.`);
-    }
-
-    data = data.filter(n => n !== nomor);
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-
-    m.reply(`Nomor ${nomor} berhasil dihapus dari daftar ripper.`);
-}
-break
-
-case 'listripper': {
-  if (!isCreator) return m.reply(mess.owner)
-
-    let owner;
-    try {
-        owner = JSON.parse(fs.readFileSync('./storage/dataRipper.json', 'utf8'))
-    } catch (err) {
-        console.error('Error reading premium.json:', err)
-        return m.reply('*Gagal Memuat Daftar Premium.*')
-    }
-
-    if (owner.length === 0) return m.reply('*Daftar Ripper Masih Kosong.*')
-
-    let teksooo = '\`— 𝗟𝗶𝘀𝘁 𝗥𝗶𝗽𝗽𝗲𝗿\`\n';
-    for (let i of owner) {
-        teksooo += `✉️ ${i}\n`
-    }
-    teksooo += `\nTotal: ${owner.length}`;
-
-    lenwy.sendMessage(from, { text: teksooo.trim() }, { quoted: m })
-}
-break
 
 case 'minta': {
   if (!["120363344469321945@g.us","120363419539538282@g.us"].includes(from)) return
@@ -8352,50 +6797,6 @@ case 'minta': {
 }
 break
 
-case 'cekidch': 
-case 'inspectch': {
- if (!text) return m.reply('📌 Kirim link channel WhatsApp-nya!');
- if (!text.includes("https://whatsapp.com/channel/")) return m.reply('❌ Link tidak valid! Format harus: https://whatsapp.com/channel/...');
-
- try {
- const channelCode = text.split('https://whatsapp.com/channel/')[1];
- const res = await lenwy.newsletterMetadata("invite", channelCode);
-
- if (!res?.id) return reply('❌ Gagal mengambil info channel.');
-
- const verified = res.verification === 'VERIFIED' ? '✅ Ya' : '❌ Tidak';
- const status = res.state === 'ACTIVE' ? '🟢 Aktif' : '🔴 Tidak aktif';
- 
- const teks = `⬣ *INFORMASI CHANNEL*\n\n` +
- `📌 *Nama:* ${res.name || '-'}\n` +
- `🆔 *ID:* ${res.id}\n` +
- `👥 *Followers:* ${res.subscribers?.toLocaleString('id-ID') || 0}\n` +
- `📶 *Status:* ${status}\n` +
- `☑️ *Verified:* ${verified}`;
-
- await lenwy.sendMessage(m.chat, {
- text: teks,
- footer: `🔹 Gunakan tombol di bawah untuk copy ID Channel`,
- title: `📡 Channel: ${res.name || 'Tidak diketahui'}`,
- interactiveButtons: [
- {
- name: 'cta_copy',
- buttonParamsJson: JSON.stringify({
- display_text: '📋 Copy ID Channel',
- id: res.id,
- copy_code: res.id
- })
- }
- ]
- }, { quoted: m });
-
- } catch (err) {
- console.error(err);
- return m.reply(`❌ *Gagal mengambil data channel:*\n${err.message || 'Tidak diketahui.'}`);
- }
-}
-break
-
 case 'id': {
 if (from != '120363404278304048@g.us') return
 if (!text) return m.reply(`Contoh: ${prefix + command} bot/aku`)
@@ -8412,35 +6813,6 @@ return m.reply(`Contoh: ${prefix + command} bot/aku`)
 if (m.sender === "152767909896298@lid") return
 await sleep (5000)
 await lenwy.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
-}
-break
-
-
-case 'stalkroblox':
-case 'robloxstalk': {
- if (!text) return m.reply('masukkan username roblox anda');
- LenwyLD();
- try {
- const response = await (await fetch(`https://${global.api.ham.domain}/stalk/roblox?apikey=${global.api.ham.apikey}&nickname=${encodeURIComponent(text)}`)).json()
- const data = response.result;
- console.log(data)
-
- const formatPesan = `*🍒 ROBLOX PROFILE 🍒*\n\n` +
- `*PROFILE*\n` +
- `> *Username*: @${data.userInfo.name || '-'}\n` +
- `> *Display Name*: ${data.userInfo.displayName || '-'}\n` +
- `> *Bio*: ${data.userInfo.description && data.userInfo.description !== '-' ? data.userInfo.description : 'No bio available'}\n\n` +
- `*INFORMATION*\n` +
- `> *Created*: ${new Date(data.userInfo.created).toLocaleString('en-US')}\n` +
- `> *Verified*: ${data.userInfo.hasVerifiedBadge ? '✅' : '❌'}\n\n` +
- `*STATISTICS*\n` +
- `> *Friends*: ${data.userFriendCount.count.toLocaleString() || '-'}`
-
- await lenwy.sendMessage(m.chat, { image: { url: data.userAvatar.data[0].imageUrl }, caption: formatPesan }, { quoted: m });
- } catch (e) {
- console.error(e);
- m.reply('Terjadi kesalahan saat mengambil data.');
- }
 }
 break
 

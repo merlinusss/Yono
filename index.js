@@ -1,5 +1,5 @@
 require('./len')
-const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, jidDecode, getAggregateVotesInPollMessage, proto } = require("baileys")
+const { default: makeWASocket, makeCacheableSignalKeyStore, useMultiFileAuthState, DisconnectReason, fetchLatestWaWebVersion, generateForwardMessageContent, generateWAMessageFromContent, downloadContentFromMessage, jidDecode, proto } = require("baileys")
 const fs = require('fs')
 const pino = require('pino')
 const chalk = require('chalk')
@@ -19,6 +19,7 @@ const os = require('os');
 const { exec, spawn, execSync } = require("child_process")
 const { imageToWebp, videoToWebp, writeExifImg, writeExifVid } = require('./library/exif')
 const { smsg, isUrl, generateMessageTag, getBuffer, getSizeMedia, fetchJson, await, sleep } = require('./library/myfunc')
+const NodeCache = require('node-cache');
 const qrcode = require('qrcode-terminal');
 const toMs = require('ms');
 const question = (text) => {
@@ -39,7 +40,8 @@ const namabulannya = moment.tz('Asia/Jakarta').format('MMMM')
 const jamnya = moment.tz('Asia/Jakarta').format('HH')
 const menitnya = moment.tz('Asia/Jakarta').format('mm')
 const detiknya = moment.tz('Asia/Jakarta').format('ss')
-
+const wib = moment.tz('Asia/Jakarta').format('HH : mm : ss')
+const hariini2 = moment.tz('Asia/Jakarta').format('DD MMMM YYYY')
 
 var low
 try {
@@ -115,33 +117,48 @@ console.log(`  ${chalk.magenta('❯')} ${chalk.white.bold('Memory')}     : ${cha
 console.log(border);
 console.log(chalk.gray.italic('  "Good luck, have fun coding!"\n'));
 
-// Konek ke wa
 async function connectToWhatsApp() {
-  const { state, saveCreds } = await useMultiFileAuthState(global.sessionName)
-  const { version, isLatest } = await fetchLatestBaileysVersion()
+  const msgRetryCounterCache = new NodeCache();
+  const groupCache = new NodeCache();
+
+  const { state, saveCreds } = await useMultiFileAuthState(global.sessionName);
+  const { version, isLatest } = await fetchLatestWaWebVersion(); 
+
+  let phoneNumber = '';
+
+  if (global.usePairingCode && !state.creds.registered) {
+    phoneNumber = await question('Masukan Nomor Yang Diawali Dengan 62 :\n');
+    phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
+  }
   const lenwy = makeWASocket({
-    version: [2, 3000, 1041493446],
-    logger: pino({ level: 'silent' }),
+    version: [2, 3000, 1034074495],
+    logger: pino({ level: "silent" }),
     printQRInTerminal: !global.usePairingCode,
-    browser: ['Linux', 'Chromium', '122.0.6261.111'],
-    auth: state,
-    markOnlineOnConnect: false
+    auth: {
+      creds: state.creds,
+      keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "silent" })),
+    }
   });
 
-  if (global.usePairingCode && !lenwy.authState.creds.registered) {
-    const phoneNumber = await question('Masukan Nomor Yang Diawali Dengan 62 :\n');
-    const code = await lenwy.requestPairingCode(phoneNumber.trim(), 'MERLINUS')
-    console.log(`🎁  Pairing Code : ${code}`)
-  } else {
-    lenwy.ev.on("connection.update", async (update) => {
-      const { qr } = update;
-      if (qr) {
-        console.log('🔗 Scan this QR with your WhatsApp');
-        qrcode.generate(qr, { small: true });
-      }
-    })
-  }
+  lenwy.ev.on("connection.update", async (update) => {
+    const { connection, qr } = update;
+    if (qr && !global.usePairingCode) {
+      console.log('🔗 Scan QR ini dengan WhatsApp kamu');
+      qrcode.generate(qr, { small: true });
+    }
+  });
 
+  if (global.usePairingCode && !lenwy.authState.creds.registered && phoneNumber) {
+    setTimeout(async () => {
+      try {
+        let code = await lenwy.requestPairingCode(phoneNumber, 'MERLINUS');
+        code = code?.match(/.{1,4}/g)?.join("-") || code;
+        console.log(chalk.yellowBright(`📌 Pairing Code : ${code}`));
+      } catch (err) {
+        console.error('Gagal mendapatkan pairing code:', err);
+      }
+    }, 3000);
+  }
 
   // Setting ntah ---
   lenwy.decodeJid = (jid) => {
@@ -263,109 +280,58 @@ async function connectToWhatsApp() {
     await handleMlbbAutoDetect(m, lenwy);
   })
 
-lenwy.ev.on('group-participants.update', async (anu) => {
+lenwy.ev.on('group-participants.update', async ({ id, participants, action }) => {
   try {
-    const databasegc = JSON.parse(fs.readFileSync('./storage/databaseGroup.json', 'utf8'))
-    const metadata = await lenwy.groupMetadata(anu.id)
-    const groupName = metadata?.subject || '-'
-    const participants = anu?.participants || []
-    const botNumber = await lenwy.decodeJid(lenwy.user.id)
+    const getJson = (file) => { try { return JSON.parse(fs.readFileSync(file, 'utf8')) } catch { return null } };
+    
+    const databasegc = getJson('./storage/databaseGroup.json') || {};
+    let ripperList = getJson('./storage/dataRipper.json');
+    if (!Array.isArray(ripperList)) ripperList = [];
 
-    const getProfilePicture = async (jid) => {
-      try {
-        return await lenwy.profilePictureUrl(jid, 'image')
-      } catch {
-        return 'https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg'
-      }
-    }
+    const metadata = await lenwy.groupMetadata(id).catch(() => ({}));
+    const groupName = metadata?.subject || '-';
+    const botNumber = await lenwy.decodeJid(lenwy.user.id);
+    const isBotAdmins = metadata?.participants?.some(p => p.id === botNumber && p.admin);
 
-    const replaceTemplate = (text, usertag) => {
-      const replacements = {  
-        '{GROUPNAME}': groupName,
-        '{USERTAG}': usertag,
-        '{JAM}': jamnya,
-        '{MENIT}': menitnya,
-        '{DETIK}': detiknya,
-        '{HARI}': harinya,
-        '{TANGGAL}': tanggalnya,
-        '{BULAN}': bulannya,
-        '{TAHUN}': tahunnya,
-        '{NAMABULAN}': namabulannya
-      }
-
-      let result = text || ''
-      for (const [key, value] of Object.entries(replacements)) {
-        result = result.replaceAll(key, value)
-      }
-      return result
-    }
-
-    let ripperList = []
-    const fileRipper = path.join(__dirname, './storage/dataRipper.json')
-    if (fs.existsSync(fileRipper)) {
-      try {
-        ripperList = JSON.parse(fs.readFileSync(fileRipper, 'utf8'))
-        if (!Array.isArray(ripperList)) ripperList = []
-      } catch {
-        ripperList = []
-      }
-    }
-
-    const isWelcomeEnabled = global.db.data.chats[anu.id]?.wlcm
-    const isLeftEnabled = global.db.data.chats[anu.id]?.left
-    const isBotAdmins = metadata?.participants?.some(p => p.id === botNumber && p.admin !== null)
+    const chatDb = global.db.data.chats[id] || {};
+    const { wlcm: isWelcomeEnabled, left: isLeftEnabled } = chatDb;
 
     for (const user of participants) {
-      const tag = [user]
-      const usertag = `@${user.split('@')[0]}`
+      const usertag = `@${user.split('@')[0]}`;
+      const tag = [user];
 
-      const ppuser = await getProfilePicture(user)
-      const ppgroup = await getProfilePicture(anu.id)
-      const thumbnailUrl = ppuser && ppuser !== 'https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg'
-        ? ppuser
-        : ppgroup || 'https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg'
+      const replaceTpl = (text) => (text || '').replace(/{GROUPNAME}|{TAG}|{JAM}|{NAMAHARI}|{TANGGAL}/g, 
+        match => ({ '{GROUPNAME}': groupName, '{TAG}': usertag, '{JAM}': wib, '{NAMAHARI}': harinya, '{TANGGAL}': hariini2 })[match]
+      );
 
-      let settextwel = replaceTemplate(databasegc[anu.id]?.text_welcome || '', usertag)
-      let settextleft = replaceTemplate(databasegc[anu.id]?.text_left || '', usertag)
+      const settextwel = replaceTpl(databasegc[id]?.text_welcome) || `*Halo ${usertag}*\n📣 *Selamat Datang Di Group :* ${groupName}`;
+      const settextleft = replaceTpl(databasegc[id]?.text_left) || `✉️ *Sampai Jumpa, ${usertag} Telah Meninggalkan Group*`;
 
-      if (!settextwel) {
-        settextwel = `*Halo ${usertag}*\n📣 *Selamat Datang Di Group :* ${groupName}`
-      }
-
-      if (!settextleft) {
-        settextleft = `✉️ *Sampai Jumpa, ${usertag} Telah Meninggalkan Group*`
-      }
-
-      if (isWelcomeEnabled && anu.action === 'add') {
-        await lenwy.sendMessage(anu.id, {
-          text: settextwel,
-          contextInfo: { mentionedJid: tag }
-        })
-      }
-
-      if (anu.action === 'add' && ripperList.includes(user.replace(/[^0-9]/g, ''))) {
-        if (!isBotAdmins) {
-          await lenwy.sendTextWithMentions(anu.id, `Gagal mengeluarkan ${usertag} karena bot bukan admin!`)
-          continue
+      if (action === 'add') {
+        if (isWelcomeEnabled) {
+          await lenwy.sendMessage(id, { text: settextwel, contextInfo: { mentionedJid: tag } });
         }
 
-        await sleep(500)
-        console.log(`✅ Ripper ${user} otomatis di-kick dari ${groupName}`)
-        await lenwy.sendTextWithMentions(anu.id, `Halo ${usertag}, ${global.botname} akan mengeluarkan anda karena anda tercatat sebagai Ripper!`)
-        await lenwy.groupParticipantsUpdate(anu.id, [user], 'remove')
+        if (ripperList.includes(user.replace(/\D/g, ''))) {
+          if (!isBotAdmins) {
+            await lenwy.sendTextWithMentions(id, `Gagal mengeluarkan ${usertag} karena bot bukan admin!`);
+            continue;
+          }
+          await sleep(500);
+          console.log(`✅ Ripper ${user} otomatis di-kick dari ${groupName}`);
+          await lenwy.sendTextWithMentions(id, `Halo ${usertag}, ${global.botname} mengeluarkan anda karena tercatat sebagai Ripper!`);
+          await lenwy.groupParticipantsUpdate(id, tag, 'remove');
+        }
       }
 
-      if (isLeftEnabled && anu.action === 'remove') {
-        await lenwy.sendMessage(anu.id, {
-          text: settextleft,
-          contextInfo: { mentionedJid: tag }
-        })
+      if (action === 'remove' && isLeftEnabled) {
+        await lenwy.sendMessage(id, { text: settextleft, contextInfo: { mentionedJid: tag } });
       }
     }
   } catch (err) {
-    console.log(err)
+    console.error(err);
   }
-})
+});
 
   async function compressSc(sourceDir, outputZip, selectedFiles = [
     'library', 'project', 'Session', 'storage',
@@ -382,7 +348,6 @@ lenwy.ev.on('group-participants.update', async (anu) => {
       const whitelist = [...selectedFiles, 'node_modules'];
       const allItems = fs.readdirSync(sourceDir);
 
-      // Hapus semua yang tidak ada di whitelist
       allItems.forEach(item => {
         if (!whitelist.includes(item)) {
           const itemPath = path.join(sourceDir, item);
@@ -430,7 +395,6 @@ lenwy.ev.on('group-participants.update', async (anu) => {
           mimetype: 'application/zip'
         }).catch((err) => console.log(`Gagal kirim backupan: `, err));
 
-        // Hapus file backup.zip setelah dikirim
         fs.unlink(`./${zipFile}.zip`, (err) => {
           if (err) {
             console.error('Gagal menghapus backup.zip:', err);
@@ -500,36 +464,23 @@ const expiredCheck = async (lenwy) => {
   isCheckingSewa = true;
 
   try {
-    let pathsewa = './storage/sewa.json';
-    let sewa = [];
-    if (fs.existsSync(pathsewa)) {
-        let rawData = fs.readFileSync(pathsewa, 'utf8');
-        try {
-            sewa = JSON.parse(rawData);
-            if (!Array.isArray(sewa)) sewa = [];
-        } catch (e) {
-            console.error('File sewa.json kosong/corrupt, fallback ke array kosong.');
-            sewa = [];
-        }
-    }
-
-    let authorrr = [];
-    try {
-        authorrr = JSON.parse(fs.readFileSync('./author.json'));
-    } catch(e) {
-        authorrr = []; 
-    }
+    const pathsewa = './storage/sewa.json';
+    const getJson = (file) => { try { return JSON.parse(fs.readFileSync(file, 'utf8')) } catch { return null } };
+    
+    let sewa = getJson(pathsewa) || [];
+    if (!Array.isArray(sewa)) sewa = [];
+    const authorrr = getJson('./author.json') || [];
 
     let dataChanged = false;
-    for (let index = sewa.length - 1; index >= 0; index--) {
-      const item = sewa[index];
+    
+    for (let i = sewa.length - 1; i >= 0; i--) {
+      let item = sewa[i];
+      if (item.isAlifetime) continue;
 
       try {
-        if (item.isAlifetime) continue;
-
         if (item.expired - Date.now() <= toMs('1d') && !item.reminded1d) {
           await lenwy.sendMessage(item.groupId, { text: `Sisa masa sewa di group ini adalah *1 hari* lagi, jika ingin perpanjang masa sewa silahkan chat admin.` });
-          if (authorrr.length > 0) await lenwy.sendContact(item.groupId, authorrr.map(i => i.split("@")[0]));
+          if (authorrr.length > 0) await lenwy.sendContact(item.groupId, authorrr.map(x => x.split("@")[0]));
           item.reminded1d = true;
           dataChanged = true;
         }
@@ -541,41 +492,34 @@ const expiredCheck = async (lenwy) => {
           try {
             metadata = await lenwy.groupMetadata(item.groupId);
           } catch (err) {
-            console.warn(`Gagal ambil metadata/bot sudah bukan anggota di ${item.groupId}, menghapus data.`);
-            sewa.splice(index, 1);
-            dataChanged = true;
+            let errMsg = String(err).toLowerCase();
+            if (errMsg.includes("forbidden") || errMsg.includes("404") || errMsg.includes("not-authorized")) {
+               sewa.splice(i, 1);
+               dataChanged = true;
+            }
             continue; 
           }
 
-          let linkgc;
-          try {
-            let invite = await lenwy.groupInviteCode(item.groupId);
-            linkgc = `https://chat.whatsapp.com/${invite}`;
-          } catch (err) {
-            linkgc = '-';
-          }
+          let invite = await lenwy.groupInviteCode(item.groupId).catch(() => '-');
+          let linkgc = invite !== '-' ? `https://chat.whatsapp.com/${invite}` : '-';
 
-          const teks = `Masa sewa di grup ini sudah habis, bot akan keluar otomatis.\nJika ingin sewa lagi silahkan chat ke https://wa.me/${global.owner}`;
-          await lenwy.sendMessage(item.groupId, { text: teks });
-          if (authorrr.length > 0) await lenwy.sendContact(item.groupId, authorrr.map(i => i.split("@")[0]));
+          await lenwy.sendMessage(item.groupId, { text: `Masa sewa di grup ini sudah habis, bot akan keluar otomatis.\nJika ingin sewa lagi silahkan chat ke https://wa.me/${global.owner}` });
+          if (authorrr.length > 0) await lenwy.sendContact(item.groupId, authorrr.map(x => x.split("@")[0]));
           
-          await lenwy.sendMessage(`${global.owner}@s.whatsapp.net`, { text: `Masa sewa di grup *${metadata.subject}* sudah habis.\n\n> ID GROUP : ${item.groupId}\n> NAMA GROUP : ${metadata.subject || ''}\n> LINK GROUP : ${linkgc}` });
+          await lenwy.sendMessage(`${global.owner}@s.whatsapp.net`, { 
+              text: `Masa sewa di grup *${metadata.subject}* sudah habis.\n\n> ID GROUP : ${item.groupId}\n> NAMA GROUP : ${metadata.subject}\n> LINK GROUP : ${linkgc}` 
+          });
           
           await new Promise(resolve => setTimeout(resolve, 2000));
-          
-          try {
-            await lenwy.groupLeave(item.groupId);
-          } catch (error) {
-            console.error(`Gagal keluar dari grup ${item.groupId}: ${error.message}`);
-          }
+          await lenwy.groupLeave(item.groupId).catch(() => {}); 
 
-          sewa.splice(index, 1);
+          sewa.splice(i, 1);
           dataChanged = true;
         }
       } catch (err) {
-        console.error(`Gagal proses sewa grup ${item.groupId}:`, err.message);
-        if (err.message?.includes("forbidden") || err.message?.includes("item-not-found") || String(err).includes("404")) {
-          sewa.splice(index, 1);
+        let errMsg = String(err).toLowerCase();
+        if (errMsg.includes("forbidden") || errMsg.includes("item-not-found") || errMsg.includes("404")) {
+          sewa.splice(i, 1);
           dataChanged = true;
         }
       }
@@ -584,6 +528,7 @@ const expiredCheck = async (lenwy) => {
     if (dataChanged) {
         fs.writeFileSync(pathsewa, JSON.stringify(sewa, null, 2), 'utf8');
     }
+
   } catch (error) {
     console.error('Terjadi kesalahan utama di expiredCheck:', error.message);
   } finally {
@@ -652,11 +597,8 @@ cron.schedule('* * * * *', () => {
     let buffer = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
     return await lenwy.sendMessage(jid, { image: buffer, caption: caption, ...options }, { quoted })
   }
-
   lenwy.sendText = (jid, text, quoted = '', options) => lenwy.sendMessage(jid, { text: text, ...options }, { quoted })
-
   lenwy.sendTextWithMentions = async (jid, text, quoted, options = {}) => lenwy.sendMessage(jid, { text: text, contextInfo: { mentionedJid: [...text.matchAll(/@(\d{0,16})/g)].map(v => v[1] + '@s.whatsapp.net') }, ...options }, { quoted })
-
   lenwy.sendImageAsSticker = async (jid, path, quoted, options = {}) => {
     let buff = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
     let buffer
@@ -668,7 +610,6 @@ cron.schedule('* * * * *', () => {
     await lenwy.sendMessage(jid, { sticker: { url: buffer }, ...options }, { quoted })
     return buffer
   }
-
   lenwy.sendVideoAsSticker = async (e, t, a, s = {}) => {
     let i,
       r = Buffer.isBuffer(t)
@@ -820,30 +761,32 @@ cron.schedule('* * * * *', () => {
     const { connection, lastDisconnect } = update;
     if (connection === "close") {
       let reason = new Boom(lastDisconnect?.error)?.output.statusCode;
+      
       if (reason === DisconnectReason.badSession) {
-        console.log(`Bad Session File, Please Delete Session and Scan Again`);
+        console.log(`Sesi tidak valid (Bad Session). Menghapus folder session secara otomatis...`);
+        execSync(`rm -rf ./${global.sessionName}`);
         process.exit();
       } else if (reason === DisconnectReason.connectionClosed) {
-        console.log("Connection closed, reconnecting....");
+        console.log("Koneksi ditutup, mencoba menghubungkan kembali...");
         connectToWhatsApp();
       } else if (reason === DisconnectReason.connectionLost) {
-        console.log("Connection Lost from Server, reconnecting...");
+        console.log("Koneksi ke server hilang, mencoba menghubungkan kembali...");
         connectToWhatsApp();
       } else if (reason === DisconnectReason.connectionReplaced) {
-        console.log("Connection Replaced, Another New Session Opened, Please Restart Bot");
+        console.log("Koneksi tertimpa sesi lain, tolong restart bot.");
         process.exit();
       } else if (reason === DisconnectReason.loggedOut) {
-        execSync(`rm -rf ./${global.sessionName}`)
-        console.log(`Device Logged Out, Please Delete Folder Session and Scan Again.`);
+        console.log(`Perangkat dikeluarkan (Logged Out). Menghapus folder session secara otomatis...`);
+        execSync(`rm -rf ./${global.sessionName}`);
         process.exit();
       } else if (reason === DisconnectReason.restartRequired) {
-        console.log("Restart Required, Restarting...");
+        console.log("Sistem meminta restart, merestart koneksi...");
         connectToWhatsApp();
       } else if (reason === DisconnectReason.timedOut) {
-        console.log("Connection TimedOut, Reconnecting...");
+        console.log("Koneksi kehabisan waktu (Timeout), mencoba menghubungkan kembali...");
         connectToWhatsApp();
       } else {
-        console.log(`Unknown DisconnectReason: ${reason}|${connection}`);
+        console.log(`Alasan putus koneksi tidak diketahui: ${reason} | ${connection}`);
         connectToWhatsApp();
       }
     } else if (connection === "open") {      

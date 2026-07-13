@@ -1,12 +1,5 @@
 const fs = require('fs')
 const chalk = require('chalk')
-const moment = require('moment-timezone')
-
-global.linkGroup = ''
-global.idChannel = '' // Boleh diisi nanti akan di gunakan di fitur welcome dan left
-global.namaChannel = '' // Boleh diisi nanti akan di gunakan di fitur welcome dan left
-global.linkChannel = ''// Boleh diisi nanti akan di gunakan di fitur welcome dan left
-
 
 global.owner = ['6285167755578']
 global.developer = ['6285261255548']
@@ -21,7 +14,7 @@ global.author = ``
 global.sessionName = 'Session'
 global.anticall = true
 global.autobackup = true
-global.usePairingCode = false // isi false = QR Code & isi true = Code Pairing
+global.usePairingCode = true // isi false = QR Code & isi true = Code Pairing
 
 
 global.licenseKeycash = ''
@@ -33,9 +26,9 @@ global.api = {
     domain: "api.maelyn.eu",
     apikey: "sk_ms_2b6fea0fdb04f51f71b69a74ecdf336917a38fb830889a30"
   },
-  web1: {
-    domain: "merlapi.xyz",
-    apikey: "merlapi-29eb4c46157a6002"
+  ham: {
+    domain: "api.hamsoffc.my.id",
+    apikey: "31050602"
   },
   lolhuman: {
     domain: "api.lolhuman.xyz",
