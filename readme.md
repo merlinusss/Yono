@@ -75,7 +75,7 @@ Ikuti langkah-langkah di bawah ini untuk menjalankan Yono Bot di komputermu:
     
     Buka WhatsApp di HP kamu, masuk ke Perangkat Taut, dan scan QR Code / masukkan nomor hp kamu yang muncul di terminal.
 
-🌊 Deployment (VPS / Panel)
+## 🌊 Deployment (VPS / Panel)
 
 Yono Bot sangat dioptimalkan untuk berjalan di atas server berbasis Arch/Ubuntu Linux dan berjalan mulus jika kamu menggunakan containerization.
 
@@ -87,7 +87,7 @@ Jika kamu menggunakan Pterodactyl Panel atau Docker:
 
     Masukkan perintah startup: node index.js.
 
-📝 Lisensi & Kredit
+## 📝 Lisensi & Kredit
 
 Proyek ini dikembangkan oleh Merlinus Store.
 Terima kasih kepada seluruh kontributor open-source dan penyedia library Baileys (whiskeysockets).
