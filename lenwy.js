@@ -6745,8 +6745,7 @@ case 'detailproduk': {
 }
 break
 
-case 'caratopup':
-case 'caraorder': {
+case 'caratopup': {
 if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`)
 if (text) return
 m.reply(`   °┄─────── 𓊔 ───────┄° 
