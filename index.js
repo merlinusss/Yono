@@ -1,5 +1,5 @@
 require('./len')
-const { default: makeWASocket, makeCacheableSignalKeyStore, useMultiFileAuthState, DisconnectReason, fetchLatestWaWebVersion, generateForwardMessageContent, generateWAMessageFromContent, downloadContentFromMessage, jidDecode, proto } = require("baileys")
+const { default: Browsers, makeWASocket, makeCacheableSignalKeyStore, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, fetchLatestWaWebVersion, generateForwardMessageContent, generateWAMessageFromContent, downloadContentFromMessage, jidDecode, proto } = require("baileys")
 const fs = require('fs')
 const pino = require('pino')
 const chalk = require('chalk')
@@ -122,7 +122,7 @@ async function connectToWhatsApp() {
   const groupCache = new NodeCache();
 
   const { state, saveCreds } = await useMultiFileAuthState(global.sessionName);
-  const { version, isLatest } = await fetchLatestWaWebVersion(); 
+  const { version, isLatest } = await fetchLatestBaileysVersion(); 
 
   let phoneNumber = '';
 
@@ -131,7 +131,7 @@ async function connectToWhatsApp() {
     phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
   }
   const lenwy = makeWASocket({
-    version: [2, 3000, 1034074495],
+    version,
     logger: pino({ level: "silent" }),
     printQRInTerminal: !global.usePairingCode,
     auth: {
