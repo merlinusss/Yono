@@ -454,6 +454,7 @@ const quizMap = {
 }
 
 for (const { data, title, replay, extraDelete, isNumberGame } of Object.values(quizMap)) {
+  if (m.key.fromMe) continue
   if (!isCmd || !data[m.chat]) continue
   kuis = true
   
