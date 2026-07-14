@@ -6551,13 +6551,13 @@ case 'saldo': {
   if (text) return
   let filePathdataBuyer = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'));
   let dataUser = filePathdataBuyer.find(obj => obj.id === m.sender);
-  if (!getdataUser) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`)
+  if (!dataUser) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`)
 
   m.reply(`[ Data Anda ]
 
 > Nama: ${pushname}
-> Role: ${getdataUser.role}
-> Saldo: ${formatSaldo(getdataUser.saldo)}`)
+> Role: ${dataUser.role}
+> Saldo: ${formatSaldo(dataUser.saldo)}`)
 }
 break
 
