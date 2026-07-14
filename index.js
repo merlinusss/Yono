@@ -336,7 +336,8 @@ lenwy.ev.on('group-participants.update', async ({ id, participants, action }) =>
   async function compressSc(sourceDir, outputZip, selectedFiles = [
     'library', 'project', 'Session', 'storage',
     'author.json', 'banned.json', 'index.js',
-    'len.js', 'lenwy.js', 'package-lock.json', 'package.json', 'premium.json'
+    'len.js', 'lenwy.js', 'package-lock.json',
+    'package.json', 'premium.json', 'readme.md'
   ]) {
     return new Promise((resolve, reject) => {
       console.log(
