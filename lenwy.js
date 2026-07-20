@@ -756,21 +756,22 @@ case 'menu': {
         while ((match = caseRegex.exec(section)) !== null) {
             let cmdName = match[1];
             let capitalizedCmd = cmdName.charAt(0).toUpperCase() + cmdName.slice(1);
-            list += ` ││ ♡゙ ${capitalizedCmd}\n`;
+            list += ` ⋮ ⌗ ┆ ${capitalizedCmd}\n`;
         }
         
         let formattedCategory = categoryName.charAt(0) + categoryName.slice(1).toLowerCase();
         
-        return list ? ` ╭───── 私❛❛ ${formattedCategory} Menu
- ││
-${list} ╰───── ♡゙𓇼𓂃 𓆪𐚁\n\n` : '';
+        return list ? ` ◌⑅⃝ ⭐ ${formattedCategory} Menu
+ ﹌﹌﹌﹌﹌﹌﹌
+${list}╰───────⋆⋆⋆────────\n\n` : '';
     };
 
     let menuResult = '';
 
     if (!inputUser) {
-        let listCat = ' ╭─ ─ ─ ❛❛𝑀𝖾𝗇𝗎 \n';
-        listCat += ` ││ ♡゙ ${prefix + command} all\n`;
+        let listCat = ` ◌⑅⃝ ⭐ 𝗠𝗘𝗡𝗨 𝗚𝗥𝗢𝗨𝗣
+ ﹌﹌﹌﹌﹌﹌﹌\n`;
+        listCat += ` ⋮ ⌗ ┆ ${prefix + command} all\n`;
         
         const catRegexList = /\/\/\s*=====\s*AWAL MENU\s+([A-Z]+)\s*=====\s*\/\//g;
         let matchCat;
@@ -779,9 +780,9 @@ ${list} ╰───── ♡゙𓇼𓂃 𓆪𐚁\n\n` : '';
             let catName = matchCat[1];
             let capName = catName.charAt(0) + catName.slice(1).toLowerCase();
             
-            listCat += ` ││ ♡゙ ${prefix + command} ${capName}\n`;
+            listCat += ` ⋮ ⌗ ┆ ${prefix + command} ${capName}\n`;
         }
-        listCat += ` ╰───── ♡゙𓇼𓂃 𓆪𐚁\n\n`;
+        listCat += `╰───────⋆⋆⋆────────\n\n`;
         menuResult = listCat;
         
     } else if (inputUser === 'all') {
@@ -801,21 +802,25 @@ ${list} ╰───── ♡゙𓇼𓂃 𓆪𐚁\n\n` : '';
         if (!menuResult) return m.reply(`Maaf kak, kategori menu *${inputUser}* tidak ditemukan!`);
     }
 
-    let textMenu = `         /)  /)  ❛❛ awoo, aku ${global.botname} ❛❛
-       ( „• ֊ •„ ) 
-  ◯┈──̇─∪──∪──̇──┈◯
- ❛❛ Jangan chat dan call ${global.botname} ya ❛❛
- 
- ╭─ ─ ─ ❛❛𝓘𝗇𝖿𝗈 𝓑𝗈𝗍
- │ ꖛ 𝗿𝘂𝗻𝘁𝗶𝗺𝗲 ⵓ ${runtime(process.uptime())}
- │ ꖛ 𝗰𝗿𝗲𝗮𝘁𝗼𝗿 ⵓ ${authorr}
- ╰╌╌╌╌╌╌╌╌╌𖧷⃝⃝⃝⏤͟͟͞͞ 
+    let textMenu = ` ㅤㅤ  ⣠⣄     
+ㅤㅤㅤ⣼⣿⣿⣧    
+⣴⣶⣶⣿⣿⣿⣿⣿⣿⣶⣶⣦
+⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏
+ ⠈⣿⣿⣿⣿  𝐀𝐥𝐥 𝐌𝐞𝐧𝐮 𝐁𝐨𝐭͙͘͡★
+ ⢰⣿⣿⣿⣿⣿⣿⣿⣿⡇ 
+ ⠈⠛⠋⠉  ⠉⠛⠛⠁─ Stars don't compete for the sky, they just shine˚. ᵎᵎ
 
- ╭─ ─ ─ ❛❛𝓘𝗇𝖿𝗈 𝓤𝗌𝖾𝗋
- │ ꖛ 𝗻𝗮𝗺𝗲 ⵓ ${pushname}
- │ ꖛ 𝗻𝘂𝗺𝗯𝗲𝗿 ⵓ ${m.sender.split('@')[0]}
- │ ꖛ 𝘀𝘁𝗮𝘁𝘂𝘀 ⵓ ${isCreator ? `${global.emoji} Creator` : isPrem ? '🎁 Premium' : "🏷️ User"}
- ╰╌╌╌╌╌╌╌╌╌𖧷⃝⃝⃝⏤͟͟͞͞ \n\n\n`;
+ ╭═══════⚝  ⭒  ⚝══════╮
+  𝗶𝗻𝗳𝗼 𝗯𝗼𝘁 & 𝘂𝘀𝗲𝗿
+  ────── .✦
+  ⟢ runtime : ${runtime(process.uptime())}
+  ⟢ creator : ${authorr}
+  ═════════════════
+ │.✦ ݁˖ name : ${pushname}
+ │.✦ ݁˖ number : ${m.sender.split('@')[0]}
+ │.✦ ݁˖ status : ${isCreator ? `${global.emoji} Creator` : isPrem ? '🎁 Premium' : "🏷️ User"}
+ ╰══════════════════╯
+  ── a sky full of dreams ⊹ ࣪ ˖\n\n`;
     textMenu += menuResult.trimEnd();
     m.reply(textMenu);
 }
@@ -2255,16 +2260,31 @@ ${prefix + command} edit
     fs.writeFileSync('./db/databaseGroup.json', JSON.stringify(global.datagc, null, 2));
   }
 
-  const textListTemplate = global.datagc[groupID].text_list || `Halo {TAG} selamat datang di *{GROUPNAME}*
+  const textListTemplate = global.datagc[groupID].text_list || `٠࣪⭑──α lovely reminder that we go through phases, but we are still ωнσℓє 
 
-── .✦ Hari : {NAMAHARI}
-── .✦ Tanggal : {TANGGAL}
-── .✦ Jam : {JAM} WIB
+╭─────────────── ☪︎ ִ ֶ֢࣪⋆
+││.✦ ݁˖ user : {TAG}
+││.✦ ݁˖ date : {TANGGAL}
+││.✦ ݁˖ time : {JAM} WIB
+╰─────────────────╯
+     ⢀⣠⣶⠖    
+    ⢀⣾⣿⡇     
+     ⣿⣿⣇ ── 𝕮𝖆𝖙𝖆𝖑𝖔𝖌𝖚𝖊 ⋆˙⟡
+    ⠈⢿⣿⣿⣷⣤⣤⣤⠆
+      ⠈⠙⠿⢿⠿⠟⠁
+    ˚　　　　
+　　　.   　　˚　　 　　*　　 　　✦　.˖ִ ࣪    be like the moon, 
+inspire people even when you’re far from full
+       · · ──── ·☽𖤓☾· ──── · ·
 
-ㅤㅤ⤿─ ⓘ 𝗰ׅ𝝰ׄ𝘁𝝰ׄ𝗹ׅ𝝾︩ׄ𝗴ׄ{SIMBOL}
-ㅤㅤ──┈─┈──┈─┈ 𓈀 ──┈─┈──┈─┈`
+     ╭╮{SIMBOL}
+     ╰╯
 
-  const simbol = global.datagc[groupID].text_list_simbol || 'ㅤㅤㅤˑ𔓕';
+       · · ──── ·☽𖤓☾· ──── · ·
+
+ketik keyword 𝗹𝗶𝘀𝘁 untuk menampilkan produk˚. ᵎᵎ`
+
+  const simbol = global.datagc[groupID].text_list_simbol || '    ⋆˙⟡ ';
 
   const replaceTags = (text) => {
     return text
@@ -2278,7 +2298,7 @@ ${prefix + command} edit
   try {
     const sortedList = db_respon_list.filter(i => i.id === groupID).sort((a, b) => a.key.localeCompare(b.key));
     if (sortedList.length === 0) return m.reply(`*Tidak ada list yang tersedia di grup ini*`);
-    const listBody = sortedList.map(i => `\n${simbol} *${i.key.toUpperCase()}*`).join('');
+    const listBody = sortedList.map(i => `\n${simbol} *${i.key}*`).join('');
     const finalText = replaceTags(textListTemplate).replace('{SIMBOL}', listBody);
     lenwy.sendMessage(m.chat, { text: finalText, mentions: [m.sender] }, { quoted: m });
 let buttons = sortedList.map(i => ({
