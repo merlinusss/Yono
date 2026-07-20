@@ -23,8 +23,8 @@ global.productkeydigi = ''
 global.usernamedigi = ''
 global.api = {
   merlinus: {
-    domain: "api.maelyn.eu",
-    apikey: "sk_ms_2b6fea0fdb04f51f71b69a74ecdf336917a38fb830889a30"
+    domain: "merlapi.xyz",
+    apikey: "merlapi-29eb4c46157a6002"
   },
   maelyn: {
     domain: "api.maelyn.eu",

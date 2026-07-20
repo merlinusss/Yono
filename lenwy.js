@@ -4503,65 +4503,112 @@ case 'robloxstalk': {
 break
 
 case 'ffstalk': {
- if (isBan) return m.reply(mess.ban)
- if (!text) return m.reply('*Contoh :*\n> *ffstalk* 587531837')
-try {
- let checkerResult = await (await fetch(`https://${global.api.ham.domain}/stalk/ff?apikey=${global.api.ham.apikey}&id=${text}`)).json()
-console.log(checkerResult)
- m.reply(`Username: ${checkerResult.result.nickname || '-'}
-Region: ${checkerResult.result.region || '-'}
-Id: ${text}`)
-} catch (e) {
- m.reply('terjadi error :' + e)
-}
+  if (isBan) return m.reply(mess.ban);
+  if (!text) return m.reply('*Contoh :*\n> *ffstalk* 587531837');
+  
+  try {
+    let res = await fetch(`https://${global.api.merlinus.domain}/api/gameStalk/ff?id=${text}&apikey=${global.api.merlinus.apikey}`);
+    let checkerResult = await res.json();
+    
+    if (!checkerResult.status || !checkerResult.result) {
+      return m.reply('❌ Data tidak ditemukan atau API sedang error.');
+    }
+
+    let data = checkerResult.result;
+    
+    let name = data.nickname || '-';
+    let uid = data.id || text;
+    let region = data.region || '-';
+    let level = data.level || '-';
+    let exp = data.exp || '-';
+    let likes = data.likes || 0;
+    let created = data.created || '-';
+    let lastLogin = data.lastLogin || '-';
+    let signature = data.signature || '-';
+    let petName = data.petName || '-';
+
+    let weaponsText = data.weapons && data.weapons.length > 0 
+      ? data.weapons.map(w => `• ${w.name}`).join('\n') 
+      : '-';
+      
+    let outfitsText = data.outfits && data.outfits.length > 0 
+      ? data.outfits.map(o => `• ${o.name}`).join('\n') 
+      : '-';
+
+    let caption = `👤 *Username:* ${name}
+🆔 *ID:* ${uid}
+🌍 *Region:* ${region}
+📈 *Level:* ${level} (Exp: ${exp})
+👍 *Likes:* ${likes}
+📝 *Signature:* ${signature}
+🐾 *Pet:* ${petName}
+📅 *Akun Dibuat:* ${created}
+🕰️ *Terakhir Login:* ${lastLogin}
+
+🔫 *Senjata Utama:*
+${weaponsText}
+
+👕 *Pakaian (Outfits):*
+${outfitsText}`;
+
+    m.reply(caption.trim());
+  } catch (e) {
+    m.reply('Terjadi error : ' + e);
+  }
 }
 break
    
 case 'mlstalk': {
- if (!q) return m.reply(`Contoh ${prefix + command} 696964467(8770)`)
- let parts = q.split("(");
- let id = parts[0].trim();
- let serverId = parts[1] ? parts[1].replace(")", "").trim() : "";
+  if (!q) return m.reply(`Contoh ${prefix + command} 696964467(8770)`);
+  
+  let parts = q.split("(");
+  let id = parts[0].trim();
+  let serverId = parts[1] ? parts[1].replace(")", "").trim() : "";
 
- let nicknameUser = '-';
- let regionUser = '-';
- let checkerResult = {};
- try {
- checkerResult = await (await fetch(`https://deoberon-api.vercel.app/stalk/mlbb?apikey=merl&userId=${id}&zoneId=${serverId}`)).json();
- } catch (e) {
- console.error('Gagal fetch checkerResult:', e);
- }
+  let nicknameUser = '-';
+  let regionUser = '-';
+  let regionFlag = '-';
+  let checkerResult = {};
 
-const matchFlag = checkerResult.country?.match(/(.*?)(🇦🇨|🇦🇩|🇦🇪|🇦🇫|🇦🇬|🇦🇮|🇦🇱|🇦🇲|🇦🇴|🇦🇶|🇦🇷|🇦🇸|🇦🇹|🇦🇺|🇦🇼|🇦🇽|🇦🇿|🇧🇦|🇧🇧|🇧🇩|🇧🇪|🇧🇫|🇧🇬|🇧🇭|🇧🇮|🇧🇯|🇧🇱|🇧🇲|🇧🇳|🇧🇴|🇧🇶|🇧🇷|🇧🇸|🇧🇹|🇧🇻|🇧🇼|🇧🇾|🇧🇿|🇨🇦|🇨🇨|🇨🇩|🇨🇫|🇨🇬|🇨🇭|🇨🇮|🇨🇰|🇨🇱|🇨🇲|🇨🇳|🇨🇴|🇨🇷|🇨🇺|🇨🇻|🇨🇼|🇨🇽|🇨🇾|🇨🇿|🇩🇪|🇩🇯|🇩🇰|🇩🇲|🇩🇴|🇩🇿|🇪🇨|🇪🇪|🇪🇬|🇪🇷|🇪🇸|🇪🇹|🇪🇺|🇫🇮|🇫🇯|🇫🇰|🇫🇲|🇫🇴|🇫🇷|🇬🇦|🇬🇧|🇬🇩|🇬🇪|🇬🇫|🇬🇬|🇬🇭|🇬🇮|🇬🇱|🇬🇲|🇬🇳|🇬🇵|🇬🇶|🇬🇷|🇬🇹|🇬🇺|🇬🇼|🇬🇾|🇭🇰|🇭🇲|🇭🇳|🇭🇷|🇭🇹|🇭🇺|🇮🇨|🇮🇩|🇮🇪|🇮🇱|🇮🇲|🇮🇳|🇮🇴|🇮🇶|🇮🇷|🇮🇸|🇮🇹|🇯🇪|🇯🇲|🇯🇴|🇯🇵|🇰🇪|🇰🇬|🇰🇭|🇰🇮|🇰🇲|🇰🇳|🇰🇵|🇰🇷|🇰🇼|🇰🇾|🇰🇿|🇱🇦|🇱🇧|🇱🇨|🇱🇮|🇱🇰|🇱🇷|🇱🇸|🇱🇹|🇱🇺|🇱🇻|🇱🇾|🇲🇦|🇲🇨|🇲🇩|🇲🇪|🇲🇫|🇲🇬|🇲🇭|🇲🇰|🇲🇱|🇲🇲|🇲🇳|🇲🇴|🇲🇵|🇲🇶|🇲🇷|🇲🇸|🇲🇹|🇲🇺|🇲🇻|🇲🇼|🇲🇽|🇲🇾|🇲🇿|🇳🇦|🇳🇨|🇳🇪|🇳🇫|🇳🇬|🇳🇮|🇳🇱|🇳🇴|🇳🇵|🇳🇷|🇳🇺|🇳🇿|🇴🇲|🇵🇦|🇵🇪|🇵🇫|🇵🇬|🇵🇭|🇵🇰|🇵🇱|🇵🇲|🇵🇳|🇵🇷|🇵🇸|🇵🇹|🇵🇼|🇵🇾|🇶🇦|🇷🇪|🇷🇴|🇷🇸|🇷🇺|🇷🇼|🇸🇦|🇸🇧|🇸🇨|🇸🇩|🇸🇪|🇸🇬|🇸🇭|🇸🇮|🇸🇯|🇸🇰|🇸🇱|🇸🇲|🇸🇳|🇸🇴|🇸🇷|🇸🇸|🇸🇹|🇸🇻|🇸🇾|🇸🇿|🇸🇽|🇸🇾|🇹🇦|🇹🇨|🇹🇩|🇹🇫|🇹🇬|🇹🇭|🇹🇯|🇹🇰|🇹🇱|🇹🇲|🇹🇳|🇹🇴|🇹🇷|🇹🇹|🇹🇻|🇹🇼|🇹🇿|🇺🇦|🇺🇬|🇺🇸|🇺🇾|🇺🇿|🇻🇦|🇻🇨|🇻🇪|🇻🇬|🇻🇮|🇻🇳|🇻🇺|🇼🇫|🇼🇸|🇽🇰|🇾🇪|🇾🇹|🇿🇦|🇿🇲|🇿🇼)$/);
-let regionFlag = matchFlag[2] || undefined
+  try {
+    let resRegion = await fetch(`https://${global.api.merlinus.domain}/api/gameStalk/mlbb-region?id=${id}&zone=${serverId}&apikey=${global.api.merlinus.apikey}`);
+    let jsonRegion = await resRegion.json();
+    
+    if (jsonRegion.status && jsonRegion.result) {
+      checkerResult = jsonRegion.result;
+      nicknameUser = checkerResult.nickname || '-';
+      regionUser = checkerResult.country || '-';
+      regionFlag = checkerResult.flag || '-';
+    }
+  } catch (e) {
+    console.error('Gagal fetch checkerResult:', e);
+  }
 
- let topupText = "";
- try {
- let urlFirstTopup = await axios.get(`https://${global.api.ham.domain}/stalk/ml-first-topup?apikey=${global.api.ham.apikey}&id=${id}&zoneId=${serverId}`);
- let topupJson = urlFirstTopup?.data;
+  let topupText = "";
+  try {
+    let urlFirstTopup = await axios.get(`https://${global.api.merlinus.domain}/api/gameStalk/mlbb-infodm?id=${id}&zone=${serverId}&apikey=${global.api.merlinus.apikey}`);
+    let topupJson = urlFirstTopup?.data;
 
- if (topupJson?.result?.first_recharge?.length > 0) {
- for (let pkg of topupJson.result.first_recharge) {
- topupText += `• ${pkg.title} 💎: ${pkg.available ? "✅" : "❌"}\n`;
- }
- } else {
- topupText += "-";
- }
- 
- } catch (e) {
- console.error('Gagal fetch firstTopup:', e);
- topupText += "-";
- }
- nicknameUser = checkerResult?.username
- regionUser = matchFlag[1] || checkerResult?.country
-m.reply(`👤 *Username:* ${nicknameUser}
+    if (topupJson?.status && topupJson?.result) {
+      for (let [pkg, status] of Object.entries(topupJson.result)) {
+        topupText += `• ${pkg} 💎: ${status}\n`;
+      }
+    } else {
+      topupText += "-";
+    }
+  } catch (e) {
+    console.error('Gagal fetch firstTopup:', e);
+    topupText += "-";
+  }
+
+  m.reply(`👤 *Username:* ${nicknameUser}
 🆔 *ID:* ${id}
 🌐 *Server ID:* ${serverId}
 📍 *Region:* ${regionUser} 
 🏳 *Bendera:* ${regionFlag}
 
 🛒 *First Recharge:*
-${topupText}`);
+${topupText.trim()}`);
 }
 break
 
