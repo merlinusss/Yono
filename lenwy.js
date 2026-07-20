@@ -282,6 +282,7 @@ if (isCmd) {
   if (global.db.data.chats[m.chat]?.onlyAdmin && !isAdmins && !isCreator && !isBot) return
   if (isGcMuted && !isCreator && !isBot) return
   if (!m.isGroup && !isCreator && !isBot) return
+  if (isBan) return
 }
 
 if (isCmd) {
@@ -1341,15 +1342,13 @@ case 'ban': {
   let number = args[1].replace(/[^0-9]/g, '')
   if (number.length === 0) return m.reply('*Nomor tidak valid!*')
 
-  let target = number + '@s.whatsapp.net'
-
   if (action === 'add') {
-    if (bannedData.includes(target)) return m.reply(`⚠️ *Nomor ${number} sudah ada di daftar banned.*`)
+    if (bannedData.includes(number)) return m.reply(`⚠️ *Nomor ${number} sudah ada di daftar banned.*`)
 
     try {
-      let isRegistered = await lenwy.onWhatsApp(target)
+      let isRegistered = await lenwy.onWhatsApp(number + '@s.whatsapp.net')
       if (isRegistered && isRegistered.length > 0) {
-        bannedData.push(target)
+        bannedData.push(number)
         fs.writeFileSync(bannedFilePathh, JSON.stringify(bannedData, null, 2))
         return m.reply(`✅ *Sukses!*\nNomor ${number} berhasil ditambahkan ke daftar banned.`)
       } else {
@@ -1361,7 +1360,7 @@ case 'ban': {
   }
 
   if (action === 'del') {
-    let index = bannedData.indexOf(target)
+    let index = bannedData.indexOf(number)
     if (index !== -1) {
       bannedData.splice(index, 1)
       fs.writeFileSync(bannedFilePathh, JSON.stringify(bannedData, null, 2))
