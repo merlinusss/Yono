@@ -5507,7 +5507,8 @@ case 'delgctopup': {
 }
 break
 
-case 'daftarharga': {
+case 'get':
+case 'detail': {
   if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`);
 
   let responseDigi = await cekLayananDigiPrabayar();
@@ -5540,7 +5541,7 @@ case 'daftarharga': {
   let profitData = JSON.parse(fs.readFileSync('./project/database/config.json', 'utf8'));
 
   let input = text.toLowerCase().trim();
-  input = aliasMap[input] || input || '-';
+  input = aliasMap[input] || input || '';
 
   let uniqueBrands = [];
   if (dataProdukDigi.length > 0) {
@@ -5562,7 +5563,11 @@ case 'daftarharga': {
     if (filteredProducts.length > 0) {
       filteredProducts.sort((a, b) => a.price - b.price);
 
-      let header = `*List ${filteredProducts[0].brand}${(filteredProducts[0].type && filteredProducts[0].type.toUpperCase() !== 'UMUM') ? ' ' + filteredProducts[0].type : ''}*\n\n`;
+      let brandName = filteredProducts[0].brand.toUpperCase();
+      let typeName = (filteredProducts[0].type && filteredProducts[0].type.toUpperCase() !== 'UMUM') ? ' ' + filteredProducts[0].type.toUpperCase() : '';
+      let productTitle = brandName + typeName;
+
+      let header = `╭─── ☪︎ ִ ֶ֢࣪⋆ ───────────\n│ ✦ ݁˖ *${productTitle}*\n│ ✦ ݁˖ ᴀᴠᴀɪʟᴀʙʟᴇ ᴘʀᴏᴅᴜᴄᴛs ⋆˙⟡\n╰─────────────── ☪︎ ִ ֶ֢࣪⋆\n\n`;
 
       let messages = filteredProducts.map(product => {
         let basePrice = Number(product.price || 0);
@@ -5570,141 +5575,29 @@ case 'daftarharga': {
         let harga2 = Math.round(basePrice * (1 + profitData.profit2Topup / 100));
         let harga3 = Math.round(basePrice * (1 + profitData.profit3Topup / 100));
         let adjustedPrice =
-          userRole === "1" ? Math.round(basePrice * (1 + profitData.profit1Topup / 100)) :
-          userRole === "2" ? Math.round(basePrice * (1 + profitData.profit2Topup / 100)) :
-          userRole === "3" ? Math.round(basePrice * (1 + profitData.profit3Topup / 100)) :
+          userRole === "1" ? harga1 :
+          userRole === "2" ? harga2 :
+          userRole === "3" ? harga3 :
           basePrice;
 
         let statusIcon = product.seller_product_status && product.buyer_product_status ? "✅" : "⛔";
 
-        return `${statusIcon} *${product.product_name}*
+        if (command === 'detail' || command === 'daftarharga') {
+          return `${statusIcon} *${product.product_name}*
 > *Kode Produk:* ${product.buyer_sku_code}
 > *Harga ${global.settings.roles.role1} :* ${formatSaldo(harga1)}
 > *Harga ${global.settings.roles.role2} :* ${formatSaldo(harga2)}
 > *Harga ${global.settings.roles.role3} :* ${formatSaldo(harga3)}`;
-      }).join('\n\n');
-
-      return lenwy.sendMessage(m.chat, { text: header + messages, mentions: [m.sender] }, { quoted: m });
-    }
-  }
-
-  let teksnyee = '';
-
-  if (dataProdukDigi.length > 0 && uniqueBrands.length > 0) {
-    let categories = {};
-
-    dataProdukDigi.forEach(product => {
-      let brand = product.brand.toUpperCase();
-      let type = (product.type || 'UMUM').toUpperCase();
-      let category = product.category;
-      let displayName;
-
-      if (type === 'UMUM' && categoryGroup.includes(category)) {
-        displayName = `${brand} ${category}`;
-      } else if (type !== 'UMUM' && categoryGroup.includes(category)) {
-        displayName = `${brand} ${type}`;
-      } else if (type === 'UMUM') {
-        displayName = brand;
-      } else {
-        displayName = `${brand} ${type}`;
-      }
-
-      if (!categories[category]) categories[category] = new Set();
-      categories[category].add(displayName);
-    });
-
-    teksnyee += `╭─╸ *all produk topup* ⤸`;
-    Object.keys(categories).sort().forEach(category => {
-      teksnyee += `\n┃\n┃ ❏ *\`${category}\`*`;
-      Array.from(categories[category]).sort().forEach(displayName => {
-        let alias = Object.keys(aliasMap).find(key => aliasMap[key] === displayName.toLowerCase());
-        teksnyee += `\n┃  ֢ ꤠ ${displayName.toUpperCase()} ${alias ? `(${alias.toUpperCase()})` : ''}`;
-      });
-    });
-  }
-
-  teksnyee += '\n╰╸\n\n> Contoh: `get ml`';
-  return m.reply(teksnyee);
-}
-break
-
-case 'get': {
-  if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`);
-
-  let responseDigi = await cekLayananDigiPrabayar();
-  let dataProdukDigi = Array.isArray(responseDigi?.data) ? responseDigi.data : [];
-
-  const users = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'));
-  const userData = users.find(item => {
-    if (Array.isArray(item.id)) return item.id.includes(m.sender);
-    return item.id === m.sender;
-  });
-
-  if (!userData) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`);
-
-  const userRole = String(userData.role || "1");
-
-  const aliasMap = {
-    ml: 'mobile legends',
-    ff: 'free fire',
-    pubg: 'pubg mobile',
-    mlf: 'mobile legends filipina',
-    mlb: 'mobile legends brazil',
-    mlm: 'mobile legends malaysia',
-    mlg: 'mobile legends global',
-    mlw: 'mobile legends membership',
-    tselpulsa: 'telkomsel pulsa',
-    ttview: 'tiktok view'
-  };
-
-  const categoryGroup = ['Pulsa', 'Data'];
-  let profitData = JSON.parse(fs.readFileSync('./project/database/config.json', 'utf8'));
-
-  let input = text.toLowerCase().trim();
-  input = aliasMap[input] || input || '-';
-
-  let uniqueBrands = [];
-  if (dataProdukDigi.length > 0) {
-    uniqueBrands = [...new Set(dataProdukDigi.map(product => {
-      let brand = product.brand.toLowerCase();
-      let type = product.type?.toLowerCase() || 'umum';
-      return type !== 'umum' ? `${brand} ${type}` : brand;
-    }))];
-  }
-
-  if (uniqueBrands.some(brand => input.includes(brand))) {
-    let filteredProducts = dataProdukDigi.filter(product => {
-      let brand = product.brand.toLowerCase();
-      let type = product.type?.toLowerCase() || 'umum';
-      let fullTypeMatch = type !== 'umum' ? `${brand} ${type}` : brand;
-      return input.includes(fullTypeMatch);
-    });
-
-    if (filteredProducts.length > 0) {
-      filteredProducts.sort((a, b) => a.price - b.price);
-
-      let header = `*List ${filteredProducts[0].brand}${(filteredProducts[0].type && filteredProducts[0].type.toUpperCase() !== 'UMUM') ? ' ' + filteredProducts[0].type : ''}*\n\n`;
-
-      let messages = filteredProducts.map(product => {
-        let basePrice = Number(product.price || 0);
-        let adjustedPrice =
-          userRole === "1" ? Math.round(basePrice * (1 + profitData.profit1Topup / 100)) :
-          userRole === "2" ? Math.round(basePrice * (1 + profitData.profit2Topup / 100)) :
-          userRole === "3" ? Math.round(basePrice * (1 + profitData.profit3Topup / 100)) :
-          basePrice;
-
-        let statusIcon = product.seller_product_status && product.buyer_product_status ? "✅" : "⛔";
-
-        return `${statusIcon} *${product.product_name}*
+        } else {
+          return `${statusIcon} *${product.product_name}*
 > *Kode Produk:* ${product.buyer_sku_code}
 > *Harga:* ${formatSaldo(adjustedPrice)}`;
+        }
       }).join('\n\n');
 
       return lenwy.sendMessage(m.chat, { text: header + messages, mentions: [m.sender] }, { quoted: m });
     }
   }
-
-  let teksnyee = '';
 
   if (dataProdukDigi.length > 0 && uniqueBrands.length > 0) {
     let categories = {};
@@ -5729,18 +5622,27 @@ case 'get': {
       categories[category].add(displayName);
     });
 
-    teksnyee += `╭─╸ *all produk topup* ⤸`;
+`٠࣪⭑──α lovely reminder that we go through phases, but we are still ωнσℓє 
+   .     ˚     *     ✦ .˖ִ ࣪ be like the moon, 
+inspire people even when you’re far from full
+       · · ──── ·☽𖤓☾· ──── · ·
+╭─── ☾𝔞𝔱𝔞𝔩𝔬𝔤𝔲𝔢 𝓸𝔣 𝓣𝔬𝔭-𝔲𝔭 ───────`;
     Object.keys(categories).sort().forEach(category => {
-      teksnyee += `\n┃\n┃ ❏ *\`${category}\`*`;
+      teksnyee += `\n││.✦ ݁˖ *\`${category}\`*`;
       Array.from(categories[category]).sort().forEach(displayName => {
         let alias = Object.keys(aliasMap).find(key => aliasMap[key] === displayName.toLowerCase());
-        teksnyee += `\n┃  ֢ ꤠ ${displayName.toUpperCase()} ${alias ? `(${alias.toUpperCase()})` : ''}`;
+        teksnyee += `\n│ ❏ ${displayName.toUpperCase()} ${alias ? `(${alias.toUpperCase()})` : ''}`;
       });
+      teksnyee += `\n│`; 
     });
+
+    teksnyee += `\n       · · ──── ·☽𖤓☾· ──── · ·
+╰─────────────── ☪︎ ִ ֶ֢࣪⋆`;
+
+    return lenwy.sendMessage(m.chat, { text: teksnyee }, { quoted: m });
   }
 
-  teksnyee += '\n╰╸\n\n> Contoh: `get ml`';
-  return m.reply(teksnyee);
+  return m.reply('Data produk sedang tidak tersedia.');
 }
 break
 
@@ -6185,236 +6087,365 @@ break
 
 case 'order': {
   if (!isGcTopup) return m.reply(`Group ini tidak terdaftar di group Topup`);
-  if (!text) return m.reply(`Contoh: ${prefix + command} <kode_produk> <nomor_pelanggan>\n\n> Jika game yang memiliki 2 id maka dipisah\n> ${prefix + command} ml5 12345678 1234`);
+  if (!text) return m.reply(`Contoh: ${prefix + command} <kode_produk> <nomor_pelanggan> [id_server] [jumlah]\n\n> Jika game yang memiliki 2 id maka dipisah\n> ${prefix + command} ml5 12345678 1234 2\n\n> Jika 1 id:\n> ${prefix + command} tsel10 0812345678 2`);
 
-  const statusData = await cekStatusAkunDigi()
+  const statusData = await cekStatusAkunDigi();
   if (!statusData?.data || statusData.data.deposit === 0) return m.reply(`Transaksi dibatalkan. Tag Admin\n\n> Note: Saldo deposit kosong / tidak tersedia`);
 
-  const users = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'))
-  const dataUser = users.find(user => user.id === m.sender)
+  const users = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'));
+  const dataUser = users.find(user => user.id === m.sender);
   if (!dataUser) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`);
 
-  const buyerSkuCode = args[0]?.toLowerCase()
-  const id = args[1]
-  const serverId = args[2]
-  let customerNo = id
-  if (serverId) customerNo = id + serverId
+  const buyerSkuCode = args[0]?.toLowerCase();
+  const id = args[1];
+  
+  let serverId = '';
+  let qty = 1;
+  if (args.length >= 4) {
+    serverId = args[2];
+    qty = parseInt(args[3]) || 1;
+  } else if (args.length === 3) {
+    if (args[2].length <= 3 && !isNaN(args[2])) {
+      qty = parseInt(args[2]);
+    } else {
+      serverId = args[2];
+    }
+  }
 
-  if (!buyerSkuCode || !customerNo) return m.reply(`Contoh: ${prefix + command} <kode_produk> <nomor_pelanggan>\n\n> Jika game yang memiliki 2 id maka dipisah\n> ${prefix + command} ml5 12345678 1234`);
+  let customerNo = id;
+  if (serverId) customerNo = id + serverId;
 
-  const result = await cekItemDigi(buyerSkuCode)
+  if (!buyerSkuCode || !customerNo) return m.reply(`Contoh: ${prefix + command} <kode_produk> <nomor_pelanggan> [id_server] [jumlah]`);
+
+  const result = await cekItemDigi(buyerSkuCode);
   if (!result || !result.data || !result.data[0]) return m.reply(`❌ Produk tidak ditemukan atau terjadi kesalahan.`);
 
-  const projectconfig = JSON.parse(fs.readFileSync('./project/database/config.json', 'utf8'))
+  const projectconfig = JSON.parse(fs.readFileSync('./project/database/config.json', 'utf8'));
 
-  let userName = '-'
+  let userName = '-';
   if (serverId) {
-    let data = await cekMl(id, serverId)
-    let userData = data?.message || ''
-    let nicknameMatch = userData.match(/In-Game Nickname:\s*(.+)/)
-    let nicknameUser = nicknameMatch ? nicknameMatch[1].trim() : 'Tidak ditemukan'
-    userName = nicknameUser || customerNo || '-'
+    let data = await cekMl(id, serverId);
+    let userData = data?.message || '';
+    let nicknameMatch = userData.match(/In-Game Nickname:\s*(.+)/);
+    let nicknameUser = nicknameMatch ? nicknameMatch[1].trim() : 'Tidak ditemukan';
+    userName = nicknameUser || customerNo || '-';
   }
 
-  const basePrice = Number(result.data[0].price)
-  let adjustedPrice = basePrice
+  const basePrice = Number(result.data[0].price);
+  let adjustedPrice = basePrice;
 
   if (dataUser.role === global.settings.roles.role1) {
-    adjustedPrice = Math.round(basePrice * (1 + projectconfig.profit1Topup / 100))
+    adjustedPrice = Math.round(basePrice * (1 + projectconfig.profit1Topup / 100));
   } else if (dataUser.role === global.settings.roles.role2) {
-    adjustedPrice = Math.round(basePrice * (1 + projectconfig.profit2Topup / 100))
+    adjustedPrice = Math.round(basePrice * (1 + projectconfig.profit2Topup / 100));
   } else if (dataUser.role === global.settings.roles.role3) {
-    adjustedPrice = Math.round(basePrice * (1 + projectconfig.profit3Topup / 100))
+    adjustedPrice = Math.round(basePrice * (1 + projectconfig.profit3Topup / 100));
   } else if (dataUser.role === global.settings.roles.role4) {
-    adjustedPrice = basePrice
+    adjustedPrice = basePrice;
   }
 
-  let transactions = []
+  const totalHarga = adjustedPrice * qty;
+
+  let transactions = [];
   if (fs.existsSync('./project/database/processTopup.json')) {
-    transactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
+    transactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'));
   }
 
   const pendingTransaction = transactions.find(tx =>
     tx.id === m.sender &&
     tx.status === 'pending' &&
     tx.dari === 'digiflazz'
-  )
+  );
 
   if (pendingTransaction) {
     return m.reply(`❌ Anda sudah memiliki pemesanan pending.
 > Item: ${pendingTransaction.item}
 > Id: ${pendingTransaction.tujuan}
-> Harga: ${formatSaldo(pendingTransaction.harga)}
+> Harga Total: ${formatSaldo(pendingTransaction.harga)}
 
 Y = Proses saldo
 N = Batal
-QRIS = Bayar pakai QRIS`)
+QRIS = Bayar pakai QRIS`);
+  }
+
+  let refIds = [];
+  for (let i = 0; i < qty; i++) {
+    const date = moment.tz('Asia/Jakarta').format('DDMMMMYYYY');
+    const randomString = Math.random().toString(36).substring(2, 9);
+    const hashonya = crypto.createHash('md5').update(date + randomString + i).digest('hex');
+    const arr = hashonya.split('');
+    for (let k = arr.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [arr[k], arr[j]] = [arr[j], arr[k]];
+    }
+    const random5Digits = arr.slice(0, 5).join('');
+    
+    refIds.push(`${global.ownername.toUpperCase()}${random5Digits.toUpperCase()}`);
   }
 
   const transaction = {
     id: m.sender,
-    ref_id: result.data.ref_id || null,
+    ref_ids: refIds,
+    qty: qty,
     item: buyerSkuCode,
     tujuan: customerNo,
     nama: result.data[0].product_name,
     status: 'pending',
     dari: 'digiflazz',
     time: time2,
-    harga: adjustedPrice,
+    harga_satuan: adjustedPrice,
+    harga: totalHarga,
     username: userName
-  }
+  };
 
-  transactions.push(transaction)
-  fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+  transactions.push(transaction);
+  fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2));
 
   const teksnya = `‼ KONFIRMASI @${m.sender.split("@")[0]}
 > Nama Produk: ${transaction.nama}
 > Kode Produk: ${buyerSkuCode}
 > Id: ${customerNo}
 > Nickname: ${userName}
-> Harga: ${formatSaldo(adjustedPrice)}
+> Jumlah Beli: ${qty}x
+> Total Harga: ${formatSaldo(totalHarga)}
 > Saldo Anda: ${formatSaldo(dataUser.saldo)}
 
 Y = Proses saldo
 N = Batal
-QRIS = Bayar pakai QRIS`
+QRIS = Bayar pakai QRIS`;
 
   let { key } = await lenwy.sendMessage(
     m.chat,
     { text: teksnya, mentions: [m.sender] },
     { quoted: m }
-  )
+  );
 
   setTimeout(async () => {
-    let transactions = []
+    let transactions = [];
     if (fs.existsSync('./project/database/processTopup.json')) {
-      transactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
+      transactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'));
     }
 
     const index = transactions.findIndex(tx =>
       tx.id === m.sender &&
       tx.status === 'pending' &&
       tx.dari === 'digiflazz'
-    )
+    );
 
     if (index !== -1) {
-      transactions.splice(index, 1)
-      fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+      transactions.splice(index, 1);
+      fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2));
 
       try {
-        await lenwy.sendMessage(m.chat, { delete: key })
+        await lenwy.sendMessage(m.chat, { delete: key });
       } catch (e) {
-        console.error('Gagal menghapus pesan:', e)
+        console.error('Gagal menghapus pesan:', e);
       }
 
       await lenwy.sendMessage(
         m.chat,
         { text: `❌ Pemesanan dibatalkan otomatis karena tidak ada konfirmasi dalam 1 menit.` },
         { quoted: m }
-      )
+      );
     }
-  }, 60 * 1000)
+  }, 60 * 1000);
 }
 break
 
-case 'y': {
-  let transactions = []
+case 'y':
+case 'qris': {
+  let transactions = [];
   if (fs.existsSync('./project/database/processTopup.json')) {
-    transactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
+    transactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'));
   }
 
   const transactionIndex = transactions.findIndex(t =>
     t.id === m.sender &&
     t.status === 'pending' &&
     t.dari === 'digiflazz'
-  )
+  );
 
-  if (transactionIndex === -1) return
+  if (transactionIndex === -1) return;
+  const transaction = transactions[transactionIndex];
+  const isQrisMethod = command === 'qris';
 
-  const transaction = transactions[transactionIndex]
-  if (transaction.isQris) return
+  if (isQrisMethod && transaction.isQris) return; 
 
-  const users = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'))
-  const userIndex = users.findIndex(u => u.id === m.sender)
-  if (userIndex === -1) return m.reply(`User tidak ditemukan di database`)
+  let isPaid = false;
 
-  if (users[userIndex].saldo < transaction.harga) {
-    return m.reply(`❌ Saldo tidak cukup.\n> Saldo Anda: ${formatSaldo(users[userIndex].saldo)}\n> Harga Item: ${formatSaldo(transaction.harga)}`)
-  }
+  if (!isQrisMethod) {
+    const users = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'));
+    const userIndex = users.findIndex(u => u.id === m.sender);
+    if (userIndex === -1) return m.reply(`User tidak ditemukan di database`);
 
-  const buyerSkuCode = transaction.item
-  const customerNo = transaction.tujuan
+    if (users[userIndex].saldo < transaction.harga) {
+      return m.reply(`❌ Saldo tidak cukup.\n> Saldo Anda: ${formatSaldo(users[userIndex].saldo)}\n> Harga Total: ${formatSaldo(transaction.harga)}`);
+    }
 
-  transactions[transactionIndex].status = 'Processing'
-  fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+    users[userIndex].saldo -= transaction.harga;
+    fs.writeFileSync('./project/database/dataBuyerDigi.json', JSON.stringify(users, null, 2));
+    isPaid = true;
 
-  users[userIndex].saldo -= transaction.harga
-  fs.writeFileSync('./project/database/dataBuyerDigi.json', JSON.stringify(users, null, 2))
+  } else {
+    const projectconfig = JSON.parse(fs.readFileSync('./project/database/config.json', 'utf8'));
+    const data = await generateQris(transaction.harga, projectconfig.qrisPackage, 5);
+    
+    if (data.status !== 200) return m.reply(`Error saat generate QR\n${data.message}`);
 
-  const orderResult = await orderDigi(buyerSkuCode, customerNo)
-  if (!orderResult?.data?.ref_id) {
-    users[userIndex].saldo += transaction.harga
-    fs.writeFileSync('./project/database/dataBuyerDigi.json', JSON.stringify(users, null, 2))
+    const url1 = `https://larabert-qrgen.hf.space/v1/create-qr-code?size=500x500&style=1&color=1A1A2E&data=${encodeURIComponent(data.data.qr_string)}`;
+    const getImage = await axios.get(url1, { responseType: 'arraybuffer' });
+    const pay = Buffer.from(getImage.data, 'binary');
+    const transactionId = data.data.transactionId;
 
-    transactions.splice(transactionIndex, 1)
-    fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
+    transactions[transactionIndex].isQris = true;
+    transactions[transactionIndex].qrisTransactionId = transactionId;
+    fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2));
 
-    return m.reply(`❌ Gagal membuat pesanan ke server.`)
-  }
+    const teksnya = `‼ KONFIRMASI QRIS @${m.sender.split("@")[0]}
+> Nama Produk: ${transaction.nama}
+> Kode Produk: ${transaction.item}
+> Id: ${transaction.tujuan}
+> Nickname: ${transaction.username}
+> Jumlah Beli: ${transaction.qty}x
+> Total Harga: ${formatSaldo(transaction.harga)}
 
-  const refId = orderResult.data.ref_id
-  m.reply(`Memproses pesanan anda.`)
+Ketik N untuk batal`;
 
-  const checkDigiOrderStatus = async () => {
-    const orderStatus = await cekOrderanDigi(refId, buyerSkuCode, customerNo)
-    const SN = orderStatus?.data?.sn || '-'
+    let { key } = await lenwy.sendMessage(m.chat, { image: pay, caption: teksnya, mentions: [m.sender] }, { quoted: m });
 
-    if (orderStatus?.data?.status === 'Sukses') {
-      clearInterval(intervalId)
+    let statusPay = false;
+    let attempt = 0;
+    const maxAttempts = 18;
 
-      let teksnya = `✅ Transaksi Sukses @${m.sender.split("@")[0]}
-> Invoice: ${refId}
-> Item: ${transaction.nama}
-> Kode: ${buyerSkuCode}
-> Tujuan: ${customerNo}
-> Harga: ${formatSaldo(transaction.harga)}
-> SN: ${SN}`
+    while (!statusPay) {
+      attempt++;
+      await sleep(15000);
 
-      await lenwy.sendMessage(m.chat, { text: teksnya, mentions: [m.sender] }, { quoted: m })
-
-      let latestTransactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
-      const idx = latestTransactions.findIndex(t => t.id === m.sender && t.status === 'Processing' && t.dari === 'digiflazz')
-      if (idx !== -1) {
-        latestTransactions.splice(idx, 1)
-        fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(latestTransactions, null, 2))
-      }
-    } else if (orderStatus?.data?.status === 'Pending') {
-      console.log('Status transaksi masih pending...')
-    } else {
-      clearInterval(intervalId)
-
-      let latestUsers = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'))
-      const latestUserIndex = latestUsers.findIndex(u => u.id === m.sender)
-      if (latestUserIndex !== -1) {
-        latestUsers[latestUserIndex].saldo += transaction.harga
-        fs.writeFileSync('./project/database/dataBuyerDigi.json', JSON.stringify(latestUsers, null, 2))
+      let latestTransactions = [];
+      if (fs.existsSync('./project/database/processTopup.json')) {
+        latestTransactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'));
       }
 
-      let latestTransactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
-      const idx = latestTransactions.findIndex(t => t.id === m.sender && t.dari === 'digiflazz')
-      if (idx !== -1) {
-        latestTransactions.splice(idx, 1)
-        fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(latestTransactions, null, 2))
+      const latestIndex = latestTransactions.findIndex(t => t.id === m.sender && t.status === 'pending' && t.dari === 'digiflazz');
+      if (latestIndex === -1) break; 
+
+      if (attempt >= maxAttempts) {
+        latestTransactions.splice(latestIndex, 1);
+        fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(latestTransactions, null, 2));
+        try { await lenwy.sendMessage(m.chat, { delete: key }); } catch {}
+        return m.reply('❌ Pemesanan telah melewati batas waktu');
       }
 
-      m.reply(`❌ Ada yang gagal. Tag Admin
-
-> Status: ${orderStatus?.data?.status || '-'}
-> Pesan: ${orderStatus?.data?.message || 'Tidak ada informasi.'}`)
+      try {
+        let res = await checkQrisStatus(transactionId);
+        if (res.status === 200 && res.data.status === 'paid') {
+          try { await lenwy.sendMessage(m.chat, { delete: key }); } catch {}
+          m.reply(`Pembayaran QRIS terdeteksi.`);
+          isPaid = true;
+          statusPay = true;
+        }
+      } catch (error) {
+        console.log('Error Cek QRIS:', error);
+        latestTransactions.splice(latestIndex, 1);
+        fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(latestTransactions, null, 2));
+        try { await lenwy.sendMessage(m.chat, { delete: key }); } catch {}
+        return m.reply('Ada kendala pada server QRIS, pesanan dibatalkan.\nSilakan lakukan pembelian ulang');
+      }
     }
   }
 
-  const intervalId = setInterval(checkDigiOrderStatus, 7000)
+  if (isPaid) {
+    let activeTransactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'));
+    let activeIndex = activeTransactions.findIndex(t => t.id === m.sender && t.dari === 'digiflazz');
+    
+    if (activeIndex === -1) return; 
+    
+    activeTransactions[activeIndex].status = 'Processing';
+    fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(activeTransactions, null, 2));
+    
+    let txData = activeTransactions[activeIndex];
+    let successesCount = 0; 
+    let intervals = {}; 
+    
+    m.reply(`Memproses pesanan anda ke server sebanyak ${txData.qty}x...`);
+
+    for (let i = 0; i < txData.qty; i++) {
+      let currentRefId = txData.ref_ids[i];
+      if (i > 0) await sleep(2000); 
+
+      const orderResult = await orderDigi(txData.item, txData.tujuan, currentRefId);
+
+      if (!orderResult?.data?.ref_id) {
+        m.reply(`❌ Gagal membuat pesanan ke-${i + 1} ke server. Tag Admin`);
+        if (!isQrisMethod) {
+          let users = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'));
+          let userIndex = users.findIndex(u => u.id === m.sender);
+          if (userIndex !== -1) {
+            users[userIndex].saldo += txData.harga_satuan;
+            fs.writeFileSync('./project/database/dataBuyerDigi.json', JSON.stringify(users, null, 2));
+            m.reply(`✅ Saldo di-refund sebesar ${formatSaldo(txData.harga_satuan)} untuk transaksi ke-${i + 1}`);
+          }
+        }
+        
+        successesCount++;
+        if (successesCount === txData.qty) {
+          let fTx = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'));
+          let idx = fTx.findIndex(t => t.id === m.sender && t.dari === 'digiflazz');
+          if (idx !== -1) { fTx.splice(idx, 1); fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(fTx, null, 2)); }
+        }
+        continue; 
+      }
+
+      const checkStatusOrder = async (refId, orderIndex) => {
+        const orderStatus = await cekOrderanDigi(refId, txData.item, txData.tujuan);
+        const SN = orderStatus?.data?.sn || '-';
+
+        if (orderStatus?.data?.status === 'Sukses') {
+          clearInterval(intervals[refId]); 
+          let msg = `✅ Transaksi ke-${orderIndex + 1} Sukses @${m.sender.split("@")[0]}
+> Invoice: ${refId}
+> Item: ${txData.nama}
+> Kode: ${txData.item}
+> Tujuan: ${txData.tujuan}
+> Harga: ${formatSaldo(txData.harga_satuan)}
+> SN: ${SN}`;
+          
+          await lenwy.sendMessage(m.chat, { text: msg, mentions: [m.sender] }, { quoted: m });
+          
+          successesCount++;
+          if (successesCount === txData.qty) {
+            let fTx = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'));
+            let idx = fTx.findIndex(t => t.id === m.sender && t.dari === 'digiflazz');
+            if (idx !== -1) { fTx.splice(idx, 1); fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(fTx, null, 2)); }
+          }
+        } else if (orderStatus?.data?.status === 'Pending') {
+          console.log(`Status transaksi ke-${orderIndex + 1} (${refId}) masih pending...`);
+        } else {
+          clearInterval(intervals[refId]); 
+          m.reply(`❌ Pesanan ke-${orderIndex + 1} gagal. Tag Admin\n> Status: ${orderStatus?.data?.status || '-'}\n> Pesan: ${orderStatus?.data?.message || 'Tidak ada informasi.'}`);
+          
+          if (!isQrisMethod) {
+            let users = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'));
+            let userIndex = users.findIndex(u => u.id === m.sender);
+            if (userIndex !== -1) {
+              users[userIndex].saldo += txData.harga_satuan;
+              fs.writeFileSync('./project/database/dataBuyerDigi.json', JSON.stringify(users, null, 2));
+              m.reply(`✅ Saldo di-refund sebesar ${formatSaldo(txData.harga_satuan)} untuk transaksi ke-${orderIndex + 1}`);
+            }
+          }
+          
+          successesCount++;
+          if (successesCount === txData.qty) {
+            let fTx = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'));
+            let idx = fTx.findIndex(t => t.id === m.sender && t.dari === 'digiflazz');
+            if (idx !== -1) { fTx.splice(idx, 1); fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(fTx, null, 2)); }
+          }
+        }
+      };
+
+      intervals[currentRefId] = setInterval(() => checkStatusOrder(currentRefId, i), 7000);
+    }
+  }
 }
 break
 
@@ -6450,165 +6481,6 @@ case 'n': {
 > Item: ${trx.nama}
 > Kode: ${trx.item}
 > Harga: ${formatSaldo(trx.harga)}`)
-}
-break
-
-case 'qris': {
-  let transactions = []
-  if (fs.existsSync('./project/database/processTopup.json')) {
-    transactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
-  }
-
-  const transactionIndex = transactions.findIndex(t =>
-    t.id === m.sender &&
-    t.status === 'pending' &&
-    t.dari === 'digiflazz'
-  )
-
-  if (transactionIndex === -1) return
-
-  const transaction = transactions[transactionIndex]
-  const projectconfig = JSON.parse(fs.readFileSync('./project/database/config.json', 'utf8'))
-
-  const data = await generateQris(transaction.harga, projectconfig.qrisPackage, 5)
-  if (data.status !== 200) return m.reply(`Error saat generate QR\n${data.message}`)
-
-  const url1 = `https://larabert-qrgen.hf.space/v1/create-qr-code?size=500x500&style=1&color=1A1A2E&data=${encodeURIComponent(data.data.qr_string)}`
-  const getImage = await axios.get(url1, { responseType: 'arraybuffer' })
-  const pay = Buffer.from(getImage.data, 'binary')
-  const transactionId = data.data.transactionId
-
-  transactions[transactionIndex].isQris = true
-  transactions[transactionIndex].qrisTransactionId = transactionId
-  fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
-
-  const teksnya = `‼ KONFIRMASI QRIS @${m.sender.split("@")[0]}
-> Nama Produk: ${transaction.nama}
-> Kode Produk: ${transaction.item}
-> Id: ${transaction.tujuan}
-> Nickname: ${transaction.username}
-> Harga: ${formatSaldo(transaction.harga)}
-
-Ketik N untuk batal`
-
-  let { key } = await lenwy.sendMessage(
-    m.chat,
-    { image: pay, caption: teksnya, mentions: [m.sender] },
-    { quoted: m }
-  )
-
-  let statusPay = false
-  let attempt = 0
-  const maxAttempts = 18
-
-  while (!statusPay) {
-    attempt++
-    await sleep(15000)
-
-    let latestTransactions = []
-    if (fs.existsSync('./project/database/processTopup.json')) {
-      latestTransactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
-    }
-
-    const latestIndex = latestTransactions.findIndex(t =>
-      t.id === m.sender &&
-      t.status === 'pending' &&
-      t.dari === 'digiflazz'
-    )
-
-    if (latestIndex === -1) {
-      statusPay = true
-      break
-    }
-
-    if (attempt >= maxAttempts) {
-      latestTransactions.splice(latestIndex, 1)
-      fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(latestTransactions, null, 2))
-      await lenwy.sendMessage(from, { delete: key })
-      return m.reply('❌ Pemesanan telah melewati batas waktu')
-    }
-
-    try {
-      let res = await checkQrisStatus(transactionId)
-
-      if (res.status === 200 && res.data.status === 'paid') {
-        statusPay = true
-        await lenwy.sendMessage(from, { delete: key })
-        m.reply(`Pembayaran terdeteksi, memproses pesanan Anda...`)
-
-        latestTransactions[latestIndex].status = 'Processing'
-        fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(latestTransactions, null, 2))
-
-        const orderResult = await orderDigi(transaction.item, transaction.tujuan)
-        if (!orderResult?.data?.ref_id) {
-          latestTransactions.splice(latestIndex, 1)
-          fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(latestTransactions, null, 2))
-          return m.reply(`❌ Gagal membuat pesanan setelah pembayaran masuk. Tag Admin`)
-        }
-
-        const refId = orderResult.data.ref_id
-
-        const checkDigiOrderStatus = async () => {
-          const orderStatus = await cekOrderanDigi(refId, transaction.item, transaction.tujuan)
-          const SN = orderStatus?.data?.sn || '-'
-
-          if (orderStatus?.data?.status === 'Sukses') {
-            clearInterval(intervalId)
-
-            let teksnya = `✅ Transaksi Sukses @${m.sender.split("@")[0]}
-> Invoice: ${refId}
-> Item: ${transaction.nama}
-> Kode: ${transaction.item}
-> Tujuan: ${transaction.tujuan}
-> Harga: ${formatSaldo(transaction.harga)}
-> SN: ${SN}`
-
-            await lenwy.sendMessage(m.chat, { text: teksnya, mentions: [m.sender] }, { quoted: m })
-
-            let finalTransactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
-            const finalIndex = finalTransactions.findIndex(t => t.id === m.sender && t.dari === 'digiflazz')
-            if (finalIndex !== -1) {
-              finalTransactions.splice(finalIndex, 1)
-              fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(finalTransactions, null, 2))
-            }
-          } else if (orderStatus?.data?.status === 'Pending') {
-            console.log('Status transaksi masih dalam proses, mencoba lagi...')
-          } else {
-            clearInterval(intervalId)
-
-            let finalTransactions = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
-            const finalIndex = finalTransactions.findIndex(t => t.id === m.sender && t.dari === 'digiflazz')
-            if (finalIndex !== -1) {
-              finalTransactions.splice(finalIndex, 1)
-              fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(finalTransactions, null, 2))
-            }
-
-            m.reply(`❌ Ada yang error. Tag Admin
-
-> Status: ${orderStatus?.data?.status || '-'}
-> Pesan: ${orderStatus?.data?.message || 'Tidak ada informasi.'}`)
-          }
-        }
-
-        const intervalId = setInterval(checkDigiOrderStatus, 7000)
-      }
-    } catch (error) {
-      console.log('Error:', error)
-      statusPay = true
-
-      let latestTransactions2 = JSON.parse(fs.readFileSync('./project/database/processTopup.json', 'utf8'))
-      const idx = latestTransactions2.findIndex(t => t.id === m.sender && t.status === 'pending' && t.dari === 'digiflazz')
-      if (idx !== -1) {
-        latestTransactions2.splice(idx, 1)
-        fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(latestTransactions2, null, 2))
-      }
-
-      try {
-        await lenwy.sendMessage(from, { delete: key })
-      } catch {}
-      return m.reply('Ada kendala, pesanan dibatalkan\nSilakan lakukan pembelian ulang')
-    }
-  }
 }
 break
 

@@ -4,15 +4,6 @@ const path = require('path')
 const fs = require('fs')
 const moment = require('moment-timezone')
 const pathDigi = './database/daftarProdukDigiflazz.json'
-
-function shuffleString(str) {
-    const arr = str.split('');
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]]
-    }
-    return arr.join('');
-  }
   
   async function cekStatusAkunDigi() {
       let sign = crypto.createHash('md5').update(global.usernamedigi + global.productkeydigi + "depo").digest('hex')
@@ -79,21 +70,33 @@ function shuffleString(str) {
   
   async function simpanKeFileJSON() {
     const filePath = path.join(__dirname, pathDigi);
-    const batasWaktuMs = 40 * 60 * 1000;
+    const batasWaktuMs = 6 * 60 * 1000; 
+
     try {
         if (!fs.existsSync(filePath) || (Date.now() - fs.statSync(filePath).mtimeMs > batasWaktuMs)) {
-            console.log(`Fetching data digiflazz`);
+            console.log(`[Digiflazz] Waktunya fetch data pricelist...`);
             const result = await cekLayananDigiflazz();
+            
             if (result) {
                 fs.writeFileSync(filePath, JSON.stringify(result, null, 2), 'utf-8');
                 const time1 = moment.tz('Asia/Jakarta').format('HH:mm:ss');
-                console.log(`[Digiflazz] File berhasil diperbarui pada ${time1}!`);
+                console.log(`[Digiflazz] Berhasil! File diperbarui pada ${time1}`);
+            } else {
+                console.log(`[Digiflazz] Fetch gagal/limit. Menunda fetch berikutnya selama 6 menit.`);
+                
+                if (!fs.existsSync(filePath)) {
+                    fs.writeFileSync(filePath, JSON.stringify({ data: [] }), 'utf-8');
+                } else {
+                    const timeNow = new Date();
+                    fs.utimesSync(filePath, timeNow, timeNow);
+                }
             }
         }
     } catch (err) {
         console.error('Gagal mengecek atau memperbarui data:', err);
     }
   }
+
   setInterval(simpanKeFileJSON, 60 * 1000);
   
   async function cekLayananDigiPrabayar() {
@@ -133,13 +136,7 @@ function shuffleString(str) {
       }
     }
   
-  async function orderDigi(buyerSkuCode, customerNo) {
-    const date = moment.tz('Asia/Jakarta').format('DDMMMMYYYY')
-    const randomString = Math.random().toString(36).substring(2, 9);
-    const hashonya = crypto.createHash('md5').update(date + randomString).digest('hex');
-    const shuffledHash = shuffleString(hashonya);
-    const random5Digits = shuffledHash.substring(0, 5);
-    const refId = `${global.ownername.toUpperCase()}${random5Digits.toUpperCase()}`; 
+  async function orderDigi(buyerSkuCode, customerNo, refId) {
     const sign = crypto.createHash('md5').update(global.usernamedigi + global.productkeydigi + refId).digest('hex');
     const url = 'https://api.digiflazz.com/v1/transaction'
   
@@ -165,10 +162,10 @@ function shuffleString(str) {
       } else {
           throw new Error('Error: ' + JSON.stringify(data.data))
       }
-  } catch (error) {
-      console.error('Terjadi kesalahan:', error.message)
-      return null
-  }
+    } catch (error) {
+        console.error('Terjadi kesalahan:', error.message)
+        return null
+    }
   }
   
   async function cekItemDigi(buyerSkuCode) {
