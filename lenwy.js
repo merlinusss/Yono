@@ -3983,16 +3983,24 @@ case 'tebak': {
       lenwy.sendMessage(m.chat, { text: `🕒 *Waktu Habis*\n🎁 *Jawaban : ${tebakangka[m.chat]}*\n\n📣 *Ingin Bermain Lagi? Ketik Tebak Angka*` }, { quoted: m });
       delete tebakangka[m.chat];
     }
+  } else {
+    m.reply(`Game yang tersedia:
+> ${prefix + command} gambar
+> ${prefix + command} kata
+> ${prefix + command} kalimat
+> ${prefix + command} lirik
+> ${prefix + command} lontong
+> ${prefix + command} angka`)
   }
 }
 break
 
 case 'math': {
+  let { genMath, modes } = require('./library/math')
   if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
   if (kuismath.hasOwnProperty(m.sender.split('@')[0])) m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan!*')
   if (!text) return m.reply(`Mode: ${Object.keys(modes).join(' | ')}
 Contoh penggunaan: ${prefix}math medium`);
-  let { genMath, modes } = require('./library/math')
   let result = await genMath(text.toLowerCase())
   await lenwy.sendText(from,
     `*Berapa Hasil Dari : ${result.soal.toLowerCase()}*?
@@ -5649,9 +5657,9 @@ break
 case 'upgrade': {
   if (!text) return m.reply(`Ada 2 cara upgrade user:
 
-*Creator / Owner*
-1. ${prefix + command} (${global.settings.roles.role2}/${global.settings.roles.role3}) lalu reply ke chat target
-2. ${prefix + command} (${global.settings.roles.role2}/${global.settings.roles.role3}) 62852xxxx
+*Creator / Owner (Bebas atur role)*
+1. ${prefix + command} (${global.settings.roles.role1}/${global.settings.roles.role2}/${global.settings.roles.role3}) lalu reply ke chat target
+2. ${prefix + command} (${global.settings.roles.role1}/${global.settings.roles.role2}/${global.settings.roles.role3}) 62852xxxx
 
 *User biasa via QRIS*
 1. ${prefix + command} ${global.settings.roles.role2}
@@ -5673,7 +5681,11 @@ ${prefix + command} ${global.settings.roles.role3}`);
   let hargaUpgrade = 0
   let namaRole = ''
 
-  if (roleInput.toLowerCase() === global.settings.roles.role2.toLowerCase()) {
+  if (roleInput.toLowerCase() === global.settings.roles.role1.toLowerCase()) {
+    roleBaru = "1"
+    namaRole = global.settings.roles.role1
+    hargaUpgrade = 0 // Bronze gratis / default
+  } else if (roleInput.toLowerCase() === global.settings.roles.role2.toLowerCase()) {
     roleBaru = "2"
     namaRole = global.settings.roles.role2
     hargaUpgrade = Number(global.settings.roles.pricesrole2 || 0)
@@ -5683,6 +5695,7 @@ ${prefix + command} ${global.settings.roles.role3}`);
     hargaUpgrade = Number(global.settings.roles.pricesrole3 || 0)
   } else {
     return m.reply(`Role hanya bisa:
+- ${global.settings.roles.role1}
 - ${global.settings.roles.role2}
 - ${global.settings.roles.role3}`)
   }
@@ -5714,7 +5727,7 @@ ${prefix + command} ${namaRole} 6285261255548`);
     fs.writeFileSync('./project/database/dataBuyerDigi.json', JSON.stringify(users, null, 2))
 
     return lenwy.sendMessage(m.chat, {
-      text: `✅ Pengguna @${target.split("@")[0]} berhasil diupgrade ke ${namaRole}`,
+      text: `✅ Pengguna @${target.split("@")[0]} berhasil diubah ke role ${namaRole}`,
       mentions: [target]
     }, { quoted: m })
   }
@@ -5727,6 +5740,10 @@ ${prefix + command} ${namaRole} 6285261255548`);
   if (userIndex === -1) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`)
   const roleSekarang = String(users[userIndex].role || "1")
   if (roleSekarang === roleBaru) return m.reply(`Role kamu sudah ${namaRole}`)
+
+  if (roleBaru === "1") {
+    return m.reply(`❌ Kamu tidak bisa membuat pesanan untuk ${global.settings.roles.role1} karena itu adalah role dasar.`)
+  }
 
   let transactions = []
   if (fs.existsSync('./project/database/processTopup.json')) {
