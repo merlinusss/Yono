@@ -5770,24 +5770,6 @@ Ketik N untuk membatalkan transaksi sebelumnya.`)
   const getImage = await axios.get(qrUrl, { responseType: 'arraybuffer' })
   const qrBuffer = Buffer.from(getImage.data, 'binary')
 
-  const upgradeData = {
-    id: m.sender,
-    item: `upgrade-${namaRole.toLowerCase()}`,
-    tujuan: m.sender.split('@')[0],
-    nama: `UPGRADE ${namaRole.toUpperCase()}`,
-    status: 'pending',
-    dari: 'upgrade',
-    time: time2,
-    harga: hargaUpgrade,
-    roleTujuan: roleBaru,
-    roleName: namaRole,
-    transactionId: transactionId,
-    username: pushname || '-'
-  }
-
-  transactions.push(upgradeData)
-  fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
-
   const caption = `*UPGRADE ${namaRole.toUpperCase()}*
 > User: @${m.sender.split('@')[0]}
 > Upgrade ke: ${namaRole}
@@ -5802,6 +5784,25 @@ Ketik N untuk membatalkan.`
     { image: qrBuffer, caption, mentions: [m.sender] },
     { quoted: m }
   )
+
+  const upgradeData = {
+    id: m.sender,
+    item: `upgrade-${namaRole.toLowerCase()}`,
+    tujuan: m.sender.split('@')[0],
+    nama: `UPGRADE ${namaRole.toUpperCase()}`,
+    status: 'pending',
+    dari: 'upgrade',
+    time: time2,
+    harga: hargaUpgrade,
+    roleTujuan: roleBaru,
+    roleName: namaRole,
+    transactionId: transactionId,
+    username: pushname || '-',
+    key
+  }
+
+  transactions.push(upgradeData)
+  fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
 
   let paid = false
   let attempt = 0
@@ -5983,22 +5984,6 @@ Ketik N untuk membatalkan transaksi sebelumnya.`)
   const getImage = await axios.get(qrUrl, { responseType: 'arraybuffer' })
   const qrBuffer = Buffer.from(getImage.data, 'binary')
 
-  const depositData = {
-    id: m.sender,
-    item: 'deposit',
-    tujuan: m.sender.split('@')[0],
-    nama: 'DEPOSIT QRIS',
-    status: 'pending',
-    dari: 'deposit',
-    time: time2,
-    harga: nominal,
-    transactionId: transactionId,
-    username: pushname || '-'
-  }
-
-  transactions.push(depositData)
-  fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
-
   const caption = `*DEPOSIT QRIS*
 > User: @${m.sender.split('@')[0]}
 > Nominal: ${formatSaldo(nominal)}
@@ -6012,6 +5997,23 @@ Ketik N untuk membatalkan.`
     { image: qrBuffer, caption, mentions: [m.sender] },
     { quoted: m }
   )
+
+  const depositData = {
+    id: m.sender,
+    item: 'deposit',
+    tujuan: m.sender.split('@')[0],
+    nama: 'DEPOSIT QRIS',
+    status: 'pending',
+    dari: 'deposit',
+    time: time2,
+    harga: nominal,
+    transactionId: transactionId,
+    username: pushname || '-',
+    key
+  }
+
+  transactions.push(depositData)
+  fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
 
   let paid = false
   let attempt = 0
@@ -6200,24 +6202,6 @@ QRIS = Bayar pakai QRIS`);
     refIds.push(`${global.ownername.toUpperCase()}${random5Digits.toUpperCase()}`);
   }
 
-  const transaction = {
-    id: m.sender,
-    ref_ids: refIds,
-    qty: qty,
-    item: buyerSkuCode,
-    tujuan: customerNo,
-    nama: result.data[0].product_name,
-    status: 'pending',
-    dari: 'digiflazz',
-    time: time2,
-    harga_satuan: adjustedPrice,
-    harga: totalHarga,
-    username: userName
-  };
-
-  transactions.push(transaction);
-  fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2));
-
   const teksnya = `‼ KONFIRMASI @${m.sender.split("@")[0]}
 > Nama Produk: ${transaction.nama}
 > Kode Produk: ${buyerSkuCode}
@@ -6236,6 +6220,25 @@ QRIS = Bayar pakai QRIS`;
     { text: teksnya, mentions: [m.sender] },
     { quoted: m }
   );
+
+  const transaction = {
+    id: m.sender,
+    ref_ids: refIds,
+    qty: qty,
+    item: buyerSkuCode,
+    tujuan: customerNo,
+    nama: result.data[0].product_name,
+    status: 'pending',
+    dari: 'digiflazz',
+    time: time2,
+    harga_satuan: adjustedPrice,
+    harga: totalHarga,
+    username: userName,
+    key
+  };
+
+  transactions.push(transaction);
+  fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2));
 
   setTimeout(async () => {
     let transactions = [];
@@ -6482,7 +6485,13 @@ case 'n': {
   const trx = transactions[transactionIndex]
   transactions.splice(transactionIndex, 1)
   fs.writeFileSync('./project/database/processTopup.json', JSON.stringify(transactions, null, 2))
-
+  if (trx.key) {
+    try {
+      await lenwy.sendMessage(m.chat, { delete: trx.key })
+    } catch (error) {
+      console.log('Gagal menghapus pesan QR:', error)
+    }
+  }
   if (trx.dari === 'deposit') {
     return m.reply(`❌ Deposit dibatalkan
 > Nominal: ${formatSaldo(trx.harga)}`)

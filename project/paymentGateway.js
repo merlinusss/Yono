@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 
 async function generateQris(amount, packageId, expiredInMinutes) {
   try {
-    const response = await fetch('https://cashify.my.id/api/generate/qris', {
+    const response = await fetch('https://api.casaku.id/api/generate/qris', {
       method: 'POST',
       headers: {
         'x-license-key': global.licenseKeycash,
@@ -30,7 +30,7 @@ async function generateQris(amount, packageId, expiredInMinutes) {
 
 async function checkQrisStatus(transactionId) {
   try {
-    const response = await fetch('https://cashify.my.id/api/generate/check-status', {
+    const response = await fetch('https://api.casaku.id/api/generate/check-status', {
       method: 'POST',
       headers: {
         'x-license-key': global.licenseKeycash,
