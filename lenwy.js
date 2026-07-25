@@ -5630,7 +5630,7 @@ case 'detail': {
       categories[category].add(displayName);
     });
 
-`٠࣪⭑──α lovely reminder that we go through phases, but we are still ωнσℓє 
+let teksnyee = `٠࣪⭑──α lovely reminder that we go through phases, but we are still ωнσℓє 
    .     ˚     *     ✦ .˖ִ ࣪ be like the moon, 
 inspire people even when you’re far from full
        · · ──── ·☽𖤓☾· ──── · ·

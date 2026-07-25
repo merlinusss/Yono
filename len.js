@@ -1,10 +1,10 @@
 const fs = require('fs')
 const chalk = require('chalk')
 
-global.owner = ['6285167755578']
 global.developer = ['6285261255548']
-global.ownername = 'Merlinus'
 global.developername = 'Merlinus'
+global.owner = ['6285167755578']
+global.ownername = 'Merlinus'
 global.botname = "Yono"
 global.emoji = '༗'
 global.packname = "༗"
