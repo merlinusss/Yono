@@ -736,10 +736,6 @@ if (m.isGroup) {
     }
 }
 
-if (m.msg?.contextInfo?.mentionedJid?.some(jid => global.owner.includes(jid.replace(/@s\.whatsapp\.net$/, '')))) {
-  if (fromMe) return
-  return m.reply(mess.tagOwner);
-}
 
 switch (command) {
 case 'menu': {
