@@ -5684,7 +5684,7 @@ ${prefix + command} ${global.settings.roles.role3}`);
   if (roleInput.toLowerCase() === global.settings.roles.role1.toLowerCase()) {
     roleBaru = "1"
     namaRole = global.settings.roles.role1
-    hargaUpgrade = 0 // Bronze gratis / default
+    hargaUpgrade = 0
   } else if (roleInput.toLowerCase() === global.settings.roles.role2.toLowerCase()) {
     roleBaru = "2"
     namaRole = global.settings.roles.role2
@@ -5693,6 +5693,10 @@ ${prefix + command} ${global.settings.roles.role3}`);
     roleBaru = "3"
     namaRole = global.settings.roles.role3
     hargaUpgrade = Number(global.settings.roles.pricesrole3 || 0)
+  }  else if (roleInput.toLowerCase() === global.settings.roles.role4.toLowerCase()) {
+    roleBaru = "4"
+    namaRole = global.settings.roles.role4
+    hargaUpgrade = 0
   } else {
     return m.reply(`Role hanya bisa:
 - ${global.settings.roles.role1}
@@ -5743,6 +5747,10 @@ ${prefix + command} ${namaRole} 6285261255548`);
 
   if (roleBaru === "1") {
     return m.reply(`❌ Kamu tidak bisa membuat pesanan untuk ${global.settings.roles.role1} karena itu adalah role dasar.`)
+  }
+
+  if (roleBaru === "4") {
+    return m.reply(`❌ Kamu tidak bisa upgrade ke role ${namaRole} karena ini khusus Owner.`)
   }
 
   let transactions = []
@@ -5822,7 +5830,7 @@ Ketik N untuk membatalkan.`
     )
     if (upgradeIndex === -1) {
       paid = true
-      break
+      continue
     }
     if (attempt >= maxAttempts) {
       latestTransactions.splice(upgradeIndex, 1)
@@ -5975,7 +5983,7 @@ Ketik N untuk membatalkan.`)
 Ketik N untuk membatalkan transaksi sebelumnya.`)
   }
 
-  const qris = await generateQris(nominal, config.qrisPackage, 5)
+  const qris = await generateQris(nominal, config.qrisPackage, 7)
   if (qris.status !== 200) return m.reply(`Error saat generate QRIS\n${qris.message}`)
 
   const transactionId = qris.data.transactionId
@@ -6017,7 +6025,7 @@ Ketik N untuk membatalkan.`
 
   let paid = false
   let attempt = 0
-  const maxAttempts = 18
+  const maxAttempts = 28
 
   while (!paid) {
     attempt++
@@ -6036,7 +6044,7 @@ Ketik N untuk membatalkan.`
 
     if (depositIndex === -1) {
       paid = true
-      break
+      continue
     }
 
     if (attempt >= maxAttempts) {
@@ -6050,7 +6058,8 @@ Ketik N untuk membatalkan.`
 
     try {
       const res = await checkQrisStatus(transactionId)
-
+      console.log(`Attempt: ${attempt} - ${maxAttempts}`)
+      console.log(res)
       if (res.status === 200 && res.data.status === 'paid') {
         paid = true
 
