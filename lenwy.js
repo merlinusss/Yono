@@ -5561,7 +5561,7 @@ case 'detail': {
       let brand = product.brand.toLowerCase();
       let type = product.type?.toLowerCase() || 'umum';
       let fullTypeMatch = type !== 'umum' ? `${brand} ${type}` : brand;
-      return input.includes(fullTypeMatch);
+      return fullTypeMatch === input;
     });
 
     if (filteredProducts.length > 0) {
@@ -5571,7 +5571,13 @@ case 'detail': {
       let typeName = (filteredProducts[0].type && filteredProducts[0].type.toUpperCase() !== 'UMUM') ? ' ' + filteredProducts[0].type.toUpperCase() : '';
       let productTitle = brandName + typeName;
 
-      let header = `╭─── ☪︎ ִ ֶ֢࣪⋆ ───────────\n│ ✦ ݁˖ *${productTitle}*\n│ ✦ ݁˖ ᴀᴠᴀɪʟᴀʙʟᴇ ᴘʀᴏᴅᴜᴄᴛs ⋆˙⟡\n╰─────────────── ☪︎ ִ ֶ֢࣪⋆\n\n`;
+      let header = `⠀⠀⠀⢸⣦⡀⠀⠀⠀⠀⢀⡄ 
+⠀⠀⠀⢸⣏⠻⣶⣤⡶⢾⡿⠁ 𝗅𝗂𝗍𝗍𝗅𝖾 𝗌𝗍𝖺𝗋𝗌 𝗐𝗂𝗍𝗁 𝖽𝗋𝖾𝖺𝗆𝗌
+⠀⠀⣀⣼⠷⠀⠀⠁⢀⣿⠃⠀╰     ⁺ִ 💫.   ╮  𝖳𝗁𝖾 𝗌𝗍𝖺𝗋𝗌 .
+⠴⣾⣯⣅⣀⠀⠀⠀⠈⢻⣦⡀ 𝖽𝗈𝗇𝗍 𝖼𝗈𝗆𝗉𝖾𝗍𝖾 𝖿𝗈𝗋
+⠀⠀⠀⠉⢻⡇⣤⣾⣿⣷⣿⣿⡄ 𝖺𝗍𝗍𝖾𝗇𝗍𝗂𝗈𝗇, 𝗍𝗁𝖾𝗒 𝗃𝗎𝗌𝗍 
+⠀⠀⠀⠀⠸⣿⡿⠏ 𝗌𝗁𝗂𝗇𝖾 𝗂𝗇 𝗍𝗁𝖾𝗂𝗋 𝗈𝗐𝗇 𝗐𝖺𝗒. !! ‹𝟹  
+⠀⠀⠀⠀⠀⠟⠁┈─────┈ 𝖼𝗁𝖾𝖼𝗄 𝗒𝗈𝗎𝗋 𝗉𝗋𝗂𝖼𝖾𝗅𝗂𝗌𝗍 ¡!\n\n`;
 
       let messages = filteredProducts.map(product => {
         let basePrice = Number(product.price || 0);
@@ -5587,15 +5593,17 @@ case 'detail': {
         let statusIcon = product.seller_product_status && product.buyer_product_status ? "✅" : "⛔";
 
         if (command === 'detail' || command === 'daftarharga') {
-          return `${statusIcon} *${product.product_name}*
-> *Kode Produk:* ${product.buyer_sku_code}
-> *Harga ${global.settings.roles.role1} :* ${formatSaldo(harga1)}
-> *Harga ${global.settings.roles.role2} :* ${formatSaldo(harga2)}
-> *Harga ${global.settings.roles.role3} :* ${formatSaldo(harga3)}`;
+          return `ㅤ╭⫍🏛 ╮${product.product_name}
+ㅤ.. 𖹭 ╯ Kode produk ⦂ ${product.buyer_sku_code}
+ㅤ╰ 𖹭..  Status ⦂ ${statusIcon}
+ㅤ.. 𖹭 ╯ Harga ${global.settings.roles.role2} ⦂ ${formatSaldo(harga2)}
+ㅤ╰ 𖹭..  Harga ${global.settings.roles.role1} ⦂ ${formatSaldo(harga1)}
+ㅤ.. 𖹭 ╯ Harga ${global.settings.roles.role3} ⦂ ${formatSaldo(harga3)}`;
         } else {
-          return `${statusIcon} *${product.product_name}*
-> *Kode Produk:* ${product.buyer_sku_code}
-> *Harga:* ${formatSaldo(adjustedPrice)}`;
+          return `ㅤ╭⫍🏛 ╮${product.product_name}
+ㅤ.. 𖹭 ╯ Kode produk ⦂ ${product.buyer_sku_code}
+ㅤ╰ 𖹭..  Status ⦂ ${statusIcon}
+ㅤ.. 𖹭 ╯ Harga ⦂ ${formatSaldo(adjustedPrice)}`;
         }
       }).join('\n\n');
 
@@ -5626,22 +5634,26 @@ case 'detail': {
       categories[category].add(displayName);
     });
 
-let teksnyee = `٠࣪⭑──α lovely reminder that we go through phases, but we are still ωнσℓє 
-   .     ˚     *     ✦ .˖ִ ࣪ be like the moon, 
-inspire people even when you’re far from full
-       · · ──── ·☽𖤓☾· ──── · ·
-╭─── ☾𝔞𝔱𝔞𝔩𝔬𝔤𝔲𝔢 𝓸𝔣 𝓣𝔬𝔭-𝔲𝔭 ───────`;
+let teksnyee = `.  ׅ  ⢀⣤⣤             
+ ⢀⣾⠛⣿⠁  𝗉𝖾𝖺𝖼𝖾   𝗈𝖿    𝗁𝖾𝖺𝗏𝖾𝗇;  🌙    
+ ⣾⠇  ⣿⡀    ꣑୧  ּ ִֶָ   𝖻𝖾 𝗅𝗂𝗄𝖾 𝗍𝗁𝖾 𝗆𝗈𝗈𝗇       
+ ⣿⡄   ⠘⢷⣤⣀⣀⣀⣠⣦  ┈──────┈     
+ ⠘⢿⣄    ⠉⠉⠉⣩⡿⠃ 𝗂𝗇𝗌𝗉𝗂𝗋𝗂𝗇𝗀  𝗉𝖾𝗈𝗉𝗅𝖾  𝖾𝗏𝖾𝗇
+    ⠙⠻⠷⠶⠶⠶⠟  𝗐𝗁𝖾𝗇 𝗒𝗈𝗎 𝖺𝗋𝖾 𝗌𝗈 𝖿𝖺𝗋 ±\n`;
     Object.keys(categories).sort().forEach(category => {
-      teksnyee += `\n││.✦ ݁˖ *\`${category}\`*`;
+      teksnyee += `\n ㅤ ㅤ ┈─────┈  ${category}
+ ㅤ ㅤ╰     ⁺ִ 🏛.    ╮`;
       Array.from(categories[category]).sort().forEach(displayName => {
         let alias = Object.keys(aliasMap).find(key => aliasMap[key] === displayName.toLowerCase());
-        teksnyee += `\n│ ❏ ${displayName.toUpperCase()} ${alias ? `(${alias.toUpperCase()})` : ''}`;
+        let textContent = alias ? alias.toLowerCase() : displayName.toLowerCase();
+        teksnyee += `\n ㅤ ㅤ╎ 𑣿 ⤾ ׂ ${textContent}`;
       });
-      teksnyee += `\n│`; 
+      teksnyee += `\nㅤㅤㅤㅤ• ──────── ╯\n`;
     });
 
-    teksnyee += `\n       · · ──── ·☽𖤓☾· ──── · ·
-╰─────────────── ☪︎ ִ ֶ֢࣪⋆`;
+    teksnyee += `\n\nㅤ    𝖼⃘𐑋±  𝟨𝟨'𝗌   𝗌𝗂𝗅𝖾𝗇𝖼𝖾   🌙.   𝗅𝗂𝗀𝗁𝗍 !
+ㅤ        🏛   𝗇𝗈𝗍𝖾𝗌   ¿?   𝗅𝗂𝗍𝖾𝗋𝖺𝖼𝗒  ¡!
+ㅤ   ⓘ.  𝗉𝗈𝗐𝖾𝗋𝖾𝖽 𝖻𝗒 𝗒𝗈𝗎𝗋 𝖻𝗈𝗍`;
 
     return lenwy.sendMessage(m.chat, { text: teksnyee }, { quoted: m });
   }
@@ -6157,14 +6169,16 @@ case 'order': {
 
   const basePrice = Number(result.data[0].price);
   let adjustedPrice = basePrice;
-
-  if (dataUser.role === global.settings.roles.role1) {
+  let userRole = dataUser.role == "1" ? global.settings.roles.role1 :
+    dataUser.role == "2" ? global.settings.roles.role2 :
+    dataUser.role == "3" ? global.settings.roles.role3 : global.settings.roles.role4;
+  if (userRole === global.settings.roles.role1) {
     adjustedPrice = Math.round(basePrice * (1 + projectconfig.profit1Topup / 100));
-  } else if (dataUser.role === global.settings.roles.role2) {
+  } else if (userRole === global.settings.roles.role2) {
     adjustedPrice = Math.round(basePrice * (1 + projectconfig.profit2Topup / 100));
-  } else if (dataUser.role === global.settings.roles.role3) {
+  } else if (userRole === global.settings.roles.role3) {
     adjustedPrice = Math.round(basePrice * (1 + projectconfig.profit3Topup / 100));
-  } else if (dataUser.role === global.settings.roles.role4) {
+  } else if (userRole === global.settings.roles.role4) {
     adjustedPrice = basePrice;
   }
 
@@ -6208,7 +6222,7 @@ QRIS = Bayar pakai QRIS`);
   }
 
   const teksnya = `‼ KONFIRMASI @${m.sender.split("@")[0]}
-> Nama Produk: ${transaction.nama}
+> Nama Produk: ${result.data[0].product_name}
 > Kode Produk: ${buyerSkuCode}
 > Id: ${customerNo}
 > Nickname: ${userName}
@@ -6521,11 +6535,14 @@ case 'saldo': {
   let filePathdataBuyer = JSON.parse(fs.readFileSync('./project/database/dataBuyerDigi.json', 'utf8'));
   let dataUser = filePathdataBuyer.find(obj => obj.id === m.sender);
   if (!dataUser) return m.reply(`Ketik ${prefix}daftar terlebih dahulu`)
+  let userRole = dataUser.role == "1" ? global.settings.roles.role1 :
+    dataUser.role == "2" ? global.settings.roles.role2 :
+    dataUser.role == "3" ? global.settings.roles.role3 : global.settings.roles.role4;
 
   m.reply(`[ Data Anda ]
 
 > Nama: ${pushname}
-> Role: ${dataUser.role}
+> Role: ${userRole}
 > Saldo: ${formatSaldo(dataUser.saldo)}`)
 }
 break
