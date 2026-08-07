@@ -2054,8 +2054,8 @@ case 'getcase': {
         throw new Error(`Case '${text}' tidak ditemukan.`)
     }
 
-    const caseContent = caseSplit[1].split("break")[0]
-    m.reply("case " + `'${text}'` + caseContent + "break")
+    const caseContent = caseSplit[1].split("br"+"eak")[0]
+    m.reply("case " + `'${text}'` + caseContent + "br"+"eak")
   } catch (error) {
     m.reply(`${error.message}`)
   }
@@ -2065,9 +2065,9 @@ break
 case 'addcase': {
   if (!isCreator) return m.reply(mess.owner)
   if (!q) return m.reply(`Masukan input`)
-  if (!q.includes("|||")) return m.reply(`❌ Format salah!\n\nGunakan:\n.addcase <caseTarget>|||<kodeCaseBaru>\n\nContoh:\n.addcase bot1|case 'bot2': {\n  m.reply(\`hii\`)\n}\nbreak`)
+  if (!q.includes("|")) return m.reply(`❌ Format salah!\n\nGunakan:\n.addcase <caseTarget>|<kodeCaseBaru>`)
 
-  const [targetCase, newCaseCode] = q.split("|||")
+  const [targetCase, newCaseCode] = q.split("|")
   const filePath = "./lenwy.js"
   let fileContent = fs.readFileSync(filePath, "utf-8")
 
@@ -2077,11 +2077,11 @@ case 'addcase': {
 
   const startIndex = match.index
 
-  const closingPattern = /}\s*\n\s*break/
+  const closingPattern = /}\s*\n\s*br + eak/
   const afterCase = fileContent.slice(startIndex)
   const closeMatch = afterCase.match(closingPattern)
 
-  if (!closeMatch) return m.reply(`❌ Tidak dapat menemukan akhir blok \n\n}\nbreak\n\n untuk case '${targetCase}'. Pastikan format case-nya benar.`)
+  if (!closeMatch) return m.reply(`❌ Tidak dapat menemukan akhir blok \n\n}\nbr`+`eak\n\n untuk case '${targetCase}'. Pastikan format case-nya benar.`)
 
   const insertPos = startIndex + closeMatch.index + closeMatch[0].length
 
@@ -2099,12 +2099,12 @@ case 'editcase': {
   let [caseName, ...newContentArr] = text.split('|')
   caseName = caseName.trim()
   let newContent = newContentArr.join('|').trim()
-  if (!caseName || !newContent) return m.reply(`Contoh:\n\n${prefix + command} hai|case 'hai':\n{m.reply('Hai juga')\n}\nbreak`)
+  if (!caseName || !newContent) return m.reply(`Yang lengkap`)
   const filePath = './lenwy.js';
   try {
       if (!fs.existsSync(filePath)) return m.reply(`File bot tidak ditemukan.`)
       let fileContent = fs.readFileSync(filePath, 'utf-8')
-      const regex = new RegExp(`case ['"]${caseName}['"]: {([\\s\\S]*?)}\\s*break`, 'g')
+      const regex = new RegExp(`case ['"]${caseName}['"]: {([\\s\\S]*?)}\\s*br`+`eak`, 'g')
       if (!regex.test(fileContent)) return m.reply(`Case *${caseName}* tidak ditemukan.`)
       const updatedFileContent = fileContent.replace(regex, `${newContent}`)
       fs.writeFileSync(filePath, updatedFileContent, 'utf-8')
@@ -2124,7 +2124,7 @@ let filePath = "./lenwy.js"
 fs.readFile(filePath, "utf8", (err, data) => {
     if (err) console.error("Kesalahan untuk menambahkan case:", err)
 
-    const regex = new RegExp(`case\\s*['"]${q}['"]\\s*:.*?break?`, "gs")
+    const regex = new RegExp(`case\\s*['"]${q}['"]\\s*:.*?br`+`eak?`, "gs")
     const modifiedData = data.replace(regex, "")
     if (modifiedData === data) {
       console.log(`Case '${q}' tidak ditemukan.`)
@@ -2158,7 +2158,7 @@ if (!caseName) return m.reply(`Masukkan nama case yang ingin dicek. Contoh: ${pr
 const cekCase = async (caseName) => {
 try {
 const fileContent = await fs.promises.readFile("./lenwy.js", "utf-8")
-const caseRegex = new RegExp(`case '${caseName}'[\\s\\S]*?break`, 'g')
+const caseRegex = new RegExp(`case '${caseName}'[\\s\\S]*?br`+`eak`, 'g')
 const match = fileContent.match(caseRegex)
 if (!match) {
 return { found: false };
@@ -2494,6 +2494,35 @@ case 'dellistsampah': {
   } else {
       m.reply(`✨ *Tidak ada list sampah yang ditemukan!*`)
   }
+}
+break
+
+case 'linkgc': {
+    if (!m.isGroup) return m.reply(mess.group)
+    if (!isBotAdmins) return m.reply(mess.botAdmin)
+    
+    try {
+        const groupMetadata = await lenwy.groupMetadata(from)
+        let response = await lenwy.groupInviteCode(from)
+        const message = `𝗌𝗁𝗈𝗈𝗍 𝖿𝗈𝗋 𝗍𝗁𝖾 𝗆𝗈𝗈𝗇; 🌙    
+ ꣑୧  ּ ִֶָ  𝖾𝗏𝖾𝗇 𝗂𝖿 𝗒𝗈𝗎 𝗆𝗂𝗌𝗌         
+ ┈─𝗒𝗈𝗎'𝗅𝗅 𝗅𝖺𝗇𝖽 𝖺𝗆𝗈𝗇𝗀 𝗍𝗁𝖾 𝗌𝗍𝖺𝗋𝗌 ✨💫
+
+ ┈─────┈  𝗁𝖾𝗋𝖾'𝗌 𝗎𝗋 𝗅𝗂𝗇𝗄 𝗀𝗋𝗈𝗎𝗉
+ ╰  ⁺ִ 🏛.  ${groupMetadata.subject}
+𝗅𝗂𝗇𝗄 𝗀𝗋𝗈𝗎𝗉⦂ https://chat.whatsapp.com/${response}
+
+𝗂𝖽 𝗀𝗋𝗈𝗎𝗉⦂ ${from}
+
+
+ 𝖼⃘𐑋 ±  𝟨𝟨'𝗌   𝗌𝗂𝗅𝖾𝗇𝖼𝖾   🌙.   𝗅𝗂𝗀𝗁𝗍 !
+    🏛   𝗇𝗈𝗍𝖾𝗌   ¿?   𝗅𝗂𝗍𝖾𝗋𝖺𝖼𝗒  ¡!
+ ⓘ.  𝖻𝖾 𝖼𝖺𝗋𝖾𝖿𝗎𝗅 𝗍𝗈 𝗌𝗁𝖺𝗋𝖾 𝗍𝗁𝖾 𝗅𝗂𝗇𝗄`;
+        lenwy.sendText(from, message, m, { detectLink: true })
+    } catch (error) {
+        console.error('Error while fetching group info:', error)
+        m.reply('Terjadi kesalahan saat mengambil informasi grup.')
+    }
 }
 break
 
