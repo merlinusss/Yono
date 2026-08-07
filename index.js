@@ -22,6 +22,7 @@ const { smsg, isUrl, generateMessageTag, getBuffer, getSizeMedia, fetchJson, awa
 const NodeCache = require('node-cache');
 const qrcode = require('qrcode-terminal');
 const toMs = require('ms');
+const util = require('util');
 const question = (text) => {
   const rl = readline.createInterface({
     input: process.stdin,
@@ -117,6 +118,19 @@ console.log(`  ${chalk.magenta('❯')} ${chalk.white.bold('Memory')}     : ${cha
 console.log(border);
 console.log(chalk.gray.italic('  "Good luck, have fun coding!"\n'));
 
+const originalConsoleLog = console.log;
+const originalConsoleInfo = console.info;
+
+console.log = function (...args) {
+  const msg = util.format(...args);
+  if (msg.includes('Removing old closed session')) return; 
+  originalConsoleLog.apply(console, args);
+};
+console.info = function (...args) {
+  const msg = util.format(...args);
+  if (msg.includes('Removing old closed session')) return;
+  originalConsoleInfo.apply(console, args);
+};
 async function connectToWhatsApp() {
   const msgRetryCounterCache = new NodeCache();
   const groupCache = new NodeCache();
