@@ -74,13 +74,11 @@ const pathDigi = './database/daftarProdukDigiflazz.json'
 
     try {
         if (!fs.existsSync(filePath) || (Date.now() - fs.statSync(filePath).mtimeMs > batasWaktuMs)) {
-            console.log(`[Digiflazz] Waktunya fetch data pricelist...`);
             const result = await cekLayananDigiflazz();
             
             if (result) {
                 fs.writeFileSync(filePath, JSON.stringify(result, null, 2), 'utf-8');
                 const time1 = moment.tz('Asia/Jakarta').format('HH:mm:ss');
-                console.log(`[Digiflazz] Berhasil! File diperbarui pada ${time1}`);
             } else {
                 console.log(`[Digiflazz] Fetch gagal/limit. Menunda fetch berikutnya selama 6 menit.`);
                 
