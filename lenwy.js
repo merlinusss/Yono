@@ -2504,8 +2504,8 @@ case 'linkgc': {
     try {
         const groupMetadata = await lenwy.groupMetadata(from)
         let response = await lenwy.groupInviteCode(from)
-        const message = `𝗌𝗁𝗈𝗈𝗍 𝖿𝗈𝗋 𝗍𝗁𝖾 𝗆𝗈𝗈𝗇; 🌙    
- ꣑୧  ּ ִֶָ  𝖾𝗏𝖾𝗇 𝗂𝖿 𝗒𝗈𝗎 𝗆𝗂𝗌𝗌         
+        const message = `ㅤㅤㅤㅤ𝗌𝗁𝗈𝗈𝗍 𝖿𝗈𝗋 𝗍𝗁𝖾 𝗆𝗈𝗈𝗇; 🌙    
+ ꣑୧  ּ ִֶָ  𝖾𝗏𝖾𝗇 𝗂𝖿 𝗒𝗈𝗎 𝗆𝗂𝗌𝗌        
  ┈─𝗒𝗈𝗎'𝗅𝗅 𝗅𝖺𝗇𝖽 𝖺𝗆𝗈𝗇𝗀 𝗍𝗁𝖾 𝗌𝗍𝖺𝗋𝗌 ✨💫
 
  ┈─────┈  𝗁𝖾𝗋𝖾'𝗌 𝗎𝗋 𝗅𝗂𝗇𝗄 𝗀𝗋𝗈𝗎𝗉
