@@ -4871,7 +4871,7 @@ case 'tovid': {
 }
 break
 
-case 'chord':
+case 'chord': {
   if (!text) return m.reply('masukkan judul lagunya!')
   try {
     let chord = await (await fetch('https://endpoint.web.id/search/chord?key=315602&query=' + text)).json()
@@ -4889,39 +4889,59 @@ case 'chord':
   } catch (e) {
     m.reply('terjadi kesalahan: ' + e)
   }
+}
 break
 
 case 'wm': {
   if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
-  if (!quoted) return m.reply(`⚠️ Balas sticker dengan caption ${prefix + command}`)
-  if (!text) return m.reply(`Contoh: ${prefix + command} teks_packname`)
+  if (!quoted) return m.reply(`⚠️ Balas media dengan caption ${prefix + command} packname|author`)
+
+  let isMedia = /imageMessage|videoMessage|stickerMessage/.test(quoted.mtype);
+  if (!isMedia) return m.reply('❌ Hanya bisa reply Gambar, Video, atau Sticker');
 
   try {
-    if (quoted.mtype !== 'stickerMessage') return m.reply(`⚠️ Fitur ini khusus untuk reply ke *sticker*!`);
-    const webpBuffer = await quoted.download()
-    if (!webpBuffer || webpBuffer.length === 0) return m.reply('⚠️ Gagal download sticker!');
+    let teks = text ? text.split('|') : [];
+    let packname = teks[0] || '';
+    let author = teks[1] || 'ㅤ';
+    let buffer = await quoted.download();
+    if (!buffer) return m.reply('⚠️ Gagal download media!');
+    LenwyLD()
 
-    const img = new Image()
-    await img.load(webpBuffer)
-
-    const json = {
-      "sticker-pack-id": "com.snowcorp.stickerly.android.stickercontentprovider b5e7275f-f1de-4137-961f-57becfad34f2",
-      "sticker-pack-name": text,
-      "sticker-pack-publisher": '',
-      "emojis": ["🤖"] 
+    if (quoted.mtype === 'videoMessage') {
+      let videoMsg = quoted.message.videoMessage || m.message.videoMessage;
+      if (videoMsg && videoMsg.seconds > 10) {
+        return m.reply('❌ Durasi video maksimal 10 detik!');
+      }
+      let result = await writeExifVid(buffer, { packname, author });
+      await lenwy.sendMessage(from, { sticker: { url: result } }, { quoted: m });
+    } else if (quoted.mtype === 'imageMessage') {
+      let result = await writeExifImg(buffer, { packname, author });
+      await lenwy.sendMessage(from, { sticker: { url: result } }, { quoted: m });
+    } else if (quoted.mtype === 'stickerMessage') {
+      const webpmux = require('node-webpmux');
+      const img = new webpmux.Image();
+      await img.load(buffer);
+      
+      const json = {
+        "sticker-pack-id": "com.snowcorp.stickerly.android.stickercontentprovider b5e7275f-f1de-4137-961f-57becfad34f2",
+        "sticker-pack-name": packname,
+        "sticker-pack-publisher": author,
+        "emojis": ["🤖"] 
+      }
+      const exifAttr = Buffer.from([0x49, 0x49, 0x2A, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x41, 0x57, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16, 0x00, 0x00, 0x00])
+      const jsonBuf = Buffer.from(JSON.stringify(json), 'utf-8')
+      const padding = Buffer.alloc(jsonBuf.length % 2 === 1 ? 1 : 0)
+      const exif = Buffer.concat([exifAttr, jsonBuf, padding])
+      exif.writeUInt32LE(jsonBuf.length, 14)
+      
+      img.exif = exif
+      const finalStickerBuffer = await img.save(null)
+      
+      await lenwy.sendMessage(from, { sticker: finalStickerBuffer }, { quoted: m });
     }
-
-    const exifAttr = Buffer.from([0x49, 0x49, 0x2A, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x41, 0x57, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16, 0x00, 0x00, 0x00])
-    const jsonBuf = Buffer.from(JSON.stringify(json), 'utf-8')
-    const padding = Buffer.alloc(jsonBuf.length % 2 === 1 ? 1 : 0)
-    const exif = Buffer.concat([exifAttr, jsonBuf, padding])
-    exif.writeUInt32LE(jsonBuf.length, 14)
-    img.exif = exif
-    const finalStickerBuffer = await img.save(null)
-    await lenwy.sendMessage(from, { sticker: finalStickerBuffer }, { quoted: m })
   } catch (err) {
-    console.error('Error detail:', err)
-    m.reply(`⚠️ Error! ${err.message}`)
+    console.error('Error detail:', err);
+    m.reply(`⚠️ Error: ${err.message}`);
   }
 }
 break
