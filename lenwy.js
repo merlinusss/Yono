@@ -3392,14 +3392,11 @@ case 'play': {
  if (isBan) return m.reply(mess.ban);
  if (!text) return m.reply(`*Mau Dengerin Lagu Apa?*`);
  LenwyLD();
-
  try {
- let searchnya = await (await fetch(`https://api.nexray.eu.cc/search/youtube?q=${encodeURIComponent(text)}`)).json();
- let res = searchnya.result; // Ambil semua hasil pencarian
- let audioInfo = res?.[0] || {};
- let procees = await (await fetch(`https://api.nexray.eu.cc/downloader/v1/ytmp3?url=${audioInfo.url}`)).json();
- console.log(procees)
- await lenwy.sendMessage(m.chat, { audio: { url: procees.result.url }, mimetype: 'audio/mp4' }, { quoted: m })
+ let searchnya = await (await fetch(`https://${global.api.merlinus.domain}/api/downloader/play?query=${encodeURIComponent(text)}&apikey=${global.api.merlinus.apikey}`)).json();
+ let res = searchnya.result;
+ console.log(res)
+ await lenwy.sendMessage(m.chat, { audio: { url: res.urlDownload }, mimetype: 'audio/mp4' }, { quoted: m })
  } catch (e) {
  console.log(e)
  }
