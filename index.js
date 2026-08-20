@@ -138,7 +138,7 @@ async function connectToWhatsApp() {
   let phoneNumber = global.botNumber;
 
   if (global.usePairingCode && !state.creds.registered) {
-    console.log(`Nomor bot anda: ${phoneNumber}`)
+    console.log(`  ${chalk.magenta('❯')} ${chalk.white.bold('Nomor Bot Anda')} : ${chalk.greenBright.bold(phoneNumber)}`);
     phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
   }
   const lenwy = makeWASocket({
