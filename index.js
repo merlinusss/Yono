@@ -132,16 +132,13 @@ console.info = function (...args) {
   originalConsoleInfo.apply(console, args);
 };
 async function connectToWhatsApp() {
-  const msgRetryCounterCache = new NodeCache();
-  const groupCache = new NodeCache();
-
-  const { state, saveCreds } = await useMultiFileAuthState(global.sessionName);
+  const { state, saveCreds } = await useMultiFileAuthState(global.sessionName)
   const { version, isLatest } = await fetchLatestBaileysVersion(); 
 
-  let phoneNumber = '';
+  let phoneNumber = global.botNumber;
 
   if (global.usePairingCode && !state.creds.registered) {
-    phoneNumber = await question('Masukan Nomor Yang Diawali Dengan 62 :\n');
+    console.log(`Nomor bot anda: ${phoneNumber}`)
     phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
   }
   const lenwy = makeWASocket({
@@ -171,7 +168,7 @@ async function connectToWhatsApp() {
       } catch (err) {
         console.error('Gagal mendapatkan pairing code:', err);
       }
-    }, 3000);
+    }, 500);
   }
 
   // Setting ntah ---

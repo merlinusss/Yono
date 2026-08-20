@@ -1,10 +1,11 @@
 const fs = require('fs')
 const chalk = require('chalk')
 
-global.developer = ['6285261255548']
-global.developername = 'Merlinus'
-global.owner = ['6285167755578']
+global.owner = '6285167755578'
+global.developer = '6285261255548'
+global.botNumber = '6288708519777'
 global.ownername = 'Merlinus'
+global.developername = 'Merlinus'
 global.botname = "Yono"
 global.emoji = '༗'
 global.packname = "༗"
@@ -40,10 +41,8 @@ global.api = {
   }
 }
 
-
 global.text_sewa = ''
 global.text_ppj = ''
-
 
 global.mess = {
     tagOwner: `Si ${global.ownername} gi bobo dia`,
