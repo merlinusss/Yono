@@ -164,7 +164,7 @@ async function connectToWhatsApp() {
       try {
         let code = await lenwy.requestPairingCode(phoneNumber, 'MERLINUS');
         code = code?.match(/.{1,4}/g)?.join("-") || code;
-        console.log(chalk.white.bold(` 📌 Pairing Code   : ${chalk.greenBright.bold(code)}`));
+        console.log(`${chalk.white.bold('📌 Pairing Code')}   : ${chalk.greenBright.bold(code)}`);
       } catch (err) {
         console.error('Gagal mendapatkan pairing code:', err);
       }
