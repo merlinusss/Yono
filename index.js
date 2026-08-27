@@ -154,7 +154,7 @@ async function connectToWhatsApp() {
   lenwy.ev.on("connection.update", async (update) => {
     const { connection, qr } = update;
     if (qr && !global.usePairingCode) {
-      console.log('🔗 Scan QR ini dengan WhatsApp kamu');
+      console.log(` ${chalk.white.bold('🔗 Silahkan scan QR ini')}`);
       qrcode.generate(qr, { small: true });
     }
   });
@@ -164,7 +164,7 @@ async function connectToWhatsApp() {
       try {
         let code = await lenwy.requestPairingCode(phoneNumber, 'MERLINUS');
         code = code?.match(/.{1,4}/g)?.join("-") || code;
-        console.log(`${chalk.white.bold('📌 Pairing Code')}   : ${chalk.greenBright.bold(code)}`);
+        console.log(` ${chalk.white.bold('📌 Pairing Code')}   : ${chalk.greenBright.bold(code)}`);
       } catch (err) {
         console.error('Gagal mendapatkan pairing code:', err);
       }
