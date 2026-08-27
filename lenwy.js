@@ -4288,7 +4288,7 @@ LenwyLD()
 let media = await lenwy.downloadAndSaveMediaMessage(quoted)
 let anu = await uploader60Minute(media)
 let result = (util.format(anu))
-const proses = await (await fetch(`https://${global.api.ham.domain}/tools/removebg?apikey=${global.api.ham.apikey}&url=${result}`)).json()
+const proses = await (await fetch(`https://${global.api.merlinus.domain}/api/tools/removebg?image=${result}&apikey=${global.api.merlinus.apikey}`)).json()
 console.log(proses)
 await lenwy.sendMessage(m.chat, { image: { url: proses.result.url }, caption: '🎁 *Removebg Selesai*'}, { quoted: m })
 }
