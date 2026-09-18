@@ -142,9 +142,8 @@ async function connectToWhatsApp() {
     phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
   }
   const lenwy = makeWASocket({
-    version,
+    version: [2, 3000, 1047675214],
     logger: pino({ level: "silent" }),
-    printQRInTerminal: !global.usePairingCode,
     auth: {
       creds: state.creds,
       keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "silent" })),
@@ -162,7 +161,7 @@ async function connectToWhatsApp() {
   if (global.usePairingCode && !lenwy.authState.creds.registered && phoneNumber) {
     setTimeout(async () => {
       try {
-        let code = await lenwy.requestPairingCode(phoneNumber, 'MERLINUS');
+        let code = await lenwy.requestPairingCode(phoneNumber);
         code = code?.match(/.{1,4}/g)?.join("-") || code;
         console.log(` ${chalk.white.bold('📌 Pairing Code')}   : ${chalk.greenBright.bold(code)}`);
       } catch (err) {
@@ -420,10 +419,7 @@ lenwy.ev.on('group-participants.update', async ({ id, participants, action }) =>
     }
   }
 
-  cron.schedule('0 */4 * * *', () => {
-    console.log('Memulai proses backup...');
-    startBackupProcess();
-  });
+  cron.schedule('59 23 * * *', () => { startBackupProcess()});
 
   cron.schedule('*/10 * * * *', async () => {
     let ripperList = [];
