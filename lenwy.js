@@ -314,7 +314,9 @@ if (m.isGroup && isAlreadyResponList(m.chat, String(body || '').toLowerCase(), d
     lenwy.sendMessage(m.chat, { text: sendResponList(m.chat, String(body || '').toLowerCase(), db_respon_list) }, {quoted: m})
   } else {
     try {
-      lenwy.sendMessage(m.chat, { image: await getBuffer(get_data_respon.image_url), caption: get_data_respon.response }, {quoted: m})
+      const buffer = await getBuffer(get_data_respon.image_url)
+      if (!buffer || !Buffer.isBuffer(buffer)) throw new Error("Buffer gambar tidak valid atau gagal diunduh");
+      lenwy.sendMessage(m.chat, { image: buffer, caption: get_data_respon.response }, { quoted: m })
     } catch (e) {
       m.reply(`Foto tidak tersedia silahkan chat admin untuk melakukan ${prefix}updatelist bergambar pada Key ${body}`)
       await sleep(5000)

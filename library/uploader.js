@@ -15,7 +15,7 @@ async function uploader60Minute(path) {
   form.append("deleteAfter", deleteAfter.toString()); // Menambahkan parameter deleteAfter
 
   try {
-    const response = await axios.post("https://uploader.merllerm.tech/upload", form, {
+    const response = await axios.post("https://uploader.merlapi.xyz/upload", form, {
       headers: {
         ...form.getHeaders(),
         'Authorization': 'Bearer CdnMerl',  // Menambahkan API Key di header Authorization
@@ -37,7 +37,7 @@ async function uploaderLebih(path) {
   form.append("deleteAfter", deleteAfter.toString()); // Menambahkan parameter deleteAfter
 
   try {
-    const response = await axios.post("https://uploader.merllerm.tech/upload", form, {
+    const response = await axios.post("https://uploader.merlapi.xyz/upload", form, {
       headers: {
         ...form.getHeaders(),
         'Authorization': 'Bearer CdnMerl',  // Menambahkan API Key di header Authorization

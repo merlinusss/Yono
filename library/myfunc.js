@@ -44,7 +44,7 @@ exports.getBuffer = async (url, options) => {
 		})
 		return res.data
 	} catch (err) {
-		return err
+		return null
 	}
 }
 
