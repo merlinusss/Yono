@@ -4321,34 +4321,24 @@ case 'qc': {
             '⚠ Gunakan huruf kecil'
         )
     }
-
-    const obj = {
-        type: 'quote',
-        format: 'png',
-        backgroundColor,
-        width: 512,
-        height: 768,
-        scale: 2,
-        messages: [{
-            entities: [],
-            avatar: true,
-            from: {
-                id: 1,
-                name: pushname,
-                photo: {
-                    url: await lenwy.profilePictureUrl(m.sender, 'image')
-                        .catch(() => 'https://telegra.ph/file/6880771a42bad09dd6087.jpg')
-                }
-            },
-            text: message,
-            replyMessage: {}
-        }]
-    }
-
-    const res = await axios.post('https://bot.lyo.su/quote/generate', obj)
-    const buffer = Buffer.from(res.data.result.image, 'base64')
-
-    await lenwy.sendImageAsSticker(m.chat, buffer, m, { packname: global.packname, author: global.author })
+    let ppUrl = await lenwy.profilePictureUrl(m.sender, 'image');
+    let proses = await axios.get(ppUrl, { responseType: 'arraybuffer' });
+    const mimeType = proses.headers['content-type'];
+    const base64Data = Buffer.from(proses.data, 'binary').toString('base64');
+    let base64Image = `data:${mimeType};base64,${base64Data}`;
+    const res = await axios.post(`https://${global.api.merlinus.domain}/api/tools/qc`, {
+        text: message,
+        name: pushname,
+        avatar: base64Image,
+        time: moment().tz('Asia/Jakarta').format('HH:mm'),
+        bubbleColor: backgroundColor,
+        apikey: global.api.merlinus.apikey
+    }, {
+      responseType: 'arraybuffer'
+    })
+    const buffer = Buffer.from(res.data)
+    let buffers = await writeExifImg(buffer, { packname: global.packname || "-", author: global.author || "-" });
+    await lenwy.sendMessage(m.chat, { sticker: { url: buffers } }, { quoted: m });
 }
 break
 
@@ -4629,25 +4619,25 @@ case 's': {
  if (!quoted) return m.reply(`Balas Video/Image Dengan Caption ${prefix + command}`)
  if (!/image/.test(mime) && !/video/.test(mime)) return
  if (/image/.test(mime)) {
- var stream = await downloadContentFromMessage(m.quoted? quoted : m.message.imageMessage, 'image');
- var buffer = Buffer.from([]);
- for await(const chunk of stream) {
- buffer = Buffer.concat([buffer, chunk]);
- }
- let buffers = await writeExifImg(buffer, { packname: global.packname || "-", author: global.author || "-" });
- await lenwy.sendMessage(from, { sticker: { url: buffers } }, { quoted: m });
- } else if (/video/.test(mime)) {
- var stream = await downloadContentFromMessage(m.quoted? quoted : m.message.videoMessage, 'video');
- var buffer = Buffer.from([]);
- for await(const chunk of stream) {
- buffer = Buffer.concat([buffer, chunk]);
- }
- let buffers = await writeExifVid(buffer, { packname: global.packname || "-", author: global.author || "-" });
- await lenwy.sendMessage(from, { sticker: { url: buffers } }, { quoted: m });
- } else {
- m.reply(`Balas gambar/video/sticker dengan caption ${prefix + 'sticker'} \n*(MAKSIMAL 10 DETIK!*)`);
- } 
- }
+    var stream = await downloadContentFromMessage(m.quoted? quoted : m.message.imageMessage, 'image');
+    var buffer = Buffer.from([]);
+    for await(const chunk of stream) {
+      buffer = Buffer.concat([buffer, chunk]);
+    }
+    let buffers = await writeExifImg(buffer, { packname: global.packname || "-", author: global.author || "-" });
+    await lenwy.sendMessage(from, { sticker: { url: buffers } }, { quoted: m });
+  } else if (/video/.test(mime)) {
+    var stream = await downloadContentFromMessage(m.quoted? quoted : m.message.videoMessage, 'video');
+    var buffer = Buffer.from([]);
+    for await(const chunk of stream) {
+      buffer = Buffer.concat([buffer, chunk]);
+    }
+    let buffers = await writeExifVid(buffer, { packname: global.packname || "-", author: global.author || "-" });
+    await lenwy.sendMessage(from, { sticker: { url: buffers } }, { quoted: m });
+  } else {
+   m.reply(`Balas gambar/video/sticker dengan caption ${prefix + 'sticker'} \n*(MAKSIMAL 10 DETIK!*)`);
+  } 
+}
 break
 
 case 'smeme': {
