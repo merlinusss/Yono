@@ -23,15 +23,6 @@ const NodeCache = require('node-cache');
 const qrcode = require('qrcode-terminal');
 const toMs = require('ms');
 const util = require('util');
-const question = (text) => {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-  return new Promise((resolve) => {
-    rl.question(text, resolve)
-  })
-};
 
 const harinya = moment.tz('Asia/Jakarta').format('dddd')
 const tanggalnya = moment.tz('Asia/Jakarta').format('DD')

@@ -4558,53 +4558,52 @@ ${outfitsText}`;
   }
 }
 break
-   
+
 case 'mlstalk': {
   if (!q) return m.reply(`Contoh ${prefix + command} 696964467(8770)`);
   
-  let parts = q.split("(");
-  let id = parts[0].trim();
-  let serverId = parts[1] ? parts[1].replace(")", "").trim() : "";
-
-  let nicknameUser = '-';
-  let regionUser = '-';
-  let regionFlag = '-';
-  let checkerResult = {};
+  let [id, serverId] = q.split("(").map(v => v ? v.replace(")", "").trim() : "");
+  if (!id || !serverId) return m.reply(`Masukkan id dan idzone anda`);
+  
+  let nicknameUser = '-', regionUser = '-', regionFlag = '-', topupText = "";
 
   try {
-    let resRegion = await fetch(`https://${global.api.merlinus.domain}/api/gameStalk/mlbb-region?id=${id}&zone=${serverId}&apikey=${global.api.merlinus.apikey}`);
-    let jsonRegion = await resRegion.json();
-    
-    if (jsonRegion.status && jsonRegion.result) {
-      checkerResult = jsonRegion.result;
-      nicknameUser = checkerResult.nickname || '-';
-      regionUser = checkerResult.country || '-';
-      regionFlag = checkerResult.flag || '-';
-    }
-  } catch (e) {
-    console.error('Gagal fetch checkerResult:', e);
-  }
+    const baseUrl = `https://${global.api.merlinus.domain}/api/gameStalk`;
+    const apikey = global.api.merlinus.apikey;
 
-  let topupText = "";
-  try {
-    let urlFirstTopup = await axios.get(`https://${global.api.merlinus.domain}/api/gameStalk/mlbb-infodm?id=${id}&zone=${serverId}&apikey=${global.api.merlinus.apikey}`);
-    let topupJson = urlFirstTopup?.data;
+    const [resRegion, resTopup] = await Promise.all([
+      axios.get(`${baseUrl}/mlbb-region?id=${id}&zone=${serverId}&apikey=${apikey}`),
+      axios.get(`${baseUrl}/mlbb-infodm?id=${id}&zone=${serverId}&apikey=${apikey}`)
+    ].map(p => p.catch(() => null)));
 
-    if (topupJson?.status && topupJson?.result) {
-      for (let [pkg, status] of Object.entries(topupJson.result)) {
+    const dataRegion = resRegion?.data?.result || {};
+    nicknameUser = dataRegion.nickname || '-';
+    regionUser = dataRegion.country || '-';
+    regionFlag = dataRegion.flag || '-';
+
+    const dataTopup = resTopup?.data?.result || {};
+    const dmGanda = dataTopup.dm_ganda || {};
+    const bundles = dataTopup.bundles || {};
+
+    if (Object.keys(dmGanda).length || Object.keys(bundles).length) {
+      for (let [pkg, status] of Object.entries(dmGanda)) {
         topupText += `• ${pkg} 💎: ${status}\n`;
       }
+      topupText += `\n🎁 *Bundles:*\n`;
+      for (let [pkg, status] of Object.entries(bundles)) {
+        topupText += `• ${pkg}: ${status}\n`;
+      }
     } else {
-      topupText += "-";
+      topupText = "-";
     }
   } catch (e) {
-    console.error('Gagal fetch firstTopup:', e);
-    topupText += "-";
+    console.error('Gagal fetch mlstalk:', e);
+    topupText = "-";
   }
 
   m.reply(`👤 *Username:* ${nicknameUser}
 🆔 *ID:* ${id}
-🌐 *Server ID:* ${serverId}
+🌐 *ID Zone:* ${serverId}
 📍 *Region:* ${regionUser} 
 🏳 *Bendera:* ${regionFlag}
 
