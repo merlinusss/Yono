@@ -456,89 +456,76 @@ lenwy.ev.on('group-participants.update', async ({ id, participants, action }) =>
     }
   });
 
-
-let isCheckingSewa = false; 
-const expiredCheck = async (lenwy) => {
-  if (isCheckingSewa) return; 
-  isCheckingSewa = true;
-
-  try {
-    const pathsewa = './storage/sewa.json';
-    const getJson = (file) => { try { return JSON.parse(fs.readFileSync(file, 'utf8')) } catch { return null } };
-    
-    let sewa = getJson(pathsewa) || [];
-    if (!Array.isArray(sewa)) sewa = [];
-    const authorrr = getJson('./author.json') || [];
-
-    let dataChanged = false;
-    
-    for (let i = sewa.length - 1; i >= 0; i--) {
-      let item = sewa[i];
-      if (item.isAlifetime) continue;
-
-      try {
-        if (item.expired - Date.now() <= toMs('1d') && !item.reminded1d) {
-          await lenwy.sendMessage(item.groupId, { text: `Sisa masa sewa di group ini adalah *1 hari* lagi, jika ingin perpanjang masa sewa silahkan chat admin.` });
-          if (authorrr.length > 0) await lenwy.sendContact(item.groupId, authorrr.map(x => x.split("@")[0]));
-          item.reminded1d = true;
-          dataChanged = true;
-        }
-
-        if (Date.now() >= item.expired) {
-          console.log(`Sewa expired: ${item.groupId}`);
-          
-          let metadata;
-          try {
-            metadata = await lenwy.groupMetadata(item.groupId);
-          } catch (err) {
-            let errMsg = String(err).toLowerCase();
-            if (errMsg.includes("forbidden") || errMsg.includes("404") || errMsg.includes("not-authorized")) {
-               sewa.splice(i, 1);
-               dataChanged = true;
+  let isCheckingSewa = false;
+  const expiredCheck = async (lenwy) => {
+    if (isCheckingSewa) return;
+    isCheckingSewa = true;
+    try {
+      const pathsewa = './storage/sewa.json';
+      const getJson = (file) => { try { return JSON.parse(fs.readFileSync(file, 'utf8')) } catch { return null } };
+      let sewa = getJson(pathsewa) || [];
+      if (!Array.isArray(sewa)) sewa = [];
+      const authorrr = getJson('./author.json') || [];
+      let dataChanged = false;
+      for (let i = sewa.length - 1; i >= 0; i--) {
+        let item = sewa[i];
+        if (item.isAlifetime) continue;
+        let msLeft = item.expired - Date.now();
+        try {
+          if (msLeft <= 0) {
+            console.log(`Sewa expired: ${item.groupId}`);
+            let metadata;
+            try {
+              metadata = await lenwy.groupMetadata(item.groupId);
+            } catch (err) {
+              let errMsg = String(err).toLowerCase();
+              if (errMsg.includes("forbidden") || errMsg.includes("404") || errMsg.includes("not-authorized") || errMsg.includes("item-not-found")) {
+                sewa.splice(i, 1);
+                dataChanged = true;
+              }
+              continue;
             }
-            continue; 
+            let invite = await lenwy.groupInviteCode(item.groupId).catch(() => '-');
+            let linkgc = invite !== '-' ? `https://chat.whatsapp.com/${invite}` : '-';
+            await lenwy.sendMessage(item.groupId, { text: `Masa sewa di grup ini sudah habis, bot akan keluar otomatis.\nJika ingin sewa lagi silahkan chat ke https://wa.me/${global.owner}` });
+            if (authorrr.length > 0) await lenwy.sendContact(item.groupId, authorrr.map(x => x.split("@")[0]));
+            await lenwy.sendMessage(`${global.owner}@s.whatsapp.net`, { text: `Masa sewa di grup *${metadata.subject}* sudah habis.\n\n> ID GROUP : ${item.groupId}\n> NAMA GROUP : ${metadata.subject}\n> LINK GROUP : ${linkgc}` });
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            await lenwy.groupLeave(item.groupId).catch(() => {});
+            sewa.splice(i, 1);
+            dataChanged = true;
+            continue;
           }
-
-          let invite = await lenwy.groupInviteCode(item.groupId).catch(() => '-');
-          let linkgc = invite !== '-' ? `https://chat.whatsapp.com/${invite}` : '-';
-
-          await lenwy.sendMessage(item.groupId, { text: `Masa sewa di grup ini sudah habis, bot akan keluar otomatis.\nJika ingin sewa lagi silahkan chat ke https://wa.me/${global.owner}` });
-          if (authorrr.length > 0) await lenwy.sendContact(item.groupId, authorrr.map(x => x.split("@")[0]));
-          
-          await lenwy.sendMessage(`${global.owner}@s.whatsapp.net`, { 
-              text: `Masa sewa di grup *${metadata.subject}* sudah habis.\n\n> ID GROUP : ${item.groupId}\n> NAMA GROUP : ${metadata.subject}\n> LINK GROUP : ${linkgc}` 
-          });
-          
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          await lenwy.groupLeave(item.groupId).catch(() => {}); 
-
-          sewa.splice(i, 1);
-          dataChanged = true;
-        }
-      } catch (err) {
-        let errMsg = String(err).toLowerCase();
-        if (errMsg.includes("forbidden") || errMsg.includes("item-not-found") || errMsg.includes("404")) {
-          sewa.splice(i, 1);
-          dataChanged = true;
+          if (msLeft > 0 && msLeft <= 86400000 && !item.reminded1d) {
+            let h = Math.floor(msLeft / 3600000);
+            let m = Math.floor((msLeft % 3600000) / 60000);
+            let s = Math.floor((msLeft % 60000) / 1000);
+            await lenwy.sendMessage(item.groupId, { text: `Sisa masa sewa di group ini adalah *${h} jam ${m} menit ${s} detik* lagi, jika ingin perpanjang masa sewa silahkan chat admin.` });
+            if (authorrr.length > 0) await lenwy.sendContact(item.groupId, authorrr.map(x => x.split("@")[0]));
+            item.reminded1d = true;
+            dataChanged = true;
+          }
+        } catch (err) {
+          let errMsg = String(err).toLowerCase();
+          if (errMsg.includes("forbidden") || errMsg.includes("item-not-found") || errMsg.includes("404")) {
+            sewa.splice(i, 1);
+            dataChanged = true;
+          }
         }
       }
-    }
-    
-    if (dataChanged) {
+      if (dataChanged) {
         fs.writeFileSync(pathsewa, JSON.stringify(sewa, null, 2), 'utf8');
+      }
+    } catch (error) {
+      console.error('Terjadi kesalahan utama di expiredCheck:', error.message);
+    } finally {
+      isCheckingSewa = false;
     }
-
-  } catch (error) {
-    console.error('Terjadi kesalahan utama di expiredCheck:', error.message);
-  } finally {
-    isCheckingSewa = false; 
-  }
-};
-
-cron.schedule('* * * * *', () => {
-  expiredCheck(lenwy);
-});
-
+  };
+  cron.schedule('* * * * *', () => {
+    expiredCheck(lenwy);
+  });
+  
   lenwy.ev.on('contacts.update', update => {
     for (let contact of update) {
       let id = lenwy.decodeJid(contact.id)
