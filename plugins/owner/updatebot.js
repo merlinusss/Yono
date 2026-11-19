@@ -168,7 +168,7 @@ module.exports = {
       const applied = [];
       const skipped = [];
       let packageChanged = false;
-      let coreChanged = false;
+      let indexChanged = false;
 
       try {
         for (const f of chosenFiles) {
@@ -182,6 +182,9 @@ module.exports = {
 
           if (f.status === 'removed') {
             if (fs.existsSync(absPath)) fs.unlinkSync(absPath);
+            try {
+              delete require.cache[require.resolve(absPath)];
+            } catch {}
             applied.push(`[Hapus] ${filePath}`);
             continue;
           }
@@ -197,10 +200,25 @@ module.exports = {
             fs.writeFileSync(absPath, buf);
           }
 
+          // Bersihkan cache module selain index.js agar langsung aktif tanpa mematikan bot
+          if (filePath !== 'index.js' && filePath.endsWith('.js')) {
+            try {
+              const resolved = require.resolve(absPath);
+              delete require.cache[resolved];
+              if (filePath === 'len.js') require(resolved);
+            } catch {}
+          }
+
           applied.push(`[${statusBadge(f.status)}] ${filePath}`);
           if (filePath === 'package.json') packageChanged = true;
-          if (filePath === 'index.js' || filePath === 'lenwy.js' || filePath === 'len.js') coreChanged = true;
+          if (filePath === 'index.js') indexChanged = true;
         }
+
+        // Bersihkan juga cache lenwy.js agar perubahan library/ atau len.js langsung terbaca
+        try {
+          delete require.cache[require.resolve(path.join(process.cwd(), 'lenwy.js'))];
+        } catch {}
+        if (typeof reloadPlugins === 'function') reloadPlugins();
 
         if (!isPartial) {
           saveLocalVersion(pending.latestSha, pending.branch);
@@ -216,15 +234,11 @@ module.exports = {
         if (packageChanged) {
           report += `\nCatatan: package.json berubah, jalankan npm install jika ada dependensi baru.`;
         }
-
-        if (coreChanged) {
-          report += `\n\nBot akan restart dalam 2 detik.`;
-          await m.reply(report.trim());
-          setTimeout(() => process.exit(0), 2000);
-        } else {
-          if (typeof reloadPlugins === 'function') reloadPlugins();
-          await m.reply(report.trim());
+        if (indexChanged) {
+          report += `\nCatatan: index.js diperbarui, silakan restart bot jika ingin memuat ulang koneksi utama.`;
         }
+
+        await m.reply(report.trim());
       } catch (err) {
         console.error('[updatebot]', err);
         return m.reply(`❌ Gagal menerapkan update:\n${err.message}`);
