@@ -7,6 +7,6 @@ module.exports = {
     if (!isAdmins) return m.reply(mess.admin);
     const users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '') + '@s.whatsapp.net';
     await lenwy.groupParticipantsUpdate(from, [users], 'promote');
-    m.reply(mess.success);
+    return lenwy.sendMessage(m.chat, { react: { text: '👍', key: m.key } });
   },
 };

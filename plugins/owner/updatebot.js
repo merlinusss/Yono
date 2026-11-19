@@ -129,6 +129,7 @@ module.exports = {
     const { lenwy, m, args, command, prefix, isCreator, mess, reloadPlugins } = ctx;
     if (!isCreator) return m.reply(mess.owner);
 
+    const react = (emoji) => lenwy.sendMessage(m.chat, { react: { text: emoji, key: m.key } });
     const senderKey = m.sender;
     const sub = (args[0] || '').toLowerCase();
     const cfg = getUpdaterConfig();
@@ -136,9 +137,9 @@ module.exports = {
 
     if (sub === 'cancel') {
       if (pendingUpdates.delete(senderKey)) {
-        return m.reply('✅ Proses update dibatalkan.');
+        return react('✅');
       }
-      return m.reply('ℹ️ Tidak ada proses update yang sedang menunggu konfirmasi.');
+      return react('❌');
     }
 
     if (sub === 'confirm') {
@@ -162,7 +163,7 @@ module.exports = {
       }
 
       pendingUpdates.delete(senderKey);
-      await m.reply(`🔄 Menerapkan *${chosenFiles.length} file* (\`${pending.latestSha.slice(0, 7)}\`)...`);
+      await react('⏳');
 
       const applied = [];
       const skipped = [];
@@ -205,36 +206,34 @@ module.exports = {
           saveLocalVersion(pending.latestSha, pending.branch);
         }
 
-        let report = `✅ *Update selesai!*\n`;
-        report += `Commit: \`${pending.latestSha.slice(0, 7)}\`${isPartial ? ' _(Parsial)_' : ''}\n\n`;
+        let report = `Update selesai (${pending.latestSha.slice(0, 7)})${isPartial ? ' [parsial]' : ''}\n`;
         if (applied.length > 0) {
-          report += `*Diterapkan (${applied.length}):*\n${applied.map(x => `• ${x}`).join('\n')}\n`;
+          report += `\nDiterapkan (${applied.length}):\n${applied.map(x => `- ${x}`).join('\n')}\n`;
         }
         if (skipped.length > 0) {
-          report += `\n*Dilewati (${skipped.length}):*\n${skipped.map(x => `• ${x}`).join('\n')}\n`;
+          report += `\nDilewati (${skipped.length}):\n${skipped.map(x => `- ${x}`).join('\n')}\n`;
         }
         if (packageChanged) {
-          report += `\n⚠️ *package.json berubah* — jalankan \`npm install\` di panel jika ada dependensi baru.`;
+          report += `\nCatatan: package.json berubah, jalankan npm install jika ada dependensi baru.`;
         }
 
         if (coreChanged) {
-          report += `\n\n♻️ File inti berubah, bot akan restart dalam 2 detik...`;
-          await m.reply(report);
+          report += `\n\nBot akan restart dalam 2 detik.`;
+          await m.reply(report.trim());
           setTimeout(() => process.exit(0), 2000);
         } else {
           if (typeof reloadPlugins === 'function') reloadPlugins();
-          report += `\n\n⚡ Plugin otomatis di-reload tanpa perlu restart bot!`;
-          await m.reply(report);
+          await m.reply(report.trim());
         }
       } catch (err) {
         console.error('[updatebot]', err);
-        return m.reply(`❌ *Gagal menerapkan update:*\n\`\`\`${err.message}\`\`\``);
+        return m.reply(`❌ Gagal menerapkan update:\n${err.message}`);
       }
       return;
     }
 
     // ─── STEP 1: CHECK & PREVIEW ───
-    await lenwy.sendMessage(m.chat, { react: { text: '🔍', key: m.key } });
+    await react('🔍');
     try {
       const localVer = readLocalVersion();
       const { latestSha, newCommits, changedFiles } = await checkUpdatesFromServer(cfg, localVer.sha);
@@ -242,16 +241,15 @@ module.exports = {
       if (localVer.sha && localVer.sha === latestSha) {
         const latestMsg = newCommits[0]?.message?.split('\n')[0] || '-';
         return m.reply(
-          `✅ *Bot sudah versi terbaru!*\n` +
-          `• Commit: \`${latestSha.slice(0, 7)}\`\n` +
-          `• Pesan: ${latestMsg}`
+          `Bot sudah di versi terbaru (${latestSha.slice(0, 7)}).\n` +
+          `Commit terakhir: ${latestMsg}`
         );
       }
 
       const selectableFiles = changedFiles.filter(f => !isProtectedPath(f.filename));
       if (selectableFiles.length === 0) {
         saveLocalVersion(latestSha, branch);
-        return m.reply(`✅ Tidak ada file kode yang perlu di-update (hanya file diproteksi). Versi lokal disinkronkan ke \`${latestSha.slice(0, 7)}\`.`);
+        return m.reply(`Tidak ada file kode yang perlu diperbarui. Versi disinkronkan ke ${latestSha.slice(0, 7)}.`);
       }
 
       pendingUpdates.set(senderKey, {
@@ -262,30 +260,28 @@ module.exports = {
       });
 
       const commitList = newCommits
-        .map(c => `• \`${c.sha.slice(0, 7)}\` ${(c.message || '').split('\n')[0]}`)
+        .map(c => `- ${c.sha.slice(0, 7)} ${(c.message || '').split('\n')[0]}`)
         .join('\n');
 
       const fileList = selectableFiles
-        .map((f, i) => `${i + 1}. [${statusBadge(f.status)}] \`${f.filename}\``)
+        .map((f, i) => `${i + 1}. [${statusBadge(f.status)}] ${f.filename}`)
         .join('\n');
 
       const hasPkg = selectableFiles.some(f => f.filename === 'package.json');
 
-      let msg = `📦 *Update Tersedia!*\n`;
-      msg += `• Lokal   : \`${localVer.sha ? localVer.sha.slice(0, 7) : 'belum tercatat'}\`\n`;
-      msg += `• Terbaru : \`${latestSha.slice(0, 7)}\`\n\n`;
-      msg += `📝 *Yang Baru (Commit):*\n${commitList}\n\n`;
-      msg += `📂 *File Berubah (${selectableFiles.length}):*\n${fileList}\n`;
-      if (hasPkg) msg += `\n⚠️ _Terdapat perubahan pada \`package.json\`._\n`;
-      msg += `\n⏳ *Konfirmasi (berlaku 2 menit):*\n`;
-      msg += `• *${prefix + command} confirm* → update semua file di atas\n`;
-      msg += `• *${prefix + command} confirm 1,2* → update hanya nomor pilihan\n`;
-      msg += `• *${prefix + command} cancel* → batalkan`;
+      let msg = `Update tersedia (${localVer.sha ? localVer.sha.slice(0, 7) : 'baru'} -> ${latestSha.slice(0, 7)})\n\n`;
+      msg += `Perubahan terbaru:\n${commitList}\n\n`;
+      msg += `File berubah (${selectableFiles.length}):\n${fileList}\n`;
+      if (hasPkg) msg += `\nCatatan: package.json ikut berubah.\n`;
+      msg += `\nKonfirmasi berlaku 2 menit:\n`;
+      msg += `- ${prefix + command} confirm (update semua)\n`;
+      msg += `- ${prefix + command} confirm 1,2 (pilih nomor)\n`;
+      msg += `- ${prefix + command} cancel (batal)`;
 
       return m.reply(msg);
     } catch (err) {
       console.error('[updatebot]', err);
-      return m.reply(`❌ *Gagal mengecek update:*\n\`\`\`${err.message}\`\`\``);
+      return m.reply(`❌ Gagal mengecek update:\n${err.message}`);
     }
   },
 };

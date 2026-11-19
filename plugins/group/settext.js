@@ -126,23 +126,23 @@ function saveGroupDb() {
 }
 
 function buildFeatureHelp(prefix, command, key, cfg, currentGroupText, isCreator) {
-  const activeMode = currentGroupText ? 'Custom Grup' : 'Bawaan (templates/)';
+  const activeMode = currentGroupText ? 'custom grup' : 'bawaan (templates/)';
   const phLines = cfg.placeholders.length > 0
-    ? cfg.placeholders.map(([k, d]) => `• \`${k}\` = ${d}`).join('\n')
-    : '• _(Tidak menggunakan placeholder)_';
+    ? cfg.placeholders.map(([k, d]) => `- ${k} : ${d}`).join('\n')
+    : '- (tidak ada placeholder)';
 
-  let msg = `*⚙️ Pengaturan Teks: ${cfg.label} (${key})*\n`;
-  msg += `Status saat ini: *${activeMode}*\n\n`;
-  msg += `*Cara Pakai:*\n`;
+  let msg = `Pengaturan teks: ${cfg.label} (${key})\n`;
+  msg += `Status: ${activeMode}\n\n`;
+  msg += `Cara pakai:\n`;
   if (cfg.dbKey) {
-    msg += `• *${prefix + command} ${key} <teks baru>* → ubah khusus grup ini\n`;
-    msg += `• *${prefix + command} ${key} reset* → kembalikan ke bawaan\n`;
+    msg += `- ${prefix + command} ${key} <teks baru> : ubah khusus grup ini\n`;
+    msg += `- ${prefix + command} ${key} reset : kembali ke bawaan\n`;
   }
   if (cfg.templateFile && isCreator) {
-    msg += `• *${prefix + command} default ${key} <teks baru>* → ubah bawaan permanen semua grup (Owner)\n`;
+    msg += `- ${prefix + command} default ${key} <teks baru> : ubah bawaan semua grup\n`;
   }
-  msg += `\n*Placeholder yang bisa dipakai:*\n${phLines}\n\n`;
-  msg += `*Contoh:*\n${prefix + command} ${cfg.dbKey ? key : 'default ' + key}\n${cfg.example}`;
+  msg += `\nPlaceholder:\n${phLines}\n\n`;
+  msg += `Contoh:\n${prefix + command} ${cfg.dbKey ? key : 'default ' + key}\n${cfg.example}`;
   return msg;
 }
 
@@ -151,27 +151,27 @@ module.exports = {
   aliases: ['edittext', 'settemplate'],
   category: 'GROUP',
   async execute(ctx) {
-    const { m, text, command, prefix, isAdmins, isCreator, mess } = ctx;
+    const { lenwy, m, text, command, prefix, isAdmins, isCreator, mess } = ctx;
     if (!isAdmins && !isCreator) return m.reply(mess.admin);
 
+    const react = (emoji) => lenwy.sendMessage(m.chat, { react: { text: emoji, key: m.key } });
     const raw = (text || '').trim();
     if (!raw) {
       const listKeys = Object.entries(TARGETS)
-        .map(([k, v]) => `• *${k}* — ${v.label}`)
+        .map(([k, v]) => `- ${k} : ${v.label}`)
         .join('\n');
       return m.reply(
-        `*⚙️ Pengaturan Template Teks*\n\n` +
-        `*Daftar fitur:*\n${listKeys}\n\n` +
-        `*Cara pakai:*\n` +
-        `• *${prefix + command} <fitur>* → lihat placeholder & contoh\n` +
-        `• *${prefix + command} <fitur> <teks baru>* → ubah khusus grup ini\n` +
-        `• *${prefix + command} <fitur> reset* → reset ke bawaan\n` +
-        (isCreator ? `• *${prefix + command} default <fitur> <teks baru>* → ubah bawaan permanen (Owner)\n` : '') +
-        `\n*Contoh:* \`${prefix + command} list\``
+        `Pengaturan template teks\n\n` +
+        `Daftar fitur:\n${listKeys}\n\n` +
+        `Cara pakai:\n` +
+        `- ${prefix + command} <fitur> : lihat placeholder dan contoh\n` +
+        `- ${prefix + command} <fitur> <teks baru> : ubah khusus grup ini\n` +
+        `- ${prefix + command} <fitur> reset : reset ke bawaan\n` +
+        (isCreator ? `- ${prefix + command} default <fitur> <teks baru> : ubah bawaan permanen\n` : '') +
+        `\nContoh: ${prefix + command} list`
       );
     }
 
-    // Parse mode default (owner-only) vs per-grup, menjaga baris baru (\n) tetap utuh
     const firstMatch = raw.match(/^(\S+)(?:\s+([\s\S]*))?$/);
     const firstWord = (firstMatch?.[1] || '').toLowerCase();
     const restAfterFirst = (firstMatch?.[2] || '').trim();
@@ -185,30 +185,29 @@ module.exports = {
 
       if (!cfg || !cfg.templateFile) {
         const valid = Object.entries(TARGETS).filter(([, v]) => v.templateFile).map(([k]) => k).join(', ');
-        return m.reply(`⚠️ Fitur bawaan tidak valid.\nPilih salah satu: *${valid}*`);
+        return m.reply(`❌ Fitur bawaan tidak valid. Pilih: ${valid}`);
       }
 
       if (!newBody) {
         const currentTpl = loadTemplate(cfg.templateFile, cfg.fallback);
         return m.reply(
           buildFeatureHelp(prefix, command, targetKey, cfg, '', true) +
-          `\n\n*Isi templates/${cfg.templateFile}.txt saat ini:*\n${currentTpl}`
+          `\n\nIsi templates/${cfg.templateFile}.txt saat ini:\n${currentTpl}`
         );
       }
 
       saveTemplate(cfg.templateFile, newBody);
-      return m.reply(`✅ Template bawaan permanen *templates/${cfg.templateFile}.txt* berhasil diperbarui untuk semua grup.`);
+      return react('👍');
     }
 
-    // Mode per-grup
     const targetKey = firstWord;
     const cfg = TARGETS[targetKey];
     if (!cfg) {
-      return m.reply(`⚠️ Fitur *${targetKey}* tidak dikenal.\nKetik *${prefix + command}* untuk melihat daftar fitur.`);
+      return m.reply(`❌ Fitur ${targetKey} tidak dikenal. Ketik ${prefix + command} untuk melihat daftar fitur.`);
     }
 
     if (!cfg.dbKey) {
-      return m.reply(`⚠️ Fitur *${targetKey}* hanya bisa diubah secara global oleh Owner via:\n*${prefix + command} default ${targetKey} <teks baru>*`);
+      return m.reply(`Fitur ${targetKey} hanya bisa diubah global oleh owner lewat:\n${prefix + command} default ${targetKey} <teks baru>`);
     }
 
     if (!m.isGroup) return m.reply(mess.group);
@@ -223,11 +222,11 @@ module.exports = {
     if (restAfterFirst.toLowerCase() === 'reset') {
       global.datagc[m.chat][cfg.dbKey] = '';
       saveGroupDb();
-      return m.reply(`✅ Teks *${targetKey}* di grup ini berhasil direset ke bawaan.`);
+      return react('👍');
     }
 
     global.datagc[m.chat][cfg.dbKey] = restAfterFirst;
     saveGroupDb();
-    return m.reply(`✅ Teks *${targetKey}* khusus grup ini berhasil diperbarui.\nKetik *${prefix + command} ${targetKey} reset* kapan saja untuk kembali ke bawaan.`);
+    return react('👍');
   },
 };

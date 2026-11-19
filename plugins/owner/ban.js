@@ -1,63 +1,49 @@
+const roles = require('../../library/roles');
+
 module.exports = {
   command: 'ban',
   category: 'OWNER',
   async execute(ctx) {
-    const { lenwy, m, args, isCreator, mess, owner, bannedFilePathh, libs } = ctx;
-    const { fs } = libs;
+    const { lenwy, m, args, isCreator, mess } = ctx;
+    if (!isCreator) return m.reply(mess.owner);
 
-if (!isCreator) return m.reply(mess.owner)
-  
-  let action = args[0] ? args[0].toLowerCase() : ''
-  if (!['add', 'del', 'list'].includes(action)) {
-    return m.reply('*Format Salah!*\nContoh:\n- ban add 62812345678\n- ban del 62812345678\n- ban list')
-  }
+    const react = (emoji) => lenwy.sendMessage(m.chat, { react: { text: emoji, key: m.key } });
+    const action = args[0] ? args[0].toLowerCase() : '';
+    if (!['add', 'del', 'list'].includes(action)) {
+      return m.reply('Format salah.\nContoh:\n- ban add 62812345678\n- ban del 62812345678\n- ban list');
+    }
 
-  let bannedData = []
-  try {
-    bannedData = JSON.parse(fs.readFileSync(bannedFilePathh, 'utf8'))
-  } catch (err) {
-    bannedData = []
-  }
+    const bannedData = roles.getList('banned');
 
-  if (action === 'list') {
-    if (bannedData.length === 0) return m.reply('*Daftar Banned Masih Kosong.*')
+    if (action === 'list') {
+      if (bannedData.length === 0) return m.reply('Daftar banned masih kosong.');
+      const response = bannedData.map((number, index) => `${index + 1}. ${number}`).join('\n');
+      return m.reply(`Daftar banned (${bannedData.length}):\n${response}`);
+    }
 
-    let response = '*Daftar Banned:*\n\n'
-    response += bannedData.map((number, index) => `${index + 1}. ${number}`).join('\n')
-    return m.reply(response)
-  }
+    if (!args[1]) return m.reply(`Masukkan nomornya.\nContoh: ban ${action} 62812345678`);
 
-  if (!args[1]) return m.reply(`*Mana nomornya?*\nContoh: ban ${action} 62812345678`)
+    const number = roles.normalizeNumber(args[1]);
+    if (!number) return m.reply('❌ Nomor tidak valid.');
 
-  let number = args[1].replace(/[^0-9]/g, '')
-  if (number.length === 0) return m.reply('*Nomor tidak valid!*')
-
-  if (action === 'add') {
-    if (bannedData.includes(number)) return m.reply(`⚠️ *Nomor ${number} sudah ada di daftar banned.*`)
-
-    try {
-      let isRegistered = await lenwy.onWhatsApp(number + '@s.whatsapp.net')
-      if (isRegistered && isRegistered.length > 0) {
-        bannedData.push(number)
-        fs.writeFileSync(bannedFilePathh, JSON.stringify(bannedData, null, 2))
-        return m.reply(`✅ *Sukses!*\nNomor ${number} berhasil ditambahkan ke daftar banned.`)
-      } else {
-        return m.reply(`❌ *Gagal!*\nNomor ${number} tidak terdaftar di WhatsApp.`)
+    if (action === 'add') {
+      if (bannedData.includes(number)) return m.reply(`Nomor ${number} sudah ada di daftar banned.`);
+      try {
+        const isRegistered = await lenwy.onWhatsApp(number + '@s.whatsapp.net');
+        if (isRegistered && isRegistered.length > 0) {
+          roles.addToList('banned', number);
+          return react('👍');
+        }
+        return m.reply(`❌ Nomor ${number} tidak terdaftar di WhatsApp.`);
+      } catch {
+        return m.reply('❌ Gagal mengecek nomor ke WhatsApp.');
       }
-    } catch (err) {
-      return m.reply(`❌ *Error saat mengecek nomor ke WhatsApp.*`)
     }
-  }
 
-  if (action === 'del') {
-    let index = bannedData.indexOf(number)
-    if (index !== -1) {
-      bannedData.splice(index, 1)
-      fs.writeFileSync(bannedFilePathh, JSON.stringify(bannedData, null, 2))
-      return m.reply(`✅ *Sukses!*\nNomor ${number} berhasil dihapus dari daftar banned.`)
-    } else {
-      return m.reply(`❌ *Gagal!*\nNomor ${number} tidak ditemukan di database.`)
+    if (action === 'del') {
+      const res = roles.removeFromList('banned', number);
+      if (!res.ok) return m.reply(`❌ Nomor ${number} tidak ada di daftar banned.`);
+      return react('👍');
     }
-  }
   },
 };

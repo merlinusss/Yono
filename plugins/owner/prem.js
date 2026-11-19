@@ -1,60 +1,49 @@
+const roles = require('../../library/roles');
+
 module.exports = {
   command: 'prem',
   category: 'OWNER',
   async execute(ctx) {
-    const { lenwy, m, from, args, text, isCreator, mess, owner, premiumNumbers, premiumFilePathh, quoted, libs } = ctx;
-    const { fs } = libs;
+    const { lenwy, m, from, args, isCreator, mess } = ctx;
+    if (!isCreator) return m.reply(mess.owner);
 
-if (!isCreator) return m.reply(mess.owner)
-  
-  let action = args[0] ? args[0].toLowerCase() : ''
-  if (!['add', 'del', 'list'].includes(action)) {
-    return m.reply('*Format Salah!*\nContoh:\n- prem add 62812345678\n- prem del 62812345678\n- prem list')
-  }
-
-  if (action === 'list') {
-    if (premiumNumbers.length === 0) return m.reply('*Daftar Premium Masih Kosong.*')
-
-    let teksooo = 'List Premium\n'
-    for (let i of premiumNumbers) {
-        teksooo += `✉️ ${i}\n`
+    const react = (emoji) => lenwy.sendMessage(m.chat, { react: { text: emoji, key: m.key } });
+    const action = args[0] ? args[0].toLowerCase() : '';
+    if (!['add', 'del', 'list'].includes(action)) {
+      return m.reply('Format salah.\nContoh:\n- prem add 62812345678\n- prem del 62812345678\n- prem list');
     }
-    teksooo += `\nTotal: ${premiumNumbers.length}`
 
-    return lenwy.sendMessage(from, { text: teksooo.trim() }, { quoted: m })
-  }
+    const premiumNumbers = roles.getList('premium');
 
-  if (!args[1]) return m.reply(`*Mana nomornya?*\nContoh: prem ${action} 62812345678`)
+    if (action === 'list') {
+      if (premiumNumbers.length === 0) return m.reply('Daftar premium masih kosong.');
+      const list = premiumNumbers.map((n, i) => `${i + 1}. ${n}`).join('\n');
+      return lenwy.sendMessage(from, { text: `Daftar premium (${premiumNumbers.length}):\n${list}` }, { quoted: m });
+    }
 
-  let number = args[1].replace(/[^0-9]/g, '')
-  if (number.length === 0) return m.reply('*Nomor tidak valid!*')
+    if (!args[1]) return m.reply(`Masukkan nomornya.\nContoh: prem ${action} 62812345678`);
 
-  if (action === 'add') {
-    if (premiumNumbers.includes(number)) return m.reply(`⚠️ *Nomor ${number} sudah ada di database premium.*`)
+    const number = roles.normalizeNumber(args[1]);
+    if (!number) return m.reply('❌ Nomor tidak valid.');
 
-    try {
-      let isRegistered = await lenwy.onWhatsApp(number + '@s.whatsapp.net')
-      if (isRegistered && isRegistered.length > 0) {
-        premiumNumbers.push(number)
-        fs.writeFileSync(premiumFilePathh, JSON.stringify(premiumNumbers, null, 2))
-        return m.reply(`✅ *Sukses!*\nNomor ${number} berhasil ditambahkan ke premium.`)
-      } else {
-        return m.reply(`❌ *Gagal!*\nNomor ${number} tidak terdaftar di WhatsApp.`)
+    if (action === 'add') {
+      if (premiumNumbers.includes(number)) return m.reply(`Nomor ${number} sudah terdaftar di premium.`);
+      try {
+        const isRegistered = await lenwy.onWhatsApp(number + '@s.whatsapp.net');
+        if (isRegistered && isRegistered.length > 0) {
+          roles.addToList('premium', number);
+          return react('👍');
+        }
+        return m.reply(`❌ Nomor ${number} tidak terdaftar di WhatsApp.`);
+      } catch {
+        return m.reply('❌ Gagal mengecek nomor ke WhatsApp.');
       }
-    } catch (err) {
-      return m.reply(`❌ *Error saat mengecek nomor ke WhatsApp.*`)
     }
-  }
 
-  if (action === 'del') {
-    let index = premiumNumbers.indexOf(number)
-    if (index !== -1) {
-      premiumNumbers.splice(index, 1)
-      fs.writeFileSync(premiumFilePathh, JSON.stringify(premiumNumbers, null, 2))
-      return m.reply(`✅ *Sukses!*\nNomor ${number} berhasil dihapus dari premium.`)
-    } else {
-      return m.reply(`❌ *Gagal!*\nNomor ${number} tidak ditemukan di database.`)
+    if (action === 'del') {
+      const res = roles.removeFromList('premium', number);
+      if (!res.ok) return m.reply(`❌ Nomor ${number} tidak ada di daftar premium.`);
+      return react('👍');
     }
-  }
   },
 };

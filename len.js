@@ -19,10 +19,8 @@ global.autobackup = true
 global.usePairingCode = true // false = QR Code, true = Pairing Code
 global.backupFiles = [
   'library', 'plugins', 'project', 'Session', 'storage', 'templates',
-  'author.json', 'banned.json', 'index.js',
-  'len.js', 'lenwy.js', 'package-lock.json',
-  'package.json', 'premium.json', 'readme.md',
-  '.npmrc'
+  'index.js', 'len.js', 'lenwy.js',
+  'package-lock.json', 'package.json', 'readme.md', '.npmrc'
 ]
 
 // Pembayaran & API

@@ -6,8 +6,8 @@ module.exports = {
     if (!isBotAdmins) return m.reply(mess.botAdmin);
     if (!isAdmins) return m.reply(mess.admin);
     const users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '') + '@s.whatsapp.net';
-    if (users.includes(botNumber[0])) return m.reply('Ngapain demote bot? Bot tidak bisa demote dirinya sendiri.');
+    if (users.includes(botNumber[0])) return m.reply('Bot tidak bisa menurunkan jabatan dirinya sendiri.');
     await lenwy.groupParticipantsUpdate(from, [users], 'demote');
-    m.reply(mess.success);
+    return lenwy.sendMessage(m.chat, { react: { text: '👍', key: m.key } });
   },
 };

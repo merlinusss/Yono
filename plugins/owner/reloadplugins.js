@@ -2,9 +2,9 @@ module.exports = {
   command: 'reloadplugins',
   aliases: ['reload'],
   category: 'OWNER',
-  async execute({ m, isCreator, mess, reloadPlugins }) {
+  async execute({ lenwy, m, isCreator, mess, reloadPlugins }) {
     if (!isCreator) return m.reply(mess.owner);
-    const map = reloadPlugins();
-    m.reply(`✅ Plugin berhasil di-reload (${map.size} command terdaftar).`);
+    reloadPlugins();
+    return lenwy.sendMessage(m.chat, { react: { text: '👍', key: m.key } });
   },
 };

@@ -8,21 +8,21 @@ module.exports = {
   {
 if (!isCreator) return m.reply(mess.owner)
 
-    let owner;
+    let rippers;
     try {
-        owner = JSON.parse(fs.readFileSync('./storage/dataRipper.json', 'utf8'))
+        rippers = JSON.parse(fs.readFileSync('./storage/dataRipper.json', 'utf8'))
     } catch (err) {
-        console.error('Error reading premium.json:', err)
-        return m.reply('*Gagal Memuat Daftar Premium.*')
+        console.error('Error reading dataRipper.json:', err)
+        return m.reply('❌ Gagal memuat daftar ripper.')
     }
 
-    if (owner.length === 0) return m.reply('*Daftar Ripper Masih Kosong.*')
+    if (rippers.length === 0) return m.reply('Daftar ripper masih kosong.')
 
-    let teksooo = '\`— 𝗟𝗶𝘀𝘁 𝗥𝗶𝗽𝗽𝗲𝗿\`\n';
-    for (let i of owner) {
-        teksooo += `✉️ ${i}\n`
+    let teksooo = 'Daftar ripper\n';
+    for (let i of rippers) {
+        teksooo += `- ${i}\n`
     }
-    teksooo += `\nTotal: ${owner.length}`;
+    teksooo += `\nTotal: ${rippers.length}`;
 
     lenwy.sendMessage(from, { text: teksooo.trim() }, { quoted: m })
   }
