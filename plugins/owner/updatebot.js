@@ -126,7 +126,7 @@ module.exports = {
   aliases: ['cekupdate'],
   category: 'OWNER',
   async execute(ctx) {
-    const { m, args, command, prefix, isCreator, mess, reloadPlugins } = ctx;
+    const { lenwy, m, args, command, prefix, isCreator, mess, reloadPlugins } = ctx;
     if (!isCreator) return m.reply(mess.owner);
 
     const senderKey = m.sender;
@@ -234,7 +234,7 @@ module.exports = {
     }
 
     // ─── STEP 1: CHECK & PREVIEW ───
-    await m.reply('🔍 Mengecek pembaruan dari server...');
+    await lenwy.sendMessage(m.chat, { react: { text: '🔍', key: m.key } });
     try {
       const localVer = readLocalVersion();
       const { latestSha, newCommits, changedFiles } = await checkUpdatesFromServer(cfg, localVer.sha);
