@@ -16,6 +16,17 @@ global.sessionName = 'Session'
 global.anticall = true
 global.autobackup = true
 global.usePairingCode = true // isi false = QR Code & isi true = Code Pairing
+global.githubRepo = 'merlinusss/Yono'
+global.githubBranch = 'main'
+global.githubToken = '' // kosongkan jika pakai updateApiUrl (merlapi.xyz) atau repo public
+global.updateApiUrl = 'https://merlapi.xyz/api/yono' // proxy updater via merlapi.xyz (fallback ke GitHub jika belum aktif)
+global.backupFiles = [
+  'library', 'plugins', 'project', 'Session', 'storage', 'templates',
+  'author.json', 'banned.json', 'index.js',
+  'len.js', 'lenwy.js', 'package-lock.json',
+  'package.json', 'premium.json', 'readme.md',
+  '.npmrc'
+]
 
 
 global.licenseKeycash = ''

@@ -84,31 +84,50 @@ const getSewaPosition = (gid, _dir) => {
 // Fungsi untuk memeriksa dan menangani entri yang sudah kedaluwarsa
 const expiredCheck = async (conn) => {
     try {
-        let rawData = fs.readFileSync(pathSewa, 'utf8');
-        let sewa = JSON.parse(rawData);
+        const rawData = fs.readFileSync(pathSewa, 'utf8');
+        const sewa = JSON.parse(rawData);
+        if (!Array.isArray(sewa)) return;
 
-        for (const [index, item] of sewa.entries()) {
+        const getGroups = await conn.groupFetchAllParticipating();
+        const groupIds = Object.values(getGroups).map(v => v.id);
+        let changed = false;
+
+        for (let i = sewa.length - 1; i >= 0; i--) {
+            const item = sewa[i];
+            if (!item || item.isAlifetime || !item.expired) continue;
+
             if (Date.now() >= item.expired) {
-                console.log(`Sewa expired: ${item.id}`);
-
-                const getGroups = await conn.groupFetchAllParticipating();
-                const groupIds = Object.values(getGroups).map(v => v.id);
+                console.log(`Sewa expired: ${item.id} (${item.groupId})`);
+                let canRemove = false;
 
                 if (groupIds.includes(item.groupId)) {
                     const teks = `Waktu sewa di grup ini sudah habis, bot akan keluar otomatis\nJika ingin sewa lagi silahkan ketik .owner untuk mengetahui pemilik bot`;
-                    await conn.sendMessage(item.groupId, { text: teks });
-                    await conn.groupLeave(item.groupId);
-                    await conn.sendMessage(`6282215393363@s.whatsapp.net`, { text: `Waktu sewa di grup ${item.groupId} ini sudah habis` });
+                    await conn.sendMessage(item.groupId, { text: teks }).catch(() => {});
+                    try {
+                        await conn.groupLeave(item.groupId);
+                        canRemove = true;
+                    } catch (e) {
+                        const msg = String(e || '').toLowerCase();
+                        if (msg.includes('not-a-participant') || msg.includes('item-not-found') || msg.includes('404')) {
+                            canRemove = true;
+                        }
+                    }
+                    if (global.owner) {
+                        await conn.sendMessage(`${global.owner}@s.whatsapp.net`, { text: `Waktu sewa di grup ${item.groupId} ini sudah habis` }).catch(() => {});
+                    }
+                } else {
+                    canRemove = true;
                 }
 
-                // Menghapus entri kedaluwarsa
-                sewa.splice(index, 1);
-                try {
-                    fs.writeFileSync(pathSewa, JSON.stringify(sewa, null, 2), 'utf8');
-                } catch (error) {
-                    console.error('Failed to write to file:', error.message);
+                if (canRemove) {
+                    sewa.splice(i, 1);
+                    changed = true;
                 }
             }
+        }
+
+        if (changed) {
+            fs.writeFileSync(pathSewa, JSON.stringify(sewa, null, 2), 'utf8');
         }
     } catch (error) {
         console.error('Terjadi kesalahan saat memeriksa entri kedaluwarsa:', error.message);

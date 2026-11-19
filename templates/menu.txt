@@ -1,0 +1,30 @@
+# Format blok menu. Gunakan \n untuk baris baru.
+# Placeholder @HEADER : {CATEGORY}, {CATEGORY_UPPER}, {CATEGORY_LOWER}
+# Placeholder @ITEM   : {CMD}, {CMD_UPPER}, {CMD_LOWER}, {NO}
+# Bisa dibungkus gaya WA: *{CMD}*, _{CMD}_, `{CMD_UPPER}`, dll.
+@LIST_HEADER =  ◌⑅⃝ ⭐ 𝗠𝗘𝗡𝗨 𝗕𝗢𝗧\n ﹌﹌﹌﹌﹌﹌﹌
+@HEADER =  ◌⑅⃝ ⭐ {CATEGORY} Menu\n ﹌﹌﹌﹌﹌﹌﹌
+@ITEM =  ⋮ ⌗ ┆ {CMD}
+@FOOTER = ╰───────⋆⋆⋆────────
+---
+ ㅤㅤ  ⣠⣄     
+ㅤㅤㅤ⣼⣿⣿⣧    
+⣴⣶⣶⣿⣿⣿⣿⣿⣿⣶⣶⣦
+⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏
+ ⠈⣿⣿⣿⣿  𝐀𝐥𝐥 𝐌𝐞𝐧𝐮 𝐁𝐨𝐭͙͘͡★
+ ⢰⣿⣿⣿⣿⣿⣿⣿⣿⡇ 
+ ⠈⠛⠋⠉  ⠉⠛⠛⠁─ Stars don't compete for the sky, they just shine˚. ᵎᵎ
+
+ ╭═══════⚝  ⭒  ⚝══════╮
+  𝗶𝗻𝗳𝗼 𝗯𝗼𝘁 & 𝘂𝘀𝗲𝗿
+  ────── .✦
+  ⟢ runtime : {RUNTIME}
+  ⟢ creator : {CREATOR}
+  ═════════════════
+ │.✦ ݁˖ name : {NAME}
+ │.✦ ݁˖ number : {NUMBER}
+ │.✦ ݁˖ status : {STATUS}
+ ╰══════════════════╯
+  ── a sky full of dreams ⊹ ࣪ ˖
+
+{MENU}
