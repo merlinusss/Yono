@@ -27,6 +27,7 @@ const qrcode = require('qrcode-terminal');
 const { imageToWebp, videoToWebp, writeExifImg, writeExifVid } = require('./library/exif');
 const { smsg, getBuffer, getSizeMedia, sleep } = require('./library/myfunc');
 const roles = require('./library/roles');
+const { startHotReload } = require('./library/watcher');
 
 function getTimeInfo() {
   const now = moment.tz('Asia/Jakarta');
@@ -101,8 +102,6 @@ function printStartupBanner(version, isLatest) {
   const freeRAM = Math.round(os.freemem() / 1024 / 1024);
   const usedRAM = totalRAM - freeRAM;
   const waStatus = isLatest ? chalk.greenBright('(Latest)') : chalk.yellowBright('(Fallback)');
-
-  console.log(chalk.cyanBright.bold(`\n  === ${global.botname.toUpperCase()} BOT ===`));
   console.log(border);
   console.log(`  ${chalk.magenta('❯')} ${chalk.white.bold('Developer')}  : ${chalk.greenBright(global.ownername)}`);
   console.log(`  ${chalk.magenta('❯')} ${chalk.white.bold('Status')}     : ${chalk.greenBright.bold('Online & Ready')}`);
@@ -941,4 +940,5 @@ cron.schedule('* * * * *', () => {
   expiredCheck(activeSocket);
 });
 
+startHotReload();
 connectToWhatsApp();

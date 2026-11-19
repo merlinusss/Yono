@@ -1046,17 +1046,3 @@ Ketik *nyerah* untuk menyerah`;
     console.error('[UNHANDLED ERROR]', err);
   }
 };
-
-const file = require.resolve(__filename);
-if (process.env.NODE_ENV !== 'production') {
-  fs.watchFile(file, () => {
-    fs.unwatchFile(file);
-    console.log(chalk.yellow(`Update : ${__filename}`));
-    delete require.cache[file];
-    try {
-      require(file);
-    } catch (e) {
-      console.error('Hot-reload error:', e);
-    }
-  });
-}

@@ -171,6 +171,7 @@ module.exports = {
       let indexChanged = false;
 
       try {
+        global.__suppressWatcher = true;
         for (const f of chosenFiles) {
           const filePath = f.filename;
           if (isProtectedPath(filePath)) {
@@ -242,6 +243,10 @@ module.exports = {
       } catch (err) {
         console.error('[updatebot]', err);
         return m.reply(`❌ Gagal menerapkan update:\n${err.message}`);
+      } finally {
+        setTimeout(() => {
+          global.__suppressWatcher = false;
+        }, 600);
       }
       return;
     }

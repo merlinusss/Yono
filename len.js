@@ -1,6 +1,3 @@
-const fs = require('fs')
-const chalk = require('chalk')
-
 // Identitas & Nomor
 global.developer = '6285261255548'
 global.developername = 'Merlinus'
@@ -76,11 +73,3 @@ global.settings = {
     pricesrole3: 100000,
   }
 }
-
-let file = require.resolve(__filename)
-fs.watchFile(file, () => {
-  fs.unwatchFile(file)
-  console.log(chalk.yellow(`Update : ${__filename}`))
-  delete require.cache[file]
-  require(file)
-})
