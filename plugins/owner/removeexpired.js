@@ -3,16 +3,17 @@ module.exports = {
   aliases: ['cekexp', 'cekexpired'],
   category: 'OWNER',
   async execute(ctx) {
-    const { lenwy, m, isCreator, mess, owner, pathsewa, libs } = ctx;
-    const { fs } = libs;
+    const { lenwy, m, isCreator, mess } = ctx;
 
-if (!isCreator) return m.reply(mess.owner)
-  try {
-    const currentDir = JSON.parse(fs.readFileSync(pathsewa, 'utf8'))
-    await expiredCheck(lenwy, currentDir) // Asumsikan `conn` adalah objek koneksi bot
-    m.reply('Pengecekan masa sewa sedang dilakukan, grup yang masa sewanya telah habis akan dihapus secara otomatis.')
-  } catch (error) {
-    m.reply(error.message)
-  }
+    if (!isCreator) return m.reply(mess.owner);
+    try {
+      if (typeof global.expiredCheck !== 'function') {
+        return m.reply('❌ Fungsi pengecekan sewa belum siap.');
+      }
+      await global.expiredCheck(lenwy);
+      return m.reply('Pengecekan masa sewa selesai dijalankan.');
+    } catch (error) {
+      return m.reply(`❌ ${error.message}`);
+    }
   },
 };

@@ -31,7 +31,7 @@ if (!text) return m.reply(`*Contoh:* ${prefix + command} FF🗿`)
           url: pinData.images_url
         },
         caption: `*${pinData.grid_title || 'Pinterest'}*\n\nImage Ke ${i++}/${res.length}`,
-        footer: `By ${botname}`,
+        footer: `By ${global.botname}`,
         nativeFlow: [{
           text: '🌐 Source Pin',
           url: pinData.pin,

@@ -1,5 +1,6 @@
 module.exports = {
-  command: 'ayat kursi',
+  command: 'ayatkursi',
+  aliases: ['kursi'],
   category: 'FUN',
   async execute(ctx) {
     const { lenwy, m, quoted } = ctx;

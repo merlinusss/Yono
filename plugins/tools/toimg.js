@@ -3,25 +3,26 @@ module.exports = {
   category: 'TOOLS',
   async execute(ctx) {
     const { lenwy, m, from, command, prefix, isBan, mess, quoted, mime, LenwyLD, libs } = ctx;
-    const { fs, ffmpeg, Image, exec, sleep, getRandom } = libs;
+    const { fs, exec, sleep, getRandom } = libs;
 
-if (isBan) return m.reply(mess.ban)
-try {
-  LenwyLD()
-  await sleep(200)
-if (!quoted) return m.reply ('Reply Image')
-if (!/webp/.test(mime)) reply `Balas sticker dengan caption *${prefix + command}*`
-let media = await lenwy.downloadAndSaveMediaMessage(quoted)
-let ran = await getRandom('.png')
-exec(`ffmpeg -i ${media} ${ran}`, (err) => {
-fs.unlinkSync(media)
-if (err) m.reply(err)
-let buffer = fs.readFileSync(ran)
-lenwy.sendMessage(from, { image: buffer }, {quoted:m})
-fs.unlinkSync(ran)
-})
-} catch (e) {
-    m.reply('[!] pastikan kamu reply stiker yang tidak gerak')
-}
+    if (isBan) return m.reply(mess.ban);
+    try {
+      LenwyLD();
+      await sleep(200);
+      if (!quoted) return m.reply('Balas stiker yang ingin diubah menjadi gambar.');
+      if (!/webp/.test(mime)) return m.reply(`Balas stiker dengan caption ${prefix + command}`);
+
+      const media = await lenwy.downloadAndSaveMediaMessage(quoted);
+      const ran = getRandom('.png');
+      exec(`ffmpeg -i ${media} ${ran}`, (err) => {
+        if (fs.existsSync(media)) fs.unlinkSync(media);
+        if (err) return m.reply(`❌ Gagal mengonversi stiker: ${err.message}`);
+        const buffer = fs.readFileSync(ran);
+        lenwy.sendMessage(from, { image: buffer }, { quoted: m });
+        if (fs.existsSync(ran)) fs.unlinkSync(ran);
+      });
+    } catch {
+      m.reply('❌ Pastikan kamu membalas stiker yang tidak bergerak.');
+    }
   },
 };

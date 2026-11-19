@@ -2,20 +2,28 @@ module.exports = {
   command: 'editpay',
   category: 'GROUP',
   async execute(ctx) {
-    const { m, text, command, prefix, isAdmins, libs } = ctx;
+    const { lenwy, m, text, command, prefix, isAdmins, mess, libs } = ctx;
     const { readDatabasePayment, writeDatabasePayment } = libs;
 
-if (!isAdmins) return;
-  if (!text.includes('@')) return m.reply(`Contoh: ${prefix + command} key@teksBaru`);
-  
-  let [key, newWording] = text.split('@');
-  let _db = readDatabasePayment();
-  let payment = _db.find(item => item.id === m.chat && item.key === key);
-  
-  if (!payment) return m.reply(`Key "${key}" tidak ditemukan di grup ini.`);
+    if (!m.isGroup) return m.reply(mess.group);
+    if (!isAdmins) return m.reply(mess.admin);
+    if (!text || !text.includes('@')) {
+      return m.reply(`Cara pakai: ${prefix + command} key@teksBaru`);
+    }
 
-  payment.paymentData = newWording;
-  writeDatabasePayment(_db);
-  return m.reply(`Wording untuk key "${key}" berhasil diubah.`);
+    const sepIdx = text.indexOf('@');
+    const key = text.slice(0, sepIdx).trim();
+    const newWording = text.slice(sepIdx + 1).trim();
+    if (!key || !newWording) {
+      return m.reply(`Cara pakai: ${prefix + command} key@teksBaru`);
+    }
+
+    const _db = readDatabasePayment();
+    const payment = _db.find(item => item.id === m.chat && item.key === key);
+    if (!payment) return m.reply(`❌ Key "${key}" tidak ditemukan di grup ini.`);
+
+    payment.paymentData = newWording;
+    writeDatabasePayment(_db);
+    return lenwy.sendMessage(m.chat, { react: { text: '👍', key: m.key } });
   },
 };

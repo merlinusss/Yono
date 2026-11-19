@@ -11,7 +11,7 @@ if (!text) return m.reply('📌 Kirim link channel WhatsApp-nya!');
  const channelCode = text.split('https://whatsapp.com/channel/')[1];
  const res = await lenwy.newsletterMetadata("invite", channelCode);
 
- if (!res?.id) return reply('❌ Gagal mengambil info channel.');
+ if (!res?.id) return m.reply('❌ Gagal mengambil info channel.');
 
  const verified = res.verification === 'VERIFIED' ? '✅ Ya' : '❌ Tidak';
  const status = res.state === 'ACTIVE' ? '🟢 Aktif' : '🔴 Tidak aktif';

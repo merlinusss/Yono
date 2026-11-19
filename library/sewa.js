@@ -1,167 +1,97 @@
 const fs = require('fs');
 const toMs = require('ms');
 
-// Tentukan path ke file JSON
-const pathSewa = './storage/sewa.json'
+const pathSewa = './storage/sewa.json';
 
 function getNextId(_dir) {
-    return _dir.length ? Math.max(..._dir.map(obj => obj.id)) + 1 : 1;
+  return _dir.length ? Math.max(..._dir.map(obj => obj.id)) + 1 : 1;
 }
 
 /*
  * Add a new sewa group entry.
  * @param {String} groupId - Group ID.
- * @param {String} groupName - Group name.
  * @param {String} duration - Duration of the sewa.
  * @param {Array} _dir - Array of existing data.
  */
 function addSewaGroup(groupId, duration, _dir) {
-    if (!Array.isArray(_dir)) {
-        console.error('_dir should be an array.');
-        return;
-    }
+  if (!Array.isArray(_dir)) {
+    console.error('_dir should be an array.');
+    return;
+  }
 
-    const sewaId = getNextId(_dir);
-    const permanentKeywords = ['alifetime', 'permanent', 'permanen', 'perma'];
-    const isPermanent = permanentKeywords.includes(duration.toLowerCase());
+  const sewaId = getNextId(_dir);
+  const permanentKeywords = ['alifetime', 'permanent', 'permanen', 'perma'];
+  const isPermanent = permanentKeywords.includes(duration.toLowerCase());
 
-    const obj = {
-        id: sewaId,
-        groupId: groupId,
-        expired: isPermanent ? null : Date.now() + toMs(duration),
-        isAlifetime: isPermanent,
-        reminded1d: false,
-        reminded1h: false,
-        reminded1m: false
-    };
+  const obj = {
+    id: sewaId,
+    groupId,
+    expired: isPermanent ? null : Date.now() + toMs(duration),
+    isAlifetime: isPermanent,
+    reminded1d: false,
+    reminded1h: false,
+    reminded1m: false,
+  };
 
-    _dir.push(obj);
+  _dir.push(obj);
 
-    try {
-        fs.writeFileSync(pathSewa, JSON.stringify(_dir, null, 2));
-        console.log('Data successfully saved to sewa.json');
-    } catch (error) {
-        console.error('Failed to write to file:', error.message);
-    }
+  try {
+    fs.writeFileSync(pathSewa, JSON.stringify(_dir, null, 2));
+  } catch (error) {
+    console.error('Failed to write to file:', error.message);
+  }
 }
 
 /**
  * Get expiration time for a given sewa group.
- * @param {String} gid - Group ID.
+ * @param {String|Number} gid - Group ID or numeric entry ID.
  * @param {Array} _dir - Array of existing data.
- * @returns {Number|null} - Expiration time in milliseconds or null if not found.
+ * @returns {Number|null}
  */
 const getSewaExpired = (gid, _dir) => {
-    const item = _dir.find(entry => entry.id === gid);
-    return item ? item.expired : null;
-}
+  const item = _dir.find(entry => entry.groupId === gid || entry.id === gid);
+  return item ? item.expired : null;
+};
 
 /**
  * Check if a group is already in the sewa list.
  * @param {String} groupId - Group ID.
  * @param {Array} _dir - Array of existing data.
- * @returns {Boolean} - True if group is in the sewa list, otherwise false.
+ * @returns {Boolean}
  */
 function checkSewaGroup(groupId, _dir) {
-    if (!Array.isArray(_dir)) {
-        console.error('_dir should be an array.');
-        return false;
-    }
-    return _dir.some(item => item.groupId === groupId);
+  if (!Array.isArray(_dir)) {
+    console.error('_dir should be an array.');
+    return false;
+  }
+  return _dir.some(item => item.groupId === groupId);
 }
 
 /**
- * Get position of a sewa group by ID.
- * @param {String} gid - Group ID.
+ * Get position of a sewa group by groupId or numeric ID.
+ * @param {String|Number} gid - Group ID or numeric entry ID.
  * @param {Array} _dir - Array of existing data.
- * @returns {Number|null} - Position of the group or null if not found.
+ * @returns {Number|null}
  */
 const getSewaPosition = (gid, _dir) => {
-    const position = _dir.findIndex(entry => entry.id === gid);
-    return position !== -1 ? position : null;
-}
-
-// Fungsi untuk memeriksa dan menangani entri yang sudah kedaluwarsa
-const expiredCheck = async (conn) => {
-    try {
-        const rawData = fs.readFileSync(pathSewa, 'utf8');
-        const sewa = JSON.parse(rawData);
-        if (!Array.isArray(sewa)) return;
-
-        const getGroups = await conn.groupFetchAllParticipating();
-        const groupIds = Object.values(getGroups).map(v => v.id);
-        let changed = false;
-
-        for (let i = sewa.length - 1; i >= 0; i--) {
-            const item = sewa[i];
-            if (!item || item.isAlifetime || !item.expired) continue;
-
-            if (Date.now() >= item.expired) {
-                console.log(`Sewa expired: ${item.id} (${item.groupId})`);
-                let canRemove = false;
-
-                if (groupIds.includes(item.groupId)) {
-                    const teks = `Waktu sewa di grup ini sudah habis, bot akan keluar otomatis\nJika ingin sewa lagi silahkan ketik .owner untuk mengetahui pemilik bot`;
-                    await conn.sendMessage(item.groupId, { text: teks }).catch(() => {});
-                    try {
-                        await conn.groupLeave(item.groupId);
-                        canRemove = true;
-                    } catch (e) {
-                        const msg = String(e || '').toLowerCase();
-                        if (msg.includes('not-a-participant') || msg.includes('item-not-found') || msg.includes('404')) {
-                            canRemove = true;
-                        }
-                    }
-                    if (global.owner) {
-                        await conn.sendMessage(`${global.owner}@s.whatsapp.net`, { text: `Waktu sewa di grup ${item.groupId} ini sudah habis` }).catch(() => {});
-                    }
-                } else {
-                    canRemove = true;
-                }
-
-                if (canRemove) {
-                    sewa.splice(i, 1);
-                    changed = true;
-                }
-            }
-        }
-
-        if (changed) {
-            fs.writeFileSync(pathSewa, JSON.stringify(sewa, null, 2), 'utf8');
-        }
-    } catch (error) {
-        console.error('Terjadi kesalahan saat memeriksa entri kedaluwarsa:', error.message);
-    }
-}
-
+  const position = _dir.findIndex(entry => entry.groupId === gid || entry.id === gid);
+  return position !== -1 ? position : null;
+};
 
 /**
- * Get all premium user IDs from the sewa data.
+ * Get all IDs from the sewa data.
  * @param {Array} _dir - Array of existing data.
- * @returns {String[]} - Array of premium user IDs.
+ * @returns {Array}
  */
 const getAllPremiumUser = (_dir) => {
-    return _dir.map(item => item.id);
-}
-
-
+  return _dir.map(item => item.id);
+};
 
 module.exports = {
-    addSewaGroup,
-    getSewaExpired,
-    getSewaPosition,
-    expiredCheck,
-    checkSewaGroup,
-    getAllPremiumUser,
-    toMs
-}
-
-const { color } = require("./color");
-const chalk = require('chalk');
-let file = require.resolve(__filename);
-fs.watchFile(file, () => {
-    fs.unwatchFile(file);
-    console.log(chalk.bgGreen(color("[  UPDATE ]", "black")), chalk.white(`${__filename}`));
-    delete require.cache[file];
-    require(file);
-});
+  addSewaGroup,
+  getSewaExpired,
+  getSewaPosition,
+  checkSewaGroup,
+  getAllPremiumUser,
+  toMs,
+};

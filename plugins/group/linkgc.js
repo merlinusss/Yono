@@ -24,7 +24,7 @@ module.exports = {
       lenwy.sendText(from, message, m, { detectLink: true });
     } catch (error) {
       console.error('Error while fetching group info:', error);
-      m.reply('Terjadi kesalahan saat mengambil informasi grup.');
+      m.reply('❌ Gagal mengambil link grup.');
     }
   },
 };

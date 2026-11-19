@@ -15,15 +15,10 @@ const {
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
-let ms;
 const toMs = require('ms');
-(async () => {
-  ms = (await import('parse-ms')).default;
-})();
 const chalk = require('chalk');
 const os = require('os');
 const axios = require('axios');
-const fsx = require('fs-extra');
 const crypto = require('crypto');
 const ffmpeg = require('fluent-ffmpeg');
 const moment = require('moment-timezone');
@@ -31,7 +26,6 @@ const cron = require('node-cron');
 const { color, bgcolor } = require('./library/color');
 const { uploader60Minute, uploaderLebih, up } = require('./library/uploader');
 const { fromBuffer } = require('file-type');
-const cheerio = require('cheerio');
 const speed = require('performance-now');
 const { Image } = require('node-webpmux');
 const { performance } = require('perf_hooks');
@@ -52,15 +46,11 @@ const {
   parseMention,
   getRandom,
   getGroupAdmins,
-  generateProfilePicture,
   toJid,
 } = require('./library/myfunc.js');
 const {
   JalanTikusMeme,
-  Cerpen,
   Quotes,
-  Couples,
-  Darkjokes,
 } = require('dhn-api');
 const {
   addResponList,
@@ -824,12 +814,10 @@ Ketik *nyerah* untuk menyerah`;
         fs,
         path,
         util,
-        ms,
         toMs,
         chalk,
         os,
         axios,
-        fsx,
         crypto,
         ffmpeg,
         moment,
@@ -840,7 +828,6 @@ Ketik *nyerah* untuk menyerah`;
         uploaderLebih,
         up,
         fromBuffer,
-        cheerio,
         speed,
         Image,
         performance,
@@ -863,13 +850,9 @@ Ketik *nyerah* untuk menyerah`;
         parseMention,
         getRandom,
         getGroupAdmins,
-        generateProfilePicture,
         toJid,
         JalanTikusMeme,
         Quotes,
-        Couples,
-        Darkjokes,
-        Cerpen,
         addResponList,
         delResponList,
         isAlreadyResponList,
@@ -1068,7 +1051,7 @@ const file = require.resolve(__filename);
 if (process.env.NODE_ENV !== 'production') {
   fs.watchFile(file, () => {
     fs.unwatchFile(file);
-    console.log(chalk.green(`Update: ${__filename}`));
+    console.log(chalk.yellow(`Update : ${__filename}`));
     delete require.cache[file];
     try {
       require(file);

@@ -80,7 +80,7 @@ global.settings = {
 let file = require.resolve(__filename)
 fs.watchFile(file, () => {
   fs.unwatchFile(file)
-  console.log(chalk.green(`📑  Update : ${__filename}`))
+  console.log(chalk.yellow(`Update : ${__filename}`))
   delete require.cache[file]
   require(file)
 })

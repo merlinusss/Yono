@@ -4,7 +4,7 @@ module.exports = {
   async execute(ctx) {
     const { lenwy, m, text, command, quoted, readmore } = ctx;
 
-m.reply(`*Pemisahnya adalah "|"*\n\n*Contoh:*\n> ${command} Hai, |Nama Saya Adalah ${botname}`)
+m.reply(`*Pemisahnya adalah "|"*\n\n*Contoh:*\n> ${command} Hai, |Nama Saya Adalah ${global.botname}`)
 let [l, r] = text.split`|`
 if (!l) l = ''
 if (!r) r = ''

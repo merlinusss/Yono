@@ -2,19 +2,19 @@ module.exports = {
   command: 'delbtn',
   category: 'GROUP',
   async execute(ctx) {
-    const { m, text, isAdmins, libs } = ctx;
+    const { lenwy, m, text, command, prefix, isAdmins, mess, libs } = ctx;
     const { readDatabasePayment, writeDatabasePayment } = libs;
 
-if (!isAdmins) return;
-  if (!text) return m.reply('Contoh: delbutton key');
-  
-  let _db = readDatabasePayment();
-  let payment = _db.find(item => item.id === m.chat && item.key === text);
-  
-  if (!payment) return m.reply(`Key "${text}" tidak ditemukan di grup ini.`);
+    if (!m.isGroup) return m.reply(mess.group);
+    if (!isAdmins) return m.reply(mess.admin);
+    if (!text) return m.reply(`Cara pakai: ${prefix + command} key`);
 
-  payment.buttonData = [];
-  writeDatabasePayment(_db);
-  return m.reply(`Semua tombol untuk key "${text}" berhasil dihapus.`);
+    const _db = readDatabasePayment();
+    const payment = _db.find(item => item.id === m.chat && item.key === text.trim());
+    if (!payment) return m.reply(`❌ Key "${text.trim()}" tidak ditemukan di grup ini.`);
+
+    payment.buttonData = [];
+    writeDatabasePayment(_db);
+    return lenwy.sendMessage(m.chat, { react: { text: '👍', key: m.key } });
   },
 };

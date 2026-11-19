@@ -2,15 +2,15 @@ module.exports = {
   command: 'resetlist',
   category: 'GROUP',
   async execute(ctx) {
-    const { m, isAdmins, mess, db_respon_list, libs } = ctx;
+    const { lenwy, m, isAdmins, mess, db_respon_list, libs } = ctx;
     const { resetList } = libs;
 
-if (!isAdmins) return m.reply(mess.admin)
-  if (!m.isGroup) return m.reply(mess.group)
-  if (resetList(m.chat, db_respon_list)) {
-      m.reply(`📑 *Sukses mereset list*`);
-  } else {
-      m.reply(`⚠️ *Gagal mereset list*`);
-  }
+    if (!m.isGroup) return m.reply(mess.group);
+    if (!isAdmins) return m.reply(mess.admin);
+
+    if (resetList(m.chat, db_respon_list)) {
+      return lenwy.sendMessage(m.chat, { react: { text: '👍', key: m.key } });
+    }
+    return m.reply('❌ Belum ada item list di grup ini.');
   },
 };

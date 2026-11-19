@@ -1,192 +1,144 @@
 const fs = require('fs');
-const pathPayPayment = './storage/databasePayment.json'
+
+const LIST_PATH = './storage/list-message.json';
+const PAYMENT_PATH = './storage/databasePayment.json';
 
 function addResponList(groupID, key, response, isImage, image_url, _db) {
-    var obj_add = {
-        id: groupID,
-        key: key,
-        response: response,
-        isImage: isImage,
-        image_url: image_url
-    }
-    _db.push(obj_add)
-    fs.writeFileSync('./storage/list-message.json', JSON.stringify(_db, null, 3))
+  _db.push({
+    id: groupID,
+    key,
+    response,
+    isImage,
+    image_url,
+  });
+  fs.writeFileSync(LIST_PATH, JSON.stringify(_db, null, 3));
 }
 
 function getDataResponList(groupID, key, _db) {
-    let position = null
-    Object.keys(_db).forEach((x) => {
-        if (_db[x].id === groupID && _db[x].key === key) {
-            position = x
-        }
-    })
-    if (position !== null) {
-        return _db[position]
-    }
+  return _db.find(item => item.id === groupID && item.key === key);
 }
 
 function isAlreadyResponList(groupID, key, _db) {
-    let found = false
-    Object.keys(_db).forEach((x) => {
-        if (_db[x].id === groupID && _db[x].key === key) {
-            found = true
-        }
-    })
-    return found
+  return _db.some(item => item.id === groupID && item.key === key);
 }
 
 function sendResponList(groupId, key, _dir) {
-    let position = null
-    Object.keys(_dir).forEach((x) => {
-        if (_dir[x].id === groupId && _dir[x].key === key) {
-            position = x
-        }
-    })
-    if (position !== null) {
-        return _dir[position].response
-    }
+  const item = _dir.find(entry => entry.id === groupId && entry.key === key);
+  return item ? item.response : undefined;
 }
 
 function isAlreadyResponListGroup(groupID, _db) {
-    let found = false
-    Object.keys(_db).forEach((x) => {
-        if (_db[x].id === groupID) {
-            found = true
-        }
-    })
-    return found
+  return _db.some(item => item.id === groupID);
 }
 
 function delResponList(groupID, key, _db) {
-    let position = null
-    Object.keys(_db).forEach((x) => {
-        if (_db[x].id === groupID && _db[x].key === key) {
-            position = x
-        }
-    })
-
-    if (position !== null) {
-        _db.splice(position, 1)
-        fs.writeFileSync('./storage/list-message.json', JSON.stringify(_db, null, 3))
-    }
+  const position = _db.findIndex(item => item.id === groupID && item.key === key);
+  if (position !== -1) {
+    _db.splice(position, 1);
+    fs.writeFileSync(LIST_PATH, JSON.stringify(_db, null, 3));
+  }
 }
 
 function updateResponList(groupID, key, response, isImage, image_url, _db) {
-    let position = null
-    Object.keys(_db).forEach((x) => {
-        if (_db[x].id === groupID && _db[x].key === key) {
-            position = x
-        }
-    })
-    if (position !== null) {
-        _db[position].response = response
-        _db[position].isImage = isImage
-        _db[position].image_url = image_url
-        fs.writeFileSync('./storage/list-message.json', JSON.stringify(_db, null, 3))
-    }
+  const item = _db.find(entry => entry.id === groupID && entry.key === key);
+  if (item) {
+    item.response = response;
+    item.isImage = isImage;
+    item.image_url = image_url;
+    fs.writeFileSync(LIST_PATH, JSON.stringify(_db, null, 3));
+  }
 }
 
 function updateKey(groupID, oldKey, newKey, _db) {
-    const item = _db.find(x => x.id === groupID && x.key === oldKey);
-    if (item) {
-        item.key = newKey;
-        fs.writeFileSync('./storage/list-message.json', JSON.stringify(_db, null, 3));
-        return true;
-    }
-    return false;
+  const item = _db.find(x => x.id === groupID && x.key === oldKey);
+  if (item) {
+    item.key = newKey;
+    fs.writeFileSync(LIST_PATH, JSON.stringify(_db, null, 3));
+    return true;
+  }
+  return false;
 }
 
 function updateId(groupID, newId, _db) {
-    let updated = false;
-    _db.forEach((item) => {
-        if (item.id === groupID) {
-            item.id = newId;
-            updated = true;
-        }
-    });
-
-    if (updated) {
-        fs.writeFileSync('./storage/list-message.json', JSON.stringify(_db, null, 3));
+  let updated = false;
+  for (const item of _db) {
+    if (item.id === groupID) {
+      item.id = newId;
+      updated = true;
     }
-
-    return updated;
+  }
+  if (updated) {
+    fs.writeFileSync(LIST_PATH, JSON.stringify(_db, null, 3));
+  }
+  return updated;
 }
 
 function resetList(groupID, _db) {
-    console.log('Reset List Called with GroupID:', groupID)
-    let updated = false
-    for (let i = _db.length - 1; i >= 0; i--) {
-        if (_db[i].id === groupID) {
-            _db.splice(i, 1)
-            updated = true
-        }
+  let updated = false;
+  for (let i = _db.length - 1; i >= 0; i--) {
+    if (_db[i].id === groupID) {
+      _db.splice(i, 1);
+      updated = true;
     }
-
-    if (updated) {
-        console.log('Updating database...')
-        fs.writeFileSync('./storage/list-message.json', JSON.stringify(_db, null, 3))
-    }
-    return updated;
+  }
+  if (updated) {
+    fs.writeFileSync(LIST_PATH, JSON.stringify(_db, null, 3));
+  }
+  return updated;
 }
 
 function deleteListSampah(_db, groupIDs) {
-    let before = _db.length
-
-    let newDb = _db.filter(item => groupIDs.includes(item.id))
-
-    if (newDb.length !== before) {
-        fs.writeFileSync('./storage/list-message.json', JSON.stringify(newDb, null, 3))
-        console.log(`✅ Dihapus ${before - newDb.length} data sampah dari list-message.json`)
-    } else {
-        console.log('✨ Tidak ada list sampah yang perlu dihapus.')
-    }
-
-    return before - newDb.length
+  const before = _db.length;
+  const newDb = _db.filter(item => groupIDs.includes(item.id));
+  if (newDb.length !== before) {
+    _db.splice(0, _db.length, ...newDb);
+    fs.writeFileSync(LIST_PATH, JSON.stringify(_db, null, 3));
+  }
+  return before - newDb.length;
 }
 
 function readDatabasePayment() {
-    if (!fs.existsSync(pathPayPayment)) {
-        fs.writeFileSync(pathPayPayment, JSON.stringify([]), 'utf-8');
-    }
-    const data = fs.readFileSync(pathPayPayment, 'utf-8');
-    return JSON.parse(data);
+  if (!fs.existsSync(PAYMENT_PATH)) {
+    fs.writeFileSync(PAYMENT_PATH, JSON.stringify([]), 'utf-8');
+  }
+  const data = fs.readFileSync(PAYMENT_PATH, 'utf-8');
+  return JSON.parse(data);
 }
 
-// Menulis database ke file JSON
 function writeDatabasePayment(_db) {
-    fs.writeFileSync(pathPayPayment, JSON.stringify(_db, null, 3), 'utf-8');
+  fs.writeFileSync(PAYMENT_PATH, JSON.stringify(_db, null, 3), 'utf-8');
 }
 
 async function getGroupIdFromLink(link, lenwy) {
-    let coded = link.split("https://chat.whatsapp.com/")[1];
-    if (!coded) return m.reply("Link Invalid 🤔");
+  const coded = typeof link === 'string' ? link.split('https://chat.whatsapp.com/')[1] : '';
+  if (!coded) throw new Error('Link grup tidak valid.');
 
-    const response = await lenwy.query({
-        tag: "iq",
-        attrs: {
-            type: "get",
-            xmlns: "w:g2",
-            to: "@g.us"
-        },
-        content: [{ tag: "invite", attrs: { code: coded } }]
-    });
+  const response = await lenwy.query({
+    tag: 'iq',
+    attrs: {
+      type: 'get',
+      xmlns: 'w:g2',
+      to: '@g.us',
+    },
+    content: [{ tag: 'invite', attrs: { code: coded.trim() } }],
+  });
 
-    return response.content[0].attrs.id + '@g.us';
+  return response.content[0].attrs.id + '@g.us';
 }
 
 module.exports = {
-    addResponList,
-    delResponList,
-    isAlreadyResponList,
-    isAlreadyResponListGroup,
-    sendResponList,
-    updateResponList,
-    getDataResponList,
-    updateKey,
-    readDatabasePayment,
-    writeDatabasePayment,
-    updateId,
-    getGroupIdFromLink,
-    resetList,
-    deleteListSampah
-}
+  addResponList,
+  delResponList,
+  isAlreadyResponList,
+  isAlreadyResponListGroup,
+  sendResponList,
+  updateResponList,
+  getDataResponList,
+  updateKey,
+  readDatabasePayment,
+  writeDatabasePayment,
+  updateId,
+  getGroupIdFromLink,
+  resetList,
+  deleteListSampah,
+};

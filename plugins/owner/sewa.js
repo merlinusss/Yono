@@ -14,7 +14,7 @@ async function createImage(url) {
  return imageMessage;
  }
  
- let tekssewa = global.text_sewa ? global.text_sewa : ` /) /) \n („• ֊ •„) \n╭───̇─∪─∪──̇──┈◯\n│❛ SEWA BOT ${botname} ˚\n│\n│1 вυℓαη : 𝖱𝗉 5.000\n│2 вυℓαη : 𝖱𝗉 10.000\n│𝟥 вυℓαη : 𝖱𝗉 15.000\n│𝟦 вυℓαη : 𝖱𝗉 18.000\n│𝟧 вυℓαη : 𝖱𝗉 21.000\n╰───────────✧✧✧`
+ let tekssewa = global.text_sewa ? global.text_sewa : ` /) /) \n („• ֊ •„) \n╭───̇─∪─∪──̇──┈◯\n│❛ SEWA BOT ${global.botname} ˚\n│\n│1 вυℓαη : 𝖱𝗉 5.000\n│2 вυℓαη : 𝖱𝗉 10.000\n│𝟥 вυℓαη : 𝖱𝗉 15.000\n│𝟦 вυℓαη : 𝖱𝗉 18.000\n│𝟧 вυℓαη : 𝖱𝗉 21.000\n╰───────────✧✧✧`
  let teksppj = global.text_ppj ? global.text_ppj : '\n\n ╭─────────────❍\n │ ʚ˚̣̣̣͙ɞ・𝙥𝙚𝙧𝙥𝙖𝙣𝙟𝙖𝙣𝙜・ \n │\n │1 вυℓαη : 𝖱𝗉 5.000\n │𝟤 вυℓαη : 𝖱𝗉 10.000\n │𝟥 вυℓαη : 𝖱𝗉 15.000\n │ρєямαηєη : 𝖱𝗉 60.000\n │Tidak Ada,\n │Yang Abadi Tuan\n ╰─────────────❍'
 
  let imageUrl
@@ -84,7 +84,7 @@ async function createImage(url) {
  text: 'Berikut Daftarnya',
  }),
  footer: proto.Message.InteractiveMessage.Footer.create({
- text: `> ${botname}`,
+ text: `> ${global.botname}`,
  }),
  header: proto.Message.InteractiveMessage.Header.create({
  hasMediaAttachment: false

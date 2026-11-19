@@ -5,7 +5,7 @@ const DB_GROUP_PATH = './storage/databaseGroup.json';
 
 const TARGETS = {
   list: {
-    label: 'List Produk',
+    label: 'List produk',
     dbKey: 'text_list',
     templateFile: 'list',
     fallback: 'Halo {TAG}\n\n{SIMBOL}',
@@ -18,10 +18,10 @@ const TARGETS = {
       ['{SIMBOL}', 'Daftar seluruh item list (wajib ada)'],
       ['@ITEM = ...', 'Opsional di baris atas sebelum --- (pakai {KEY}, {KEY_UPPER}, {KEY_LOWER}, {NO})'],
     ],
-    example: '@ITEM = ▸ {NO}. *{KEY_UPPER}*\n---\n╭─〔 📋 DAFTAR MENU 〕\n│ Halo {TAG}\n│ 📅 {NAMAHARI}, {TANGGAL} ({JAM} WIB)\n│ 🏠 {GROUPNAME}\n│ {SIMBOL}\n╰──────────────',
+    example: '@ITEM = ▸ {NO}. *{KEY_UPPER}*\n---\nDaftar menu {GROUPNAME}\nHalo {TAG}\n{NAMAHARI}, {TANGGAL} ({JAM} WIB)\n\n{SIMBOL}',
   },
   simbol: {
-    label: 'Simbol / Format Item List',
+    label: 'Simbol item list',
     dbKey: 'text_list_simbol',
     templateFile: null,
     fallback: '    ⋆˙⟡ ',
@@ -34,7 +34,7 @@ const TARGETS = {
     example: '▸ {NO}. *{KEY_UPPER}*',
   },
   proses: {
-    label: 'Pesan Proses',
+    label: 'Pesan proses',
     dbKey: 'text_proses',
     templateFile: 'proses',
     fallback: 'Pesanan {TAGREPLY} sedang diproses.\nPesanan: {PESANAN}',
@@ -52,10 +52,10 @@ const TARGETS = {
       ['{MENIT}', 'Menit'],
       ['{DETIK}', 'Detik'],
     ],
-    example: '⏳ Halo {TAGREPLY}, pesanan sedang diproses!\n📦 Pesanan: {PESANAN}\n📅 {HARI}, {TANGGAL} {NAMABULAN} {TAHUN} ({JAM}:{MENIT} WIB)',
+    example: 'Halo {TAGREPLY}, pesanan sedang diproses.\nPesanan: {PESANAN}\n{HARI}, {TANGGAL} {NAMABULAN} {TAHUN} ({JAM}:{MENIT} WIB)',
   },
   done: {
-    label: 'Pesan Done',
+    label: 'Pesan done',
     dbKey: 'text_done',
     templateFile: 'done',
     fallback: 'Pesanan {TAGREPLY} selesai!\nPesanan: {PESANAN}',
@@ -73,13 +73,13 @@ const TARGETS = {
       ['{MENIT}', 'Menit'],
       ['{DETIK}', 'Detik'],
     ],
-    example: '✅ Pesanan {TAGREPLY} selesai!\n📦 Pesanan: {PESANAN}\n📅 {HARI}, {TANGGAL} {NAMABULAN} {TAHUN} ({JAM}:{MENIT} WIB)',
+    example: 'Pesanan {TAGREPLY} selesai.\nPesanan: {PESANAN}\n{HARI}, {TANGGAL} {NAMABULAN} {TAHUN} ({JAM}:{MENIT} WIB)',
   },
   close: {
-    label: 'Pesan Tutup Grup',
+    label: 'Pesan tutup grup',
     dbKey: 'text_close',
     templateFile: 'close',
-    fallback: '_*Group Berhasil Ditutup*_ 「 🔒 」',
+    fallback: 'Grup berhasil ditutup.',
     placeholders: [
       ['{GROUPNAME}', 'Nama grup'],
       ['{TAG}', 'Tag admin yang menutup'],
@@ -87,13 +87,13 @@ const TARGETS = {
       ['{NAMAHARI}', 'Nama hari'],
       ['{TANGGAL}', 'Tanggal lengkap'],
     ],
-    example: '🔒 Grup {GROUPNAME} ditutup oleh {TAG}\n📅 {NAMAHARI}, {TANGGAL} ({JAM} WIB)',
+    example: 'Grup {GROUPNAME} ditutup oleh {TAG}\n{NAMAHARI}, {TANGGAL} ({JAM} WIB)',
   },
   open: {
-    label: 'Pesan Buka Grup',
+    label: 'Pesan buka grup',
     dbKey: 'text_open',
     templateFile: 'open',
-    fallback: '_*Group Berhasil Dibuka*_ 「 🔓 」',
+    fallback: 'Grup berhasil dibuka.',
     placeholders: [
       ['{GROUPNAME}', 'Nama grup'],
       ['{TAG}', 'Tag admin yang membuka'],
@@ -101,10 +101,10 @@ const TARGETS = {
       ['{NAMAHARI}', 'Nama hari'],
       ['{TANGGAL}', 'Tanggal lengkap'],
     ],
-    example: '🔓 Grup {GROUPNAME} dibuka oleh {TAG}\n📅 {NAMAHARI}, {TANGGAL} ({JAM} WIB)',
+    example: 'Grup {GROUPNAME} dibuka oleh {TAG}\n{NAMAHARI}, {TANGGAL} ({JAM} WIB)',
   },
   menu: {
-    label: 'Header Menu (Global/Owner)',
+    label: 'Header menu (owner)',
     dbKey: null,
     templateFile: 'menu',
     fallback: '{MENU}',
@@ -117,7 +117,7 @@ const TARGETS = {
       ['{MENU}', 'Daftar isi menu (wajib ada)'],
       ['@HEADER / @ITEM / @FOOTER', 'Opsional di baris atas sebelum --- (pakai {CATEGORY}, {CMD}, {CMD_UPPER}, {CMD_LOWER}, {NO})'],
     ],
-    example: '@HEADER = ⭐ *{CATEGORY_UPPER}*\n@ITEM = ▸ {NO}. _{CMD}_\n@FOOTER = ──────────\n---\n🤖 *YONO BOT*\nHalo {NAME} ({STATUS})\nRuntime: {RUNTIME}\n\n{MENU}',
+    example: '@HEADER = *{CATEGORY_UPPER}*\n@ITEM = {NO}. {CMD}\n@FOOTER = ──────────\n---\nHalo {NAME} ({STATUS})\nRuntime: {RUNTIME}\n\n{MENU}',
   },
 };
 

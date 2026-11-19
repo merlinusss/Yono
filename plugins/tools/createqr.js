@@ -4,7 +4,7 @@ module.exports = {
   async execute(ctx) {
     const { lenwy, m, from, text, mess, quoted, LenwyLD } = ctx;
 
-if (!text) return m.reply(`*Contoh : Createqr ${botname}*`)
+if (!text) return m.reply(`*Contoh : Createqr ${global.botname}*`)
 LenwyLD()
 const qrcode = require('qrcode')
 const qyuer = await qrcode.toDataURL(text, { scale: 8 })

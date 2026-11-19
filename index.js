@@ -525,7 +525,7 @@ async function connectToWhatsApp() {
     let pathFile = filename;
     if (options.asDocument) type = 'document';
     if (options.asSticker || /webp/.test(mime)) {
-      const { writeExif } = require('./library/sticker.js');
+      const { writeExif } = require('./library/exif.js');
       const media = { mimetype: mime, data };
       pathFile = await writeExif(media, {
         packname: global.packname,
@@ -882,6 +882,7 @@ const expiredCheck = async (lenwy) => {
     isCheckingSewa = false;
   }
 };
+global.expiredCheck = expiredCheck;
 
 cron.schedule('59 23 * * *', () => {
   startBackupProcess();

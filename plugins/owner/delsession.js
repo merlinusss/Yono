@@ -7,7 +7,7 @@ module.exports = {
     const { fs, sleep } = libs;
 
 if (!isCreator) return
- fs.readdir(`./${sessionName}`, async function(err, files) {
+ fs.readdir(`./${global.sessionName}`, async function(err, files) {
  if (err) {
  console.log('Unable to scan directory: ' + err)
  return m.reply('Unable to scan directory: ' + err)
@@ -28,7 +28,7 @@ if (!isCreator) return
  await sleep(200)
  m.reply("Menghapus session...")
  for (const file of filteredArray) {
- fs.unlinkSync(`./${sessionName}/${file}`)
+ fs.unlinkSync(`./${global.sessionName}/${file}`)
  }
  await sleep(200)
  m.reply('Sukses menghapus session!')
