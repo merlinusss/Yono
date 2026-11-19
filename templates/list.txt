@@ -1,6 +1,6 @@
 # Format per baris item list. Placeholder: {KEY}, {KEY_UPPER}, {KEY_LOWER}, {NO}
 # Bisa dibungkus gaya WA: *{KEY}*, _{KEY}_, `{KEY}`, *{KEY_UPPER}*, dll.
-@ITEM =     ⋆˙⟡ *{KEY}*
+@ITEM =     ⋆˙⟡ *{KEY}*
 ---
 ٠࣪⭑──α lovely reminder that we go through phases, but we are still ωнσℓє 
 

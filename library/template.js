@@ -48,7 +48,7 @@ function parseTemplate(raw = '') {
   for (const line of headerPart.split(/\r?\n/)) {
     const trimmed = line.trim();
     if (!trimmed || trimmed.startsWith('#')) continue;
-    const m = line.match(/^\s*@([A-Za-z0-9_]+)\s*=\s*(.*)$/);
+    const m = line.match(/^\s*@([A-Za-z0-9_]+)\s*= ?(.*)$/);
     if (m) {
       hasDirective = true;
       meta[m[1].toUpperCase()] = m[2].replace(/\\n/g, '\n');

@@ -33,7 +33,7 @@ const PERSONAL_LEN_KEYS = [
 function getUpdaterConfig() {
   const domain = global.api?.merlinus?.domain || 'merlapi.xyz';
   return {
-    baseUrl: `https://${domain}/api/yono`,
+    baseUrl: `https://${domain}/api/bot/yono`,
     apikey: global.api?.merlinus?.apikey || '',
     branch: 'main',
   };
@@ -134,7 +134,6 @@ module.exports = {
     const cfg = getUpdaterConfig();
     const { branch } = cfg;
 
-    // ─── CANCEL ───
     if (sub === 'cancel') {
       if (pendingUpdates.delete(senderKey)) {
         return m.reply('✅ Proses update dibatalkan.');
@@ -142,7 +141,6 @@ module.exports = {
       return m.reply('ℹ️ Tidak ada proses update yang sedang menunggu konfirmasi.');
     }
 
-    // ─── CONFIRM (ALL / SELECTIVE) ───
     if (sub === 'confirm') {
       const pending = pendingUpdates.get(senderKey);
       if (!pending || Date.now() > pending.expiresAt) {
