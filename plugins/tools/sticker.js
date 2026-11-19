@@ -6,7 +6,7 @@ module.exports = {
     const { lenwy, m, from, command, prefix, isBan, author, quoted, mime, libs } = ctx;
     const { downloadContentFromMessage, Image, writeExifImg, writeExifVid } = libs;
 
-if (isBan) return m.reply('⚠ *Kamu Di Ban Owner*')
+if (isBan) return m.reply(global.mess.ban)
  if (!quoted) return m.reply(`Balas Video/Image Dengan Caption ${prefix + command}`)
  if (!/image/.test(mime) && !/video/.test(mime)) return
  if (/image/.test(mime)) {

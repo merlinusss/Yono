@@ -6,7 +6,7 @@ module.exports = {
     const { Image, writeExifImg, writeExifVid } = libs;
 
   {
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+if (isBan) return m.reply(global.mess.ban)
   if (!quoted) return m.reply(`⚠️ Balas media dengan caption ${prefix + command} packname|author`)
 
   let isMedia = /imageMessage|videoMessage|stickerMessage/.test(quoted.mtype);

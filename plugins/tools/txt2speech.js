@@ -4,7 +4,7 @@ module.exports = {
   async execute(ctx) {
     const { lenwy, m, args, text, q, isBan } = ctx;
 
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+if (isBan) return m.reply(global.mess.ban)
 if (args.length == 0) return m.reply(`*Mo Convert Text Apa Ke Suara?*`)
 try {
   let result = await (await fetch(`https://deoberon-api.vercel.app/tools/text-to-speech?text=${q}`)).json()

@@ -5,7 +5,7 @@ module.exports = {
     const { lenwy, m, from, args, isBan, type, libs } = ctx;
     const { moment, format, parseMention } = libs;
 
-if (isBan) return m.reply('*Lu Di Ban Owner*')
+if (isBan) return m.reply(global.mess.ban)
 if (!args[0]) return m.reply("Linknya?")
 let coded = args.join(" ").split("https://chat.whatsapp.com/")[1]
 if (!coded) return m.reply("Link invalid")

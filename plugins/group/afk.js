@@ -6,7 +6,7 @@ module.exports = {
 
 if (!m.isGroup) return m.reply('❌ *Fitur ini hanya dapat digunakan di dalam grup!*')
     if (!isAdmins) return m.reply(mess.admin)
-    if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+    if (isBan) return m.reply(global.mess.ban)
     if (text.length > 100) return m.reply(`*Maksimal 100 Karakter*`)
     let user = global.db.data.users[m.sender]
     user.afk ??= {}

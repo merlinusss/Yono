@@ -5,7 +5,7 @@ module.exports = {
     const { m, isBan, author, libs } = ctx;
     const { Quotes } = libs;
 
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+if (isBan) return m.reply(global.mess.ban)
 var resi = await Quotes()
 teks = `\n${global.emoji} *Author: ${resi.author}*\n`
 teks = `\n🎁 *Quotes:*\n`

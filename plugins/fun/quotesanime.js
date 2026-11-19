@@ -5,7 +5,7 @@ module.exports = {
     const { lenwy, m, from, text, isBan, quoted, libs } = ctx;
     const { fs, Quotes } = libs;
 
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+if (isBan) return m.reply(global.mess.ban)
 const an1 = JSON.parse(fs.readFileSync("./storage/teks/quotesanime.json"))
 const r4ndan1 = an1[Math.floor(Math.random() * an1.length)]
 const tgt99 = `*Random Quotes Anime*

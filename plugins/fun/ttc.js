@@ -5,7 +5,7 @@ module.exports = {
     const { lenwy, m, from, sender, text, command, prefix, isBan, libs } = ctx;
     const { parseMention } = libs;
 
-if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*');
+if (isBan) return m.reply(global.mess.ban);
   
   let TicTacToe = require("../../library/tictactoe");
   this.game = this.game || {};

@@ -6,7 +6,7 @@ module.exports = {
     const { sleep } = libs;
 
 let { genMath, modes } = require('../../library/math')
-  if (isBan) return m.reply('⚠️ *Kamu Di Ban Owner*')
+  if (isBan) return m.reply(global.mess.ban)
   if (kuismath.hasOwnProperty(m.sender.split('@')[0])) m.reply('⚠️ *Masih Ada Sesi Yang Belum Diselesaikan!*')
   if (!text) return m.reply(`Mode: ${Object.keys(modes).join(' | ')}
 Contoh penggunaan: ${prefix}math medium`);

@@ -27,27 +27,16 @@ const PERSONAL_LEN_KEYS = [
   'owner', 'developer', 'botNumber', 'ownername', 'developername',
   'botname', 'emoji', 'packname', 'author', 'sessionName',
   'anticall', 'autobackup', 'usePairingCode',
-  'githubRepo', 'githubBranch', 'githubToken',
   'licenseKeycash', 'idQris', 'productkeydigi', 'usernamedigi',
 ];
 
-function getRepoConfig() {
+function getUpdaterConfig() {
+  const domain = global.api?.merlinus?.domain || 'merlapi.xyz';
   return {
-    repo: global.githubRepo || 'merlinusss/Yono',
-    branch: global.githubBranch || 'main',
-    token: process.env.GITHUB_TOKEN || global.githubToken || '',
-    updateApiUrl: (global.updateApiUrl || '').replace(/\/+$/, ''),
-    merlApiKey: global.api?.merlinus?.apikey || '',
+    baseUrl: `https://${domain}/api/yono`,
+    apikey: global.api?.merlinus?.apikey || '',
+    branch: 'main',
   };
-}
-
-function ghHeaders(token, accept = 'application/vnd.github+json') {
-  const headers = {
-    'User-Agent': 'Yono-Bot-Updater',
-    Accept: accept,
-  };
-  if (token) headers.Authorization = `Bearer ${token}`;
-  return headers;
 }
 
 function isProtectedPath(filePath) {
@@ -96,89 +85,24 @@ function mergeLenJs(newLenContent) {
   return merged;
 }
 
-async function fetchJsonGh(url, token) {
-  const res = await fetch(url, { headers: ghHeaders(token) });
-  if (!res.ok) {
-    const errText = await res.text().catch(() => '');
-    throw new Error(`GitHub API ${res.status}: ${errText.slice(0, 140) || res.statusText}`);
-  }
-  return res.json();
-}
-
-async function downloadFileFromRepo(cfg, ref, filePath) {
-  if (cfg.useProxy && cfg.updateApiUrl) {
-    const proxyUrl = `${cfg.updateApiUrl}/file?path=${encodeURIComponent(filePath)}&ref=${encodeURIComponent(ref)}&apikey=${encodeURIComponent(cfg.merlApiKey)}`;
-    const res = await fetch(proxyUrl);
-    if (!res.ok) throw new Error(`Gagal unduh ${filePath} via merlapi (${res.status})`);
-    return Buffer.from(await res.arrayBuffer());
-  }
-  const encodedPath = filePath.split('/').map(encodeURIComponent).join('/');
-  const url = `https://api.github.com/repos/${cfg.repo}/contents/${encodedPath}?ref=${encodeURIComponent(ref)}`;
-  const res = await fetch(url, { headers: ghHeaders(cfg.token, 'application/vnd.github.raw+json') });
+async function downloadFileFromServer(cfg, ref, filePath) {
+  const url = `${cfg.baseUrl}/file?path=${encodeURIComponent(filePath)}&ref=${encodeURIComponent(ref)}&apikey=${encodeURIComponent(cfg.apikey)}`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error(`Gagal unduh ${filePath} (${res.status})`);
   return Buffer.from(await res.arrayBuffer());
 }
 
-async function checkUpdatesFromSource(cfg, localSha) {
-  // 1. Coba lewat merlapi.xyz jika dikonfigurasi (agar repo bisa di-private tanpa taruh token di bot)
-  if (cfg.updateApiUrl && cfg.merlApiKey) {
-    try {
-      const url = `${cfg.updateApiUrl}/check?since=${encodeURIComponent(localSha || '')}&branch=${encodeURIComponent(cfg.branch)}&apikey=${encodeURIComponent(cfg.merlApiKey)}`;
-      const res = await fetch(url);
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.status) {
-          return {
-            useProxy: true,
-            latestSha: data.latestSha,
-            newCommits: (data.commits || []).map(c => ({ sha: c.sha, message: c.message || '' })),
-            changedFiles: data.files || [],
-          };
-        }
-      }
-    } catch {
-      // fallback ke GitHub langsung
-    }
+async function checkUpdatesFromServer(cfg, localSha) {
+  const url = `${cfg.baseUrl}/check?since=${encodeURIComponent(localSha || '')}&branch=${encodeURIComponent(cfg.branch)}&apikey=${encodeURIComponent(cfg.apikey)}`;
+  const res = await fetch(url);
+  const data = await res.json().catch(() => null);
+  if (!res.ok || !data || !data.status) {
+    throw new Error(data?.message || `Server updater merespons ${res.status}`);
   }
-
-  // 2. Fallback langsung ke GitHub API
-  const commits = await fetchJsonGh(
-    `https://api.github.com/repos/${cfg.repo}/commits?sha=${encodeURIComponent(cfg.branch)}&per_page=8`,
-    cfg.token
-  );
-  if (!Array.isArray(commits) || commits.length === 0) {
-    throw new Error('Tidak ada commit ditemukan di repository.');
-  }
-
-  const latest = commits[0];
-  const latestSha = latest.sha;
-  let newCommits = [];
-  let changedFiles = [];
-
-  if (localSha && localSha !== latestSha) {
-    try {
-      const cmp = await fetchJsonGh(
-        `https://api.github.com/repos/${cfg.repo}/compare/${localSha}...${latestSha}`,
-        cfg.token
-      );
-      newCommits = (cmp.commits || []).slice(-10).reverse();
-      changedFiles = cmp.files || [];
-    } catch {
-      newCommits = commits.slice(0, 5);
-      const detail = await fetchJsonGh(`https://api.github.com/repos/${cfg.repo}/commits/${latestSha}`, cfg.token);
-      changedFiles = detail.files || [];
-    }
-  } else {
-    newCommits = commits.slice(0, 5);
-    const detail = await fetchJsonGh(`https://api.github.com/repos/${cfg.repo}/commits/${latestSha}`, cfg.token);
-    changedFiles = detail.files || [];
-  }
-
   return {
-    useProxy: false,
-    latestSha,
-    newCommits: newCommits.map(c => ({ sha: c.sha, message: c.commit?.message || '' })),
-    changedFiles,
+    latestSha: data.latestSha,
+    newCommits: (data.commits || []).map(c => ({ sha: c.sha, message: c.message || '' })),
+    changedFiles: data.files || [],
   };
 }
 
@@ -207,8 +131,8 @@ module.exports = {
 
     const senderKey = m.sender;
     const sub = (args[0] || '').toLowerCase();
-    const cfg = getRepoConfig();
-    const { repo, branch } = cfg;
+    const cfg = getUpdaterConfig();
+    const { branch } = cfg;
 
     // ─── CANCEL ───
     if (sub === 'cancel') {
@@ -240,7 +164,7 @@ module.exports = {
       }
 
       pendingUpdates.delete(senderKey);
-      await m.reply(`🔄 Menerapkan *${chosenFiles.length} file* dari \`${pending.repo}\` (\`${pending.latestSha.slice(0, 7)}\`)...`);
+      await m.reply(`🔄 Menerapkan *${chosenFiles.length} file* (\`${pending.latestSha.slice(0, 7)}\`)...`);
 
       const applied = [];
       const skipped = [];
@@ -263,7 +187,7 @@ module.exports = {
             continue;
           }
 
-          const buf = await downloadFileFromRepo(pending, pending.latestSha, filePath);
+          const buf = await downloadFileFromServer(pending, pending.latestSha, filePath);
           const dir = path.dirname(absPath);
           if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 
@@ -312,10 +236,10 @@ module.exports = {
     }
 
     // ─── STEP 1: CHECK & PREVIEW ───
-    await m.reply(`🔍 Mengecek pembaruan dari \`${repo}\` (${branch})...`);
+    await m.reply('🔍 Mengecek pembaruan dari server...');
     try {
       const localVer = readLocalVersion();
-      const { useProxy, latestSha, newCommits, changedFiles } = await checkUpdatesFromSource(cfg, localVer.sha);
+      const { latestSha, newCommits, changedFiles } = await checkUpdatesFromServer(cfg, localVer.sha);
 
       if (localVer.sha && localVer.sha === latestSha) {
         const latestMsg = newCommits[0]?.message?.split('\n')[0] || '-';
@@ -334,7 +258,6 @@ module.exports = {
 
       pendingUpdates.set(senderKey, {
         ...cfg,
-        useProxy,
         latestSha,
         files: selectableFiles,
         expiresAt: Date.now() + CONFIRM_TTL_MS,
@@ -364,10 +287,7 @@ module.exports = {
       return m.reply(msg);
     } catch (err) {
       console.error('[updatebot]', err);
-      return m.reply(
-        `❌ *Gagal mengecek update:*\n\`\`\`${err.message}\`\`\`\n\n` +
-        `_(Jika repo private, pastikan \`global.githubToken\` di \`len.js\` atau env \`GITHUB_TOKEN\` sudah diisi.)_`
-      );
+      return m.reply(`❌ *Gagal mengecek update:*\n\`\`\`${err.message}\`\`\``);
     }
   },
 };
